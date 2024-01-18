@@ -36,6 +36,9 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@sveltejs/adapter-vercel": "^4.0.5"
+		"@sveltejs/adapter-vercel": "^4.0.5",
+		"airtable": "^0.12.2",
+		"papaparse": "^5.4.1",
+		"xlsx": "^0.18.5"
 	}
 }
