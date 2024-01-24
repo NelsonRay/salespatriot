@@ -199,7 +199,7 @@ function get_past_wins(nsn, procurements_json) {
 	let procurements_for_nsn = procurements_json.filter((p) => p['NSN'] === nsn && 'AWARDDATE' in p);
 
 	procurements_for_nsn.sort(function (a, b) {
-		return new Date(b['AWARDDATE']).getMilliseconds() - new Date(a['AWARDDATE']).getMilliseconds();
+		return parseInt(b['AWARDDATE'].replace('/')) - parseInt(a['AWARDDATE'].replace('/'));
 	});
 
 	// slice to 3 or less procurements
