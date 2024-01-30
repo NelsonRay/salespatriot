@@ -1,6 +1,7 @@
 <script>
 	import { Table, tableMapperValues } from '@skeletonlabs/skeleton';
-	const sourceData = [
+
+	let sourceData = [
 		{
 			position: 1,
 			solicition: 'SPE4A624Q0547',
@@ -13,6 +14,23 @@
 			bid: 'Bid Complete'
 		}
 	];
+
+	for (let i = 0; i < 100; i++) {
+		sourceData = [
+			...sourceData,
+			{
+				position: i + 2,
+				solicition: 'SPE4A624Q0547',
+				description: 'CABLE ASSEMBLY,POWER,ELECTRICAL',
+				value: '$419,665.48',
+				estimate: '$419,665.48',
+				expires: '1/19/2024',
+				purchasing: 'Slightly Out of Budget',
+				labor: 'Within Time',
+				bid: 'Bid Complete'
+			}
+		];
+	}
 
 	const tableSimple = {
 		// A list of heading labels.
@@ -54,4 +72,4 @@
 	};
 </script>
 
-<Table source={tableSimple} interactive class="w-[120%] overflow-scroll" />
+<Table source={tableSimple} interactive class="min-w-[110%]" regionHead={'text-sm'} />
