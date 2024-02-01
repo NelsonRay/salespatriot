@@ -3,11 +3,23 @@
 	import { page } from '$app/stores';
 	import { gov_mapper } from '$lib/mappers';
 
-	const submitted = $page.data.form.response;
+	const submitted = $page.data.form.submitted;
 
 	let values = {};
 
 	let openDropdowns = {};
+
+	async function handleSubmit() {
+		const res = await fetch('/api/gov/form/submit', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ response: values, id: $page.data.id })
+		});
+
+		if (res.status === 200) {
+			window.location.reload();
+		}
+	}
 
 	function handleDropdownClick(field) {
 		openDropdowns[field] = !(openDropdowns[field] ?? false);
@@ -61,15 +73,15 @@
 						<p class="text-xs">{gov_mapper(field)}</p>
 						{#if !['solicitation_url', 'tech_docs'].includes(field)}
 							<p class="text-sm">
-								{$page.data.form.solicitation_matched.solicitation[field] ?? 'N/A'}
+								{$page.data.solicitation_matched.solicitation[field] ?? 'N/A'}
 							</p>
 						{:else}
 							<a
-								href={$page.data.form.solicitation_matched.solicitation[field]}
+								href={$page.data.solicitation_matched.solicitation[field]}
 								class="text-sm text-blue-500"
 								target="_blank"
 							>
-								{$page.data.form.solicitation_matched.solicitation[field] ? 'URL' : 'N/A'}
+								{$page.data.solicitation_matched.solicitation[field] ? 'URL' : 'N/A'}
 							</a>
 						{/if}
 					</div>
@@ -109,15 +121,18 @@
 					</div>
 				{/if}
 				{#if field.type === 'currency'}
-					<input type="number" class="w-52 rounded-md mb-5" />
+					<input type="number" class="w-52 rounded-md mb-5" bind:value={values[field.field]} />
 				{/if}
 				{#if field.type === 'textarea'}
-					<textarea class="flex min-h-16 overflow-y-auto border rounded-md" />
+					<textarea
+						class="flex min-h-16 overflow-y-auto border rounded-md"
+						bind:value={values[field.field]}
+					/>
 				{/if}
 			{/each}
 
 			<div class="flex flex-row mt-2 text-lg font-medium">
-				<button class="btn px-2 rounded-md -ml-2 mt-3" type="submit">Submit</button>
+				<button class="btn px-2 rounded-md -ml-2 mt-3" on:click={handleSubmit}>Submit</button>
 			</div>
 		{:else}
 			<p class="mt-12">Thank you for submitting form!</p>

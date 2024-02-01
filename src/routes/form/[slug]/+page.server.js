@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit';
 export async function load({ params, locals: { supabase } }) {
 	const { data, error: err } = await supabase
 		.from('forms')
-		.select('*, solicitation_matched(*, solicitation(*)), user(*)')
+		.select('*, solicitation_matched(*, solicitation(*)), form(*, user(*))')
 		.eq('id', parseInt(params.slug));
 
 	const { data: t_data } = await supabase.from('tags').select('*');
@@ -18,5 +18,5 @@ export async function load({ params, locals: { supabase } }) {
 		error(400, { message: 'No form associated with this link' });
 	}
 
-	return { form: data[0], tags: t_data };
+	return { ...data[0], tags: t_data };
 }

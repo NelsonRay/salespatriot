@@ -27,50 +27,82 @@ export interface Database {
         }
         Relationships: []
       }
-      forms: {
+      form: {
         Row: {
           created_at: string
-          fields: Json[]
-          id: number
+          id: string
+          matched_fields: Json[]
           name: string
-          response: Json | null
-          response_timestamp: string | null
-          solicitation_matched: string
-          user: string | null
+          solicitation_fields: string[]
+          user: string
         }
         Insert: {
           created_at?: string
-          fields: Json[]
-          id?: number
+          id?: string
+          matched_fields: Json[]
           name: string
-          response?: Json | null
-          response_timestamp?: string | null
-          solicitation_matched: string
-          user?: string | null
+          solicitation_fields: string[]
+          user: string
         }
         Update: {
           created_at?: string
-          fields?: Json[]
-          id?: number
+          id?: string
+          matched_fields?: Json[]
           name?: string
+          solicitation_fields?: string[]
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "form_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      forms: {
+        Row: {
+          created_at: string
+          form: string
+          id: number
+          response: Json | null
+          response_timestamp: string | null
+          solicitation_matched: string
+          submitted: boolean
+        }
+        Insert: {
+          created_at?: string
+          form: string
+          id?: number
+          response?: Json | null
+          response_timestamp?: string | null
+          solicitation_matched: string
+          submitted?: boolean
+        }
+        Update: {
+          created_at?: string
+          form?: string
+          id?: number
           response?: Json | null
           response_timestamp?: string | null
           solicitation_matched?: string
-          user?: string | null
+          submitted?: boolean
         }
         Relationships: [
+          {
+            foreignKeyName: "forms_form_fkey"
+            columns: ["form"]
+            isOneToOne: false
+            referencedRelation: "form"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "forms_solicitation_matched_fkey"
             columns: ["solicitation_matched"]
             isOneToOne: false
             referencedRelation: "solicitations_matched"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "forms_user_fkey"
-            columns: ["user"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           }
         ]
@@ -103,19 +135,55 @@ export interface Database {
       }
       solicitations: {
         Row: {
+          award_history: string | null
+          contract_status: string | null
           created_at: string
+          days_to_deliver: number
+          description: string | null
+          estimated_value: string | null
+          expires_on: string
           id: string
+          issued_on: string
+          nsn: string
           number: string | null
+          quantity: number
+          set_aside: string | null
+          solicitation_url: string | null
+          tech_docs: string | null
         }
         Insert: {
+          award_history?: string | null
+          contract_status?: string | null
           created_at?: string
+          days_to_deliver: number
+          description?: string | null
+          estimated_value?: string | null
+          expires_on: string
           id?: string
+          issued_on: string
+          nsn: string
           number?: string | null
+          quantity: number
+          set_aside?: string | null
+          solicitation_url?: string | null
+          tech_docs?: string | null
         }
         Update: {
+          award_history?: string | null
+          contract_status?: string | null
           created_at?: string
+          days_to_deliver?: number
+          description?: string | null
+          estimated_value?: string | null
+          expires_on?: string
           id?: string
+          issued_on?: string
+          nsn?: string
           number?: string | null
+          quantity?: number
+          set_aside?: string | null
+          solicitation_url?: string | null
+          tech_docs?: string | null
         }
         Relationships: []
       }
@@ -133,8 +201,11 @@ export interface Database {
           labor_status: string | null
           opportunity_notes: string | null
           opportunity_status: string | null
+          price_per_unit: number | null
           purchasing_notes: string | null
           purchasing_status: string | null
+          review_notes: string | null
+          review_status: string | null
           solicitation: string
         }
         Insert: {
@@ -150,8 +221,11 @@ export interface Database {
           labor_status?: string | null
           opportunity_notes?: string | null
           opportunity_status?: string | null
+          price_per_unit?: number | null
           purchasing_notes?: string | null
           purchasing_status?: string | null
+          review_notes?: string | null
+          review_status?: string | null
           solicitation: string
         }
         Update: {
@@ -167,8 +241,11 @@ export interface Database {
           labor_status?: string | null
           opportunity_notes?: string | null
           opportunity_status?: string | null
+          price_per_unit?: number | null
           purchasing_notes?: string | null
           purchasing_status?: string | null
+          review_notes?: string | null
+          review_status?: string | null
           solicitation?: string
         }
         Relationships: [
@@ -222,6 +299,13 @@ export interface Database {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "solicitations_matched_review_status_fkey"
+            columns: ["review_status"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "solicitations_matched_solicitation_fkey"
             columns: ["solicitation"]
             isOneToOne: false
@@ -235,22 +319,25 @@ export interface Database {
           color: string
           created_at: string
           id: string
+          level: number
           name: string
-          type: string
+          type: Database["public"]["Enums"]["tag_type"]
         }
         Insert: {
           color: string
           created_at?: string
           id?: string
+          level: number
           name: string
-          type: string
+          type: Database["public"]["Enums"]["tag_type"]
         }
         Update: {
           color?: string
           created_at?: string
           id?: string
+          level?: number
           name?: string
-          type?: string
+          type?: Database["public"]["Enums"]["tag_type"]
         }
         Relationships: []
       }
@@ -294,7 +381,12 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      tag_type:
+        | "opportunity_status"
+        | "engineering_status"
+        | "purchasing_status"
+        | "labor_status"
+        | "bid_status"
     }
     CompositeTypes: {
       [_ in never]: never
