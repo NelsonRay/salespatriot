@@ -20,11 +20,29 @@ export function gov_mapper(field) {
 		estimated_value: 'Estimated Value',
 		description: 'Description',
 		number: 'Solicitation Number',
-		price_per_unit: 'Price Per Unit',
+		first_article: 'First Article',
 
 		// solicitations_matched table
 		opportunity_status: 'Opportunity Status',
-		opportunity_notes: 'Opportunity Notes'
+		price_per_unit: 'Price Per Unit',
+		opportunity_notes: 'Opportunity Notes',
+		engineering_status: 'Engineering Status',
+		engineering_notes: 'Engineering Notes',
+		bom_status: 'BOM Status',
+		bom_url: 'BOM URL',
+		bom_notes: 'BOM Notes',
+		purchasing_status: 'Purchasing Status',
+		estimated_purchasing_days: 'Estimated Purchasing Days',
+		purchasing_notes: 'Purchasing Notes',
+		labor_status: 'Labor Status',
+		special_equipment: 'Special Equipment',
+		labor_notes: 'Labor Notes',
+		review_status: 'Review Status',
+		review_notes: 'Review Notes',
+		bid_status: 'Bid Status',
+		bid_exception: 'Bid With Exception',
+		exception_notes: 'Exception Notes',
+		bid_notes: 'Bid Notes'
 	};
 
 	return map[field] ?? 'Error';
