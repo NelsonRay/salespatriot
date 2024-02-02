@@ -42,6 +42,7 @@
 		"@supabase/ssr": "^0.1.0",
 		"@sveltejs/adapter-vercel": "^4.0.5",
 		"airtable": "^0.12.2",
+		"firebase": "^10.8.0",
 		"papaparse": "^5.4.1",
 		"xlsx": "^0.18.5"
 	}
