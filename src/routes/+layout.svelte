@@ -17,29 +17,29 @@
 		// Initialize Firebase
 		const app = initializeApp(firebaseConfig);
 		const messaging = getMessaging(app);
-		getToken(messaging, {
-			vapidKey:
-				'BAk_1AoMZvNHprzPdI9rHs6cFrx82cvn9E5lgEmpOw8eTcfbYl-HnqOLDqUk2A7H9XBOPhY56NDR6td-MRBYbGA'
-		})
-			.then((currentToken) => {
-				if (currentToken) {
-					console.log('t:', currentToken);
-					// Send the token to your server and update the UI if necessary
-					// ...
-				} else {
-					// Show permission request UI
-					console.log('No registration token available. Request permission to generate one.');
-					// ...
-				}
-			})
-			.catch((err) => {
-				console.log('An error occurred while retrieving token. ', err);
-				// ...
-			});
 
 		Notification.requestPermission().then((permission) => {
 			if (permission === 'granted') {
 				console.log('Notification permission granted.');
+				getToken(messaging, {
+					vapidKey:
+						'BAk_1AoMZvNHprzPdI9rHs6cFrx82cvn9E5lgEmpOw8eTcfbYl-HnqOLDqUk2A7H9XBOPhY56NDR6td-MRBYbGA'
+				})
+					.then((currentToken) => {
+						if (currentToken) {
+							console.log('t:', currentToken);
+							// Send the token to your server and update the UI if necessary
+							// ...
+						} else {
+							// Show permission request UI
+							console.log('No registration token available. Request permission to generate one.');
+							// ...
+						}
+					})
+					.catch((err) => {
+						console.log('An error occurred while retrieving token. ', err);
+						// ...
+					});
 			}
 		});
 	});
