@@ -26,8 +26,6 @@
 						enable: false
 					}
 				});
-
-				OneSignal.login('8d13fcfc-0c0e-45be-8c6b-7803fa8cb2e4');
 			});
 		};
 	}
@@ -37,7 +35,9 @@
 		loadOneSignalScript();
 		Notification.requestPermission().then((permission) => {
 			if (permission === 'granted') {
-				// window.OneSignalDeferred.push(function (OneSignal) {
+				window.OneSignalDeferred.push(function (OneSignal) {
+					OneSignal.login('8d13fcfc-0c0e-45be-8c6b-7803fa8cb2e4');
+				});
 			}
 		});
 	});
