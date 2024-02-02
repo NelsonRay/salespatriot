@@ -127,7 +127,7 @@
 					<p class="mb-1">{gov_mapper(field.field)}</p>
 					<Checkbox bind:value={values[field.field]} />
 				{/if}
-				{#if field.type === 'link'}
+				{#if field.type === 'link' || field.type === 'text'}
 					{#if $page.data.form.type === 'bom'}
 						<p class="mb-1">BOM Template</p>
 						<a
