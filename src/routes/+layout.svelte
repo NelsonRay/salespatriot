@@ -27,8 +27,8 @@
 					}
 				});
 
-				OneSignal.getUserId().then((userId) => {
-					console.log('OneSignal User ID:', userId);
+				OneSignal.push(function () {
+					OneSignal.login('8d13fcfc-0c0e-45be-8c6b-7803fa8cb2e4');
 				});
 			});
 		};
