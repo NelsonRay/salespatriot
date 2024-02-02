@@ -17,7 +17,7 @@ export async function POST({ request, cookies }) {
 		record: { form, response, solicitation_matched }
 	} = await request.json();
 
-	/** @type {import('@supabase/supabase-js').SupabaseClient<import('$lib/server/types/supabase.js').Database>} */
+	/** @type {import('@supabase/supabase-js').SupabaseClient<import('$lib/types/supabase.js').Database>} */
 	const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 		// @ts-ignore
 		cookies,

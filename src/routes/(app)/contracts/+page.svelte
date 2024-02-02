@@ -1,5 +1,24 @@
 <script>
+	// @ts-nocheck
+
 	import { Table, tableMapperValues } from '@skeletonlabs/skeleton';
+
+	export let data;
+
+	$: ({ supabase, session } = data);
+
+	let loadedData = [];
+	async function loadData() {
+		const { data, error } = await supabase
+			.from('solicitations_matched')
+			.select('*, solicitations(*)');
+		// @ts-ignore
+		loadedData = data;
+	}
+
+	$: if (session) {
+		loadData();
+	}
 
 	let sourceData = [
 		{
@@ -73,3 +92,8 @@
 </script>
 
 <Table source={tableSimple} interactive class="min-w-[110%]" regionHead={'text-sm'} />
+
+{#if session}
+	<p>client-side data fetching with RLS</p>
+	<pre>{JSON.stringify(loadedData, null, 2)}</pre>
+{/if}

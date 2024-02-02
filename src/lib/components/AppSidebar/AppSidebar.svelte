@@ -42,7 +42,7 @@
 		<AppRailTile bind:group={currentTile} name="tile-1" value={0} title="tile-1">
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={Contracts} class="h-12 w-12" />
+					<img src={Contracts} class="h-12 w-12" alt="contracts" />
 				</div>
 			</svelte:fragment>
 			<span>Contracts</span>
@@ -50,7 +50,7 @@
 		<AppRailTile bind:group={currentTile} name="tile-2" value={1} title="tile-2">
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={Workflows} class="h-12 w-12" />
+					<img src={Workflows} class="h-12 w-12" alt="workflows" />
 				</div></svelte:fragment
 			>
 			<span>Workflows</span>
@@ -58,15 +58,15 @@
 		<AppRailTile bind:group={currentTile} name="tile-3" value={2} title="tile-3">
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={Reports} class="h-10 w-10" />
+					<img src={Reports} class="h-10 w-10" alt="reports" />
 				</div></svelte:fragment
 			>
 			<span>Reports</span>
 		</AppRailTile>
 		<!-- --- -->
-		<!-- <svelte:fragment slot="trail">
-		<AppRailAnchor href="/" target="_blank" title="Account">(icon)</AppRailAnchor>
-	</svelte:fragment> -->
+		<svelte:fragment slot="trail">
+			<AppRailAnchor href="/settings">Settings</AppRailAnchor>
+		</svelte:fragment>
 	</AppRail>
 
 	<section class="p-4 pb-20 space-y-4 overflow-y-auto">
