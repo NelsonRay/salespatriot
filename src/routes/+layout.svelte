@@ -23,8 +23,12 @@
 					appId: '58a83d45-05f1-438a-878e-9e5830a4e90d',
 					safari_web_id: 'web.onesignal.auto.5ccade99-0f35-4775-9ae0-5e2c3bfd110b',
 					notifyButton: {
-						enable: true
+						enable: false
 					}
+				});
+
+				OneSignal.getUserId().then((userId) => {
+					console.log('OneSignal User ID:', userId);
 				});
 			});
 		};
