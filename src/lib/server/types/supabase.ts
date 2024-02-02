@@ -34,6 +34,7 @@ export interface Database {
           matched_fields: Json[]
           name: string
           solicitation_fields: string[]
+          type: Database["public"]["Enums"]["form_type"]
           user: string
         }
         Insert: {
@@ -42,6 +43,7 @@ export interface Database {
           matched_fields: Json[]
           name: string
           solicitation_fields: string[]
+          type: Database["public"]["Enums"]["form_type"]
           user: string
         }
         Update: {
@@ -50,6 +52,7 @@ export interface Database {
           matched_fields?: Json[]
           name?: string
           solicitation_fields?: string[]
+          type?: Database["public"]["Enums"]["form_type"]
           user?: string
         }
         Relationships: [
@@ -142,12 +145,13 @@ export interface Database {
           description: string | null
           estimated_value: string | null
           expires_on: string
+          first_article: boolean
           id: string
           issued_on: string
           nsn: string
           number: string | null
           quantity: number
-          set_aside: string | null
+          set_aside: Database["public"]["Enums"]["set_aside"] | null
           solicitation_url: string | null
           tech_docs: string | null
         }
@@ -159,12 +163,13 @@ export interface Database {
           description?: string | null
           estimated_value?: string | null
           expires_on: string
+          first_article?: boolean
           id?: string
           issued_on: string
           nsn: string
           number?: string | null
           quantity: number
-          set_aside?: string | null
+          set_aside?: Database["public"]["Enums"]["set_aside"] | null
           solicitation_url?: string | null
           tech_docs?: string | null
         }
@@ -176,12 +181,13 @@ export interface Database {
           description?: string | null
           estimated_value?: string | null
           expires_on?: string
+          first_article?: boolean
           id?: string
           issued_on?: string
           nsn?: string
           number?: string | null
           quantity?: number
-          set_aside?: string | null
+          set_aside?: Database["public"]["Enums"]["set_aside"] | null
           solicitation_url?: string | null
           tech_docs?: string | null
         }
@@ -190,11 +196,17 @@ export interface Database {
       solicitations_matched: {
         Row: {
           award_status: string | null
+          bid_exception: boolean
           bid_notes: string | null
           bid_status: string | null
+          bom_notes: string | null
+          bom_status: string | null
+          bom_url: string | null
           created_at: string
           engineering_notes: string | null
           engineering_status: string | null
+          estimated_purchasing_days: number | null
+          exception_notes: string | null
           firm: string
           id: string
           labor_notes: string | null
@@ -204,17 +216,26 @@ export interface Database {
           price_per_unit: number | null
           purchasing_notes: string | null
           purchasing_status: string | null
+          quote_number: string | null
           review_notes: string | null
           review_status: string | null
+          skip_engineering: boolean
           solicitation: string
+          special_equipment: string | null
         }
         Insert: {
           award_status?: string | null
+          bid_exception?: boolean
           bid_notes?: string | null
           bid_status?: string | null
+          bom_notes?: string | null
+          bom_status?: string | null
+          bom_url?: string | null
           created_at?: string
           engineering_notes?: string | null
           engineering_status?: string | null
+          estimated_purchasing_days?: number | null
+          exception_notes?: string | null
           firm: string
           id?: string
           labor_notes?: string | null
@@ -224,17 +245,26 @@ export interface Database {
           price_per_unit?: number | null
           purchasing_notes?: string | null
           purchasing_status?: string | null
+          quote_number?: string | null
           review_notes?: string | null
           review_status?: string | null
+          skip_engineering?: boolean
           solicitation: string
+          special_equipment?: string | null
         }
         Update: {
           award_status?: string | null
+          bid_exception?: boolean
           bid_notes?: string | null
           bid_status?: string | null
+          bom_notes?: string | null
+          bom_status?: string | null
+          bom_url?: string | null
           created_at?: string
           engineering_notes?: string | null
           engineering_status?: string | null
+          estimated_purchasing_days?: number | null
+          exception_notes?: string | null
           firm?: string
           id?: string
           labor_notes?: string | null
@@ -244,9 +274,12 @@ export interface Database {
           price_per_unit?: number | null
           purchasing_notes?: string | null
           purchasing_status?: string | null
+          quote_number?: string | null
           review_notes?: string | null
           review_status?: string | null
+          skip_engineering?: boolean
           solicitation?: string
+          special_equipment?: string | null
         }
         Relationships: [
           {
@@ -259,6 +292,13 @@ export interface Database {
           {
             foreignKeyName: "solicitations_matched_bid_status_fkey"
             columns: ["bid_status"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitations_matched_bom_status_fkey"
+            columns: ["bom_status"]
             isOneToOne: false
             referencedRelation: "tags"
             referencedColumns: ["id"]
@@ -321,7 +361,7 @@ export interface Database {
           id: string
           level: number
           name: string
-          type: Database["public"]["Enums"]["tag_type"]
+          type: Database["public"]["Enums"]["tag_type"] | null
         }
         Insert: {
           color: string
@@ -329,7 +369,7 @@ export interface Database {
           id?: string
           level: number
           name: string
-          type: Database["public"]["Enums"]["tag_type"]
+          type?: Database["public"]["Enums"]["tag_type"] | null
         }
         Update: {
           color?: string
@@ -337,7 +377,7 @@ export interface Database {
           id?: string
           level?: number
           name?: string
-          type?: Database["public"]["Enums"]["tag_type"]
+          type?: Database["public"]["Enums"]["tag_type"] | null
         }
         Relationships: []
       }
@@ -381,11 +421,28 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      form_type:
+        | "opportunity"
+        | "engineering"
+        | "bom"
+        | "purchasing"
+        | "labor"
+        | "review"
+        | "bid"
+      set_aside:
+        | "HUB Zone"
+        | "Small Business"
+        | "Women Owned"
+        | "Veteran Owned"
+        | "8A"
+        | "Other - Error"
       tag_type:
         | "opportunity_status"
         | "engineering_status"
+        | "bom_status"
         | "purchasing_status"
         | "labor_status"
+        | "review_status"
         | "bid_status"
     }
     CompositeTypes: {
