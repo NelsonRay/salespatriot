@@ -1,6 +1,7 @@
 // @ts-nocheck
 
-import { SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import { createServerClient } from '@supabase/ssr';
 
@@ -18,7 +19,7 @@ export async function POST({ request, cookies }) {
 	} = await request.json();
 
 	/** @type {import('@supabase/supabase-js').SupabaseClient<import('$lib/types/supabase.js').Database>} */
-	const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+	const supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
 		// @ts-ignore
 		cookies,
 		global: {
