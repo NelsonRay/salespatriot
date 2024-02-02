@@ -27,9 +27,7 @@
 					}
 				});
 
-				OneSignal.push(function () {
-					OneSignal.login('8d13fcfc-0c0e-45be-8c6b-7803fa8cb2e4');
-				});
+				OneSignal.login('8d13fcfc-0c0e-45be-8c6b-7803fa8cb2e4');
 			});
 		};
 	}
@@ -37,7 +35,11 @@
 	// Call the function when the component is mounted
 	onMount(() => {
 		loadOneSignalScript();
-		Notification.requestPermission();
+		Notification.requestPermission().then((permission) => {
+			if (permission === 'granted') {
+				// window.OneSignalDeferred.push(function (OneSignal) {
+			}
+		});
 	});
 </script>
 
