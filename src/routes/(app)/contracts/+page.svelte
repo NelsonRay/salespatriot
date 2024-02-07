@@ -18,48 +18,31 @@
 	// 	loadData();
 	// }
 
-	let submenu = [
-		{
-			href: '/utilities/table-of-contents',
-			label: 'Bidding Funnel'
-		},
-		{
-			href: '/utilities/table-of-contents',
-			label: 'Recently Released'
-		},
-		{
-			href: '/utilities/table-of-contents',
-			label: 'Expiring Soon'
-		},
-		{
-			href: '/utilities/table-of-contents',
-			label: 'Contracts Bid'
-		},
-		{
-			href: '/utilities/table-of-contents',
-			label: 'All Contracts'
-		}
-	];
+	let showViews = true;
+
+	function toggleShowViews() {
+		showViews = !showViews;
+	}
 </script>
 
-<!-- <section class="p-4 pb-20 space-y-4">
-		<p class="font-bold pl-4 text-xl">Views</p>
+<div class="relative top-0">
+	<div class="flex flex-row h-14 items-center justify-between mx-2">
+		<div class="flex flex-row items-center">
+			<button class="bg-neutral-100 p-2 rounded-sm font-medium" on:click={toggleShowViews}
+				>Views</button
+			>
+			<p class="font-semibold ml-4">Bidding Funnel</p>
+		</div>
+		<p>Last Updated: Today 8:30 AM</p>
+	</div>
+</div>
 
-		<nav class="list-nav">
-			<ul>
-				{#each submenu as { href, label }}
-					<li>
-						<a {href} data-sveltekit-preload-data="hover">
-							<span class="flex-auto">{@html label}</span>
-						</a>
-					</li>
-				{/each}
-			</ul>
-		</nav>
-	</section> -->
-<article>
-	<table>
-		<thead>
+<article
+	class="bg-white w-[100%] h-[100%] ml-2 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro"
+	style="direction: ltr;"
+>
+	<table class="text-left w-[100%] border-separate border-spacing-0">
+		<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
 			<th>ID</th>
 			<th>First name</th>
 			<th>Last name</th>
@@ -144,41 +127,16 @@
 </article>
 
 <style>
-	article {
-		position: relative;
-		top: 20px;
-		color: #212121;
-		background: #fff;
-		width: 100%;
-		height: 100%;
-		overflow-y: auto;
-		overflow-x: auto;
-		border-left: 2px solid #eee;
-		direction: ltr;
-	}
-	table {
-		text-align: left;
-		width: 100%;
-		border-collapse: separate;
-		border-spacing: 0;
-	}
-	thead {
-		background: #fff;
-		height: 32px;
-		position: sticky;
-		inset-block-start: 0;
-	}
-
 	th {
 		border-bottom: 1px solid #e0e0e0;
 		border-top: 1px solid #e0e0e0;
 		white-space: nowrap;
 		border: 0.2px solid gainsboro;
-		padding-right: 5px;
+		padding: 4px;
 	}
 
 	td {
 		border: 0.2px solid gainsboro;
-		padding-right: 5px;
+		padding: 4px;
 	}
 </style>
