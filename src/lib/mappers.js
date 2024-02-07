@@ -50,3 +50,9 @@ export function gov_mapper(field) {
 
 	return map[field] ?? 'Error';
 }
+
+export function table_mapper(obj) {
+	return {
+		'Solicitation Number': obj?.solicitation?.number
+	};
+}

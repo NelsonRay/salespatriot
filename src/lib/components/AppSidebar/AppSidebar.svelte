@@ -5,29 +5,6 @@
 	import Reports from '$lib/icons/Reports.svg';
 
 	let currentTile = 0;
-
-	let submenu = [
-		{
-			href: '/utilities/table-of-contents',
-			label: 'Bidding Funnel'
-		},
-		{
-			href: '/utilities/table-of-contents',
-			label: 'Recently Released'
-		},
-		{
-			href: '/utilities/table-of-contents',
-			label: 'Expiring Soon'
-		},
-		{
-			href: '/utilities/table-of-contents',
-			label: 'Contracts Bid'
-		},
-		{
-			href: '/utilities/table-of-contents',
-			label: 'All Contracts'
-		}
-	];
 </script>
 
 <div
@@ -68,22 +45,4 @@
 			<AppRailAnchor href="/settings">Settings</AppRailAnchor>
 		</svelte:fragment>
 	</AppRail>
-
-	<section class="p-4 pb-20 space-y-4 overflow-y-auto">
-		<!-- Title -->
-		<p class="font-bold pl-4 text-xl">Views</p>
-		<!-- Nav List -->
-		<nav class="list-nav">
-			<ul>
-				{#each submenu as { href, label }}
-					<li>
-						<a {href} data-sveltekit-preload-data="hover">
-							<span class="flex-auto">{@html label}</span>
-							<!-- {#if badge}<span class="badge variant-filled-secondary">{badge}</span>{/if} -->
-						</a>
-					</li>
-				{/each}
-			</ul>
-		</nav>
-	</section>
 </div>

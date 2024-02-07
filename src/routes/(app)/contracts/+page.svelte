@@ -1,99 +1,184 @@
 <script>
 	// @ts-nocheck
 
-	import { Table, tableMapperValues } from '@skeletonlabs/skeleton';
+	// export let data = [];
 
-	export let data;
+	// $: ({ supabase, session } = data);
 
-	$: ({ supabase, session } = data);
+	// let loadedData = [];
+	// async function loadData() {
+	// 	const { data, error } = await supabase
+	// 		.from('solicitations_matched')
+	// 		.select('*, solicitations(*)');
+	// 	// @ts-ignore
+	// 	loadedData = [...data, ...data, ...data];
+	// }
 
-	let loadedData = [];
-	async function loadData() {
-		const { data, error } = await supabase
-			.from('solicitations_matched')
-			.select('*, solicitations(*)');
-		// @ts-ignore
-		loadedData = data;
-	}
+	// $: if (session) {
+	// 	loadData();
+	// }
 
-	$: if (session) {
-		loadData();
-	}
-
-	let sourceData = [
+	let submenu = [
 		{
-			position: 1,
-			solicition: 'SPE4A624Q0547',
-			description: 'CABLE ASSEMBLY,POWER,ELECTRICAL',
-			value: '$419,665.48',
-			estimate: '$419,665.48',
-			expires: '1/19/2024',
-			purchasing: 'Slightly Out of Budget',
-			labor: 'Within Time',
-			bid: 'Bid Complete'
+			href: '/utilities/table-of-contents',
+			label: 'Bidding Funnel'
+		},
+		{
+			href: '/utilities/table-of-contents',
+			label: 'Recently Released'
+		},
+		{
+			href: '/utilities/table-of-contents',
+			label: 'Expiring Soon'
+		},
+		{
+			href: '/utilities/table-of-contents',
+			label: 'Contracts Bid'
+		},
+		{
+			href: '/utilities/table-of-contents',
+			label: 'All Contracts'
 		}
 	];
-
-	for (let i = 0; i < 100; i++) {
-		sourceData = [
-			...sourceData,
-			{
-				position: i + 2,
-				solicition: 'SPE4A624Q0547',
-				description: 'CABLE ASSEMBLY,POWER,ELECTRICAL',
-				value: '$419,665.48',
-				estimate: '$419,665.48',
-				expires: '1/19/2024',
-				purchasing: 'Slightly Out of Budget',
-				labor: 'Within Time',
-				bid: 'Bid Complete'
-			}
-		];
-	}
-
-	const tableSimple = {
-		// A list of heading labels.
-		head: [
-			'Solicitation',
-			'Description',
-			'Market Value',
-			'Estimate Value',
-			'Expires',
-			'Purchasing Status',
-			'Labor Status',
-			'Bid Status'
-		],
-		// The data visibly shown in your table body UI.
-		body: tableMapperValues(sourceData, [
-			'solicition',
-			'description',
-			'value',
-			'estimate',
-			'expires',
-			'purchasing',
-			'labor',
-			'bid'
-		]),
-		// Optional: The data returned when interactive is enabled and a row is clicked.
-		meta: tableMapperValues(sourceData, [
-			'position',
-			'solicition',
-			'description',
-			'value',
-			'estimate',
-			'expires',
-			'purchasing',
-			'labor',
-			'bid'
-		])
-		// Optional: A list of footer labels.
-		// foot: ['Total', '', '<code class="code">5</code>']
-	};
 </script>
 
-<Table source={tableSimple} interactive class="min-w-[110%]" regionHead={'text-sm'} />
+<!-- <section class="p-4 pb-20 space-y-4">
+		<p class="font-bold pl-4 text-xl">Views</p>
 
-{#if session}
-	<p>client-side data fetching with RLS</p>
-	<pre>{JSON.stringify(loadedData, null, 2)}</pre>
-{/if}
+		<nav class="list-nav">
+			<ul>
+				{#each submenu as { href, label }}
+					<li>
+						<a {href} data-sveltekit-preload-data="hover">
+							<span class="flex-auto">{@html label}</span>
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</nav>
+	</section> -->
+<article>
+	<table>
+		<thead>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>ID</th>
+			<th>First name</th>
+			<th>Last name</th>
+		</thead>
+
+		<tbody>
+			{#each Array(100) as row, i}
+				<tr>
+					<td>{i + 1}</td>
+					<td>John</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>Johjojoijoioiohoihiohiohn</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>John</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>John</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>Johjojoijoioiohoihiohiohn</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>John</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>John</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>Johjojoijoioiohoihiohiohn</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>John</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>John</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>Johjojoijoioiohoihiohiohn</td>
+					<td>Doe</td>
+					<td>{i + 1}</td>
+					<td>John</td>
+					<td>Doe</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+</article>
+
+<style>
+	article {
+		position: relative;
+		top: 20px;
+		color: #212121;
+		background: #fff;
+		width: 100%;
+		height: 100%;
+		overflow-y: auto;
+		overflow-x: auto;
+		border-left: 2px solid #eee;
+		direction: ltr;
+	}
+	table {
+		text-align: left;
+		width: 100%;
+		border-collapse: separate;
+		border-spacing: 0;
+	}
+	thead {
+		background: #fff;
+		height: 32px;
+		position: sticky;
+		inset-block-start: 0;
+	}
+
+	th {
+		border-bottom: 1px solid #e0e0e0;
+		border-top: 1px solid #e0e0e0;
+		white-space: nowrap;
+		border: 0.2px solid gainsboro;
+		padding-right: 5px;
+	}
+
+	td {
+		border: 0.2px solid gainsboro;
+		padding-right: 5px;
+	}
+</style>
