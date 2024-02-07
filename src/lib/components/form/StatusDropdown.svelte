@@ -9,8 +9,9 @@
 	let openDropdown = false;
 
 	// if includes status, update selected_tag_key
+
 	const containsStatus = value.filter((e) => e.includes(status));
-	if (containsStatus) {
+	if (containsStatus.length > 0) {
 		selected_tag_key = containsStatus[0].split(':')[1];
 	}
 
