@@ -51,8 +51,15 @@ export function gov_mapper(field) {
 	return map[field] ?? 'Error';
 }
 
-export function table_mapper(obj) {
-	return {
-		'Solicitation Number': obj?.solicitation?.number
-	};
+export function table_mapper(obj, column) {
+	const header = gov_mapper(column.includes('solicitation.') ? column.split('.')[1] : column);
+
+	let value;
+	if (obj) {
+		value = column.includes('solicitation.')
+			? obj?.solicitation[column.split('.')[1]]
+			: obj[column];
+	}
+
+	return { header, value };
 }

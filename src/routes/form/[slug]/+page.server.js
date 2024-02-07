@@ -6,8 +6,6 @@ export async function load({ params, locals: { supabase } }) {
 		.select('*, solicitation_matched(*, solicitation(*)), form(*, user(*))')
 		.eq('id', parseInt(params.slug));
 
-	const { data: t_data } = await supabase.from('tags').select('*');
-
 	if (err) {
 		console.error(err);
 
@@ -18,5 +16,5 @@ export async function load({ params, locals: { supabase } }) {
 		error(400, { message: 'No form associated with this link' });
 	}
 
-	return { ...data[0], tags: t_data };
+	return { ...data[0] };
 }

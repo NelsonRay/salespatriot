@@ -1,27 +1,65 @@
 <script>
 	// @ts-nocheck
+	import { table_mapper } from '$lib/mappers';
+	import { onMount } from 'svelte';
 
-	// export let data = [];
+	export let data = [];
 
-	// $: ({ supabase, session } = data);
+	$: ({ supabase, session } = data);
 
-	// let loadedData = [];
-	// async function loadData() {
-	// 	const { data, error } = await supabase
-	// 		.from('solicitations_matched')
-	// 		.select('*, solicitations(*)');
-	// 	// @ts-ignore
-	// 	loadedData = [...data, ...data, ...data];
-	// }
+	let solicitations_matched = [];
 
-	// $: if (session) {
-	// 	loadData();
-	// }
+	async function loadData() {
+		const { data, error } = await supabase
+			.from('solicitations_matched')
+			.select(
+				'*, solicitation(*), opportunity_status(*), engineering_status(*), bom_status(*), purchasing_status(*), labor_status(*), review_status(*), bid_status(*)'
+			)
+			.eq('firm', '6b289746-2b01-47af-a7d4-26a3920f75ca')
+			.not('status', 'cs', '{"engineering:cannot_build"}')
+			.not('status', 'cs', '{"opportunity:not_pursue"}');
+
+		solicitations_matched = data;
+	}
+
+	onMount(() => {
+		if (session) {
+			loadData();
+		}
+	});
 
 	let showViews = true;
 
 	function toggleShowViews() {
 		showViews = !showViews;
+	}
+
+	const columns = [
+		'solicitation.number',
+		'solicitation.description',
+		'solicitation.expires_on',
+		'opportunity_status',
+		'engineering_status',
+		'bom_status',
+		'purchasing_status',
+		'labor_status',
+		'review_status',
+		'bid_status'
+	];
+
+	function getTagClass(color) {
+		switch (color) {
+			case 'green':
+				return 'bg-green-400';
+			case 'blue':
+				return 'bg-blue-400';
+			case 'red':
+				return 'bg-red-400';
+			case 'yellow':
+				return 'bg-yellow-400';
+			default:
+				return '';
+		}
 	}
 </script>
 
@@ -37,94 +75,41 @@
 	</div>
 </div>
 
-<article
-	class="bg-white w-[100%] h-[100%] ml-2 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro"
-	style="direction: ltr;"
->
-	<table class="text-left w-[100%] border-separate border-spacing-0">
-		<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>ID</th>
-			<th>First name</th>
-			<th>Last name</th>
-		</thead>
+{#if solicitations_matched}
+	<article
+		class="bg-white w-[100%] h-[95%] ml-2 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro"
+		style="direction: ltr;"
+	>
+		<table class="text-left w-[100%] border-separate border-spacing-0">
+			<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
+				{#each columns as column}
+					<th>{table_mapper(undefined, column).header}</th>
+				{/each}
+			</thead>
 
-		<tbody>
-			{#each Array(100) as row, i}
-				<tr>
-					<td>{i + 1}</td>
-					<td>John</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>Johjojoijoioiohoihiohiohn</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>John</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>John</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>Johjojoijoioiohoihiohiohn</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>John</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>John</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>Johjojoijoioiohoihiohiohn</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>John</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>John</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>Johjojoijoioiohoihiohiohn</td>
-					<td>Doe</td>
-					<td>{i + 1}</td>
-					<td>John</td>
-					<td>Doe</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
-</article>
+			<tbody>
+				{#each solicitations_matched as solicitation_matched}
+					<tr>
+						{#each columns as column, i}
+							{#if column.includes('status')}
+								<td>
+									<div
+										class={getTagClass(solicitation_matched[column]?.color) +
+											' p-2 rounded-md inline-block'}
+									>
+										{solicitation_matched[column]?.name ?? ''}
+									</div>
+								</td>
+							{:else}
+								<td>{table_mapper(solicitation_matched, column).value ?? ''}</td>
+							{/if}
+						{/each}
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</article>
+{/if}
 
 <style>
 	th {

@@ -1,7 +1,7 @@
 <script>
 	// @ts-nocheck
 	import { page } from '$app/stores';
-	import Dropdown from '$lib/components/form/Dropdown.svelte';
+	import StatusDropdown from '$lib/components/form/StatusDropdown.svelte';
 	import Currency from '$lib/components/form/Currency.svelte';
 	import Textarea from '$lib/components/form/Textarea.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
@@ -10,7 +10,7 @@
 
 	const submitted = $page.data.submitted;
 
-	let values = {};
+	let values = { status: $page.data.solicitation_matched.status };
 
 	async function handleSubmit() {
 		const res = await fetch('/api/gov/form/submit', {
@@ -19,11 +19,14 @@
 			body: JSON.stringify({ response: values, id: $page.data.id })
 		});
 
-		console.log(res.status);
-
 		if (res.status === 200) {
 			window.location.reload();
 		}
+	}
+	function capitalizeFirstLetter(sentence) {
+		return sentence.replace(/\b\w/g, function (char) {
+			return char.toUpperCase();
+		});
 	}
 </script>
 
@@ -107,13 +110,9 @@
 			{/if}
 
 			{#each $page.data.form.matched_fields as field}
-				{#if field.type === 'select'}
-					<p class="mb-1">{gov_mapper(field.field)}</p>
-					<Dropdown
-						tags={$page.data.tags}
-						tag_type={field.field}
-						bind:value={values[field.field]}
-					/>
+				{#if field.type === 'status'}
+					<p class="mb-1">{capitalizeFirstLetter(field.status)} Status</p>
+					<StatusDropdown status={field.status} bind:value={values.status} />
 				{/if}
 				{#if field.type === 'currency'}
 					<p class="mb-1">{gov_mapper(field.field)}</p>
@@ -148,11 +147,7 @@
 
 				{#if values['skip_engineering']}
 					<p class="mb-1">Engineering Status</p>
-					<Dropdown
-						tags={$page.data.tags}
-						tag_type={'engineering_status'}
-						bind:value={values.engineering}
-					/>
+					<StatusDropdown status={'engineering'} bind:value={values.status} />
 				{/if}
 			{/if}
 
