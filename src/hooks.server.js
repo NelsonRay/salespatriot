@@ -22,7 +22,12 @@ export const handle = async ({ event, resolve }) => {
 		throw redirect(303, '/contracts');
 	}
 
-	if (!['/'].includes(event.url.pathname) && !event.locals.session) {
+	// if trying to access paths other than accepted api routes, redirect to auth
+	if (
+		event.url.pathname !== '/' &&
+		!['/api/webhooks/form-submitted'].includes(event.url.pathname) &&
+		!event.locals.session
+	) {
 		throw redirect(303, '/');
 	}
 

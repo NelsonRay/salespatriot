@@ -91,7 +91,7 @@
 
 {#if solicitations_matched}
 	<article
-		class="bg-white w-[100%] h-[95%] ml-2 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro"
+		class="bg-white w-[100%] h-[95%] p-2 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro"
 		style="direction: ltr;"
 	>
 		<table class="text-left w-[100%] border-separate border-spacing-0">
