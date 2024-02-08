@@ -1,10 +1,9 @@
 <script>
-	import { AppRail, AppRailAnchor, AppRailTile } from '@skeletonlabs/skeleton';
+	import { AppRail, AppRailAnchor } from '@skeletonlabs/skeleton';
 	import Contracts from '$lib/icons/Contracts.svg';
 	import Workflows from '$lib/icons/Workflows.svg';
 	import Reports from '$lib/icons/Reports.svg';
-
-	let currentTile = 0;
+	import { page } from '$app/stores';
 </script>
 
 <div
@@ -16,30 +15,38 @@
 		<AppRailAnchor href="/">(icon)</AppRailAnchor>
 	</svelte:fragment> -->
 		<!-- --- -->
-		<AppRailTile bind:group={currentTile} name="tile-1" value={0} title="tile-1">
+		<AppRailAnchor
+			title="Contracts"
+			href="/contracts"
+			selected={$page.url.pathname === '/contracts'}
+		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
 					<img src={Contracts} class="h-12 w-12" alt="contracts" />
 				</div>
 			</svelte:fragment>
 			<span>Contracts</span>
-		</AppRailTile>
-		<AppRailTile bind:group={currentTile} name="tile-2" value={1} title="tile-2">
+		</AppRailAnchor>
+		<AppRailAnchor
+			title="Workflows"
+			href="/workflows"
+			selected={$page.url.pathname === '/workflows'}
+		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
 					<img src={Workflows} class="h-12 w-12" alt="workflows" />
 				</div></svelte:fragment
 			>
 			<span>Workflows</span>
-		</AppRailTile>
-		<AppRailTile bind:group={currentTile} name="tile-3" value={2} title="tile-3">
+		</AppRailAnchor>
+		<AppRailAnchor title="Reports" href="/reports" selected={$page.url.pathname === '/reports'}>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
 					<img src={Reports} class="h-10 w-10" alt="reports" />
 				</div></svelte:fragment
 			>
 			<span>Reports</span>
-		</AppRailTile>
+		</AppRailAnchor>
 		<!-- --- -->
 		<svelte:fragment slot="trail">
 			<AppRailAnchor href="/settings">Settings</AppRailAnchor>
