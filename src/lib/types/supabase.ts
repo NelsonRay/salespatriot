@@ -6,9 +6,71 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
+      batches: {
+        Row: {
+          adg_matches: Json | null
+          adg_misses: Json[] | null
+          airtable_record: string | null
+          created_at: string
+          id: string
+          matches_completed: boolean
+          uploaded_count: number
+        }
+        Insert: {
+          adg_matches?: Json | null
+          adg_misses?: Json[] | null
+          airtable_record?: string | null
+          created_at?: string
+          id?: string
+          matches_completed?: boolean
+          uploaded_count?: number
+        }
+        Update: {
+          adg_matches?: Json | null
+          adg_misses?: Json[] | null
+          airtable_record?: string | null
+          created_at?: string
+          id?: string
+          matches_completed?: boolean
+          uploaded_count?: number
+        }
+        Relationships: []
+      }
+      bid_partners: {
+        Row: {
+          created_at: string
+          firm: string
+          id: string
+          name: string
+          set_aside: Database["public"]["Enums"]["set_aside"] | null
+        }
+        Insert: {
+          created_at?: string
+          firm: string
+          id?: string
+          name: string
+          set_aside?: Database["public"]["Enums"]["set_aside"] | null
+        }
+        Update: {
+          created_at?: string
+          firm?: string
+          id?: string
+          name?: string
+          set_aside?: Database["public"]["Enums"]["set_aside"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bid_partners_firm_fkey"
+            columns: ["firm"]
+            isOneToOne: false
+            referencedRelation: "firms"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       firms: {
         Row: {
           created_at: string
@@ -74,6 +136,7 @@ export interface Database {
           response_timestamp: string | null
           solicitation_matched: string
           submitted: boolean
+          submitted_by: string | null
         }
         Insert: {
           created_at?: string
@@ -83,6 +146,7 @@ export interface Database {
           response_timestamp?: string | null
           solicitation_matched: string
           submitted?: boolean
+          submitted_by?: string | null
         }
         Update: {
           created_at?: string
@@ -92,6 +156,7 @@ export interface Database {
           response_timestamp?: string | null
           solicitation_matched?: string
           submitted?: boolean
+          submitted_by?: string | null
         }
         Relationships: [
           {
@@ -107,8 +172,113 @@ export interface Database {
             isOneToOne: false
             referencedRelation: "solicitations_matched"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "forms_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           }
         ]
+      }
+      matching_nsns: {
+        Row: {
+          created_at: string
+          description: string | null
+          firm: string
+          id: string
+          nsn: number
+          part_number: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          firm: string
+          id?: string
+          nsn: number
+          part_number: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          firm?: string
+          id?: string
+          nsn?: number
+          part_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matching_nsns_firm_fkey"
+            columns: ["firm"]
+            isOneToOne: false
+            referencedRelation: "firms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matching_nsns_nsn_fkey"
+            columns: ["nsn"]
+            isOneToOne: false
+            referencedRelation: "nsns"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      matching_rules: {
+        Row: {
+          created_at: string
+          firm: string
+          id: string
+          level: number | null
+          name: string
+          nsns: boolean
+          rules: Json[]
+        }
+        Insert: {
+          created_at?: string
+          firm: string
+          id?: string
+          level?: number | null
+          name: string
+          nsns?: boolean
+          rules?: Json[]
+        }
+        Update: {
+          created_at?: string
+          firm?: string
+          id?: string
+          level?: number | null
+          name?: string
+          nsns?: boolean
+          rules?: Json[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matching_rules_firm_fkey"
+            columns: ["firm"]
+            isOneToOne: false
+            referencedRelation: "firms"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      nsns: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+        }
+        Relationships: []
       }
       oem_rfqs: {
         Row: {
@@ -138,178 +308,183 @@ export interface Database {
       }
       solicitations: {
         Row: {
-          award_history: string | null
+          amsc: string
+          award_history: Json[] | null
+          batch: string
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           contract_status: string | null
           created_at: string
-          days_to_deliver: number
+          days_to_deliver: number | null
           description: string | null
-          estimated_value: string | null
+          dla_forecast: Json | null
+          estimated_value: number | null
           expires_on: string
           first_article: boolean
           id: string
           issued_on: string
-          nsn: string
-          number: string | null
+          line_number: string | null
+          nsn: number
+          number: string
+          pb_matching_details: string | null
           quantity: number
+          quantity_units: string | null
           set_aside: Database["public"]["Enums"]["set_aside"] | null
           solicitation_url: string | null
           tech_docs: string | null
+          vendors: Json[] | null
         }
         Insert: {
-          award_history?: string | null
+          amsc: string
+          award_history?: Json[] | null
+          batch: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           contract_status?: string | null
           created_at?: string
-          days_to_deliver: number
+          days_to_deliver?: number | null
           description?: string | null
-          estimated_value?: string | null
+          dla_forecast?: Json | null
+          estimated_value?: number | null
           expires_on: string
           first_article?: boolean
           id?: string
           issued_on: string
-          nsn: string
-          number?: string | null
+          line_number?: string | null
+          nsn: number
+          number: string
+          pb_matching_details?: string | null
           quantity: number
+          quantity_units?: string | null
           set_aside?: Database["public"]["Enums"]["set_aside"] | null
           solicitation_url?: string | null
           tech_docs?: string | null
+          vendors?: Json[] | null
         }
         Update: {
-          award_history?: string | null
+          amsc?: string
+          award_history?: Json[] | null
+          batch?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           contract_status?: string | null
           created_at?: string
-          days_to_deliver?: number
+          days_to_deliver?: number | null
           description?: string | null
-          estimated_value?: string | null
+          dla_forecast?: Json | null
+          estimated_value?: number | null
           expires_on?: string
           first_article?: boolean
           id?: string
           issued_on?: string
-          nsn?: string
-          number?: string | null
+          line_number?: string | null
+          nsn?: number
+          number?: string
+          pb_matching_details?: string | null
           quantity?: number
+          quantity_units?: string | null
           set_aside?: Database["public"]["Enums"]["set_aside"] | null
           solicitation_url?: string | null
           tech_docs?: string | null
+          vendors?: Json[] | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "solicitations_batch_fkey"
+            columns: ["batch"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitations_nsn_fkey"
+            columns: ["nsn"]
+            isOneToOne: false
+            referencedRelation: "nsns"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       solicitations_matched: {
         Row: {
-          award_status: string | null
           bid_exception: boolean
           bid_notes: string | null
-          bid_status: string | null
           bom_notes: string | null
-          bom_status: string | null
           bom_url: string | null
           created_at: string
           engineering_notes: string | null
-          engineering_status: string | null
+          estimated_labor_hours: number | null
+          estimated_purchasing_budget: number | null
           estimated_purchasing_days: number | null
           exception_notes: string | null
           firm: string
           id: string
           labor_notes: string | null
-          labor_status: string | null
+          matching_rule: string
           opportunity_notes: string | null
-          opportunity_status: string | null
           price_per_unit: number | null
           purchasing_notes: string | null
-          purchasing_status: string | null
           quote_number: string | null
           review_notes: string | null
-          review_status: string | null
           skip_engineering: boolean
           solicitation: string
           special_equipment: string | null
+          status: string[]
         }
         Insert: {
-          award_status?: string | null
           bid_exception?: boolean
           bid_notes?: string | null
-          bid_status?: string | null
           bom_notes?: string | null
-          bom_status?: string | null
           bom_url?: string | null
           created_at?: string
           engineering_notes?: string | null
-          engineering_status?: string | null
+          estimated_labor_hours?: number | null
+          estimated_purchasing_budget?: number | null
           estimated_purchasing_days?: number | null
           exception_notes?: string | null
           firm: string
           id?: string
           labor_notes?: string | null
-          labor_status?: string | null
+          matching_rule: string
           opportunity_notes?: string | null
-          opportunity_status?: string | null
           price_per_unit?: number | null
           purchasing_notes?: string | null
-          purchasing_status?: string | null
           quote_number?: string | null
           review_notes?: string | null
-          review_status?: string | null
           skip_engineering?: boolean
           solicitation: string
           special_equipment?: string | null
+          status?: string[]
         }
         Update: {
-          award_status?: string | null
           bid_exception?: boolean
           bid_notes?: string | null
-          bid_status?: string | null
           bom_notes?: string | null
-          bom_status?: string | null
           bom_url?: string | null
           created_at?: string
           engineering_notes?: string | null
-          engineering_status?: string | null
+          estimated_labor_hours?: number | null
+          estimated_purchasing_budget?: number | null
           estimated_purchasing_days?: number | null
           exception_notes?: string | null
           firm?: string
           id?: string
           labor_notes?: string | null
-          labor_status?: string | null
+          matching_rule?: string
           opportunity_notes?: string | null
-          opportunity_status?: string | null
           price_per_unit?: number | null
           purchasing_notes?: string | null
-          purchasing_status?: string | null
           quote_number?: string | null
           review_notes?: string | null
-          review_status?: string | null
           skip_engineering?: boolean
           solicitation?: string
           special_equipment?: string | null
+          status?: string[]
         }
         Relationships: [
-          {
-            foreignKeyName: "solicitations_matched_award_status_fkey"
-            columns: ["award_status"]
-            isOneToOne: false
-            referencedRelation: "tags"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "solicitations_matched_bid_status_fkey"
-            columns: ["bid_status"]
-            isOneToOne: false
-            referencedRelation: "tags"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "solicitations_matched_bom_status_fkey"
-            columns: ["bom_status"]
-            isOneToOne: false
-            referencedRelation: "tags"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "solicitations_matched_engineering_status_fkey"
-            columns: ["engineering_status"]
-            isOneToOne: false
-            referencedRelation: "tags"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "solicitations_matched_firm_fkey"
             columns: ["firm"]
@@ -318,31 +493,10 @@ export interface Database {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "solicitations_matched_labor_status_fkey"
-            columns: ["labor_status"]
+            foreignKeyName: "solicitations_matched_matching_rule_fkey"
+            columns: ["matching_rule"]
             isOneToOne: false
-            referencedRelation: "tags"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "solicitations_matched_opportunity_status_fkey"
-            columns: ["opportunity_status"]
-            isOneToOne: false
-            referencedRelation: "tags"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "solicitations_matched_purchasing_status_fkey"
-            columns: ["purchasing_status"]
-            isOneToOne: false
-            referencedRelation: "tags"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "solicitations_matched_review_status_fkey"
-            columns: ["review_status"]
-            isOneToOne: false
-            referencedRelation: "tags"
+            referencedRelation: "matching_rules"
             referencedColumns: ["id"]
           },
           {
@@ -353,33 +507,6 @@ export interface Database {
             referencedColumns: ["id"]
           }
         ]
-      }
-      tags: {
-        Row: {
-          color: string
-          created_at: string
-          id: string
-          level: number
-          name: string
-          type: Database["public"]["Enums"]["tag_type"] | null
-        }
-        Insert: {
-          color: string
-          created_at?: string
-          id?: string
-          level: number
-          name: string
-          type?: Database["public"]["Enums"]["tag_type"] | null
-        }
-        Update: {
-          color?: string
-          created_at?: string
-          id?: string
-          level?: number
-          name?: string
-          type?: Database["public"]["Enums"]["tag_type"] | null
-        }
-        Relationships: []
       }
       users: {
         Row: {
@@ -436,14 +563,6 @@ export interface Database {
         | "Veteran Owned"
         | "8A"
         | "Other - Error"
-      tag_type:
-        | "opportunity_status"
-        | "engineering_status"
-        | "bom_status"
-        | "purchasing_status"
-        | "labor_status"
-        | "review_status"
-        | "bid_status"
     }
     CompositeTypes: {
       [_ in never]: never
