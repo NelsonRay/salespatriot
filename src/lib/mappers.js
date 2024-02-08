@@ -13,6 +13,7 @@ export function gov_mapper(field) {
 		solicitation_url: 'Solicitation URL',
 		tech_docs: 'Tech Docs URL',
 		quantity: 'Quantity',
+		quantity_units: 'Units',
 		days_to_deliver: 'Days to Deliver',
 		set_aside: 'Set Aside',
 		nsn: 'NSN',
@@ -51,15 +52,64 @@ export function gov_mapper(field) {
 	return map[field] ?? 'Error';
 }
 
-export function table_mapper(obj, column) {
-	const header = gov_mapper(column.includes('solicitation.') ? column.split('.')[1] : column);
+function capitalizeFirstLetter(sentence) {
+	return sentence.replace(/\b\w/g, function (char) {
+		return char.toUpperCase();
+	});
+}
 
-	let value;
-	if (obj) {
-		value = column.includes('solicitation.')
-			? obj?.solicitation[column.split('.')[1]]
-			: obj[column];
+function formatCurrency(number) {
+	if (!number) return '';
+	return '$' + number.toLocaleString('en-US', { minimumFractionDigits: 2 });
+}
+
+export function tableFieldMapper(obj, column) {
+	if (column.type === 'status') {
+		const containsStatus = (obj?.status ?? []).filter((e) => e.includes(column.status));
+
+		let value;
+		if (containsStatus.length > 0) {
+			value = containsStatus[0];
+		}
+
+		return { header: capitalizeFirstLetter(column.status) + ' Status', value };
+	} else if (column.type === 'matching_rule') {
+		return { header: 'Matching Rule', value: obj?.matching_rule?.name };
+	} else if (column.type === 'formula') {
+		if (column.field === 'market_value') {
+			let value;
+			if (obj?.price_per_unit && obj?.solicitation?.quantity) {
+				value = formatCurrency(obj?.price_per_unit * obj?.solicitation?.quantity);
+			}
+			return { header: 'Market Value', value: value ?? '' };
+		}
+
+		return { header: 'Error', value: '' };
+	} else {
+		const header =
+			column.header ??
+			gov_mapper(
+				column?.field?.toString().includes('solicitation.')
+					? column?.field?.split('.')[1]
+					: column?.field
+			);
+
+		let value;
+		if (obj) {
+			value = obj;
+			for (let key of column.field.split('.')) {
+				value = value[key];
+			}
+
+			if (column.array_selector) {
+				value = value.length > 0 ? value[0][column.array_selector] : '';
+			}
+		}
+
+		if (['solicitation.estimated_value'].includes(column.field)) {
+			value = formatCurrency(value);
+		}
+
+		return { header, value };
 	}
-
-	return { header, value };
 }
