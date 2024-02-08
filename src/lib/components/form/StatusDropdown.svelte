@@ -12,7 +12,11 @@
 
 	const containsStatus = value.filter((e) => e.includes(status));
 	if (containsStatus.length > 0) {
-		selected_tag_key = containsStatus[0].split(':')[1];
+		if (containsStatus[0].split(':')[1] === 'in_progress') {
+			value = value.filter((e) => !e.includes(status));
+		} else {
+			selected_tag_key = containsStatus[0].split(':')[1];
+		}
 	}
 
 	function handleDropdownClick() {
