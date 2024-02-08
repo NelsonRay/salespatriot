@@ -18,7 +18,7 @@
 		<AppRailAnchor
 			title="Contracts"
 			href="/contracts"
-			selected={$page.url.pathname === '/contracts'}
+			selected={$page.url.pathname.toString().includes('/contracts')}
 		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
@@ -30,7 +30,7 @@
 		<AppRailAnchor
 			title="Workflows"
 			href="/workflows"
-			selected={$page.url.pathname === '/workflows'}
+			selected={$page.url.pathname.toString().includes('/workflows')}
 		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
@@ -39,7 +39,11 @@
 			>
 			<span>Workflows</span>
 		</AppRailAnchor>
-		<AppRailAnchor title="Reports" href="/reports" selected={$page.url.pathname === '/reports'}>
+		<AppRailAnchor
+			title="Reports"
+			href="/reports"
+			selected={$page.url.pathname.toString().includes('/reports')}
+		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
 					<img src={Reports} class="h-10 w-10" alt="reports" />

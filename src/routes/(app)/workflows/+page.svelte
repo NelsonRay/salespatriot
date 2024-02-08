@@ -23,7 +23,6 @@
 		workflows = {};
 		workflows.forms = data;
 		workflows.form = f_data.sort((a, b) => (a.step > b.step ? 1 : -1));
-		console.log(workflows.form);
 	}
 
 	onMount(() => {
@@ -116,4 +115,10 @@
 			</div>
 		{/each}
 	</article>
+{:else}
+	<div class="flex flex-col gap-4 p-5">
+		<div class="skeleton h-8 w-full"></div>
+		<div class="skeleton h-4 w-full"></div>
+		<div class="skeleton h-4 w-full"></div>
+	</div>
 {/if}

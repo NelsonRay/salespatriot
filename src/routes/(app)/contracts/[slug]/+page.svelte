@@ -3,35 +3,64 @@
 	import { tableFieldMapper } from '$lib/mappers';
 	import { onMount } from 'svelte';
 	import { tags } from '$lib/tags.js';
+	import ContractViews from '$lib/components/app/ContractViews/ContractViews.svelte';
+	import { page } from '$app/stores';
+	import { formatDate } from '$lib/helpers.js';
 
-	export let data = [];
+	export let data;
 
 	$: ({ supabase, session } = data);
 
-	let solicitations_matched = [];
+	let solicitations_matched = null;
+	let isMounted = false;
 
-	async function loadData() {
-		const { data, error } = await supabase
+	page.subscribe((p) => {
+		if (isMounted) {
+			solicitations_matched = null;
+			loadData(p.url.pathname);
+		}
+	});
+
+	async function loadData(pathname) {
+		let query = supabase
 			.from('solicitations_matched')
-			.select('*, solicitation(*, nsn(id, matching_nsns(*))), matching_rule(*)')
-			.eq('firm', '6b289746-2b01-47af-a7d4-26a3920f75ca')
-			.not('status', 'cs', '{"engineering:cannot_build"}')
-			.not('status', 'cs', '{"opportunity:not_pursue"}');
+			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*))), matching_rule(*)');
 
+		switch (pathname) {
+			case 'bidding-funnel':
+				query = query
+					.not('status', 'cs', '{"engineering:cannot_build"}')
+					.not('status', 'cs', '{"opportunity:not_pursue"}');
+				break;
+			case '/contracts/recently-released':
+				query = query
+					.order('solicitation(issued_on)', {
+						ascending: false
+					})
+					.limit(100);
+				break;
+			case '/contracts/expiring-soon':
+				let yesterday = new Date();
+				yesterday.setDate(new Date().getDate() - 1);
+
+				query = query
+					.filter('solicitation.expires_on', 'gt', formatDate(yesterday))
+					.order('solicitation(expires_on)', {
+						ascending: true
+					});
+				break;
+		}
+
+		const { data, error } = await query;
 		solicitations_matched = data;
 	}
 
 	onMount(() => {
 		if (session) {
-			loadData();
+			loadData($page.url.pathname);
 		}
+		isMounted = true;
 	});
-
-	let showViews = true;
-
-	function toggleShowViews() {
-		showViews = !showViews;
-	}
 
 	const columns = [
 		{ type: 'field', field: 'solicitation.number' },
@@ -80,9 +109,7 @@
 <div class="relative top-0">
 	<div class="flex flex-row h-14 items-center justify-between mx-2">
 		<div class="flex flex-row items-center">
-			<button class="bg-neutral-100 p-2 rounded-sm font-medium" on:click={toggleShowViews}
-				>Views</button
-			>
+			<ContractViews />
 			<p class="font-semibold ml-4">Bidding Funnel</p>
 		</div>
 		<p>Last Updated: Today 8:30 AM</p>
@@ -134,6 +161,17 @@
 			</tbody>
 		</table>
 	</article>
+{:else}
+	<div class="flex flex-col gap-4 p-5">
+		<div class="skeleton h-4 w-full"></div>
+		<div class="skeleton h-4 w-full"></div>
+		<div class="skeleton h-4 w-full"></div>
+		<div class="skeleton h-4 w-full"></div>
+		<div class="skeleton h-4 w-full"></div>
+		<div class="skeleton h-4 w-full"></div>
+		<div class="skeleton h-4 w-full"></div>
+		<div class="skeleton h-4 w-full"></div>
+	</div>
 {/if}
 
 <style>
