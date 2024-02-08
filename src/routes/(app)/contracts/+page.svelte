@@ -19,7 +19,6 @@
 			.not('status', 'cs', '{"opportunity:not_pursue"}');
 
 		solicitations_matched = data;
-		console.log(data, error);
 	}
 
 	onMount(() => {
