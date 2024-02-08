@@ -16,6 +16,7 @@
 
 	page.subscribe((p) => {
 		if (isMounted) {
+			console.log(44);
 			solicitations_matched = null;
 			loadData(p.url.pathname);
 		}
@@ -27,10 +28,16 @@
 			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*))), matching_rule(*)');
 
 		switch (pathname) {
-			case 'bidding-funnel':
+			case '/contracts/bidding-funnel':
+				console.log(12);
 				query = query
-					.not('status', 'cs', '{"engineering:cannot_build"}')
-					.not('status', 'cs', '{"opportunity:not_pursue"}');
+					.not('status', 'cs', `{"${tags.opportunity.not_pursue.key}"}`)
+					.not('status', 'cs', `{"${tags.engineering.cannot_build.key}"}`)
+					.not('status', 'cs', `{"${tags.bom.cannot_create.key}"}`)
+					.not('status', 'cs', `{"${tags.purchasing.out_of_budget.key}"}`)
+					.not('status', 'cs', `{"${tags.labor.not_within_time.key}"}`)
+					.not('status', 'cs', `{"${tags.review.not_approved.key}"}`);
+
 				break;
 			case '/contracts/recently-released':
 				query = query
@@ -49,9 +56,41 @@
 						ascending: true
 					});
 				break;
+			default:
+				break;
 		}
 
-		const { data, error } = await query;
+		let { data, error } = await query;
+
+		switch (pathname) {
+			case '/contracts/bidding-funnel':
+				for (let status of [
+					'opportunity',
+					'engineering',
+					'bom',
+					'purchasing',
+					'labor',
+					'review',
+					'bid'
+				].reverse()) {
+					data = data.sort(function (a, b) {
+						let alevel = 0;
+						let blevel = 0;
+						if (a.status.some((e) => e.includes(status))) {
+							alevel =
+								tags[status][a.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
+						}
+
+						if (b.status.some((e) => e.includes(status))) {
+							blevel =
+								tags[status][b.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
+						}
+
+						return alevel < blevel ? -1 : 1;
+					});
+				}
+				break;
+		}
 		solicitations_matched = data;
 	}
 
