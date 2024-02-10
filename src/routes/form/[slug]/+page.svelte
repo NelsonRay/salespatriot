@@ -1,7 +1,7 @@
 <script>
 	// @ts-nocheck
 	import { page } from '$app/stores';
-	import StatusDropdown from '$lib/components/form/StatusDropdown.svelte';
+	import StatusSelect from '$lib/components/form/StatusSelect.svelte';
 	import Currency from '$lib/components/form/Currency.svelte';
 	import Textarea from '$lib/components/form/Textarea.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
@@ -112,7 +112,7 @@
 			{#each $page.data.form.matched_fields as field}
 				{#if field.type === 'status'}
 					<p class="mb-1">{capitalizeFirstLetter(field.status)} Status</p>
-					<StatusDropdown status={field.status} bind:value={values.status} />
+					<StatusSelect status={field.status} bind:value={values.status} />
 				{/if}
 				{#if field.type === 'currency'}
 					<p class="mb-1">{gov_mapper(field.field)}</p>
@@ -147,7 +147,7 @@
 
 				{#if values['skip_engineering']}
 					<p class="mb-1">Engineering Status</p>
-					<StatusDropdown status={'engineering'} bind:value={values.status} />
+					<StatusSelect status={'engineering'} bind:value={values.status} />
 				{/if}
 			{/if}
 
