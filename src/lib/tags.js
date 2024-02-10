@@ -155,6 +155,18 @@ export const tags = {
 			level: 1,
 			color: 'bg-green-400',
 			key: 'bid:bid'
+		},
+		in_progress: {
+			name: 'In Progress',
+			level: 3,
+			color: 'bg-yellow-400',
+			key: 'bid:in_progress'
+		},
+		no_bid: {
+			name: 'No Bid',
+			level: 4,
+			color: 'bg-red-400',
+			key: 'bid:no_bid'
 		}
 	},
 	award: {
@@ -175,6 +187,12 @@ export const tags = {
 			level: 4,
 			color: 'bg-red-400',
 			key: 'award:lost'
+		},
+		removed: {
+			name: 'Removed',
+			level: 5,
+			color: 'bg-grey-400',
+			key: 'award:removed'
 		}
 	}
 };

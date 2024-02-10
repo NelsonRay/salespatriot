@@ -25,18 +25,20 @@
 	async function loadData(pathname) {
 		let query = supabase
 			.from('solicitations_matched')
-			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*))), matching_rule(*)');
+			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*)');
 
 		switch (pathname) {
 			case '/contracts/bidding-funnel':
-				console.log(12);
 				query = query
 					.not('status', 'cs', `{"${tags.opportunity.not_pursue.key}"}`)
 					.not('status', 'cs', `{"${tags.engineering.cannot_build.key}"}`)
 					.not('status', 'cs', `{"${tags.bom.cannot_create.key}"}`)
 					.not('status', 'cs', `{"${tags.purchasing.out_of_budget.key}"}`)
 					.not('status', 'cs', `{"${tags.labor.not_within_time.key}"}`)
-					.not('status', 'cs', `{"${tags.review.not_approved.key}"}`);
+					.not('status', 'cs', `{"${tags.review.not_approved.key}"}`)
+					.not('status', 'cs', `{"bid:bid"}`)
+					.filter('solicitation.expires_on', 'gte', formatDate(new Date()))
+					.eq('is_killed', false);
 
 				break;
 			case '/contracts/recently-released':
@@ -74,8 +76,8 @@
 					'bid'
 				].reverse()) {
 					data = data.sort(function (a, b) {
-						let alevel = 0;
-						let blevel = 0;
+						let alevel = 10;
+						let blevel = 10;
 						if (a.status.some((e) => e.includes(status))) {
 							alevel =
 								tags[status][a.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
@@ -157,7 +159,7 @@
 
 {#if solicitations_matched}
 	<article
-		class="bg-white w-[100%] h-[95%] p-2 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro"
+		class="bg-white w-[100%] h-[95%] px-2 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro"
 		style="direction: ltr;"
 	>
 		<table class="text-left w-[100%] border-separate border-spacing-0">
