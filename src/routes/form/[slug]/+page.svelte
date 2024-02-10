@@ -5,7 +5,7 @@
 	import Currency from '$lib/components/form/Currency.svelte';
 	import Textarea from '$lib/components/form/Textarea.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
-	import Checkbox from '$lib/components/form/Checkbox.svelte';
+	import Boolean from '$lib/components/form/Boolean.svelte';
 	import { gov_mapper } from '$lib/mappers';
 
 	const submitted = $page.data.submitted;
@@ -27,6 +27,18 @@
 		return sentence.replace(/\b\w/g, function (char) {
 			return char.toUpperCase();
 		});
+	}
+
+	$: if ($page.data.form.type === 'opportunity') {
+		if (!values.status.includes('opportunity:pursue')) {
+			delete values.skip_engineering;
+			values.status = values.status.filter((e) => !e.toString().includes('engineering'));
+		}
+		if (!values.skip_engineering) {
+			values.status = values.status.filter((e) => !e.toString().includes('engineering'));
+		}
+
+		console.log(values);
 	}
 </script>
 
@@ -124,7 +136,7 @@
 				{/if}
 				{#if field.type === 'checkbox'}
 					<p class="mb-1">{gov_mapper(field.field)}</p>
-					<Checkbox bind:value={values[field.field]} />
+					<Boolean bind:value={values[field.field]} />
 				{/if}
 				{#if field.type === 'link' || field.type === 'text'}
 					{#if $page.data.form.type === 'bom'}
@@ -141,13 +153,15 @@
 			{/each}
 
 			{#if $page.data.form.type === 'opportunity'}
-				<p class="mb-1">Skip Engineering Feasibility Form</p>
+				{#if (values.status ?? []).includes('opportunity:pursue')}
+					<p class="mb-1">Skip Engineering Feasibility Form</p>
 
-				<Checkbox bind:value={values['skip_engineering']} />
+					<Boolean bind:value={values['skip_engineering']} />
 
-				{#if values['skip_engineering']}
-					<p class="mb-1">Engineering Status</p>
-					<StatusSelect status={'engineering'} bind:value={values.status} />
+					{#if values['skip_engineering']}
+						<p class="mb-1">Engineering Status</p>
+						<StatusSelect status={'engineering'} bind:value={values.status} />
+					{/if}
 				{/if}
 			{/if}
 
