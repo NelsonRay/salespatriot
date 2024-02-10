@@ -13,10 +13,9 @@
 		const { data, error } = await supabase
 			.from('forms')
 			.select(
-				'id, submitted, response_timestamp, form, solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on)), created_at'
+				'id, submitted, response_timestamp, form, solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), seen_before), created_at'
 			);
 
-		console.log(data, error);
 		const { data: f_data, error: f_error } = await supabase
 			.from('form')
 			.select('id, name, user(name), step');
@@ -76,6 +75,15 @@
 
 		return differenceInDays;
 	}
+
+	function getForms(workflows, form) {
+		let forms = workflows.forms.filter((e) => e.form === form.id && !e.submitted);
+
+		return [
+			...forms.filter((e) => e.solicitation_matched.seen_before === true),
+			...forms.filter((e) => e.solicitation_matched.seen_before === false)
+		];
+	}
 </script>
 
 {#if workflows}
@@ -85,18 +93,27 @@
 	>
 		{#each workflows.form.sort((a, b) => (a.step > b.step ? 1 : -1)) as form (form.id)}
 			<div class="flex flex-col space-y-3">
-				<div class="flex flex-row justify-between w-96">
+				<div class="flex flex-row justify-between w-96 items-center">
 					<p class="font-semibold text-lg">
 						{`${form.name} (${workflows.forms.filter((e) => e.form === form.id && !e.submitted).length})`}
 					</p>
 					<p class="font-medium text-base">{form.user.name}</p>
 				</div>
-				{#each workflows.forms.filter((e) => e.form === form.id && !e.submitted) as forms (forms.id)}
+				{#each getForms(workflows, form) as forms (forms.id)}
 					<a href={window.location.origin + '/form/' + forms.id} target="_blank">
-						<div class="flex flex-col shadow-md mt-3 rounded-md bg-white p-2">
-							<p class="font-semibold text-[16px]">
-								{forms.solicitation_matched.solicitation.number}
-							</p>
+						<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2">
+							<div class="flex flex-row justify-between items-center">
+								<p class="font-semibold text-[16px]">
+									{forms.solicitation_matched.solicitation.number}
+								</p>
+								<div
+									class="px-2 py-1 rounded-md {forms.solicitation_matched.seen_before
+										? 'bg-blue-300'
+										: 'bg-green-300'}"
+								>
+									<p>{forms.solicitation_matched.seen_before ? 'Seen' : 'New'}</p>
+								</div>
+							</div>
 							<p>{forms.solicitation_matched.solicitation.description}</p>
 							<p class="text-sm">
 								{`${forms.solicitation_matched.solicitation.quantity} ${forms.solicitation_matched.solicitation.quantity_units}`}
