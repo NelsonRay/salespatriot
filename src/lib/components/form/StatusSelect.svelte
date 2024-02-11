@@ -35,18 +35,53 @@
 		}
 	}
 
-	function getTagClass(key, selected_tag_key) {
-		let tclass = `py-3 px-6 rounded-3xl m-1 text-md font-medium bg-${tags[status][key].color}-400 border-${tags[status][key].color}-700`;
+	function getTagClass(key, status, selected_tag_key) {
+		let color = '';
+		let borderColor = '';
+		let shadowColor = '';
+		switch (tags[status][key].color) {
+			case 'green':
+				color = 'bg-green-400';
+				borderColor = 'border-green-600';
+				shadowColor = 'shadow-green-300';
+				break;
+			case 'yellow':
+				color = 'bg-yellow-400';
+				borderColor = 'border-yellow-600';
+				shadowColor = 'shadow-yellow-300';
+				break;
+			case 'red':
+				color = 'bg-red-400';
+				borderColor = 'border-red-600';
+				shadowColor = 'shadow-red-300';
+				break;
+			case 'blue':
+				color = 'bg-blue-400';
+				borderColor = 'border-blue-600';
+				shadowColor = 'shadow-blue-300';
+				break;
+			case 'gray':
+				color = 'bg-gray-500';
+				borderColor = 'border-gray-600';
+				shadowColor = 'shadow-gray-300';
+				break;
+		}
+
+		let tclass = `py-3 px-6 rounded-3xl m-1 text-md font-medium ${color} ${borderColor}`;
 		selected_tag_key === key
-			? (tclass += ` border-[4px] shadow-lg shadow-${tags[status][key].color}-400`)
+			? (tclass += ` border-[4px] shadow-md shadow-green-300`)
 			: (tclass += ' border-[0px]');
+		console.log(tclass);
 		return tclass;
 	}
 </script>
 
 <div class="flex flex-row mb-5">
 	{#each filterTags(status) as tag}
-		<button class={getTagClass(tag.key, selected_tag_key)} on:click={() => updateValues(tag.key)}>
+		<button
+			class={getTagClass(tag.key, status, selected_tag_key)}
+			on:click={() => updateValues(tag.key)}
+		>
 			{tags[status][tag.key]?.name}
 		</button>
 	{/each}

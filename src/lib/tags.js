@@ -191,7 +191,7 @@ export const tags = {
 		removed: {
 			name: 'Removed',
 			level: 5,
-			color: 'grey',
+			color: 'gray',
 			key: 'award:removed'
 		}
 	}
