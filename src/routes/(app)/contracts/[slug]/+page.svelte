@@ -164,6 +164,10 @@
 		if (!status) return '';
 		return tags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
 	}
+
+	function navToSolicitation(id) {
+		window.location.href = `${window.location.origin}/solicitation/${id}`;
+	}
 </script>
 
 <div class="relative top-0">
@@ -189,8 +193,11 @@
 			</thead>
 
 			<tbody>
-				{#each solicitations_matched as solicitation_matched}
-					<tr>
+				{#each solicitations_matched as solicitation_matched (solicitation_matched.id)}
+					<tr
+						on:click={() => navToSolicitation(solicitation_matched.id)}
+						class="hover:bg-neutral-100"
+					>
 						{#each columns as column, i}
 							{#if column.type === 'status'}
 								<td>
