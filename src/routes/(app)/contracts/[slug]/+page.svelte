@@ -138,7 +138,26 @@
 
 	function getStatusColor(status) {
 		if (!status) return '';
-		return tags[status.toString().split(':')[0]][status.toString().split(':')[1]].color;
+		let color = '';
+
+		switch (tags[status.toString().split(':')[0]][status.toString().split(':')[1]].color) {
+			case 'green':
+				color = 'bg-green-400';
+				break;
+			case 'yellow':
+				color = 'bg-yellow-400';
+				break;
+			case 'red':
+				color = 'bg-red-400';
+				break;
+			case 'blue':
+				color = 'bg-blue-400';
+				break;
+			case 'gray':
+				color = 'bg-gray-500';
+				break;
+		}
+		return color;
 	}
 
 	function getStatusName(status) {
