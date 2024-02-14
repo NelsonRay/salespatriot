@@ -131,7 +131,7 @@ export const tags = {
 	},
 	review: {
 		approved: {
-			name: 'Within Time',
+			name: 'Approved',
 			level: 1,
 			color: 'green',
 			key: 'review:approved'
@@ -143,7 +143,7 @@ export const tags = {
 			key: 'review:in_progress'
 		},
 		not_approved: {
-			name: 'Not Within Time',
+			name: 'Not Approved',
 			level: 4,
 			color: 'red',
 			key: 'review:not_approved'
