@@ -168,13 +168,21 @@
 	function navToSolicitation(id) {
 		window.location.href = `${window.location.origin}/solicitation/${id}`;
 	}
+
+	const views = {
+		'/contracts/bidding-funnel': 'Bidding Funnel',
+		'/contracts/recently-released': 'Recently Released',
+		'/contracts/expiring-soon': 'Expiring Soon',
+		'/contracts/contracts-bid': 'Contracts Bid',
+		'/contracts/all-contracts': 'All Contracts'
+	};
 </script>
 
 <div class="relative top-0">
 	<div class="flex flex-row h-14 items-center justify-between mx-2">
 		<div class="flex flex-row items-center">
 			<ContractViews />
-			<p class="font-semibold ml-4">Bidding Funnel</p>
+			<p class="font-semibold ml-4">{views[$page.url.pathname]}</p>
 		</div>
 		<p>Last Updated: Today 8:30 AM</p>
 	</div>
