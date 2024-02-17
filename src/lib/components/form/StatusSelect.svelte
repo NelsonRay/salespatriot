@@ -67,10 +67,10 @@
 				break;
 		}
 
-		let tclass = `py-3 px-6 rounded-3xl m-1 text-md font-medium ${color}`;
+		let tclass = `py-3 px-6 rounded-3xl m-1 text-xs font-medium ${color}`;
 		selected_tag_key === key
-			? (tclass += ` border-[4px] shadow-md ${shadowColor} ${borderColor}`)
-			: (tclass += ' border-[4px]');
+			? (tclass += ` border-[2px] shadow-md ${shadowColor} ${borderColor}`)
+			: (tclass += ' border-[2px]');
 		return tclass;
 	}
 </script>

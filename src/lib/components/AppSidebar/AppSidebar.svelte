@@ -22,7 +22,7 @@
 		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={Contracts} class="h-12 w-12" alt="contracts" />
+					<img src={Contracts} class="h-8 w-8" alt="contracts" />
 				</div>
 			</svelte:fragment>
 			<span>Contracts</span>
@@ -34,7 +34,7 @@
 		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={Workflows} class="h-12 w-12" alt="workflows" />
+					<img src={Workflows} class="h-8 w-8" alt="workflows" />
 				</div></svelte:fragment
 			>
 			<span>Workflows</span>
@@ -46,7 +46,7 @@
 		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={Reports} class="h-10 w-10" alt="reports" />
+					<img src={Reports} class="h-7 w-7" alt="reports" />
 				</div></svelte:fragment
 			>
 			<span>Reports</span>

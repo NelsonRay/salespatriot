@@ -183,28 +183,28 @@
 			<div class="flex flex-col p-6">
 				{#each matched_fields as field}
 					{#if field.type === 'status'}
-						<p class="mb-1">{capitalizeFirstLetter(field.status)} Status</p>
+						<p class="mb-1 text-sm">{capitalizeFirstLetter(field.status)} Status</p>
 						<StatusSelect status={field.status} bind:value={values.status} />
 					{/if}
 					{#if field.type === 'currency'}
-						<p class="mb-1">{gov_mapper(field.field)}</p>
+						<p class="mb-1 text-sm">{gov_mapper(field.field)}</p>
 						<Currency bind:value={values[field.field]} />
 					{/if}
 					{#if field.type === 'textarea'}
-						<p class="mb-1">{gov_mapper(field.field)}</p>
+						<p class="mb-1 text-sm">{gov_mapper(field.field)}</p>
 						<Textarea bind:value={values[field.field]} />
 					{/if}
 					{#if field.type === 'checkbox'}
-						<p class="mb-1">{gov_mapper(field.field)}</p>
+						<p class="mb-1 text-sm">{gov_mapper(field.field)}</p>
 						<Boolean bind:value={values[field.field]} />
 					{/if}
 					{#if field.type === 'link' || field.type === 'text'}
-						<p class="mb-1">{gov_mapper(field.field)}</p>
+						<p class="mb-1 text-sm">{gov_mapper(field.field)}</p>
 						<TextInput bind:value={values[field.field]} />
 					{/if}
 				{/each}
-				<div class="flex flex-row mt-2 text-lg font-medium">
-					<button class="btn px-2 rounded-md -ml-2 mt-3" on:click={() => {}}>Submit</button>
+				<div class="flex flex-row mt-2">
+					<button class="btn px-2 rounded-md -ml-2 mt-3 text-xs" on:click={() => {}}>Submit</button>
 				</div>
 			</div>
 		</div>

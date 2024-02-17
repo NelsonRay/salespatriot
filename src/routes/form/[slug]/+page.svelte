@@ -165,8 +165,10 @@
 				{/if}
 			{/if}
 
-			<div class="flex flex-row mt-2 text-lg font-medium">
-				<button class="btn px-2 rounded-md -ml-2 mt-3" on:click={handleSubmit}>Submit</button>
+			<div class="flex flex-row mt-2">
+				<button class="btn px-2 rounded-md -ml-2 mt-3 text-sm font-medium" on:click={handleSubmit}
+					>Submit</button
+				>
 			</div>
 		{:else}
 			<p class="mt-12">Thank you for submitting form!</p>

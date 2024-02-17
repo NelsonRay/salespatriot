@@ -37,11 +37,11 @@
 </script>
 
 <div class="dropdown" on:focusout={handleDropdownFocusLoss}>
-	<button class="bg-neutral-100 p-2 rounded-sm font-medium" on:click={handleDropdownClick}
+	<button class="bg-neutral-100 p-2 rounded-sm font-medium text-sm" on:click={handleDropdownClick}
 		>Views
 	</button>
 	<ul
-		class="dropdown-content z-[100] menu p-2 shadow bg-base-100 rounded-box w-52"
+		class="dropdown-content z-[100] menu p-2 shadow bg-neutral-100 rounded-box w-52"
 		style:visibility={openDropdown ? 'visible' : 'hidden'}
 	>
 		{#each views as view (view.label)}

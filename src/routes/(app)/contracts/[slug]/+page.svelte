@@ -116,9 +116,9 @@
 	<div class="flex flex-row h-14 items-center justify-between mx-2">
 		<div class="flex flex-row items-center">
 			<ContractViews />
-			<p class="font-semibold ml-4">{views[$page.url.pathname]}</p>
+			<p class="font-semibold ml-4 text-sm">{views[$page.url.pathname]}</p>
 		</div>
-		<p>Last Updated: Today 8:30 AM</p>
+		<p class="text-xs">Last Updated: Today 8:30 AM</p>
 	</div>
 </div>
 

@@ -92,18 +92,18 @@
 		style="direction: ltr;"
 	>
 		{#each workflows.form.sort((a, b) => (a.step > b.step ? 1 : -1)) as form (form.id)}
-			<div class="flex flex-col space-y-3">
+			<div class="flex flex-col">
 				<div class="flex flex-row justify-between w-96 items-center">
-					<p class="font-semibold text-lg">
+					<p class="font-semibold text-base">
 						{`${form.name} (${workflows.forms.filter((e) => e.form === form.id && !e.submitted).length})`}
 					</p>
 					<p class="font-medium text-base">{form.user.name}</p>
 				</div>
 				{#each getForms(workflows, form) as forms (forms.id)}
 					<a href={window.location.origin + '/form/' + forms.id} target="_blank">
-						<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2">
+						<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
 							<div class="flex flex-row justify-between items-center">
-								<p class="font-semibold text-[16px]">
+								<p class="font-semibold text-sm">
 									{forms.solicitation_matched.solicitation.number}
 								</p>
 								<div
@@ -115,7 +115,7 @@
 								</div>
 							</div>
 							<p>{forms.solicitation_matched.solicitation.description}</p>
-							<p class="text-sm">
+							<p>
 								{`${forms.solicitation_matched.solicitation.quantity} ${forms.solicitation_matched.solicitation.quantity_units}`}
 							</p>
 							<p>
