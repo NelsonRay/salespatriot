@@ -6,3 +6,9 @@ export function formatDate(date) {
 
 	return `${year}-${month}-${day}`;
 }
+
+// @ts-ignore
+export function formatCurrency(number) {
+	if (!number) return '';
+	return '$' + number.toLocaleString('en-US', { minimumFractionDigits: 2 });
+}

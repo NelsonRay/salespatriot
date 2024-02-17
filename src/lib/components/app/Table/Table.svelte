@@ -74,10 +74,10 @@
 </script>
 
 <article
-	class="bg-white w-[100%] h-[95%] px-2 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro"
+	class="bg-white w-[100%] px-2 overflow-scroll border-l-[0.2px] border-l-gainsboro scrollbar-gutter-stable"
 	style="direction: ltr;"
 >
-	<table class="text-left w-[100%] border-separate border-spacing-0">
+	<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll">
 		<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
 			{#each columns as column}
 				<th>{tableFieldMapper(undefined, column).header}</th>
