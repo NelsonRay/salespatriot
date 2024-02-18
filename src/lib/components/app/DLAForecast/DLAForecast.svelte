@@ -20,8 +20,7 @@
 		for (let f of formattedForecast) {
 			total += parseInt(f[1]);
 		}
-
-		formattedForecast = [...formattedForecast, ['Total', total]];
+		if (formattedForecast?.length > 0) formattedForecast = [...formattedForecast, ['Total', total]];
 	}
 
 	function parseDateString(dateStr) {
@@ -51,7 +50,7 @@
 		</table>
 	</article>
 {:else}
-	<p class="text-gray-400 ml-3">No Forecast Data</p>
+	<p class="text-gray-400">No Forecast Data</p>
 {/if}
 
 <style>

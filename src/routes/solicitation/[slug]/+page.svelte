@@ -6,8 +6,9 @@
 	import Textarea from '$lib/components/form/Textarea.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Boolean from '$lib/components/form/Boolean.svelte';
-	import { gov_mapper } from '$lib/mappers';
+	import { gov_mapper, tableFieldMapper } from '$lib/mappers';
 	import { onMount } from 'svelte';
+	import { formatCurrency } from '$lib/helpers.js';
 	import Table from '$lib/components/app/Table/Table.svelte';
 	import Arrow from '$lib/icons/Arrow.svg';
 	import DlaForecast from '$lib/components/app/DLAForecast/DLAForecast.svelte';
@@ -157,29 +158,133 @@
 
 {#if solicitation_matched}
 	<div class="parent">
-		<div class="one">
-			<div class="flex flex-row items-center ml-5 mt-5 mb-5">
+		<div class="one pl-4 pt-4 overflow-auto">
+			<div>
 				<button on:click={goBack}>
-					<img src={Arrow} alt="1" class="h-8 w-8" />
+					<div class="flex flex-row items-center p-2 rounded-md bg-neutral-100">
+						<img src={Arrow} alt="1" class="h-5 w-5" />
+						<p class="mb-[0.5px]">Go Back</p>
+					</div>
 				</button>
-				<p class="text-2xl">{solicitation_matched.solicitation.number}</p>
 			</div>
-			<Table data={[solicitation_matched]} />
+			<div class="pl-2 pt-3 space-y-2">
+				<div class="mb-3">
+					<p class="text-lg font-semibold">{solicitation_matched.solicitation.number}</p>
+					<p class="text-sm">{solicitation_matched.solicitation.description}</p>
+				</div>
 
-			<p class="text-lg my-5 ml-3 font-semibold">Previous NSN Matches</p>
-			{#if solicitation_matched?.length > 0}
-				<Table data={nsn_matches} />
-			{:else}
-				<p class="text-gray-400 ml-3">NSN not seen before</p>
-			{/if}
+				<div>
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">NSN:</p>
+						<p>
+							{solicitation_matched.solicitation.nsn.id}
+						</p>
+					</div>
 
-			<p class="text-lg my-5 ml-3 font-semibold">DLA Forecast (Next 2 Years)</p>
-			<DlaForecast data={solicitation_matched.solicitation.dla_forecast} />
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">In-House PN:</p>
+						<p>
+							{tableFieldMapper(solicitation_matched, {
+								type: 'field',
+								field: 'solicitation.nsn.matching_nsns',
+								array_selector: 'part_number',
+								header: 'In-House PN'
+							}).value}
+						</p>
+					</div>
+				</div>
 
-			<p class="text-lg my-5 ml-3 font-semibold">Award History</p>
-			<AwardHistory data={solicitation_matched.solicitation.award_history} />
+				<div>
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">Quantity:</p>
+						<p>
+							{solicitation_matched.solicitation.quantity}
+							{solicitation_matched.solicitation.quantity_units}
+						</p>
+					</div>
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">Est. Value:</p>
+						<p>
+							{formatCurrency(solicitation_matched.solicitation.estimated_value)}
+						</p>
+					</div>
+				</div>
+
+				<div>
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">Expires:</p>
+						<p>
+							{solicitation_matched.solicitation.expires_on}
+						</p>
+					</div>
+
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">Issued:</p>
+						<p>
+							{solicitation_matched.solicitation.issued_on}
+						</p>
+					</div>
+				</div>
+
+				<div>
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">First Article:</p>
+						<p>
+							{solicitation_matched.solicitation.first_article ? 'Yes' : 'No'}
+						</p>
+					</div>
+
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">Set Aside:</p>
+						<p>
+							{solicitation_matched.solicitation.set_aside ?? 'None'}
+						</p>
+					</div>
+				</div>
+
+				<div>
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">Tech Docs:</p>
+						{#if solicitation_matched.solicitation.tech_docs}
+							<a href={solicitation_matched.solicitation.tech_docs} class="text-blue-500"> URL </a>
+						{:else}
+							<p>None</p>
+						{/if}
+					</div>
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">Solicitation URL:</p>
+						{#if solicitation_matched.solicitation.solicitation_url}
+							<a href={solicitation_matched.solicitation.solicitation_url} class="text-blue-500">
+								URL
+							</a>
+						{:else}
+							<p>None</p>
+						{/if}
+					</div>
+				</div>
+
+				<div class="flex flex-row space-x-1">
+					<p class="text-gray-400">Days to Deliver:</p>
+					<p>
+						{solicitation_matched.solicitation.days_to_deliver}
+					</p>
+				</div>
+
+				<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
+				{#if solicitation_matched?.length > 0}
+					<Table data={nsn_matches} />
+				{:else}
+					<p class="text-gray-400">NSN not seen before</p>
+				{/if}
+
+				<p class="text-lg mt-5 mb-2 font-semibold">DLA Forecast (Next 2 Years)</p>
+				<DlaForecast data={solicitation_matched.solicitation.dla_forecast} />
+
+				<p class="text-lg mt-5 mb-2 font-semibold">Award History</p>
+				<AwardHistory data={solicitation_matched.solicitation.award_history} />
+			</div>
 		</div>
-		<div class="two">
+		<div class="two bg-neutral-100">
 			<div class="flex flex-col p-6">
 				{#each matched_fields as field}
 					{#if field.type === 'status'}

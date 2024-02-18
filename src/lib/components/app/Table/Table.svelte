@@ -74,7 +74,7 @@
 </script>
 
 <article
-	class="bg-white w-[100%] px-2 overflow-scroll border-l-[0.2px] border-l-gainsboro scrollbar-gutter-stable"
+	class="bg-white w-[100%] h-full px-2 overflow-scroll scrollbar-gutter-stable"
 	style="direction: ltr;"
 >
 	<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll text-xs">
