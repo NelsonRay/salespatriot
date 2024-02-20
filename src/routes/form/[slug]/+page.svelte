@@ -8,10 +8,10 @@
 	let values = { status: $page.data.solicitation_matched.status };
 
 	async function handleSubmit() {
-		const res = await fetch('/api/gov/form/submit', {
+		const res = await fetch('/api/solicitations/form-submission', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ response: values, id: $page.data.id })
+			body: JSON.stringify({ values, id: $page.data.id })
 		});
 
 		if (res.status === 200) {

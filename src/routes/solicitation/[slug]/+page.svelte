@@ -12,6 +12,18 @@
 
 	let values = {};
 
+	async function handleSubmit() {
+		const res = await fetch('/api/solicitations/update', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ values, id: solicitation_matched.id })
+		});
+
+		if (res.status === 200) {
+			window.location.href = `${window.location.origin}`;
+		}
+	}
+
 	async function loadData() {
 		let { data, error } = await supabase
 			.from('solicitations_matched')
@@ -40,4 +52,4 @@
 	});
 </script>
 
-<SolicitationForm {solicitation_matched} {values} {nsn_matches} />
+<SolicitationForm {solicitation_matched} {values} {nsn_matches} {handleSubmit} />
