@@ -13,7 +13,7 @@
 		const { data, error } = await supabase
 			.from('forms')
 			.select(
-				'id, submitted, response_timestamp, form, solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), seen_before), created_at'
+				'id, submitted, response_timestamp, form, solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), familiarity_status), created_at'
 			);
 
 		const { data: f_data, error: f_error } = await supabase
@@ -80,8 +80,10 @@
 		let forms = workflows.forms.filter((e) => e.form === form.id && !e.submitted);
 
 		return [
-			...forms.filter((e) => e.solicitation_matched.seen_before === true),
-			...forms.filter((e) => e.solicitation_matched.seen_before === false)
+			...forms.filter((e) => e.solicitation_matched.familiarity_status === 'Prev Won'),
+			...forms.filter((e) => e.solicitation_matched.familiarity_status === 'Prev Bid'),
+			...forms.filter((e) => e.solicitation_matched.familiarity_status === 'Seen'),
+			...forms.filter((e) => e.solicitation_matched.familiarity_status === 'New')
 		];
 	}
 </script>
