@@ -58,6 +58,9 @@
 						ascending: true
 					});
 				break;
+			case '/contracts/contracts-bid':
+				query = query.filter('status', 'cs', `{"${tags.bid.bid.key}"}`);
+				break;
 			default:
 				break;
 		}
