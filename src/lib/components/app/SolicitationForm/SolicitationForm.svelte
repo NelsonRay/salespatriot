@@ -17,6 +17,7 @@
 	export let nsn_matches = null;
 	export let form = null;
 	export let handleSubmit;
+	export let isSubmitting;
 
 	function capitalizeFirstLetter(sentence) {
 		return sentence.replace(/\b\w/g, function (char) {
@@ -260,11 +261,15 @@
 						<StatusSelect status={'engineering'} bind:value={values.status} />
 					{/if}
 				{/if}
-				<div class="flex flex-row mt-2">
-					<button
-						class="btn px-2 rounded-md -ml-2 mt-3 text-xs bg-neutral-200"
-						on:click={handleSubmit}>Submit</button
-					>
+				<div class="flex flex-row mt-5 items-center justify-center">
+					{#if !isSubmitting}
+						<button
+							class="btn px-6 py-2 rounded-md text-xs bg-white shadow-md"
+							on:click={handleSubmit}>Submit</button
+						>
+					{:else}
+						<span class="loading loading-spinner loading-md"></span>
+					{/if}
 				</div>
 			</div>
 		</div>

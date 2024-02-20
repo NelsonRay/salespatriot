@@ -12,7 +12,10 @@
 
 	let values = {};
 
+	let isSubmitting = false;
+
 	async function handleSubmit() {
+		isSubmitting = true; // show loading spinner
 		const res = await fetch('/api/solicitations/update', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -21,6 +24,8 @@
 
 		if (res.status === 200) {
 			window.location.href = `${window.location.origin}`;
+		} else {
+			isSubmitting = false; // hide loading spinner
 		}
 	}
 
@@ -52,4 +57,4 @@
 	});
 </script>
 
-<SolicitationForm {solicitation_matched} {values} {nsn_matches} {handleSubmit} />
+<SolicitationForm {solicitation_matched} {values} {nsn_matches} {handleSubmit} {isSubmitting} />

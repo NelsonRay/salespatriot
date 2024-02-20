@@ -5,9 +5,12 @@
 
 	const submitted = $page.data.submitted;
 
+	let isSubmitting = false;
+
 	let values = { status: $page.data.solicitation_matched.status };
 
 	async function handleSubmit() {
+		isSubmitting = true; // show loading spinner
 		const res = await fetch('/api/solicitations/form-submission', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -16,6 +19,8 @@
 
 		if (res.status === 200) {
 			window.location.reload();
+		} else {
+			isSubmitting = false; // hide loading spinner
 		}
 	}
 
@@ -37,6 +42,7 @@
 		form={$page.data.form}
 		nsn_matches={null}
 		{handleSubmit}
+		bind:isSubmitting
 	/>
 {:else}
 	<p class="mt-12">Thank you for submitting form!</p>
