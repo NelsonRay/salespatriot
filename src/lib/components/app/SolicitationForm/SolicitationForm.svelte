@@ -289,7 +289,7 @@
 		top: 0;
 		left: 0;
 		bottom: 0;
-		width: 60%;
+		width: 50%;
 		display: flex;
 		flex-direction: column;
 		/* background: #333; */
@@ -297,9 +297,9 @@
 	.two {
 		position: absolute;
 		top: 0;
-		left: 60%;
+		left: 50%;
 		bottom: 0;
-		width: 40%;
+		width: 50%;
 		overflow-y: auto;
 		/* background: #999; */
 		/* height: 120%; */
