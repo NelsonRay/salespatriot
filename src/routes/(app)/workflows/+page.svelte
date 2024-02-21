@@ -1,6 +1,7 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
+	import { getMatchingClass } from '$lib/helpers.js';
 
 	export let data;
 
@@ -13,7 +14,7 @@
 		const { data, error } = await supabase
 			.from('forms')
 			.select(
-				'id, submitted, response_timestamp, form, solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), familiarity_status), created_at'
+				'id, submitted, response_timestamp, form, solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
 			);
 
 		const { data: f_data, error: f_error } = await supabase
@@ -128,17 +129,28 @@
 								<p class="font-semibold text-sm">
 									{forms.solicitation_matched.solicitation.number}
 								</p>
-								<div
-									class="px-2 py-1 rounded-md {getFamiliarityClass(
-										forms.solicitation_matched.familiarity_status
-									)}"
-								>
-									<p>
-										{forms.solicitation_matched.familiarity_status}
-									</p>
+								<div class="flex flex-row items-center space-x-1">
+									{#if forms.solicitation_matched?.matching_rule?.name}
+										<div
+											class="px-2 py-1 rounded-md {getMatchingClass(
+												forms.solicitation_matched?.matching_rule?.name
+											)}"
+										>
+											<p>{forms.solicitation_matched?.matching_rule?.name}</p>
+										</div>
+									{/if}
+									<div
+										class="px-2 py-1 rounded-md {getFamiliarityClass(
+											forms.solicitation_matched.familiarity_status
+										)}"
+									>
+										<p>
+											{forms.solicitation_matched.familiarity_status}
+										</p>
+									</div>
 								</div>
 							</div>
-							<p>{forms.solicitation_matched.solicitation.description}</p>
+							<p class="mt-2">{forms.solicitation_matched.solicitation.description}</p>
 							<p>
 								{`${forms.solicitation_matched.solicitation.quantity} ${forms.solicitation_matched.solicitation.quantity_units}`}
 							</p>

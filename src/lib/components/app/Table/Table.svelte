@@ -3,6 +3,7 @@
 
 	import { tags } from '$lib/tags.js';
 	import { tableFieldMapper } from '$lib/mappers';
+	import { getMatchingClass } from '$lib/helpers.js';
 
 	export let data;
 
@@ -98,7 +99,15 @@
 								</div>
 							</td>
 						{:else if column.type === 'matching_rule'}
-							<td>{tableFieldMapper(obj, column).value ?? ''}</td>
+							<td
+								><div
+									class="p-2 rounded-md inline-block {getMatchingClass(
+										tableFieldMapper(obj, column).value
+									)}"
+								>
+									{tableFieldMapper(obj, column).value ?? ''}
+								</div></td
+							>
 						{:else if column.type === 'link'}
 							<td>
 								<a

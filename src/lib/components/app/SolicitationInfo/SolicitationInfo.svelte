@@ -1,15 +1,24 @@
 <script>
 	// @ts-nocheck
 	import { tableFieldMapper } from '$lib/mappers';
-	import { formatCurrency } from '$lib/helpers.js';
+	import { formatCurrency, getMatchingClass } from '$lib/helpers.js';
 
 	export let solicitation_matched;
 </script>
 
 <div class="space-y-2">
 	<div class="mb-3">
-		<p class="text-lg font-semibold">{solicitation_matched.solicitation.number}</p>
-		<p class="text-sm">{solicitation_matched.solicitation.description}</p>
+		<div class="flex flex-row items-center space-x-2">
+			<p class="text-lg font-semibold">{solicitation_matched.solicitation.number}</p>
+			{#if solicitation_matched?.matching_rule?.name}
+				<div
+					class="px-2 py-1 rounded-md {getMatchingClass(solicitation_matched?.matching_rule?.name)}"
+				>
+					<p class="text-xs">{solicitation_matched?.matching_rule?.name}</p>
+				</div>
+			{/if}
+		</div>
+		<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 	</div>
 
 	<div>
