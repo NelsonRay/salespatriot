@@ -212,7 +212,7 @@
 				{#if form === null || form?.type === 'opportunity'}
 					<div>
 						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
-						{#if solicitation_matched?.length > 0}
+						{#if nsn_matches?.length > 0}
 							<Table data={nsn_matches} />
 						{:else}
 							<p class="text-gray-400">NSN not seen before</p>

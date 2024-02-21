@@ -9,8 +9,8 @@
 
 	// if includes status, update selected_tag_key
 
-	const containsStatus = value.filter((e) => e.includes(status));
-	if (containsStatus.length > 0) {
+	const containsStatus = value?.filter((e) => e.includes(status));
+	if (containsStatus?.length > 0) {
 		if (containsStatus[0].split(':')[1] === 'in_progress') {
 			value = value.filter((e) => !e.includes(status));
 		} else {

@@ -86,6 +86,26 @@
 			...forms.filter((e) => e.solicitation_matched.familiarity_status === 'New')
 		];
 	}
+
+	function getFamiliarityClass(status) {
+		let pClass = '';
+		switch (status) {
+			case 'Prev Won':
+				pClass = 'bg-green-600';
+				break;
+			case 'Prev Bid':
+				pClass = 'bg-green-500';
+				break;
+			case 'Seen':
+				pClass = 'bg-blue-300';
+				break;
+			case 'New':
+				pClass = 'bg-green-300';
+				break;
+		}
+
+		return pClass;
+	}
 </script>
 
 {#if workflows}
@@ -109,11 +129,13 @@
 									{forms.solicitation_matched.solicitation.number}
 								</p>
 								<div
-									class="px-2 py-1 rounded-md {forms.solicitation_matched.seen_before
-										? 'bg-blue-300'
-										: 'bg-green-300'}"
+									class="px-2 py-1 rounded-md {getFamiliarityClass(
+										forms.solicitation_matched.familiarity_status
+									)}"
 								>
-									<p>{forms.solicitation_matched.seen_before ? 'Seen' : 'New'}</p>
+									<p>
+										{forms.solicitation_matched.familiarity_status}
+									</p>
 								</div>
 							</div>
 							<p>{forms.solicitation_matched.solicitation.description}</p>
