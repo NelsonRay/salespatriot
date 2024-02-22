@@ -28,7 +28,7 @@
 			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*)');
 
 		switch (pathname) {
-			case '/contracts/bidding-funnel':
+			case '/government/bidding-funnel':
 				query = query
 					.not('status', 'cs', `{"${tags.opportunity.not_pursue.key}"}`)
 					.not('status', 'cs', `{"${tags.engineering.cannot_build.key}"}`)
@@ -41,14 +41,14 @@
 					.eq('is_killed', false);
 
 				break;
-			case '/contracts/recently-released':
+			case '/government/recently-released':
 				query = query
 					.order('solicitation(issued_on)', {
 						ascending: false
 					})
 					.limit(100);
 				break;
-			case '/contracts/expiring-soon':
+			case '/government/expiring-soon':
 				let yesterday = new Date();
 				yesterday.setDate(new Date().getDate() - 1);
 
@@ -58,7 +58,7 @@
 						ascending: true
 					});
 				break;
-			case '/contracts/contracts-bid':
+			case '/government/contracts-bid':
 				query = query.filter('status', 'cs', `{"${tags.bid.bid.key}"}`);
 				break;
 			default:
@@ -68,7 +68,7 @@
 		let { data, error } = await query;
 
 		switch (pathname) {
-			case '/contracts/bidding-funnel':
+			case '/government/bidding-funnel':
 				for (let status of [
 					'opportunity',
 					'engineering',
@@ -107,11 +107,11 @@
 	});
 
 	const views = {
-		'/contracts/bidding-funnel': 'Bidding Funnel',
-		'/contracts/recently-released': 'Recently Released',
-		'/contracts/expiring-soon': 'Expiring Soon',
-		'/contracts/contracts-bid': 'Contracts Bid',
-		'/contracts/all-contracts': 'All Contracts'
+		'/government/bidding-funnel': 'Bidding Funnel',
+		'/government/recently-released': 'Recently Released',
+		'/government/expiring-soon': 'Expiring Soon',
+		'/government/contracts-bid': 'Contracts Bid',
+		'/government/all-contracts': 'All Contracts'
 	};
 </script>
 

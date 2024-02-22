@@ -12,21 +12,17 @@
 		''}"
 >
 	<AppRail>
-		<!-- <svelte:fragment slot="lead">
-		<AppRailAnchor href="/">(icon)</AppRailAnchor>
-	</svelte:fragment> -->
-		<!-- --- -->
 		<AppRailAnchor
-			title="Contracts"
-			href="/contracts"
-			selected={$page.url.pathname.toString().includes('/contracts')}
+			title="Government"
+			href="/government"
+			selected={$page.url.pathname.toString().includes('/government')}
 		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={Contracts} class="h-8 w-8" alt="contracts" />
+					<img src={Contracts} class="h-8 w-8" alt="Government" />
 				</div>
 			</svelte:fragment>
-			<span>Contracts</span>
+			<span>Government</span>
 		</AppRailAnchor>
 		<AppRailAnchor
 			title="OEM"
@@ -35,7 +31,7 @@
 		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={OEM} class="h-8 w-8" alt="contracts" />
+					<img src={OEM} class="h-8 w-8" alt="OEM" />
 				</div>
 			</svelte:fragment>
 			<span>OEM</span>
