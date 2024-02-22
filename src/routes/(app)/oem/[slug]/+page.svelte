@@ -5,62 +5,26 @@
 	import Views from '$lib/components/app/Views/Views.svelte';
 	import { page } from '$app/stores';
 	import { formatDate } from '$lib/helpers.js';
-	import Table from '$lib/components/app/Table/Table.svelte';
+	import OEMTable from '$lib/components/app/OEMTable/OEMTable.svelte';
 
 	export let data;
 
 	$: ({ supabase, session } = data);
 
-	let solicitations_matched = null;
+	let rfqs = null;
 	let isMounted = false;
 
 	page.subscribe((p) => {
 		if (isMounted) {
-			console.log(44);
-			solicitations_matched = null;
+			rfqs = null;
 			loadData(p.url.pathname);
 		}
 	});
 
 	async function loadData(pathname) {
-		let query = supabase
-			.from('solicitations_matched')
-			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*)');
+		let query = supabase.from('oem_rfqs').select('*, customer!inner(*)');
 
 		switch (pathname) {
-			case '/contracts/bidding-funnel':
-				query = query
-					.not('status', 'cs', `{"${tags.opportunity.not_pursue.key}"}`)
-					.not('status', 'cs', `{"${tags.engineering.cannot_build.key}"}`)
-					.not('status', 'cs', `{"${tags.bom.cannot_create.key}"}`)
-					.not('status', 'cs', `{"${tags.purchasing.out_of_budget.key}"}`)
-					.not('status', 'cs', `{"${tags.labor.not_within_time.key}"}`)
-					.not('status', 'cs', `{"${tags.review.not_approved.key}"}`)
-					.not('status', 'cs', `{"bid:bid"}`)
-					.filter('solicitation.expires_on', 'gte', formatDate(new Date()))
-					.eq('is_killed', false);
-
-				break;
-			case '/contracts/recently-released':
-				query = query
-					.order('solicitation(issued_on)', {
-						ascending: false
-					})
-					.limit(100);
-				break;
-			case '/contracts/expiring-soon':
-				let yesterday = new Date();
-				yesterday.setDate(new Date().getDate() - 1);
-
-				query = query
-					.filter('solicitation.expires_on', 'gt', formatDate(yesterday))
-					.order('solicitation(expires_on)', {
-						ascending: true
-					});
-				break;
-			case '/contracts/contracts-bid':
-				query = query.filter('status', 'cs', `{"${tags.bid.bid.key}"}`);
-				break;
 			default:
 				break;
 		}
@@ -96,7 +60,7 @@
 				}
 				break;
 		}
-		solicitations_matched = data;
+		rfqs = data;
 	}
 
 	onMount(() => {
@@ -107,11 +71,7 @@
 	});
 
 	const views = {
-		'/contracts/bidding-funnel': 'Bidding Funnel',
-		'/contracts/recently-released': 'Recently Released',
-		'/contracts/expiring-soon': 'Expiring Soon',
-		'/contracts/contracts-bid': 'Contracts Bid',
-		'/contracts/all-contracts': 'All Contracts'
+		'/oem/quoting-process': 'Quoting Process'
 	};
 </script>
 
@@ -125,8 +85,8 @@
 	</div>
 </div>
 
-{#if solicitations_matched}
-	<Table data={solicitations_matched} />
+{#if rfqs}
+	<OEMTable data={rfqs} />
 {:else}
 	<div class="flex flex-col gap-4 p-5">
 		<div class="skeleton h-4 w-full"></div>

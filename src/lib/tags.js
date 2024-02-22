@@ -196,3 +196,114 @@ export const tags = {
 		}
 	}
 };
+
+export const oemTags = {
+	purchasing: {
+		complete: {
+			name: 'Complete',
+			level: 1,
+			color: 'green',
+			key: 'purchasing:complete'
+		},
+		waiting: {
+			name: 'Waiting',
+			level: 2,
+			color: 'orange',
+			key: 'purchasing:waiting'
+		},
+		in_progress: {
+			name: 'In Progress',
+			level: 3,
+			color: 'yellow',
+			key: 'purchasing:in_progress'
+		}
+	},
+	labor: {
+		complete: {
+			name: 'Complete',
+			level: 1,
+			color: 'green',
+			key: 'labor:complete'
+		},
+		in_progress: {
+			name: 'In Progress',
+			level: 3,
+			color: 'yellow',
+			key: 'labor:in_progress'
+		}
+	},
+	final_pricing: {
+		complete: {
+			name: 'Complete',
+			level: 1,
+			color: 'green',
+			key: 'final_pricing:complete'
+		},
+		in_progress: {
+			name: 'In Progress',
+			level: 3,
+			color: 'yellow',
+			key: 'final_pricing:in_progress'
+		}
+	},
+	enter_quote: {
+		complete: {
+			name: 'Complete',
+			level: 1,
+			color: 'green',
+			key: 'enter_quote:complete'
+		},
+		in_progress: {
+			name: 'In Progress',
+			level: 3,
+			color: 'yellow',
+			key: 'enter_quote:in_progress'
+		}
+	},
+	send_quote: {
+		complete: {
+			name: 'Complete',
+			level: 1,
+			color: 'green',
+			key: 'send_quote:complete'
+		},
+		in_progress: {
+			name: 'In Progress',
+			level: 3,
+			color: 'yellow',
+			key: 'send_quote:in_progress'
+		}
+	},
+	response: {
+		placed_order: {
+			name: 'Placed Order',
+			level: 1,
+			color: 'green',
+			key: 'response:placed_order'
+		},
+		in_negotiation: {
+			name: 'In Negotiation',
+			level: 2,
+			color: 'blue',
+			key: 'response:in_negotiation'
+		},
+		waiting: {
+			name: 'Waiting',
+			level: 3,
+			color: 'yellow',
+			key: 'response:waiting'
+		},
+		assumed_lost: {
+			name: 'Assumed Lost',
+			level: 4,
+			color: 'red',
+			key: 'response:assumed_lost'
+		},
+		removed: {
+			name: 'Removed',
+			level: 5,
+			color: 'red',
+			key: 'response:removed'
+		}
+	}
+};

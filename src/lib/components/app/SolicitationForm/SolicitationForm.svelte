@@ -5,7 +5,7 @@
 	import Textarea from '$lib/components/form/Textarea.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Boolean from '$lib/components/form/Boolean.svelte';
-	import { gov_mapper } from '$lib/mappers';
+	import { govMapper } from '$lib/mappers';
 	import Table from '$lib/components/app/Table/Table.svelte';
 	import Arrow from '$lib/icons/Arrow.svg';
 	import DlaForecast from '$lib/components/app/DLAForecast/DLAForecast.svelte';
@@ -235,19 +235,19 @@
 						<StatusSelect status={field.status} bind:value={values.status} />
 					{/if}
 					{#if field.type === 'currency'}
-						<p class="mb-1 text-sm">{gov_mapper(field.field)}</p>
+						<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 						<Currency bind:value={values[field.field]} />
 					{/if}
 					{#if field.type === 'textarea'}
-						<p class="mb-1 text-sm">{gov_mapper(field.field)}</p>
+						<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 						<Textarea bind:value={values[field.field]} />
 					{/if}
 					{#if field.type === 'checkbox'}
-						<p class="mb-1 text-sm">{gov_mapper(field.field)}</p>
+						<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 						<Boolean bind:value={values[field.field]} />
 					{/if}
 					{#if field.type === 'link' || field.type === 'text'}
-						<p class="mb-1 text-sm">{gov_mapper(field.field)}</p>
+						<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 						<TextInput bind:value={values[field.field]} />
 					{/if}
 				{/each}

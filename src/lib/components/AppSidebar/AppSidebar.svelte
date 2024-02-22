@@ -3,6 +3,7 @@
 	import Contracts from '$lib/icons/Contracts.svg';
 	import Workflows from '$lib/icons/Workflows.svg';
 	import Reports from '$lib/icons/Reports.svg';
+	import OEM from '$lib/icons/OEM.svg';
 	import { page } from '$app/stores';
 </script>
 
@@ -26,6 +27,18 @@
 				</div>
 			</svelte:fragment>
 			<span>Contracts</span>
+		</AppRailAnchor>
+		<AppRailAnchor
+			title="OEM"
+			href="/oem"
+			selected={$page.url.pathname.toString().includes('/oem')}
+		>
+			<svelte:fragment slot="lead"
+				><div class="flex items-center justify-center">
+					<img src={OEM} class="h-8 w-8" alt="contracts" />
+				</div>
+			</svelte:fragment>
+			<span>OEM</span>
 		</AppRailAnchor>
 		<AppRailAnchor
 			title="Workflows"

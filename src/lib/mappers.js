@@ -1,10 +1,6 @@
 // @ts-nocheck
 
-export default {
-	gov_mapper
-};
-
-export function gov_mapper(field) {
+export function govMapper(field) {
 	const map = {
 		// solicitations table
 		issued_on: 'Issued',
@@ -52,6 +48,18 @@ export function gov_mapper(field) {
 	return map[field] ?? 'Error';
 }
 
+export function oemMapper(field) {
+	const map = {
+		date_received: 'Date Received',
+		requested_return_date: 'Requested Return Date',
+		quote_number: 'Quote Number',
+		'customer.name': 'Customer',
+		'customer.email_addresses': 'Email'
+	};
+
+	return map[field] ?? 'Error';
+}
+
 function capitalizeFirstLetter(sentence) {
 	return sentence.replace(/\b\w/g, function (char) {
 		return char.toUpperCase();
@@ -63,6 +71,37 @@ function formatCurrency(number) {
 	return '$' + number.toLocaleString('en-US', { minimumFractionDigits: 2 });
 }
 
+export function oemTableFieldMapper(obj, column) {
+	if (column.type === 'status') {
+		const containsStatus = (obj?.status ?? []).filter((e) => e.includes(column.status));
+
+		let value;
+		let header = `${column.status
+			.split('_')
+			.map((e) => capitalizeFirstLetter(e))
+			.join(' ')} Status`;
+		if (containsStatus.length > 0) {
+			value = containsStatus[0];
+		}
+
+		return { header, value };
+	} else if (column.type === 'name') {
+		return { header: 'Name', value: `${obj?.customer?.name} / ${obj?.date_received}` };
+	} else if (column.type === 'value') {
+		return { header: 'Est. Value', value: '' };
+	} else {
+		const header = oemMapper(column.field);
+
+		let value;
+		if (obj) {
+			value = obj;
+			for (let key of column.field.split('.')) {
+				value = value[key];
+			}
+		}
+		return { header, value };
+	}
+}
 export function tableFieldMapper(obj, column) {
 	if (column.type === 'status') {
 		const containsStatus = (obj?.status ?? []).filter((e) => e.includes(column.status));
@@ -88,7 +127,7 @@ export function tableFieldMapper(obj, column) {
 	} else {
 		const header =
 			column.header ??
-			gov_mapper(
+			govMapper(
 				column?.field?.toString().includes('solicitation.')
 					? column?.field?.split('.')[1]
 					: column?.field

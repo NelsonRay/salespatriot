@@ -1,4 +1,9 @@
 <script>
+	/**
+	 * @type {any}
+	 */
+	export let views;
+
 	let openDropdown = false;
 
 	function handleDropdownClick() {
@@ -7,33 +12,10 @@
 
 	// @ts-ignore
 	const handleDropdownFocusLoss = ({ relatedTarget, currentTarget }) => {
-		// // use "focusout" event to ensure that we can close the dropdown when clicking outside or when we leave the dropdown with the "Tab" button
+		// use "focusout" event to ensure that we can close the dropdown when clicking outside or when we leave the dropdown with the "Tab" button
 		if (relatedTarget instanceof HTMLElement && currentTarget.contains(relatedTarget)) return; // check if the new focus target doesn't present in the dropdown tree (exclude ul\li padding area because relatedTarget, in this case, will be null)
 		openDropdown = false;
 	};
-
-	let views = [
-		{
-			href: '/contracts/bidding-funnel',
-			label: 'Bidding Funnel'
-		},
-		{
-			href: '/contracts/recently-released',
-			label: 'Recently Released'
-		},
-		{
-			href: '/contracts/expiring-soon',
-			label: 'Expiring Soon'
-		},
-		{
-			href: '/contracts/contracts-bid',
-			label: 'Contracts Bid'
-		},
-		{
-			href: '/contracts/all-contracts',
-			label: 'All Contracts'
-		}
-	];
 </script>
 
 <div class="dropdown" on:focusout={handleDropdownFocusLoss}>
@@ -44,16 +26,16 @@
 		class="dropdown-content z-[100] menu p-2 shadow bg-neutral-100 rounded-box w-52"
 		style:visibility={openDropdown ? 'visible' : 'hidden'}
 	>
-		{#each views as view (view.label)}
+		{#each Object.entries(views) as view (view[0])}
 			<li>
 				<a
-					href={view.href}
+					href={view[0]}
 					on:click={() => {
 						handleDropdownClick();
 					}}
 					class="mb-1"
 				>
-					{view.label}
+					{view[1]}
 				</a>
 			</li>
 		{/each}
