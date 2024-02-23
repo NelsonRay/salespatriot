@@ -1,4 +1,6 @@
 <script>
+	import Arrow from '$lib/icons/Arrow.svg';
+
 	let value = {
 		customer: { name: '', email_address: '', customer_number: '' },
 		date_received: '',
@@ -15,6 +17,10 @@
 	};
 
 	let submitted = false;
+
+	function goBack() {
+		window.location.href = `${window.location.origin}`;
+	}
 
 	async function submit() {
 		const res = await fetch('/api/oem', {

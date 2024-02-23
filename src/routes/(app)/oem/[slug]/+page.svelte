@@ -81,7 +81,11 @@
 			<Views {views} />
 			<p class="font-semibold ml-4 text-sm">{views[$page.url.pathname]}</p>
 		</div>
-		<p class="text-xs">Last Updated: Today 8:30 AM</p>
+		<a
+			class="text-sm p-2 bg-neutral-100 rounded-md mr-4"
+			href={`${$page.url.origin}/oem-new`}
+			target="_blank">+ OEM RFQ</a
+		>
 	</div>
 </div>
 
