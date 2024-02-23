@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { capitalizeFirstLetter } from '$lib/helpers';
 
 export function govMapper(field) {
 	const map = {
@@ -54,16 +55,18 @@ export function oemMapper(field) {
 		requested_return_date: 'Requested Return Date',
 		quote_number: 'Quote Number',
 		'customer.name': 'Customer',
-		'customer.email_addresses': 'Email'
+		'customer.email_addresses': 'Email',
+		part_number: 'Part Number',
+		nsn: 'NSN',
+		cross_reference: 'Cross Reference',
+		quantities: 'Quantities',
+		material_cost: 'Material Cost',
+		lead_time: 'Lead Time',
+		labor_minutes: 'Labor Minutes',
+		final_pricing: 'Final Pricing'
 	};
 
 	return map[field] ?? 'Error';
-}
-
-function capitalizeFirstLetter(sentence) {
-	return sentence.replace(/\b\w/g, function (char) {
-		return char.toUpperCase();
-	});
 }
 
 function formatCurrency(number) {

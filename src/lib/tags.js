@@ -1,4 +1,4 @@
-export const tags = {
+export const govTags = {
 	opportunity: {
 		pursue: {
 			name: 'Pursue',

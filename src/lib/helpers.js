@@ -14,6 +14,14 @@ export function formatCurrency(number) {
 }
 
 // @ts-ignore
+export function capitalizeFirstLetter(sentence) {
+	// @ts-ignore
+	return sentence.replace(/\b\w/g, function (char) {
+		return char.toUpperCase();
+	});
+}
+
+// @ts-ignore
 export function getMatchingClass(name) {
 	let mClass = '';
 

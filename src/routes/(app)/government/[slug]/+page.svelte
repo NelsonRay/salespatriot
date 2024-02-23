@@ -1,7 +1,7 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
-	import { tags } from '$lib/tags.js';
+	import { govTags } from '$lib/tags.js';
 	import Views from '$lib/components/app/Views/Views.svelte';
 	import { page } from '$app/stores';
 	import { formatDate } from '$lib/helpers.js';
@@ -30,12 +30,12 @@
 		switch (pathname) {
 			case '/government/bidding-funnel':
 				query = query
-					.not('status', 'cs', `{"${tags.opportunity.not_pursue.key}"}`)
-					.not('status', 'cs', `{"${tags.engineering.cannot_build.key}"}`)
-					.not('status', 'cs', `{"${tags.bom.cannot_create.key}"}`)
-					.not('status', 'cs', `{"${tags.purchasing.out_of_budget.key}"}`)
-					.not('status', 'cs', `{"${tags.labor.not_within_time.key}"}`)
-					.not('status', 'cs', `{"${tags.review.not_approved.key}"}`)
+					.not('status', 'cs', `{"${govTags.opportunity.not_pursue.key}"}`)
+					.not('status', 'cs', `{"${govTags.engineering.cannot_build.key}"}`)
+					.not('status', 'cs', `{"${govTags.bom.cannot_create.key}"}`)
+					.not('status', 'cs', `{"${govTags.purchasing.out_of_budget.key}"}`)
+					.not('status', 'cs', `{"${govTags.labor.not_within_time.key}"}`)
+					.not('status', 'cs', `{"${govTags.review.not_approved.key}"}`)
 					.not('status', 'cs', `{"bid:bid"}`)
 					.filter('solicitation.expires_on', 'gte', formatDate(new Date()))
 					.eq('is_killed', false);
@@ -59,7 +59,7 @@
 					});
 				break;
 			case '/government/contracts-bid':
-				query = query.filter('status', 'cs', `{"${tags.bid.bid.key}"}`);
+				query = query.filter('status', 'cs', `{"${govTags.bid.bid.key}"}`);
 				break;
 			default:
 				break;
@@ -83,12 +83,12 @@
 						let blevel = 10;
 						if (a.status.some((e) => e.includes(status))) {
 							alevel =
-								tags[status][a.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
+								govTags[status][a.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
 						}
 
 						if (b.status.some((e) => e.includes(status))) {
 							blevel =
-								tags[status][b.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
+								govTags[status][b.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
 						}
 
 						return alevel < blevel ? -1 : 1;

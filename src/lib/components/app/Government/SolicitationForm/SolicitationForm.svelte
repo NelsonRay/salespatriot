@@ -11,6 +11,8 @@
 	import DlaForecast from '$lib/components/app/Government/DLAForecast/DLAForecast.svelte';
 	import AwardHistory from '$lib/components/app/Government/AwardHistory/AwardHistory.svelte';
 	import SolicitationInfo from '$lib/components/app/Government/SolicitationInfo/SolicitationInfo.svelte';
+	import { govTags } from '$lib/tags';
+	import { capitalizeFirstLetter } from '$lib/helpers';
 
 	export let solicitation_matched;
 	export let values;
@@ -18,12 +20,6 @@
 	export let form = null;
 	export let handleSubmit;
 	export let isSubmitting;
-
-	function capitalizeFirstLetter(sentence) {
-		return sentence.replace(/\b\w/g, function (char) {
-			return char.toUpperCase();
-		});
-	}
 
 	function goBack() {
 		window.location.href = `${window.location.origin}`;
@@ -232,7 +228,7 @@
 				{#each form?.matched_fields ?? matched_fields as field}
 					{#if field.type === 'status'}
 						<p class="mb-1 text-sm">{capitalizeFirstLetter(field.status)} Status</p>
-						<StatusSelect status={field.status} bind:value={values.status} />
+						<StatusSelect status={field.status} bind:value={values.status} tags={govTags} />
 					{/if}
 					{#if field.type === 'currency'}
 						<p class="mb-1 text-sm">{govMapper(field.field)}</p>
@@ -258,7 +254,7 @@
 
 					{#if values['skip_engineering']}
 						<p class="mb-1">Engineering Status</p>
-						<StatusSelect status={'engineering'} bind:value={values.status} />
+						<StatusSelect status={'engineering'} bind:value={values.status} tags={govTags} />
 					{/if}
 				{/if}
 				<div class="flex flex-row mt-5 items-center justify-center">

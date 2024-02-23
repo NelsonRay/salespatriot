@@ -1,9 +1,8 @@
 <script>
 	// @ts-nocheck
-	import { tags } from '$lib/tags';
-
 	export let value;
 	export let status;
+	export let tags;
 
 	let selected_tag_key;
 
@@ -64,6 +63,13 @@
 				color = 'bg-gray-500';
 				borderColor = 'border-gray-600';
 				shadowColor = 'shadow-gray-300';
+				break;
+			case 'orange':
+				color = 'bg-orange-500';
+				borderColor = 'border-orange-600';
+				shadowColor = 'shadow-orange-300';
+				break;
+			default:
 				break;
 		}
 

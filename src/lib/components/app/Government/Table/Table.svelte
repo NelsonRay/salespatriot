@@ -1,7 +1,7 @@
 <script>
 	// @ts-nocheck
 
-	import { tags } from '$lib/tags.js';
+	import { govTags } from '$lib/tags.js';
 	import { tableFieldMapper } from '$lib/mappers';
 	import { getMatchingClass } from '$lib/helpers.js';
 
@@ -44,7 +44,7 @@
 		if (!status) return '';
 		let color = '';
 
-		switch (tags[status.toString().split(':')[0]][status.toString().split(':')[1]].color) {
+		switch (govTags[status.toString().split(':')[0]][status.toString().split(':')[1]].color) {
 			case 'green':
 				color = 'bg-green-400';
 				break;
@@ -66,7 +66,7 @@
 
 	function getStatusName(status) {
 		if (!status) return '';
-		return tags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
+		return govTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
 	}
 
 	function navToSolicitation(id) {
