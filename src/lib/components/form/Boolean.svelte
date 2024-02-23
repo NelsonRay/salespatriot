@@ -24,7 +24,7 @@
 	}
 </script>
 
-<div class="flex flex-row mb-5">
+<div class="flex flex-row">
 	{#each [true, false] as answer}
 		<button class={getTagClass(answer, value)} on:click={() => (value = answer)}>
 			{answer ? 'Yes' : 'No'}

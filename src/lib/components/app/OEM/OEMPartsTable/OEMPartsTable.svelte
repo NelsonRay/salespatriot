@@ -4,7 +4,6 @@
 	import { oemTableFieldMapper } from '$lib/mappers';
 
 	export let data;
-	console.log(data);
 
 	const columns = [
 		{ type: 'field', field: 'part_number' },

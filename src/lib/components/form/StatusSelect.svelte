@@ -81,7 +81,7 @@
 	}
 </script>
 
-<div class="flex flex-row mb-5">
+<div class="flex flex-row">
 	{#each filterTags(status) as tag}
 		<button
 			class={getTagClass(tag.key, status, selected_tag_key)}

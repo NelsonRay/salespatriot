@@ -13,6 +13,7 @@
 	import SolicitationInfo from '$lib/components/app/Government/SolicitationInfo/SolicitationInfo.svelte';
 	import { govTags } from '$lib/tags';
 	import { capitalizeFirstLetter } from '$lib/helpers';
+	import { fieldsForForms } from '$lib/forms';
 
 	export let solicitation_matched;
 	export let values;
@@ -25,101 +26,7 @@
 		window.location.href = `${window.location.origin}`;
 	}
 
-	const matched_fields = [
-		{
-			type: 'status',
-			status: 'opportunity'
-		},
-		{
-			type: 'currency',
-			field: 'price_per_unit'
-		},
-		{
-			type: 'textarea',
-			field: 'opportunity_notes'
-		},
-
-		{
-			type: 'status',
-			status: 'engineering'
-		},
-		{
-			type: 'textarea',
-			field: 'engineering_notes'
-		},
-		{
-			type: 'status',
-			status: 'bom'
-		},
-		{
-			type: 'link',
-			field: 'bom_url'
-		},
-		{
-			type: 'textarea',
-			field: 'bom_notes'
-		},
-		{
-			type: 'status',
-			status: 'purchasing'
-		},
-		{
-			type: 'currency',
-			field: 'estimated_purchasing_budget'
-		},
-		{
-			type: 'currency',
-			field: 'estimated_purchasing_days'
-		},
-		{
-			type: 'textarea',
-			field: 'purchasing_notes'
-		},
-		{
-			type: 'status',
-			status: 'labor'
-		},
-		{
-			type: 'currency',
-			field: 'estimated_labor_hours'
-		},
-		{
-			type: 'textarea',
-			field: 'special_equipment'
-		},
-		{
-			type: 'textarea',
-			field: 'labor_notes'
-		},
-		{
-			type: 'status',
-			status: 'review'
-		},
-		{
-			type: 'textarea',
-			field: 'review_notes'
-		},
-		{
-			type: 'status',
-			status: 'bid'
-		},
-		{
-			type: 'link',
-			field: 'quote_number'
-		},
-		{
-			type: 'checkbox',
-			field: 'bid_exception'
-		},
-		{
-			type: 'textarea',
-			field: 'exception_notes'
-		},
-		{
-			type: 'textarea',
-			field: 'bid_notes'
-		}
-	];
+	const forms = ['opportunity', 'engineering', 'bom', 'purchasing', 'labor', 'review', 'bid'];
 </script>
 
 {#if solicitation_matched}
@@ -225,26 +132,35 @@
 		</div>
 		<div class="two bg-neutral-50">
 			<div class="flex flex-col p-6">
-				{#each form?.matched_fields ?? matched_fields as field}
-					{#if field.type === 'status'}
-						<p class="mb-1 text-sm">{capitalizeFirstLetter(field.status)} Status</p>
-						<StatusSelect status={field.status} bind:value={values.status} tags={govTags} />
-					{/if}
-					{#if field.type === 'currency'}
-						<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-						<Currency bind:value={values[field.field]} />
-					{/if}
-					{#if field.type === 'textarea'}
-						<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-						<Textarea bind:value={values[field.field]} />
-					{/if}
-					{#if field.type === 'checkbox'}
-						<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-						<Boolean bind:value={values[field.field]} />
-					{/if}
-					{#if field.type === 'link' || field.type === 'text'}
-						<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-						<TextInput bind:value={values[field.field]} />
+				{#each forms as f}
+					{#if form === null || form.type === f.type}
+						<div class="mb-3">
+							<p class="text-gray-400 mb-2 font-medium">{capitalizeFirstLetter(f) + ' Form'}</p>
+							{#each fieldsForForms[f] as field}
+								<div class="mb-3">
+									{#if field.type === 'status'}
+										<p class="mb-1 text-sm">{capitalizeFirstLetter(field.status)} Status</p>
+										<StatusSelect status={field.status} bind:value={values.status} tags={govTags} />
+									{/if}
+									{#if field.type === 'currency'}
+										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+										<Currency bind:value={values[field.field]} />
+									{/if}
+									{#if field.type === 'textarea'}
+										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+										<Textarea bind:value={values[field.field]} />
+									{/if}
+									{#if field.type === 'checkbox'}
+										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+										<Boolean bind:value={values[field.field]} />
+									{/if}
+									{#if field.type === 'link' || field.type === 'text'}
+										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+										<TextInput bind:value={values[field.field]} />
+									{/if}
+								</div>
+							{/each}
+						</div>
 					{/if}
 				{/each}
 				{#if (values.status ?? []).includes('opportunity:pursue') && form?.type === 'opportunity'}
