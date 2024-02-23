@@ -2,7 +2,7 @@
 	// @ts-nocheck
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
-	import SolicitationForm from '$lib/components/app/SolicitationForm/SolicitationForm.svelte';
+	import SolicitationForm from '$lib/components/app/Government/SolicitationForm/SolicitationForm.svelte';
 
 	export let data;
 	$: ({ supabase, session } = data);

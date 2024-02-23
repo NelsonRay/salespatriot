@@ -6,11 +6,11 @@
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Boolean from '$lib/components/form/Boolean.svelte';
 	import { govMapper } from '$lib/mappers';
-	import Table from '$lib/components/app/Table/Table.svelte';
+	import Table from '$lib/components/app/Government/Table/Table.svelte';
 	import Arrow from '$lib/icons/Arrow.svg';
-	import DlaForecast from '$lib/components/app/DLAForecast/DLAForecast.svelte';
-	import AwardHistory from '$lib/components/app/AwardHistory/AwardHistory.svelte';
-	import SolicitationInfo from '$lib/components/app/SolicitationInfo/SolicitationInfo.svelte';
+	import DlaForecast from '$lib/components/app/Government/DLAForecast/DLAForecast.svelte';
+	import AwardHistory from '$lib/components/app/Government/AwardHistory/AwardHistory.svelte';
+	import SolicitationInfo from '$lib/components/app/Government/SolicitationInfo/SolicitationInfo.svelte';
 
 	export let solicitation_matched;
 	export let values;

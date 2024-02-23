@@ -5,7 +5,7 @@
 	import Views from '$lib/components/app/Views/Views.svelte';
 	import { page } from '$app/stores';
 	import { formatDate } from '$lib/helpers.js';
-	import OEMTable from '$lib/components/app/OEMTable/OEMTable.svelte';
+	import OEMTable from '$lib/components/app/OEM/OEMTable/OEMTable.svelte';
 
 	export let data;
 

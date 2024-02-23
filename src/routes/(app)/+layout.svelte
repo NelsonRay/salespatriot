@@ -1,7 +1,7 @@
 <script>
 	import { AppShell } from '@skeletonlabs/skeleton';
-	import AppBar from '$lib/components/AppBar/AppBar.svelte';
-	import AppSidebar from '$lib/components/AppSidebar/AppSidebar.svelte';
+	import AppBar from '$lib/components/app/Navigation/AppBar/AppBar.svelte';
+	import AppSidebar from '$lib/components/app/Navigation/AppSidebar/AppSidebar.svelte';
 </script>
 
 <AppShell slotPageContent="overflow-x-scroll">
