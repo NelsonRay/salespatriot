@@ -8,20 +8,22 @@
 
 {#if data && data?.length > 0}
 	<article
-		class="bg-white w-[100%] px-2 overflow-scroll scrollbar-gutter-stable"
+		class="bg-white w-[100%] overflow-scroll scrollbar-gutter-stable"
 		style="direction: ltr;"
 	>
 		<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll">
 			<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
-				{#each ['Total Value', 'Unit Price', 'Quantity', 'Award Date', 'Cage', 'Vendor'] as header}
-					<th>{header}</th>
+				{#each ['#', 'Total Value', 'Unit Price', 'Quantity', 'Award Date', 'Cage', 'Vendor'] as header, i}
+					<th class={i === 0 ? 'text-center' : ''}>{header}</th>
 				{/each}
 			</thead>
 			<tbody>
-				{#each data as award}
+				{#each data as award, index}
 					<tr>
-						{#each ['TOTALVALUE', 'UNITPRICE', 'QUANTITY', 'AWARDDATE', 'CAGE', 'VENDOR'] as key}
-							{#if key === 'TOTALVALUE'}
+						{#each ['#', 'TOTALVALUE', 'UNITPRICE', 'QUANTITY', 'AWARDDATE', 'CAGE', 'VENDOR'] as key, i}
+							{#if i === 0}
+								<td class="text-center">{index + 1}</td>
+							{:else if key === 'TOTALVALUE'}
 								<td>{formatCurrency(award['UNITPRICE'] * award['QUANTITY'])}</td>
 							{:else if key === 'UNITPRICE'}
 								<td>{formatCurrency(award[key])}</td>

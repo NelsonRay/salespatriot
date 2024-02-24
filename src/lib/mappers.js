@@ -75,6 +75,7 @@ function formatCurrency(number) {
 }
 
 export function oemTableFieldMapper(obj, column) {
+	if (column.type === 'position') return { header: '#' };
 	if (column.type === 'status') {
 		const containsStatus = (obj?.status ?? []).filter((e) => e.includes(column.status));
 
@@ -106,6 +107,7 @@ export function oemTableFieldMapper(obj, column) {
 	}
 }
 export function tableFieldMapper(obj, column) {
+	if (column.type === 'position') return { header: '#' };
 	if (column.type === 'status') {
 		const containsStatus = (obj?.status ?? []).filter((e) => e.includes(column.status));
 

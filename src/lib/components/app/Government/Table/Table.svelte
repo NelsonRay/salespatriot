@@ -7,7 +7,8 @@
 
 	export let data;
 
-	const columns = [
+	let columns = [
+		{ type: 'position' },
 		{ type: 'field', field: 'solicitation.number' },
 		{ type: 'field', field: 'solicitation.description' },
 		{ type: 'field', field: 'solicitation.expires_on' },
@@ -75,20 +76,24 @@
 </script>
 
 <article
-	class="bg-white w-[100%] h-full px-2 overflow-scroll scrollbar-gutter-stable"
+	class="bg-white w-[100%] h-full overflow-scroll scrollbar-gutter-stable"
 	style="direction: ltr;"
 >
 	<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll text-xs">
 		<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
 			{#each columns as column}
-				<th>{tableFieldMapper(undefined, column).header}</th>
+				<th class={column.type === 'position' ? 'text-center' : ''}
+					>{tableFieldMapper(undefined, column).header}</th
+				>
 			{/each}
 		</thead>
 		<tbody>
-			{#each data as obj (obj.id)}
+			{#each data as obj, index (obj.id)}
 				<tr on:click={() => navToSolicitation(obj.id)} class="hover:bg-neutral-100">
 					{#each columns as column, i}
-						{#if column.type === 'status'}
+						{#if column.type === 'position'}
+							<td class="text-center"> {index + 1}</td>
+						{:else if column.type === 'status'}
 							<td>
 								<div
 									class="p-2 rounded-md inline-block {getStatusColor(

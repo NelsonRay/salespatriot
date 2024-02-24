@@ -8,6 +8,7 @@
 	export let data;
 
 	const columns = [
+		{ type: 'position' },
 		{ type: 'name' },
 		{ type: 'value' },
 		{ type: 'status', status: 'purchasing' },
@@ -52,26 +53,29 @@
 		return oemTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
 	}
 
-	function navToSolicitation(id) {
-		window.location.href = `${window.location.origin}/solicitation/${id}`;
+	function navToOemRfq(id) {
+		window.location.href = `${window.location.origin}/oem-rfq/${id}`;
 	}
 </script>
 
 <article
-	class="bg-white w-[100%] h-full px-2 overflow-scroll scrollbar-gutter-stable"
+	class="bg-white w-[100%] h-full overflow-scroll scrollbar-gutter-stable"
 	style="direction: ltr;"
 >
 	<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll text-xs">
 		<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
-			{#each columns as column}
-				<th>{oemTableFieldMapper(undefined, column).header}</th>
+			{#each columns as column, i}
+				<th class={i === 0 ? 'text-center' : ''}>{oemTableFieldMapper(undefined, column).header}</th
+				>
 			{/each}
 		</thead>
 		<tbody>
-			{#each data as obj (obj.id)}
-				<tr on:click={() => {}} class="hover:bg-neutral-100">
+			{#each data as obj, index (obj.id)}
+				<tr on:click={() => navToOemRfq(obj.id)} class="hover:bg-neutral-100">
 					{#each columns as column, i}
-						{#if column.type === 'status'}
+						{#if column.type === 'position'}
+							<td class="text-center">{index + 1}</td>
+						{:else if column.type === 'status'}
 							<td>
 								<div
 									class="p-2 rounded-md inline-block {getStatusColor(

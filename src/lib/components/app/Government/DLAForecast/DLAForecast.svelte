@@ -31,7 +31,7 @@
 
 {#if formattedForecast && formattedForecast?.length > 0}
 	<article
-		class="bg-white w-[100%] px-2 overflow-scroll scrollbar-gutter-stable"
+		class="bg-white w-[100%] overflow-scroll scrollbar-gutter-stable"
 		style="direction: ltr;"
 	>
 		<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll">
