@@ -3,14 +3,14 @@
 	export let value;
 	export let status;
 	export let tags;
+	export let skipInProgress = true;
 
 	let selected_tag_key;
 
 	// if includes status, update selected_tag_key
-
 	const containsStatus = value?.filter((e) => e.includes(status));
 	if (containsStatus?.length > 0) {
-		if (containsStatus[0].split(':')[1] === 'in_progress') {
+		if (skipInProgress && containsStatus[0].split(':')[1] === 'in_progress') {
 			value = value.filter((e) => !e.includes(status));
 		} else {
 			selected_tag_key = containsStatus[0].split(':')[1];
@@ -20,7 +20,7 @@
 	function filterTags(status) {
 		let filtered_tags = Object.keys(tags[status])
 			.map((key) => ({ ...tags[status][key], key }))
-			.filter((e) => e.level !== 3);
+			.filter((e) => (skipInProgress ? e.key.split(':')[1] !== 'in_progress' : true));
 
 		return filtered_tags;
 	}

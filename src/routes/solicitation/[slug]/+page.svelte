@@ -19,7 +19,7 @@
 		const res = await fetch('/api/solicitations/update', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ values, id: solicitation_matched.id })
+			body: JSON.stringify({ values, id: solicitation_matched.id, oldValues: solicitation_matched })
 		});
 
 		if (res.status === 200) {

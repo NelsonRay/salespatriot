@@ -133,14 +133,19 @@
 		<div class="two bg-neutral-50">
 			<div class="flex flex-col p-6">
 				{#each forms as f}
-					{#if form === null || form.type === f.type}
+					{#if form === null || form.type === f}
 						<div class="mb-3">
 							<p class="text-gray-400 mb-2 font-medium">{capitalizeFirstLetter(f) + ' Form'}</p>
 							{#each fieldsForForms[f] as field}
 								<div class="mb-3">
 									{#if field.type === 'status'}
 										<p class="mb-1 text-sm">{capitalizeFirstLetter(field.status)} Status</p>
-										<StatusSelect status={field.status} bind:value={values.status} tags={govTags} />
+										<StatusSelect
+											status={field.status}
+											bind:value={values.status}
+											tags={govTags}
+											skipInProgress={form !== null}
+										/>
 									{/if}
 									{#if field.type === 'currency'}
 										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
@@ -170,7 +175,12 @@
 
 					{#if values['skip_engineering']}
 						<p class="mb-1">Engineering Status</p>
-						<StatusSelect status={'engineering'} bind:value={values.status} tags={govTags} />
+						<StatusSelect
+							status={'engineering'}
+							bind:value={values.status}
+							tags={govTags}
+							skipInProgress={form !== null}
+						/>
 					{/if}
 				{/if}
 				<div class="flex flex-row mt-5 items-center justify-center">
