@@ -36,7 +36,7 @@
 			header: 'In-House PN'
 		},
 		{ type: 'field', field: 'solicitation.days_to_deliver' },
-		{ type: 'field', field: 'bom_url' },
+		{ type: 'link', field: 'bom_url' },
 		{ type: 'field', field: 'price_per_unit' },
 		{ type: 'link', field: 'solicitation.solicitation_url' },
 		{ type: 'link', field: 'solicitation.tech_docs' }
@@ -116,11 +116,13 @@
 							>
 						{:else if column.type === 'link'}
 							<td>
-								<a
-									href={tableFieldMapper(obj, column).value ?? ''}
-									target="_blank"
-									class="mb-5 text-blue-500">URL</a
-								>
+								{#if tableFieldMapper(obj, column).value}
+									<a
+										href={tableFieldMapper(obj, column).value}
+										target="_blank"
+										class="mb-5 text-blue-500">URL</a
+									>
+								{/if}
 							</td>
 						{:else}
 							<td>{tableFieldMapper(obj, column).value ?? ''}</td>
