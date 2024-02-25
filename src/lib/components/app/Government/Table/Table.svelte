@@ -21,6 +21,7 @@
 		{ type: 'status', status: 'labor' },
 		{ type: 'status', status: 'review' },
 		{ type: 'status', status: 'bid' },
+		{ type: 'status', status: 'award' },
 		{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
 		{ type: 'matching_rule', status: 'matching_rule' },
 		{ type: 'field', field: 'solicitation.set_aside' },
@@ -59,7 +60,7 @@
 				color = 'bg-blue-400';
 				break;
 			case 'gray':
-				color = 'bg-gray-500';
+				color = 'bg-gray-300';
 				break;
 		}
 		return color;

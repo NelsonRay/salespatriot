@@ -95,6 +95,23 @@
 					});
 				}
 				break;
+			case '/government/contracts-bid':
+				data = data.sort(function (a, b) {
+					let alevel = 10;
+					let blevel = 10;
+					if (a.status.some((e) => e.includes('award'))) {
+						alevel =
+							govTags['award'][a.status.filter((e) => e.includes('award'))[0].split(':')[1]].level;
+					}
+
+					if (b.status.some((e) => e.includes('award'))) {
+						blevel =
+							govTags['award'][b.status.filter((e) => e.includes('award'))[0].split(':')[1]].level;
+					}
+
+					return alevel < blevel ? -1 : 1;
+				});
+				break;
 		}
 		solicitations_matched = data;
 	}

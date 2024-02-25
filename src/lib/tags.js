@@ -185,7 +185,7 @@ export const govTags = {
 		lost: {
 			name: 'Lost',
 			level: 4,
-			color: 'red-',
+			color: 'red',
 			key: 'award:lost'
 		},
 		removed: {
