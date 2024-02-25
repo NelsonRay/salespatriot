@@ -27,7 +27,12 @@ export async function POST({ request, locals: { supabase } }) {
 
 	const { data, error } = await supabase
 		.from('oem_rfqs')
-		.upsert({ ...rest, customer: customerId, firm: '6b289746-2b01-47af-a7d4-26a3920f75ca' })
+		.upsert({
+			...rest,
+			customer: customerId,
+			firm: '6b289746-2b01-47af-a7d4-26a3920f75ca',
+			status: ['purchasing:in_progress']
+		})
 		.select('id')
 		.limit(1)
 		.single();
@@ -35,6 +40,10 @@ export async function POST({ request, locals: { supabase } }) {
 	const { data: pData, error: pError } = await supabase
 		.from('oem_rfqs_parts')
 		.upsert(parts.map((p) => ({ ...p, oem_rfq: data.id })));
+
+	const { data: fData, error: fError } = await supabase
+		.from('oem_forms')
+		.insert({ oem_form: '64f61fff-0e3a-4993-9fd0-3c563adacca3', oem_rfq: data.id });
 
 	return json({}, { status: 200 });
 }
