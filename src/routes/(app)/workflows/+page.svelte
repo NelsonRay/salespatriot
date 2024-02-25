@@ -10,6 +10,7 @@
 	let workflows;
 	let showSubmitted = {};
 	let isGov = true;
+	let isUser = true;
 	let isMounted = false;
 
 	async function loadData(isGov) {
@@ -145,19 +146,36 @@
 
 <div class="h-12 bg-neutral-50 flex flex-row items-center justify-between pl-6 pr-10">
 	<p>Government</p>
-	<div class="flex flex-row items-center">
-		<button
-			class="rounded-r-none text-xs bg-neutral-200 p-2 rounded-l-md border-r-[1px] border-gray-300 hover:bg-neutral-300 {isGov
-				? 'bg-neutral-300'
-				: ''}"
-			on:click={() => (isGov = true)}>Government</button
-		>
-		<button
-			class="rounded-l-none text-xs bg-neutral-200 p-2 rounded-r-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {!isGov
-				? 'bg-neutral-300'
-				: ''}"
-			on:click={() => (isGov = false)}>OEM</button
-		>
+	<div class="flex flex-row items-center space-x-5">
+		<div class="flex flex-row items-center">
+			<button
+				class="rounded-r-none text-xs bg-neutral-200 p-2 rounded-l-md border-r-[1px] border-gray-300 hover:bg-neutral-300 {isGov
+					? 'bg-neutral-300'
+					: ''}"
+				on:click={() => (isGov = true)}>Government</button
+			>
+			<button
+				class="rounded-l-none text-xs bg-neutral-200 p-2 rounded-r-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {!isGov
+					? 'bg-neutral-300'
+					: ''}"
+				on:click={() => (isGov = false)}>OEM</button
+			>
+		</div>
+
+		<div class="flex flex-row items-center">
+			<button
+				class="rounded-r-none text-xs bg-neutral-200 p-2 rounded-l-md border-r-[1px] border-gray-300 hover:bg-neutral-300 {!isUser
+					? 'bg-neutral-300'
+					: ''}"
+				on:click={() => (isUser = false)}>Admin</button
+			>
+			<button
+				class="rounded-l-none text-xs bg-neutral-200 p-2 rounded-r-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {isUser
+					? 'bg-neutral-300'
+					: ''}"
+				on:click={() => (isUser = true)}>User</button
+			>
+		</div>
 	</div>
 </div>
 {#if workflows}
