@@ -26,7 +26,12 @@ export async function POST({ request, cookies }) {
 		}
 	});
 
-	const { data, error } = await supabase.from('oem_rfqs').eq('id', oem_rfq).select('*').single();
+	const { data, error } = await supabase
+		.from('oem_rfqs')
+		.select('*')
+		.eq('id', oem_rfq)
+		.limit(1)
+		.single();
 
 	if (error) {
 		console.log(error);
