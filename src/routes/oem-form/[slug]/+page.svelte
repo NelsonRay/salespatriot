@@ -17,7 +17,7 @@
 	async function loadData() {
 		const { data, error: err } = await supabase
 			.from('oem_forms')
-			.select('*, oem_form!inner(*), oem_rfq!inner(*, oem_rfqs_parts(*))')
+			.select('*, oem_form!inner(*), oem_rfq!inner(*, oem_rfqs_parts(*), customer(*))')
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
 			.single();
