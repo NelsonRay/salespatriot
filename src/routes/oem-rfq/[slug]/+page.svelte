@@ -48,4 +48,6 @@
 	});
 </script>
 
-<OEMForm data={oem_rfq} {values} {handleSubmit} {isSubmitting} />
+{#if values}
+	<OEMForm data={oem_rfq} {values} {handleSubmit} {isSubmitting} />
+{/if}

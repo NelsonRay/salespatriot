@@ -7,7 +7,7 @@
 	import Boolean from '$lib/components/form/Boolean.svelte';
 	import Arrow from '$lib/icons/Arrow.svg';
 	import OEMInfo from '$lib/components/app/OEM/OEMInfo/OEMInfo.svelte';
-	import OEMPartsTable from '$lib/components/app/OEM/OEMPartsTable/OEMPartsTable.svelte';
+	import OEMParts from '$lib/components/app/OEM/OEMParts/OEMParts.svelte';
 	import { oemTags } from '$lib/tags';
 
 	export let data;
@@ -36,81 +36,48 @@
 				<OEMInfo {data} />
 
 				<div>
-					<p class="text-lg mt-5 mb-2 font-semibold">Parts</p>
-					<OEMPartsTable data={values.oem_rfqs_parts} />
+					<OEMParts
+						bind:parts={values.oem_rfqs_parts}
+						showRemove={form === null}
+						showPurchasing={['purchasing', 'final_pricing', null].includes(form?.type)}
+						showLabor={['labor', 'final_pricing', null].includes(form?.type)}
+						showPricing={['final_pricing', null].includes(form?.type)}
+					/>
 				</div>
 			</div>
 		</div>
 		<div class="two bg-neutral-50">
 			<div class="flex flex-col p-6 space-y-5">
-				{#if form === null || form.type === 'purchasing'}
+				{#if form === null || form?.type === 'purchasing'}
 					<div>
 						<p class="text-gray-400 mb-2 font-medium">Purchasing Form</p>
+
+						<p class="text-gray-500 mb-2 text-sm">
+							Please provide material costs and lead times for each part.
+						</p>
+
 						<div class="mb-3">
 							<p class="mb-1 text-sm">Resale</p>
 							<Boolean bind:value={values.resale} />
 						</div>
-						{#each values.oem_rfqs_parts as part, index (part.id)}
-							<div class="flex flex-col">
-								<p class="text-gray-500 mb-2 text-sm">
-									Please provide material costs and lead times for each part:
-								</p>
-								<p class="mb-1 font-medium">{`Part #${index + 1}`}</p>
-								<div class="flex flex-row space-x-5">
-									<div class="flex flex-col">
-										<p class="text-sm">Material Cost</p>
-										<Currency bind:value={part.material_cost} />
-									</div>
-
-									<div class="flex flex-col">
-										<p class="text-sm">Lead Time</p>
-										<Currency bind:value={part.lead_time} />
-									</div>
-								</div>
-							</div>
-						{/each}
 					</div>
 				{/if}
 
-				{#if form === null || form.type === 'labor'}
+				{#if form === null || form?.type === 'labor'}
 					<div>
 						<p class="text-gray-400 mb-2 font-medium">Labor Form</p>
-						{#each values.oem_rfqs_parts as part, index (part.id)}
-							<div class="flex flex-col">
-								<p class="text-gray-500 mb-2 text-sm">
-									Please provide labor minutes for each part:
-								</p>
-								<p class="mb-1 font-medium">{`Part #${index + 1}`}</p>
-
-								<div class="flex flex-col space-y-1">
-									<p class="text-sm">Labor Minutes</p>
-									<Currency bind:value={part.labor_minutes} />
-								</div>
-							</div>
-						{/each}
+						<p class="text-gray-500 mb-2 text-sm">Please provide labor minutes for each part.</p>
 					</div>
 				{/if}
 
-				{#if form === null || form.type === 'final_pricing'}
+				{#if form === null || form?.type === 'final_pricing'}
 					<div>
 						<p class="text-gray-400 mb-2 font-medium">Final Pricing Form</p>
-						{#each values.oem_rfqs_parts as part, index (part.id)}
-							<div class="flex flex-col">
-								<p class="text-gray-500 mb-2 text-sm">
-									Please provide final pricing for each part:
-								</p>
-								<p class="mb-1 font-medium">{`Part #${index + 1}`}</p>
-
-								<div class="flex flex-col space-y-1">
-									<p class="text-sm">Final Pricing</p>
-									<Currency bind:value={part.final_pricing} />
-								</div>
-							</div>
-						{/each}
+						<p class="text-gray-500 mb-2 text-sm">Please provide final pricing for each part:</p>
 					</div>
 				{/if}
 
-				{#if form === null || form.type === 'enter_quote'}
+				{#if form === null || form?.type === 'enter_quote'}
 					<div>
 						<p class="text-gray-400 mb-2 font-medium">Enter Quote Number Form</p>
 						<div>
