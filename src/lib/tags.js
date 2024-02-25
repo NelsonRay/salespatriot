@@ -171,7 +171,7 @@ export const govTags = {
 	},
 	award: {
 		won: {
-			name: 'Bid',
+			name: 'Won',
 			level: 1,
 			color: 'green',
 			key: 'award:won'

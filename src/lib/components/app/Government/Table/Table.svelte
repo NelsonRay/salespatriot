@@ -39,7 +39,8 @@
 		{ type: 'link', field: 'bom_url' },
 		{ type: 'field', field: 'price_per_unit' },
 		{ type: 'link', field: 'solicitation.solicitation_url' },
-		{ type: 'link', field: 'solicitation.tech_docs' }
+		{ type: 'link', field: 'solicitation.tech_docs' },
+		{ type: 'field', field: 'solicitation.price_won_at' }
 	];
 
 	function getStatusColor(status) {

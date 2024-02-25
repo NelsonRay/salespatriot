@@ -150,7 +150,7 @@ export function tableFieldMapper(obj, column) {
 			}
 		}
 
-		if (['solicitation.estimated_value'].includes(column.field)) {
+		if (['solicitation.estimated_value', 'solicitation.price_won_at'].includes(column.field)) {
 			value = formatCurrency(value);
 		}
 
