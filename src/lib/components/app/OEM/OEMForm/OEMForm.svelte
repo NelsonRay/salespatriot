@@ -1,7 +1,6 @@
 <script>
 	// @ts-nocheck
 	import StatusSelect from '$lib/components/form/StatusSelect.svelte';
-	import Currency from '$lib/components/form/Currency.svelte';
 	import Textarea from '$lib/components/form/Textarea.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Boolean from '$lib/components/form/Boolean.svelte';
@@ -21,7 +20,7 @@
 	}
 </script>
 
-{#if data}
+{#if values}
 	<div class="parent">
 		<div class="one pl-4 pt-4 overflow-auto">
 			<div>
@@ -33,7 +32,7 @@
 				</button>
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				<OEMInfo {data} />
+				<OEMInfo data={data.oem_rfq} />
 
 				<div>
 					<OEMParts
@@ -87,7 +86,7 @@
 					</div>
 				{/if}
 
-				{#if form === null || form.type === 'send_quote'}
+				{#if form === null || form?.type === 'send_quote'}
 					<div>
 						<p class="text-gray-400 mb-2 font-medium">Send Quote Form</p>
 						<div>
@@ -97,7 +96,7 @@
 					</div>
 				{/if}
 
-				{#if form === null || form.type === 'response'}
+				{#if form === null || form?.type === 'response'}
 					<div>
 						<p class="text-gray-400 mb-2 font-medium">Response Form</p>
 						<p class="mb-1 text-sm">Response Status</p>

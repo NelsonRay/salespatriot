@@ -6,8 +6,6 @@
 	export let showPricing = false;
 	export let showRemove = false;
 
-	console.log(parts);
-
 	function addPart() {
 		parts.push({
 			part_number: '',
@@ -115,7 +113,7 @@
 													autocomplete="off"
 													class="{appInput} w-20"
 													type="number"
-													bind:value={qty.material_cost}
+													bind:value={qty.lead_time}
 												/>
 											</div>
 										{/if}
@@ -130,7 +128,7 @@
 													autocomplete="off"
 													class="{appInput} w-20"
 													type="number"
-													bind:value={qty.material_cost}
+													bind:value={qty.labor_minutes}
 												/>
 											</div>
 										{/if}

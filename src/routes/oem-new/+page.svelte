@@ -20,7 +20,7 @@
 	let isSubmitting = false;
 
 	async function handleSubmit() {
-		const res = await fetch('/api/oem', {
+		const res = await fetch('/api/oem/new', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ value })
