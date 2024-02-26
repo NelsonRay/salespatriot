@@ -47,3 +47,31 @@ export function getMatchingClass(name) {
 
 	return mClass;
 }
+
+// @ts-ignore
+export function getSetAsideColor(setAside) {
+	let cClass = '';
+
+	switch (setAside) {
+		case 'HUB Zone':
+			cClass = 'bg-yellow-300';
+			break;
+		case 'Small Business':
+			cClass = 'bg-blue-300';
+			break;
+		case 'Women Owned':
+			cClass = 'bg-pink-300';
+			break;
+		case 'Veteran Owned':
+			cClass = 'bg-purple-300';
+			break;
+		case '8A':
+			cClass = 'bg-orange-300';
+			break;
+		default:
+			cClass = 'bg-red-300';
+			break;
+	}
+
+	return cClass;
+}

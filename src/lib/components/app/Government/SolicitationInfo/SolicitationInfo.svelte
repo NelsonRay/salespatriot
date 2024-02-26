@@ -1,7 +1,7 @@
 <script>
 	// @ts-nocheck
 	import { tableFieldMapper } from '$lib/mappers';
-	import { formatCurrency, getMatchingClass } from '$lib/helpers.js';
+	import { formatCurrency, getMatchingClass, getSetAsideColor } from '$lib/helpers.js';
 
 	export let solicitation_matched;
 </script>
@@ -19,6 +19,23 @@
 			{/if}
 		</div>
 		<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
+	</div>
+
+	<div>
+		<div class="flex flex-row space-x-1 items-center">
+			<p class="text-gray-400">Set Aside:</p>
+			{#if solicitation_matched.solicitation.set_aside}
+				<div
+					class="py-1 px-2 rounded-md inline-block text-xs {getSetAsideColor(
+						solicitation_matched.solicitation.set_aside
+					)}"
+				>
+					{solicitation_matched.solicitation.set_aside}
+				</div>
+			{:else}
+				<p>None</p>
+			{/if}
+		</div>
 	</div>
 
 	<div>
@@ -86,13 +103,6 @@
 			<p class="text-gray-400">First Article:</p>
 			<p>
 				{solicitation_matched.solicitation.first_article ? 'Yes' : 'No'}
-			</p>
-		</div>
-
-		<div class="flex flex-row space-x-1">
-			<p class="text-gray-400">Set Aside:</p>
-			<p>
-				{solicitation_matched.solicitation.set_aside ?? 'None'}
 			</p>
 		</div>
 	</div>

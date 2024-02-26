@@ -3,7 +3,7 @@
 
 	import { govTags } from '$lib/tags.js';
 	import { tableFieldMapper } from '$lib/mappers';
-	import { getMatchingClass } from '$lib/helpers.js';
+	import { getMatchingClass, getSetAsideColor } from '$lib/helpers.js';
 
 	export let data;
 	export let columns;
@@ -71,15 +71,29 @@
 								</div>
 							</td>
 						{:else if column.type === 'matching_rule'}
-							<td
-								><div
-									class="p-2 rounded-md inline-block {getMatchingClass(
-										tableFieldMapper(obj, column).value
-									)}"
-								>
-									{tableFieldMapper(obj, column).value ?? ''}
-								</div></td
+							<td>
+								{#if tableFieldMapper(obj, column).value}
+									<div
+										class="p-2 rounded-md inline-block {getMatchingClass(
+											tableFieldMapper(obj, column).value
+										)}"
+									>
+										{tableFieldMapper(obj, column).value ?? ''}
+									</div>
+								{/if}</td
 							>
+						{:else if column.type === 'set_aside'}
+							<td>
+								{#if tableFieldMapper(obj, column).value}
+									<div
+										class="p-2 rounded-md inline-block {getSetAsideColor(
+											tableFieldMapper(obj, column).value
+										)}"
+									>
+										{tableFieldMapper(obj, column).value ?? ''}
+									</div>
+								{/if}
+							</td>
 						{:else if column.type === 'link'}
 							<td>
 								{#if tableFieldMapper(obj, column).value}
