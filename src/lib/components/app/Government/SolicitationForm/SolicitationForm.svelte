@@ -173,16 +173,6 @@
 					<p class="mb-1">Skip Engineering Feasibility Form</p>
 
 					<Boolean bind:value={values['skip_engineering']} />
-
-					{#if values['skip_engineering']}
-						<p class="mb-1">Engineering Status</p>
-						<StatusSelect
-							status={'engineering'}
-							bind:value={values.status}
-							tags={govTags}
-							skipInProgress={form !== null}
-						/>
-					{/if}
 				{/if}
 				<div class="flex flex-row mt-5 items-center justify-center">
 					{#if !isSubmitting}

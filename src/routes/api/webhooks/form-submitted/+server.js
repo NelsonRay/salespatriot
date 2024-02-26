@@ -40,7 +40,21 @@ export async function POST({ request, cookies }) {
 
 	switch (form) {
 		case '50e95568-180b-46d5-a341-f216bb2a3c17':
-			if (data.status.includes('opportunity:pursue') && !data.skip_engineering) {
+			if (data.skip_engineering) {
+				await updateStatusInProgress(
+					data.status,
+					['purchasing:in_progress', 'labor:in_progress'],
+					supabase,
+					solicitation_matched
+				);
+				await supabase
+					.from('forms')
+					.insert({ form: '18055704-d9b9-42d7-958b-f5d1d5b1ba4d', solicitation_matched });
+
+				await supabase
+					.from('forms')
+					.insert({ form: '53cc6979-4406-47aa-97a0-1d83d0504c12', solicitation_matched });
+			} else if (data.status.includes('opportunity:pursue')) {
 				await updateStatusInProgress(
 					data.status,
 					['engineering:in_progress'],
