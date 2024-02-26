@@ -24,7 +24,7 @@ export const fieldsForForms = {
 	],
 	purchasing: [
 		{ type: 'status', status: 'purchasing' },
-		{ type: 'currency', field: 'estimated_purchasing_budget' },
+		{ type: 'currency', field: 'estimated_material_cost' },
 		{ type: 'currency', field: 'estimated_purchasing_days' },
 		{ type: 'textarea', field: 'purchasing_notes' }
 	],
