@@ -36,8 +36,7 @@
 			);
 		}
 		form = data;
-
-		const { solicitation, matching_rule, ...rest } = data;
+		const { solicitation, matching_rule, ...rest } = data.solicitation_matched;
 		values = rest;
 	}
 

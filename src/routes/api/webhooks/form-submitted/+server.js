@@ -40,7 +40,7 @@ export async function POST({ request, cookies }) {
 
 	switch (form) {
 		case '50e95568-180b-46d5-a341-f216bb2a3c17':
-			if (data.skip_engineering) {
+			if (response.skip_engineering) {
 				await updateStatusInProgress(
 					data.status,
 					['purchasing:in_progress', 'labor:in_progress'],

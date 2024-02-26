@@ -52,7 +52,7 @@
 				month = 'Jun';
 				break;
 			case '07':
-				monyh = 'Jul';
+				month = 'Jul';
 				break;
 			case '08':
 				month = 'Aug';
