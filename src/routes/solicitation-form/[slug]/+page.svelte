@@ -50,7 +50,7 @@
 		const res = await fetch('/api/solicitations/form-submission', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ values, id: $page.data.id })
+			body: JSON.stringify({ values, id: form.id })
 		});
 
 		if (res.status === 200) {
