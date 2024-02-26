@@ -6,6 +6,7 @@
 	import { page } from '$app/stores';
 	import { formatDate } from '$lib/helpers.js';
 	import Table from '$lib/components/app/Government/Table/Table.svelte';
+	import { columns } from '$lib/table.js';
 
 	export let data;
 
@@ -143,7 +144,7 @@
 </div>
 
 {#if solicitations_matched}
-	<Table data={solicitations_matched} />
+	<Table data={solicitations_matched} {columns} />
 {:else}
 	<div class="flex flex-col gap-4 p-5">
 		<div class="skeleton h-4 w-full"></div>

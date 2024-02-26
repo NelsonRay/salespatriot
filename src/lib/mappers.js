@@ -19,10 +19,11 @@ export function govMapper(field) {
 		description: 'Description',
 		number: 'Solicitation Number',
 		first_article: 'First Article',
+		price_won_at: 'Won Price',
 
 		// solicitations_matched table
 		opportunity_status: 'Opportunity Status',
-		price_per_unit: 'Price Per Unit',
+		unit_price: 'Unit Price',
 		opportunity_notes: 'Opportunity Notes',
 		engineering_status: 'Engineering Status',
 		engineering_notes: 'Engineering Notes',
@@ -122,8 +123,8 @@ export function tableFieldMapper(obj, column) {
 	} else if (column.type === 'formula') {
 		if (column.field === 'market_value') {
 			let value;
-			if (obj?.price_per_unit && obj?.solicitation?.quantity) {
-				value = formatCurrency(obj?.price_per_unit * obj?.solicitation?.quantity);
+			if (obj?.unit_price && obj?.solicitation?.quantity) {
+				value = formatCurrency(obj?.unit_price * obj?.solicitation?.quantity);
 			}
 			return { header: 'Market Value', value: value ?? '' };
 		}

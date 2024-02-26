@@ -6,42 +6,7 @@
 	import { getMatchingClass } from '$lib/helpers.js';
 
 	export let data;
-
-	let columns = [
-		{ type: 'position' },
-		{ type: 'field', field: 'solicitation.number' },
-		{ type: 'field', field: 'solicitation.description' },
-		{ type: 'field', field: 'solicitation.expires_on' },
-		{ type: 'formula', field: 'market_value' },
-		{ type: 'field', field: 'solicitation.estimated_value' },
-		{ type: 'status', status: 'opportunity' },
-		{ type: 'status', status: 'engineering' },
-		{ type: 'status', status: 'bom' },
-		{ type: 'status', status: 'purchasing' },
-		{ type: 'status', status: 'labor' },
-		{ type: 'status', status: 'review' },
-		{ type: 'status', status: 'bid' },
-		{ type: 'status', status: 'award' },
-		{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
-		{ type: 'matching_rule', status: 'matching_rule' },
-		{ type: 'field', field: 'solicitation.set_aside' },
-		{ type: 'field', field: 'solicitation.issued_on' },
-		{ type: 'field', field: 'solicitation.quantity' },
-		{ type: 'field', field: 'solicitation.quantity_units' },
-		{ type: 'field', field: 'solicitation.first_article' },
-		{
-			type: 'field',
-			field: 'solicitation.nsn.matching_nsns',
-			array_selector: 'part_number',
-			header: 'In-House PN'
-		},
-		{ type: 'field', field: 'solicitation.days_to_deliver' },
-		{ type: 'link', field: 'bom_url' },
-		{ type: 'field', field: 'price_per_unit' },
-		{ type: 'link', field: 'solicitation.solicitation_url' },
-		{ type: 'link', field: 'solicitation.tech_docs' },
-		{ type: 'field', field: 'solicitation.price_won_at' }
-	];
+	export let columns;
 
 	function getStatusColor(status) {
 		if (!status) return '';

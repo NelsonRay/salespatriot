@@ -6,7 +6,7 @@ export const fieldsForForms = {
 		},
 		{
 			type: 'currency',
-			field: 'price_per_unit'
+			field: 'unit_price'
 		},
 		{
 			type: 'textarea',

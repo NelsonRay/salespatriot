@@ -32,18 +32,20 @@
 	async function loadData() {
 		let { data, error } = await supabase
 			.from('solicitations_matched')
-			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*)')
+			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*))), matching_rule(*)')
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
 
 		let { data: n_data, error: n_error } = await supabase
 			.from('solicitations_matched')
-			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*)')
+			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*))), matching_rule(*)')
 			.eq('solicitation.nsn', data.solicitation.nsn.id)
 			.not('solicitation.number', 'eq', data.solicitation.number);
 
-		nsn_matches = n_data;
+		nsn_matches = n_data.sort((a, b) =>
+			new Date(a.solicitation.expires_on) > new Date(b.solicitation.expires_on) ? -1 : 1
+		);
 		solicitation_matched = data;
 
 		const { solicitation, matching_rule, ...rest } = data;

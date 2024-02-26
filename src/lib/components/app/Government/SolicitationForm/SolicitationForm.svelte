@@ -14,6 +14,7 @@
 	import { govTags } from '$lib/tags';
 	import { capitalizeFirstLetter } from '$lib/helpers';
 	import { fieldsForForms } from '$lib/forms';
+	import { nsnColumns } from '$lib/table';
 
 	export let solicitation_matched;
 	export let values;
@@ -54,7 +55,7 @@
 						<p class="mb-1">Max Purchasing Budget for Total Contract</p>
 						<Currency
 							value={parseFloat(
-								(solicitation_matched?.price_per_unit ?? 0) *
+								(solicitation_matched?.unit_price ?? 0) *
 									0.34 *
 									(solicitation_matched?.solicitation.quantity ?? 0)
 							).toFixed(2)}
@@ -62,7 +63,7 @@
 						/>
 						<p class="mb-1">Max Purchasing Budget for Each Unit</p>
 						<Currency
-							value={parseFloat((solicitation_matched?.price_per_unit ?? 0) * 0.34).toFixed(2)}
+							value={parseFloat((solicitation_matched?.unit_price ?? 0) * 0.34).toFixed(2)}
 							disabled
 						/>
 						<p class="mb-1">Max Purchasing Days</p>
@@ -76,7 +77,7 @@
 					<div>
 						<p class="mb-1">Max Labor Hours</p>
 						<Currency
-							value={parseFloat((solicitation_matched.price_per_unit * 0.1) / 18).toFixed(2)}
+							value={parseFloat((solicitation_matched.unit_price * 0.1) / 18).toFixed(2)}
 							disabled
 						/>
 					</div>
@@ -91,12 +92,12 @@
 						>
 						<p class="mb-1">Total Bid Value</p>
 						<Currency
-							value={solicitation_matched?.price_per_unit *
+							value={solicitation_matched?.unit_price *
 								solicitation_matched?.solicitation?.quantity}
 							disabled
 						/>
 						<p class="mb-1">Per Unit</p>
-						<Currency value={solicitation_matched?.price_per_unit} disabled />
+						<Currency value={solicitation_matched?.unit_price} disabled />
 						<p class="mb-1">Estimated Days to Deliver</p>
 						<Currency value={solicitation_matched?.estimated_purchasing_days} disabled />
 					</div>
@@ -116,7 +117,7 @@
 					<div>
 						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
 						{#if nsn_matches?.length > 0}
-							<Table data={nsn_matches} />
+							<Table data={nsn_matches} columns={nsnColumns} />
 						{:else}
 							<p class="text-gray-400">NSN not seen before</p>
 						{/if}
