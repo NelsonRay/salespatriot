@@ -13,17 +13,15 @@
 	>
 		<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll">
 			<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
-				{#each ['#', 'Total Value', 'Unit Price', 'Quantity', 'Award Date', 'Cage', 'Vendor'] as header, i}
+				{#each ['Award Date', 'Quantity', 'Unit Price', 'Vendor', 'Cage', 'Total Value'] as header, i}
 					<th class={i === 0 ? 'text-center' : ''}>{header}</th>
 				{/each}
 			</thead>
 			<tbody>
-				{#each data as award, index}
+				{#each data as award}
 					<tr>
-						{#each ['#', 'TOTALVALUE', 'UNITPRICE', 'QUANTITY', 'AWARDDATE', 'CAGE', 'VENDOR'] as key, i}
-							{#if i === 0}
-								<td class="text-center">{index + 1}</td>
-							{:else if key === 'TOTALVALUE'}
+						{#each ['AWARDDATE', 'QUANTITY', 'UNITPRICE', 'VENDOR', 'CAGE', 'TOTALVALUE'] as key}
+							{#if key === 'TOTALVALUE'}
 								<td>{formatCurrency(award['UNITPRICE'] * award['QUANTITY'])}</td>
 							{:else if key === 'UNITPRICE'}
 								<td>{formatCurrency(award[key])}</td>
