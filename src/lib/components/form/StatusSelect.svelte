@@ -76,7 +76,9 @@
 		let tclass = `py-3 px-6 rounded-3xl m-1 text-xs font-medium ${color}`;
 		selected_tag_key === key
 			? (tclass += ` border-[2px] shadow-md ${shadowColor} ${borderColor}`)
-			: (tclass += ' border-[2px]');
+			: selected_tag_key
+				? (tclass += ' border-[2px] opacity-40')
+				: (tclass += ' border-[2px]');
 		return tclass;
 	}
 </script>
