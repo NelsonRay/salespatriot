@@ -19,7 +19,7 @@
 		let tclass = `py-3 px-6 rounded-3xl m-1 text-xs font-medium ${color}`;
 		answer === value
 			? (tclass += ` border-[2px] shadow-md ${shadowColor} ${borderColor}`)
-			: answer
+			: value !== undefined
 				? (tclass += ' border-[2px] opacity-40')
 				: (tclass += ' border-[2px]');
 		return tclass;

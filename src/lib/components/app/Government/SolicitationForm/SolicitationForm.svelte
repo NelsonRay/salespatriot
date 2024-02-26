@@ -96,7 +96,7 @@
 								solicitation_matched?.solicitation?.quantity}
 							disabled
 						/>
-						<p class="mb-1">Per Unit</p>
+						<p class="mb-1">Unit Price</p>
 						<Currency value={solicitation_matched?.unit_price} disabled />
 						<p class="mb-1">Estimated Days to Deliver</p>
 						<Currency value={solicitation_matched?.estimated_purchasing_days} disabled />
