@@ -44,6 +44,18 @@
 			<div class="pl-2 pt-3 space-y-5">
 				<SolicitationInfo {solicitation_matched} />
 
+				<div>
+					<p class="mb-1 font-medium">Additional Notes</p>
+					{#if values.additional_notes?.length >= 0}
+						<Textarea bind:value={values.additional_notes} addClass="w-full p-1" />
+					{:else}
+						<button
+							class="py-1 px-2 bg-neutral-100 rounded-md"
+							on:click={() => (values.additional_notes = '')}>+ Add Notes</button
+						>
+					{/if}
+				</div>
+
 				{#if form?.type === 'bom' || form?.type === 'labor'}
 					<div>
 						<p class="mb-1">Engineering Notes</p>
