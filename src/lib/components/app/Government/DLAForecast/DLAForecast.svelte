@@ -27,6 +27,52 @@
 		const [month, year] = dateStr.split(' ');
 		return new Date(`${month} 01 ${year}`);
 	}
+
+	function formatDate(date) {
+		if (date === 'Total') return 'Total';
+		let month = '';
+
+		switch (date.split(' ')[0]) {
+			case '01':
+				month = 'Jan';
+				break;
+			case '02':
+				month = 'Feb';
+				break;
+			case '03':
+				month = 'Mar';
+				break;
+			case '04':
+				month = 'Apr';
+				break;
+			case '05':
+				month = 'May';
+				break;
+			case '06':
+				month = 'Jun';
+				break;
+			case '07':
+				monyh = 'Jul';
+				break;
+			case '08':
+				month = 'Aug';
+				break;
+			case '09':
+				month = 'Sep';
+				break;
+			case '10':
+				month = 'Oct';
+				break;
+			case '11':
+				month = 'Nov';
+				break;
+			case '12':
+				month = 'Dec';
+				break;
+		}
+
+		return month + ' ' + date.split(' ')[1];
+	}
 </script>
 
 {#if formattedForecast && formattedForecast?.length > 0}
@@ -37,7 +83,7 @@
 		<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll">
 			<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
 				{#each formattedForecast as month}
-					<th>{month[0]}</th>
+					<th>{formatDate(month[0])}</th>
 				{/each}
 			</thead>
 			<tbody>
