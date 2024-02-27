@@ -15,6 +15,7 @@
 	import { capitalizeFirstLetter } from '$lib/helpers';
 	import { fieldsForForms } from '$lib/forms';
 	import { nsnColumns } from '$lib/table';
+	import PartnerSelect from '$lib/components/form/PartnerSelect.svelte';
 
 	export let solicitation_matched;
 	export let values;
@@ -175,6 +176,10 @@
 									{#if field.type === 'link' || field.type === 'text'}
 										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 										<TextInput bind:value={values[field.field]} />
+									{/if}
+									{#if field.type === 'partner'}
+										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+										<PartnerSelect bind:value={values[field.field]} />
 									{/if}
 								</div>
 							{/each}

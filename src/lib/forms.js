@@ -40,6 +40,7 @@ export const fieldsForForms = {
 	],
 	bid: [
 		{ type: 'status', status: 'bid' },
+		{ type: 'partner', field: 'bid_partner' },
 		{ type: 'link', field: 'quote_number' },
 		{ type: 'checkbox', field: 'bid_exception' },
 		{ type: 'textarea', field: 'exception_notes' },

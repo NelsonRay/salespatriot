@@ -44,7 +44,8 @@ export function govMapper(field) {
 		quote_number: 'Quote Number',
 		bid_exception: 'Bid With Exception',
 		exception_notes: 'Exception Notes',
-		bid_notes: 'Bid Notes'
+		bid_notes: 'Bid Notes',
+		bid_partner: 'Bid Partner'
 	};
 
 	return map[field] ?? 'Error';
