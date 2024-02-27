@@ -139,7 +139,7 @@
 			<Views {views} />
 			<p class="font-semibold ml-4 text-sm">{views[$page.url.pathname]}</p>
 		</div>
-		<p class="text-xs">Last Updated: Today 8:30 AM</p>
+		<!-- <p class="text-xs">Last Updated: Today 8:30 AM</p> -->
 	</div>
 </div>
 
