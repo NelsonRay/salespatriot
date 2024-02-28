@@ -118,17 +118,17 @@ export function getReviewValues(nsnMatches) {
 	let dates = [];
 
 	for (let key of [
-		'estimated_labor_hours',
+		'estimated_labor_minutes',
 		'estimated_material_cost',
 		'Estimated Total Cost',
 		'Price Last Bid',
 		'Previous Bid Outcome'
 	]) {
 		switch (key) {
-			case 'estimated_labor_hours':
+			case 'estimated_labor_minutes':
 				for (let match of nsnMatches) {
-					if (match.estimated_labor_hours) {
-						values.push(match.estimated_labor_hours);
+					if (match.estimated_labor_minutes) {
+						values.push(match.estimated_labor_minutes);
 						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
 						break;
 					}

@@ -35,7 +35,7 @@ export function govMapper(field) {
 		estimated_purchasing_days: 'Estimated Purchasing Days',
 		purchasing_notes: 'Purchasing Notes',
 		labor_status: 'Labor Status',
-		estimated_labor_hours: 'Estimated Labor Hours',
+		estimated_labor_minutes: 'Estimated Labor Minutes',
 		special_equipment: 'Special Equipment',
 		labor_notes: 'Labor Notes',
 		review_status: 'Review Status',

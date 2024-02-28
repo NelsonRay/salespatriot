@@ -30,7 +30,7 @@ export const fieldsForForms = {
 	],
 	labor: [
 		{ type: 'status', status: 'labor' },
-		{ type: 'currency', field: 'estimated_labor_hours' },
+		{ type: 'currency', field: 'estimated_labor_minutes' },
 		{ type: 'textarea', field: 'special_equipment' },
 		{ type: 'textarea', field: 'labor_notes' }
 	],
