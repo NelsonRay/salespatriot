@@ -72,8 +72,19 @@ export function oemMapper(field) {
 }
 
 function formatCurrency(number) {
+	if (number === 0) {
+		return '$0.00';
+	}
 	if (!number) return '';
-	return '$' + number.toLocaleString('en-US', { minimumFractionDigits: 2 });
+	if (number !== 0) {
+		return (
+			(number < 0 ? '-' : '') +
+			'$' +
+			Math.abs(number).toLocaleString('en-US', { minimumFractionDigits: 2 })
+		);
+	} else {
+		return '$0.00';
+	}
 }
 
 export function oemTableFieldMapper(obj, column) {
@@ -128,9 +139,33 @@ export function tableFieldMapper(obj, column) {
 				value = formatCurrency(obj?.unit_price * obj?.solicitation?.quantity);
 			}
 			return { header: 'Market Value', value: value ?? '' };
+		} else if (column.field === 'unit_price_won_at') {
+			let value;
+
+			if (obj?.solicitation.price_won_at && obj?.solicitation?.quantity) {
+				value = formatCurrency(obj?.solicitation.price_won_at / obj?.solicitation?.quantity);
+			}
+			return { header: 'Unit Price Won At', value: value ?? '' };
+		} else if (column.field === 'diff_unit_price') {
+			let value;
+
+			if (obj?.solicitation.price_won_at && obj?.solicitation?.quantity && obj?.unit_price) {
+				value = formatCurrency(
+					obj?.solicitation.price_won_at / obj?.solicitation?.quantity - obj.unit_price
+				);
+			}
+			return { header: 'Unit Price Won At', value: value ?? '' };
 		}
 
 		return { header: 'Error', value: '' };
+	} else if (column.type === 'bid_partner') {
+		let value;
+
+		if (obj?.bid_partner) {
+			value = obj.bid_partner.name;
+		}
+
+		return { header: 'Bid Partner', value: value ?? '' };
 	} else {
 		const header =
 			column.header ??
@@ -152,7 +187,11 @@ export function tableFieldMapper(obj, column) {
 			}
 		}
 
-		if (['solicitation.estimated_value', 'solicitation.price_won_at'].includes(column.field)) {
+		if (
+			['solicitation.estimated_value', 'solicitation.price_won_at', 'unit_price'].includes(
+				column.field
+			)
+		) {
 			value = formatCurrency(value);
 		}
 

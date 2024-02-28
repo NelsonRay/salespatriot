@@ -6,7 +6,7 @@
 	import { page } from '$app/stores';
 	import { formatDate } from '$lib/helpers.js';
 	import Table from '$lib/components/app/Government/Table/Table.svelte';
-	import { columns } from '$lib/table.js';
+	import { getColumns } from '$lib/table.js';
 
 	export let data;
 
@@ -26,7 +26,9 @@
 	async function loadData(pathname) {
 		let query = supabase
 			.from('solicitations_matched')
-			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*)');
+			.select(
+				'*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*), bid_partner(*)'
+			);
 
 		switch (pathname) {
 			case '/government/bidding-funnel':
@@ -144,7 +146,7 @@
 </div>
 
 {#if solicitations_matched}
-	<Table data={solicitations_matched} {columns} />
+	<Table data={solicitations_matched} columns={getColumns($page.url.pathname)} />
 {:else}
 	<div class="flex flex-col gap-4 p-5">
 		<div class="skeleton h-4 w-full"></div>

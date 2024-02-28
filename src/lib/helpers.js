@@ -85,3 +85,28 @@ export function getBidPartners() {
 		{ id: '36d12554-f91f-4e16-a2e1-018d15552a54', name: 'DTI' }
 	];
 }
+
+// @ts-ignore
+export function getPartnerColor(id) {
+	let cClass = '';
+
+	switch (id) {
+		case 'ADG Bid Direct':
+			cClass = 'bg-green-300';
+			break;
+		case 'QPI':
+			cClass = 'bg-yellow-300';
+			break;
+		case 'Janels':
+			cClass = 'bg-purple-300';
+			break;
+		case 'Fortum Genus':
+			cClass = 'bg-orange-300';
+			break;
+		case 'DTI':
+			cClass = 'bg-blue-300';
+			break;
+	}
+
+	return cClass;
+}

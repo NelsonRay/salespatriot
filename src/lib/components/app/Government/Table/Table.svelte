@@ -3,7 +3,7 @@
 
 	import { govTags } from '$lib/tags.js';
 	import { tableFieldMapper } from '$lib/mappers';
-	import { getMatchingClass, getSetAsideColor } from '$lib/helpers.js';
+	import { getMatchingClass, getPartnerColor, getSetAsideColor } from '$lib/helpers.js';
 
 	export let data;
 	export let columns;
@@ -75,6 +75,18 @@
 								{#if tableFieldMapper(obj, column).value}
 									<div
 										class="p-2 rounded-md inline-block {getMatchingClass(
+											tableFieldMapper(obj, column).value
+										)}"
+									>
+										{tableFieldMapper(obj, column).value ?? ''}
+									</div>
+								{/if}</td
+							>
+						{:else if column.type === 'bid_partner'}
+							<td>
+								{#if tableFieldMapper(obj, column).value}
+									<div
+										class="p-2 rounded-md inline-block {getPartnerColor(
 											tableFieldMapper(obj, column).value
 										)}"
 									>
