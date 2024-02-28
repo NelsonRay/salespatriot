@@ -8,6 +8,7 @@
 	$: ({ supabase, session } = data);
 
 	let workflows;
+	let isAdmin = false;
 	let showSubmitted = {};
 	let isGov = true;
 	let isUser = true;
@@ -16,27 +17,45 @@
 	async function loadData(isGov) {
 		workflows = null; // reset
 
+		const {
+			data: { is_admin }
+		} = await supabase.from('users').select('is_admin').eq('id', session.user.id).limit(1).single();
+
+		isAdmin = is_admin;
+
 		if (isGov) {
-			const { data, error } = await supabase
+			let formsQuery = supabase
 				.from('forms')
 				.select(
-					'id, submitted, response_timestamp, form, solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
+					'id, submitted, response_timestamp, form!inner(*), solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
 				);
 
-			const { data: f_data, error: f_error } = await supabase
-				.from('form')
-				.select('id, name, user(name), step');
+			if (isUser) formsQuery = formsQuery.eq('form.user', session.user.id);
+
+			const { data, error } = await formsQuery;
+
+			let formQuery = supabase.from('form').select('id, name, user!inner(*), step');
+
+			if (isUser) formQuery = formQuery.eq('user.id', session.user.id);
+
+			const { data: f_data, error: f_error } = await formQuery;
+
 			workflows = {};
 			workflows.forms = data;
 			workflows.form = f_data.sort((a, b) => (a.step > b.step ? 1 : -1));
 		} else {
-			const { data, error } = await supabase
+			let formsQuery = supabase
 				.from('oem_forms')
-				.select('*, oem_rfq(*, oem_rfqs_parts(*), customer(*))');
+				.select('*, oem_form(*), oem_rfq(*, oem_rfqs_parts(*), customer(*))');
 
-			const { data: f_data, error: f_error } = await supabase
-				.from('oem_form')
-				.select('*, user(name)');
+			if (isUser) formsQuery = formsQuery.eq('oem_form.user', session.user.id);
+			const { data, error } = await formsQuery;
+
+			let formQuery = supabase.from('oem_form').select('*, user!inner(id, name)');
+
+			if (isUser) formQuery = formQuery.eq('user.id', session.user.id);
+
+			const { data: f_data, error: f_error } = await formQuery;
 
 			workflows = {};
 			workflows.forms = data;
@@ -48,7 +67,7 @@
 		isMounted = true;
 	});
 
-	$: if (isMounted && session) {
+	$: if (isMounted && session && isUser !== null) {
 		loadData(isGov);
 	}
 
@@ -99,7 +118,7 @@
 	}
 
 	function getForms(workflows, form) {
-		let forms = workflows.forms.filter((e) => e.form === form.id && !e.submitted);
+		let forms = workflows.forms.filter((e) => e.form.id === form.id && !e.submitted);
 
 		return [
 			...forms.filter((e) => e.solicitation_matched.familiarity_status === 'Prev Won'),
@@ -110,7 +129,7 @@
 	}
 
 	function getOemForms(workflows, form) {
-		return workflows.forms.filter((e) => e.oem_form === form.id && !e.submitted);
+		return workflows.forms.filter((e) => e.oem_form.id === form.id && !e.submitted);
 	}
 
 	function getFamiliarityClass(status) {
@@ -161,21 +180,22 @@
 				on:click={() => (isGov = false)}>OEM</button
 			>
 		</div>
-
-		<div class="flex flex-row items-center">
-			<button
-				class="rounded-r-none text-xs bg-neutral-200 p-2 rounded-l-md border-r-[1px] border-gray-300 hover:bg-neutral-300 {!isUser
-					? 'bg-neutral-300'
-					: ''}"
-				on:click={() => (isUser = false)}>Admin</button
-			>
-			<button
-				class="rounded-l-none text-xs bg-neutral-200 p-2 rounded-r-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {isUser
-					? 'bg-neutral-300'
-					: ''}"
-				on:click={() => (isUser = true)}>User</button
-			>
-		</div>
+		{#if isAdmin}
+			<div class="flex flex-row items-center">
+				<button
+					class="rounded-r-none text-xs bg-neutral-200 p-2 rounded-l-md border-r-[1px] border-gray-300 hover:bg-neutral-300 {!isUser
+						? 'bg-neutral-300'
+						: ''}"
+					on:click={() => (isUser = false)}>Admin</button
+				>
+				<button
+					class="rounded-l-none text-xs bg-neutral-200 p-2 rounded-r-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {isUser
+						? 'bg-neutral-300'
+						: ''}"
+					on:click={() => (isUser = true)}>User</button
+				>
+			</div>
+		{/if}
 	</div>
 </div>
 {#if workflows}
