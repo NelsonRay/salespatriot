@@ -33,7 +33,7 @@ export async function POST({ request, cookies }) {
 		userId = user;
 		btnText = 'Open Solicitation Form';
 		subject = 'New Solicitation Form';
-		formLink = `https://salespatriot.com/solicitation-form/${record.id};`;
+		formLink = `https://salespatriot.com/solicitation-form/${record.id}`;
 	} else {
 		// if oem
 
@@ -44,7 +44,7 @@ export async function POST({ request, cookies }) {
 		userId = user;
 		btnText = 'Open OEM Form';
 		subject = 'New OEM Form';
-		formLink = `https://salespatriot.com/oem-form/${record.id};`;
+		formLink = `https://salespatriot.com/oem-form/${record.id}`;
 	}
 
 	const {
