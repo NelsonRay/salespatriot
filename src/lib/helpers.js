@@ -110,3 +110,108 @@ export function getPartnerColor(id) {
 
 	return cClass;
 }
+
+// @ts-ignore
+export function getReviewValues(nsnMatches) {
+	// @ts-ignore
+	let values = [];
+	let dates = [];
+
+	for (let key of [
+		'estimated_labor_hours',
+		'estimated_material_cost',
+		'Estimated Total Cost',
+		'Price Last Bid',
+		'Previous Bid Outcome'
+	]) {
+		switch (key) {
+			case 'estimated_labor_hours':
+				for (let match of nsnMatches) {
+					if (match.estimated_labor_hours) {
+						values.push(match.estimated_labor_hours);
+						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
+						break;
+					}
+				}
+				if (values.length === 0) {
+					values.push('N/A');
+					dates.push('N/A');
+				}
+				break;
+			case 'estimated_material_cost':
+				for (let match of nsnMatches) {
+					if (match.estimated_material_cost) {
+						values.push(match.estimated_material_cost);
+						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
+						break;
+					}
+				}
+				if (values.length === 1) {
+					values.push('N/A');
+					dates.push('N/A');
+				}
+				break;
+			case 'Estimated Total Cost':
+				if (!values.includes('N/A')) {
+					values.push(values[0] + values[1]);
+				} else {
+					values.push('N/A');
+				}
+				dates.push('N/A');
+				break;
+			case 'Price Last Bid':
+				for (let match of nsnMatches) {
+					if (match.unit_price) {
+						values.push(match.unit_price);
+						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
+						break;
+					}
+				}
+				if (values.length === 3) {
+					values.push('N/A');
+					dates.push('N/A');
+				}
+				break;
+			case 'Previous Bid Outcome':
+				for (let match of nsnMatches) {
+					if (match.status.some((s) => s.includes('award:won'))) {
+						values.push('Won');
+						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
+						break;
+					} else if (match.status.some((s) => s.includes('award:lost'))) {
+						values.push('Lost');
+						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
+						break;
+					}
+				}
+				if (values.length === 4) {
+					values.push('N/A');
+					dates.push('N/A');
+				}
+				break;
+		}
+	}
+
+	for (let i of [0, 1, 2, 3]) {
+		if (values[i] !== 'N/A') {
+			values[i] = formatCurrency(values[i]);
+		}
+	}
+	return { values, dates };
+}
+
+// @ts-ignore
+export function formatMonthDayYearDate(date) {
+	// Create a new Date object
+	date = new Date(date);
+
+	// Extract the components of the date
+	var month = date.getMonth() + 1; // Adding 1 because getMonth() returns zero-based index
+	var day = date.getDate();
+	var year = date.getFullYear() % 100; // Extracting last two digits of the year
+
+	// Concatenate the formatted components to get the desired format
+	var formattedDate = month + '/' + day + '/' + year;
+
+	return formattedDate;
+}

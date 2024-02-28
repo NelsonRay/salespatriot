@@ -43,7 +43,7 @@
 				</button>
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				<SolicitationInfo {solicitation_matched} />
+				<SolicitationInfo {solicitation_matched} {nsn_matches} />
 
 				<div>
 					<p class="mb-1 font-medium">Additional Notes</p>

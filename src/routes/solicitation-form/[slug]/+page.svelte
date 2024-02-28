@@ -29,7 +29,7 @@
 				.from('solicitations_matched')
 				.select('*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*)')
 				.eq('solicitation.nsn', data.solicitation_matched.solicitation.nsn.id)
-				.not('solicitation.number', 'eq', data.solicitation_matched.solicitation.number);
+				.lt('solicitation.issued_on', data.solicitation_matched.solicitation.issued_on);
 
 			nsn_matches = n_data.sort((a, b) =>
 				new Date(a.solicitation.expires_on) > new Date(b.solicitation.expires_on) ? -1 : 1
