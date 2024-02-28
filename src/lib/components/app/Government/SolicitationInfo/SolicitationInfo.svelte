@@ -11,7 +11,7 @@
 	export let solicitation_matched;
 	export let nsn_matches;
 
-	const { values, dates } = getReviewValues(nsn_matches);
+	const { values, dates } = nsn_matches ? getReviewValues(nsn_matches) : {};
 </script>
 
 <div class="flex flex-row justify-between">
@@ -156,26 +156,27 @@
 			</p>
 		</div>
 	</div>
-
-	<div class="mt-3 mr-5">
-		<div class="flex flex-row space-x-5">
-			<div class="flex flex-col space-y-3">
-				<p class="text-gray-400">Estimated Labor Cost:</p>
-				<p class="text-gray-400">Estimated Mat. Cost:</p>
-				<p class="text-gray-400">Estimated Total Cost:</p>
-				<p class="text-gray-400">Price Last Bid:</p>
-				<p class="text-gray-400">Prev Bid Outcome:</p>
-			</div>
-			<div class="flex flex-col space-y-3">
-				{#each values as value}
-					<p>{value}</p>
-				{/each}
-			</div>
-			<div class="flex flex-col space-y-3">
-				{#each dates as date}
-					<p>{date}</p>
-				{/each}
+	{#if nsn_matches}
+		<div class="mt-3 mr-5">
+			<div class="flex flex-row space-x-5">
+				<div class="flex flex-col space-y-3">
+					<p class="text-gray-400">Estimated Labor Cost:</p>
+					<p class="text-gray-400">Estimated Mat. Cost:</p>
+					<p class="text-gray-400">Estimated Total Cost:</p>
+					<p class="text-gray-400">Price Last Bid:</p>
+					<p class="text-gray-400">Prev Bid Outcome:</p>
+				</div>
+				<div class="flex flex-col space-y-3">
+					{#each values as value}
+						<p>{value}</p>
+					{/each}
+				</div>
+				<div class="flex flex-col space-y-3">
+					{#each dates as date}
+						<p>{date}</p>
+					{/each}
+				</div>
 			</div>
 		</div>
-	</div>
+	{/if}
 </div>
