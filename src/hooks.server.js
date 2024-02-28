@@ -28,6 +28,7 @@ export const handle = async ({ event, resolve }) => {
 		![
 			'/api/webhooks/form-submitted',
 			'/api/webhooks/oem-form-submitted',
+			'/api/webhooks/resend/form',
 			'/api/pb-upload'
 		].includes(event.url.pathname) &&
 		!event.locals.session

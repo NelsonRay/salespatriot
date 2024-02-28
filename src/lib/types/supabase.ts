@@ -71,6 +71,35 @@ export type Database = {
           }
         ]
       }
+      feedback: {
+        Row: {
+          created_at: string
+          id: number
+          message: string
+          user: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          message: string
+          user?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          message?: string
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_feedback_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       firms: {
         Row: {
           created_at: string
@@ -92,32 +121,42 @@ export type Database = {
       form: {
         Row: {
           created_at: string
+          firm: string
           id: string
           matched_fields: Json[]
           name: string
-          solicitation_fields: string[]
+          step: number | null
           type: Database["public"]["Enums"]["form_type"]
           user: string
         }
         Insert: {
           created_at?: string
+          firm: string
           id?: string
           matched_fields: Json[]
           name: string
-          solicitation_fields: string[]
+          step?: number | null
           type: Database["public"]["Enums"]["form_type"]
           user: string
         }
         Update: {
           created_at?: string
+          firm?: string
           id?: string
           matched_fields?: Json[]
           name?: string
-          solicitation_fields?: string[]
+          step?: number | null
           type?: Database["public"]["Enums"]["form_type"]
           user?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "form_firm_fkey"
+            columns: ["firm"]
+            isOneToOne: false
+            referencedRelation: "firms"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "form_user_fkey"
             columns: ["user"]
@@ -227,6 +266,7 @@ export type Database = {
       matching_rules: {
         Row: {
           created_at: string
+          description: string | null
           firm: string
           id: string
           level: number | null
@@ -236,6 +276,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          description?: string | null
           firm: string
           id?: string
           level?: number | null
@@ -245,6 +286,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          description?: string | null
           firm?: string
           id?: string
           level?: number | null
@@ -280,21 +322,178 @@ export type Database = {
         }
         Relationships: []
       }
-      oem_rfqs: {
+      oem_customers: {
+        Row: {
+          created_at: string
+          customer_number: string | null
+          email_address: string | null
+          email_addresses: string[] | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          customer_number?: string | null
+          email_address?: string | null
+          email_addresses?: string[] | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          customer_number?: string | null
+          email_address?: string | null
+          email_addresses?: string[] | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      oem_form: {
         Row: {
           created_at: string
           firm: string
           id: string
+          name: string
+          step: number
+          type: string
+          user: string
         }
         Insert: {
           created_at?: string
           firm: string
           id?: string
+          name: string
+          step: number
+          type: string
+          user: string
         }
         Update: {
           created_at?: string
           firm?: string
           id?: string
+          name?: string
+          step?: number
+          type?: string
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_oem_form_firm_fkey"
+            columns: ["firm"]
+            isOneToOne: false
+            referencedRelation: "firms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_oem_form_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      oem_forms: {
+        Row: {
+          created_at: string
+          id: number
+          oem_form: string
+          oem_rfq: string
+          submitted: boolean
+          submitted_by: string | null
+          submitted_timestamp: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          oem_form: string
+          oem_rfq: string
+          submitted?: boolean
+          submitted_by?: string | null
+          submitted_timestamp?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          oem_form?: string
+          oem_rfq?: string
+          submitted?: boolean
+          submitted_by?: string | null
+          submitted_timestamp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_oem_forms_oem_form_fkey"
+            columns: ["oem_form"]
+            isOneToOne: false
+            referencedRelation: "oem_form"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_oem_forms_oem_rfq_fkey"
+            columns: ["oem_rfq"]
+            isOneToOne: false
+            referencedRelation: "oem_rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_oem_forms_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      oem_rfqs: {
+        Row: {
+          created_at: string
+          customer: string
+          date_received: string
+          final_pricing_notes: string | null
+          firm: string
+          id: string
+          labor_notes: string | null
+          notes: string | null
+          purchasing_notes: string | null
+          quote_number: string | null
+          quote_sent: boolean
+          requested_return_date: string | null
+          resale: boolean
+          status: string[]
+        }
+        Insert: {
+          created_at?: string
+          customer: string
+          date_received: string
+          final_pricing_notes?: string | null
+          firm: string
+          id?: string
+          labor_notes?: string | null
+          notes?: string | null
+          purchasing_notes?: string | null
+          quote_number?: string | null
+          quote_sent?: boolean
+          requested_return_date?: string | null
+          resale?: boolean
+          status?: string[]
+        }
+        Update: {
+          created_at?: string
+          customer?: string
+          date_received?: string
+          final_pricing_notes?: string | null
+          firm?: string
+          id?: string
+          labor_notes?: string | null
+          notes?: string | null
+          purchasing_notes?: string | null
+          quote_number?: string | null
+          quote_sent?: boolean
+          requested_return_date?: string | null
+          resale?: boolean
+          status?: string[]
         }
         Relationships: [
           {
@@ -303,19 +502,66 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "firms"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_oem_rfqs_customer_fkey"
+            columns: ["customer"]
+            isOneToOne: false
+            referencedRelation: "oem_customers"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      oem_rfqs_parts: {
+        Row: {
+          created_at: string
+          cross_reference: string | null
+          id: string
+          nsn: string | null
+          oem_rfq: string
+          part_number: string | null
+          quantities: Json[]
+        }
+        Insert: {
+          created_at?: string
+          cross_reference?: string | null
+          id?: string
+          nsn?: string | null
+          oem_rfq?: string
+          part_number?: string | null
+          quantities?: Json[]
+        }
+        Update: {
+          created_at?: string
+          cross_reference?: string | null
+          id?: string
+          nsn?: string | null
+          oem_rfq?: string
+          part_number?: string | null
+          quantities?: Json[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_oem_rfqs_parts_oem_rfq_fkey"
+            columns: ["oem_rfq"]
+            isOneToOne: false
+            referencedRelation: "oem_rfqs"
+            referencedColumns: ["id"]
           }
         ]
       }
       solicitations: {
         Row: {
-          amsc: string
+          amsc: string | null
           award_history: Json[] | null
           batch: string
+          company_awarded: string | null
           contact_email: string | null
           contact_name: string | null
           contact_phone: string | null
           contract_status: string | null
           created_at: string
+          date_awarded: string | null
           days_to_deliver: number | null
           description: string | null
           dla_forecast: Json | null
@@ -323,11 +569,14 @@ export type Database = {
           expires_on: string
           first_article: boolean
           id: string
+          is_duplicate: boolean
+          is_duplicate_fixed: boolean
           issued_on: string
           line_number: string | null
           nsn: number
           number: string
           pb_matching_details: string | null
+          price_won_at: number | null
           quantity: number
           quantity_units: string | null
           set_aside: Database["public"]["Enums"]["set_aside"] | null
@@ -336,14 +585,16 @@ export type Database = {
           vendors: Json[] | null
         }
         Insert: {
-          amsc: string
+          amsc?: string | null
           award_history?: Json[] | null
           batch: string
+          company_awarded?: string | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
           contract_status?: string | null
           created_at?: string
+          date_awarded?: string | null
           days_to_deliver?: number | null
           description?: string | null
           dla_forecast?: Json | null
@@ -351,11 +602,14 @@ export type Database = {
           expires_on: string
           first_article?: boolean
           id?: string
+          is_duplicate?: boolean
+          is_duplicate_fixed?: boolean
           issued_on: string
           line_number?: string | null
           nsn: number
           number: string
           pb_matching_details?: string | null
+          price_won_at?: number | null
           quantity: number
           quantity_units?: string | null
           set_aside?: Database["public"]["Enums"]["set_aside"] | null
@@ -364,14 +618,16 @@ export type Database = {
           vendors?: Json[] | null
         }
         Update: {
-          amsc?: string
+          amsc?: string | null
           award_history?: Json[] | null
           batch?: string
+          company_awarded?: string | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
           contract_status?: string | null
           created_at?: string
+          date_awarded?: string | null
           days_to_deliver?: number | null
           description?: string | null
           dla_forecast?: Json | null
@@ -379,11 +635,14 @@ export type Database = {
           expires_on?: string
           first_article?: boolean
           id?: string
+          is_duplicate?: boolean
+          is_duplicate_fixed?: boolean
           issued_on?: string
           line_number?: string | null
           nsn?: number
           number?: string
           pb_matching_details?: string | null
+          price_won_at?: number | null
           quantity?: number
           quantity_units?: string | null
           set_aside?: Database["public"]["Enums"]["set_aside"] | null
@@ -410,81 +669,106 @@ export type Database = {
       }
       solicitations_matched: {
         Row: {
+          additional_notes: string | null
           bid_exception: boolean
           bid_notes: string | null
+          bid_partner: string | null
           bom_notes: string | null
           bom_url: string | null
           created_at: string
           engineering_notes: string | null
-          estimated_labor_hours: number | null
-          estimated_purchasing_budget: number | null
+          estimated_labor_minutes: number | null
+          estimated_material_cost: number | null
           estimated_purchasing_days: number | null
           exception_notes: string | null
+          familiarity_status: string
           firm: string
           id: string
+          is_killed: boolean
           labor_notes: string | null
           matching_rule: string
+          no_bid_reason: string | null
           opportunity_notes: string | null
-          price_per_unit: number | null
           purchasing_notes: string | null
           quote_number: string | null
+          quote_number_notes: string | null
           review_notes: string | null
           skip_engineering: boolean
           solicitation: string
           special_equipment: string | null
           status: string[]
+          unit_price: number | null
         }
         Insert: {
+          additional_notes?: string | null
           bid_exception?: boolean
           bid_notes?: string | null
+          bid_partner?: string | null
           bom_notes?: string | null
           bom_url?: string | null
           created_at?: string
           engineering_notes?: string | null
-          estimated_labor_hours?: number | null
-          estimated_purchasing_budget?: number | null
+          estimated_labor_minutes?: number | null
+          estimated_material_cost?: number | null
           estimated_purchasing_days?: number | null
           exception_notes?: string | null
+          familiarity_status?: string
           firm: string
           id?: string
+          is_killed?: boolean
           labor_notes?: string | null
           matching_rule: string
+          no_bid_reason?: string | null
           opportunity_notes?: string | null
-          price_per_unit?: number | null
           purchasing_notes?: string | null
           quote_number?: string | null
+          quote_number_notes?: string | null
           review_notes?: string | null
           skip_engineering?: boolean
           solicitation: string
           special_equipment?: string | null
           status?: string[]
+          unit_price?: number | null
         }
         Update: {
+          additional_notes?: string | null
           bid_exception?: boolean
           bid_notes?: string | null
+          bid_partner?: string | null
           bom_notes?: string | null
           bom_url?: string | null
           created_at?: string
           engineering_notes?: string | null
-          estimated_labor_hours?: number | null
-          estimated_purchasing_budget?: number | null
+          estimated_labor_minutes?: number | null
+          estimated_material_cost?: number | null
           estimated_purchasing_days?: number | null
           exception_notes?: string | null
+          familiarity_status?: string
           firm?: string
           id?: string
+          is_killed?: boolean
           labor_notes?: string | null
           matching_rule?: string
+          no_bid_reason?: string | null
           opportunity_notes?: string | null
-          price_per_unit?: number | null
           purchasing_notes?: string | null
           quote_number?: string | null
+          quote_number_notes?: string | null
           review_notes?: string | null
           skip_engineering?: boolean
           solicitation?: string
           special_equipment?: string | null
           status?: string[]
+          unit_price?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "solicitations_matched_bid_partner_fkey"
+            columns: ["bid_partner"]
+            isOneToOne: false
+            referencedRelation: "bid_partners"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "solicitations_matched_firm_fkey"
             columns: ["firm"]
@@ -511,26 +795,36 @@ export type Database = {
       users: {
         Row: {
           created_at: string
-          email: string | null
+          email: string
           firm: string
           id: string
-          name: string | null
+          is_admin: boolean
+          name: string
         }
         Insert: {
           created_at?: string
-          email?: string | null
+          email: string
           firm: string
           id?: string
-          name?: string | null
+          is_admin?: boolean
+          name: string
         }
         Update: {
           created_at?: string
-          email?: string | null
+          email?: string
           firm?: string
           id?: string
-          name?: string | null
+          is_admin?: boolean
+          name?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "public_users_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "users_firm_fkey"
             columns: ["firm"]
