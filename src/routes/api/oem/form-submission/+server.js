@@ -8,14 +8,12 @@ export async function POST({ request, locals: { supabase } }) {
 		.update({ submitted_timestamp: new Date().toISOString(), submitted: true })
 		.eq('id', id);
 
-	const { oem_rfqs_parts, ...rest } = values;
+	const { oem_rfqs_parts, customer, ...rest } = values;
 
 	const { error: oErr } = await supabase.from('oem_rfqs').update(rest).eq('id', values.id);
 
 	const { error: pErr } = await supabase.from('oem_rfqs_parts').upsert(oem_rfqs_parts);
 
-	console.log(oErr);
-	console.log('p', pErr);
 	if (err) {
 		console.error(err);
 
