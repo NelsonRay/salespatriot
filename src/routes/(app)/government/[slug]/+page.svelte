@@ -17,7 +17,6 @@
 
 	page.subscribe((p) => {
 		if (isMounted) {
-			console.log(44);
 			solicitations_matched = null;
 			loadData(p.url.pathname);
 		}
@@ -32,16 +31,7 @@
 
 		switch (pathname) {
 			case '/government/bidding-funnel':
-				query = query
-					.not('status', 'cs', `{"${govTags.opportunity.not_pursue.key}"}`)
-					.not('status', 'cs', `{"${govTags.engineering.cannot_build.key}"}`)
-					.not('status', 'cs', `{"${govTags.bom.cannot_create.key}"}`)
-					.not('status', 'cs', `{"${govTags.purchasing.out_of_budget.key}"}`)
-					.not('status', 'cs', `{"${govTags.labor.not_within_time.key}"}`)
-					.not('status', 'cs', `{"${govTags.review.not_approved.key}"}`)
-					.not('status', 'cs', `{"bid:bid"}`)
-					.filter('solicitation.expires_on', 'gte', formatDate(new Date()))
-					.eq('is_killed', false);
+				query = query.eq('is_killed', false);
 
 				break;
 			case '/government/recently-released':
