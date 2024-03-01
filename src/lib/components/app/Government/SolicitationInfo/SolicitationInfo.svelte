@@ -10,8 +10,9 @@
 
 	export let solicitation_matched;
 	export let nsn_matches;
+	export let values;
 
-	const { values, dates } = nsn_matches ? getReviewValues(nsn_matches) : {};
+	const { values: reviewValues, dates } = nsn_matches ? getReviewValues(nsn_matches) : {};
 </script>
 
 <div class="flex flex-row justify-between">
@@ -76,6 +77,20 @@
 				<p>
 					{solicitation_matched.solicitation.quantity}
 					{solicitation_matched.solicitation.quantity_units}
+				</p>
+			</div>
+			<div class="flex flex-row space-x-1">
+				<p class="text-gray-400">Unit Price:</p>
+				<p>
+					{values?.unit_price ? formatCurrency(values?.unit_price) : 'N/A'}
+				</p>
+			</div>
+			<div class="flex flex-row space-x-1">
+				<p class="text-gray-400">Market Value:</p>
+				<p>
+					{values?.unit_price
+						? formatCurrency(values?.unit_price * solicitation_matched.solicitation.quantity)
+						: 'N/A'}
 				</p>
 			</div>
 			<div class="flex flex-row space-x-1">
@@ -167,7 +182,7 @@
 					<p class="text-gray-400">Prev Bid Outcome:</p>
 				</div>
 				<div class="flex flex-col space-y-3">
-					{#each values as value}
+					{#each reviewValues as value}
 						<p>{value}</p>
 					{/each}
 				</div>
