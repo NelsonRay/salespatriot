@@ -6,6 +6,10 @@
 	export let data;
 </script>
 
+<svelte:head>
+	<title>Login - Sales Patriot</title>
+</svelte:head>
+
 <div class="hero min-h-screen bg-base-100">
 	<div class="hero-content flex-col">
 		<div class="flex flex-col w-96 items-center">

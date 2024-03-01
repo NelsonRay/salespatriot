@@ -7,4 +7,8 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Settings</title>
+</svelte:head>
+
 <button on:click={logout}>Logout</button>

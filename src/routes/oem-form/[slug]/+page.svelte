@@ -48,9 +48,27 @@
 	}
 </script>
 
+<svelte:head>
+	<title>
+		{form
+			? form.oem_rfq?.customer?.name +
+				' / ' +
+				form.oem_rfq?.date_received +
+				' ' +
+				form.oem_form.name
+			: 'OEM RFQ Form'}
+	</title>
+</svelte:head>
+
 {#if !form?.submitted}
 	{#if form}
-		<OEMForm data={form} bind:values form={form?.oem_form} {handleSubmit} bind:isSubmitting />
+		<OEMForm
+			data={form?.oem_rfq}
+			bind:values
+			form={form?.oem_form}
+			{handleSubmit}
+			bind:isSubmitting
+		/>
 	{/if}
 {:else}
 	<p class="mt-12">Thank you for submitting form!</p>

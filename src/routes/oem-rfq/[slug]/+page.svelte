@@ -9,7 +9,7 @@
 
 	let oem_rfq = null;
 
-	let values = {};
+	let values;
 
 	let isSubmitting = false;
 
@@ -47,6 +47,14 @@
 		}
 	});
 </script>
+
+<svelte:head>
+	<title>
+		{oem_rfq
+			? oem_rfq?.customer?.name + ' / ' + oem_rfq?.date_received + ' OEM RFQ Form'
+			: 'OEM RFQ Form'}
+	</title>
+</svelte:head>
 
 {#if values}
 	<OEMForm data={oem_rfq} {values} {handleSubmit} {isSubmitting} />

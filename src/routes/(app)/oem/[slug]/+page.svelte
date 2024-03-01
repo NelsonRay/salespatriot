@@ -75,6 +75,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>OEM RFQs - Sales Patriot</title>
+</svelte:head>
+
 <div class="relative top-0">
 	<div class="flex flex-row h-14 items-center justify-between mx-2">
 		<div class="flex flex-row items-center">

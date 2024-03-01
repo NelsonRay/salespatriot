@@ -165,6 +165,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Workflows - Sales Patriot</title>
+</svelte:head>
+
 <div class="h-12 bg-neutral-50 flex flex-row items-center justify-between pl-6 pr-10">
 	<p>{isGov ? 'Government' : 'OEM'}</p>
 	<div class="flex flex-row items-center space-x-5">

@@ -59,4 +59,12 @@
 	});
 </script>
 
+<svelte:head>
+	<title
+		>{solicitation_matched
+			? solicitation_matched.solicitation.number + ' Solicitation Form'
+			: 'Solicitation Form'}</title
+	>
+</svelte:head>
+
 <SolicitationForm {solicitation_matched} {values} {nsn_matches} {handleSubmit} {isSubmitting} />

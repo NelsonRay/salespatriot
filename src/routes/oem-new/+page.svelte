@@ -38,6 +38,10 @@
 	const appInput = 'border border-blue-400 rounded-md text-sm py-1 px-2';
 </script>
 
+<svelte:head>
+	<title>RFQ Form</title>
+</svelte:head>
+
 <div class="flex h-screen w-screen justify-center overflow-y-auto">
 	<div class="flex flex-col">
 		{#if !submitted}

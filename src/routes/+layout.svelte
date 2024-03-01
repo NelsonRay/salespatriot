@@ -20,4 +20,8 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Sales Patriot</title>
+</svelte:head>
+
 <slot />

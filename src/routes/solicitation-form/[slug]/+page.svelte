@@ -72,6 +72,14 @@
 	}
 </script>
 
+<svelte:head>
+	<title>
+		{form?.solicitation_matched
+			? form.solicitation_matched.solicitation.number + ' - ' + form.form.name
+			: 'Sales Patriot'}
+	</title>
+</svelte:head>
+
 {#if !form?.submitted}
 	<SolicitationForm
 		solicitation_matched={form?.solicitation_matched}

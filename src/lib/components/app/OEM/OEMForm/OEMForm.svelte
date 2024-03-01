@@ -32,7 +32,7 @@
 				</button>
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				<OEMInfo data={data.oem_rfq} />
+				<OEMInfo {data} />
 
 				<div>
 					<OEMParts
@@ -91,7 +91,7 @@
 						<p class="text-gray-400 mb-2 font-medium">Send Quote Form</p>
 						<div>
 							<p class="mb-1 text-sm">Quote Sent</p>
-							<Boolean bind:value={values.quote_sent} hideNo={false} />
+							<Boolean bind:value={values.quote_sent} />
 						</div>
 					</div>
 				{/if}
