@@ -28,7 +28,16 @@
 		window.location.href = `${window.location.origin}`;
 	}
 
-	const forms = ['opportunity', 'engineering', 'bom', 'purchasing', 'labor', 'review', 'bid'];
+	const forms = [
+		'opportunity',
+		'engineering',
+		'bom',
+		'purchasing',
+		'labor',
+		'review',
+		'bid',
+		'award'
+	];
 </script>
 
 {#if solicitation_matched}

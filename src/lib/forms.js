@@ -45,5 +45,11 @@ export const fieldsForForms = {
 		{ type: 'checkbox', field: 'bid_exception' },
 		{ type: 'textarea', field: 'exception_notes' },
 		{ type: 'textarea', field: 'bid_notes' }
+	],
+	award: [
+		{
+			type: 'status',
+			status: 'award'
+		}
 	]
 };
