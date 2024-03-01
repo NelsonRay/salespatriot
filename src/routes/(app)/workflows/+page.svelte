@@ -28,7 +28,8 @@
 				.from('forms')
 				.select(
 					'id, submitted, response_timestamp, form!inner(*), solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
-				);
+				)
+				.eq('is_deleted', false);
 
 			if (isUser) formsQuery = formsQuery.eq('form.user', session.user.id);
 
@@ -46,7 +47,8 @@
 		} else {
 			let formsQuery = supabase
 				.from('oem_forms')
-				.select('*, oem_form(*), oem_rfq(*, oem_rfqs_parts(*), customer(*))');
+				.select('*, oem_form(*), oem_rfq(*, oem_rfqs_parts(*), customer(*))')
+				.eq('is_deleted', false);
 
 			if (isUser) formsQuery = formsQuery.eq('oem_form.user', session.user.id);
 			const { data, error } = await formsQuery;
@@ -208,7 +210,7 @@
 				<div class="flex flex-col">
 					<div class="flex flex-row justify-between w-96 items-center">
 						<p class="font-semibold text-base">
-							{`${form.name} (${workflows.forms.filter((e) => e.form === form.id && !e.submitted).length})`}
+							{`${form.name} (${workflows.forms.filter((e) => e.form.id === form.id && !e.submitted).length})`}
 						</p>
 						<p class="font-medium text-base">{form.user.name}</p>
 					</div>
@@ -262,7 +264,7 @@
 				<div class="flex flex-col">
 					<div class="flex flex-row justify-between w-96 items-center">
 						<p class="font-semibold text-base">
-							{`${form.name} (${workflows.forms.filter((e) => e.oem_form === form.id && !e.submitted).length})`}
+							{`${form.name} (${workflows.forms.filter((e) => e.oem_form.id === form.id && !e.submitted).length})`}
 						</p>
 						<p class="font-medium text-base">{form.user.name}</p>
 					</div>
