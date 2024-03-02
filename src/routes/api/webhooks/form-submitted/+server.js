@@ -34,6 +34,8 @@ export async function POST({ request, cookies }) {
 		.select('*')
 		.single();
 
+	console.log('data:', data);
+
 	if (error) {
 		console.error(error);
 		return json({ error }, { status: 500 });
