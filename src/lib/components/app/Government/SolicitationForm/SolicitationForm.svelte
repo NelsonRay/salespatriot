@@ -60,7 +60,7 @@
 					<Textarea bind:value={values.additional_notes} />
 				</div>
 
-				{#if form?.type === 'bom' || form?.type === 'labor'}
+				{#if form?.type === 'bom' || (form?.type === 'labor' && solicitation_matched?.engineering_notes)}
 					<div>
 						<p class="mb-1">Engineering Notes</p>
 						<Textarea value={solicitation_matched?.engineering_notes} disabled />

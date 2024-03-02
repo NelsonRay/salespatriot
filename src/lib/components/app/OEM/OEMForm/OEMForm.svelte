@@ -59,48 +59,68 @@
 							<p class="mb-1 text-sm">Resale</p>
 							<Boolean bind:value={values.resale} />
 						</div>
+
+						<p class="mb-1 text-sm">Notes</p>
+						<Textarea bind:value={values.purchasing_notes} />
 					</div>
 				{/if}
 
 				{#if form === null || form?.type === 'labor'}
 					<div>
 						<p class="text-gray-400 mb-2 font-medium">Labor Form</p>
-						<p class="text-gray-500 mb-2 text-sm">Please provide labor minutes for each part.</p>
+						<p class="text-gray-500 text-sm mb-3">Please provide labor minutes for each part.</p>
+
+						<p class="mb-1 text-sm">Notes</p>
+						<Textarea bind:value={values.labor_notes} />
 					</div>
 				{/if}
 
 				{#if form === null || form?.type === 'final_pricing'}
 					<div>
 						<p class="text-gray-400 mb-2 font-medium">Final Pricing Form</p>
-						<p class="text-gray-500 mb-2 text-sm">Please provide final pricing for each part:</p>
+						<p class="text-gray-500 mb-3 text-sm">Please provide final pricing for each part:</p>
+
+						<p class="mb-1 text-sm">Final Pricing Notes</p>
+						<Textarea bind:value={values.final_pricing_notes} />
 					</div>
 				{/if}
 
 				{#if form === null || form?.type === 'enter_quote'}
 					<div>
 						<p class="text-gray-400 mb-2 font-medium">Enter Quote Number Form</p>
-						<div>
+						<div class="mb-3">
 							<p class="mb-1 text-sm">Quote Number</p>
 							<TextInput bind:value={values.quote_number} fullWidth={false} />
 						</div>
+
+						<p class="mb-1 text-sm">Notes</p>
+						<Textarea bind:value={values.enter_quote_number_notes} />
 					</div>
 				{/if}
 
 				{#if form === null || form?.type === 'send_quote'}
 					<div>
 						<p class="text-gray-400 mb-2 font-medium">Send Quote Form</p>
-						<div>
+						<div class="mb-3">
 							<p class="mb-1 text-sm">Quote Sent</p>
 							<Boolean bind:value={values.quote_sent} />
 						</div>
+
+						<p class="mb-1 text-sm">Notes</p>
+						<Textarea bind:value={values.send_quote_notes} />
 					</div>
 				{/if}
 
 				{#if form === null || form?.type === 'response'}
 					<div>
-						<p class="text-gray-400 mb-2 font-medium">Response Form</p>
-						<p class="mb-1 text-sm">Response Status</p>
-						<StatusSelect status="response" bind:value={values.status} tags={oemTags} />
+						<div class="mb-3">
+							<p class="text-gray-400 mb-2 font-medium">Response Form</p>
+							<p class="mb-1 text-sm">Response Status</p>
+							<StatusSelect status="response" bind:value={values.status} tags={oemTags} />
+						</div>
+
+						<p class="mb-1 text-sm">Notes</p>
+						<Textarea bind:value={values.response_notes} />
 					</div>
 				{/if}
 
