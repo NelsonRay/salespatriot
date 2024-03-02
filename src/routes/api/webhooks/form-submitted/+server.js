@@ -34,11 +34,9 @@ export async function POST({ request, cookies }) {
 		.select('*')
 		.single();
 
-	console.log('data:', data);
-
 	if (error) {
 		console.error(error);
-		return json({ error }, { status: 500 });
+		return json({ error, data }, { status: 500 });
 	}
 
 	try {
@@ -85,16 +83,13 @@ export async function POST({ request, cookies }) {
 
 				break;
 			case 'bee07e8a-3c83-4bce-89a7-f91ca65804e6':
-				console.log(1);
-				if (data.status.includes('bom:created') || data.status.included('bom:in_house_part')) {
-					console.log(2);
+				if (data.status.includes('bom:created') || data.status.includes('bom:in_house_part')) {
 					await updateStatusInProgress(
 						data.status,
 						['purchasing:in_progress', 'labor:in_progress'],
 						supabase,
 						solicitation_matched
 					);
-					console.log(4);
 					await supabase
 						.from('forms')
 						.insert({ form: '18055704-d9b9-42d7-958b-f5d1d5b1ba4d', solicitation_matched });
@@ -134,7 +129,7 @@ export async function POST({ request, cookies }) {
 		}
 	} catch (e) {
 		console.error(e);
-		return json({ e }, { status: 500 });
+		return json({ e, data }, { status: 500 });
 	}
 
 	return json({}, { status: 200 });
@@ -143,6 +138,5 @@ export async function POST({ request, cookies }) {
 async function updateStatusInProgress(status, statusValues, supabase, id) {
 	status = status.filter((e) => !statusValues.some((s) => e.includes(s.split(':')[0])));
 	status = [...status, ...statusValues];
-	console.log(3);
 	await supabase.from('solicitations_matched').update({ status }).eq('id', id);
 }
