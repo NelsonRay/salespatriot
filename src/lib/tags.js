@@ -267,6 +267,12 @@ export const oemTags = {
 			color: 'green',
 			key: 'send_quote:complete'
 		},
+		no_quote: {
+			name: 'No Quote',
+			level: 2,
+			color: 'red',
+			key: 'send_quote:no_quote'
+		},
 		in_progress: {
 			name: 'In Progress',
 			level: 3,
