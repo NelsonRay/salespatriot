@@ -45,8 +45,10 @@
 	];
 
 	function handleSubmit() {
-		const results = formsValidation[form.type]?.safeParse(values);
-		errors = results?.error?.flatten()?.fieldErrors;
+		if (form.type) {
+			const results = formsValidation[form.type]?.safeParse(values);
+			errors = results?.error?.flatten()?.fieldErrors;
+		}
 
 		if (!errors) {
 			submitCallback();
