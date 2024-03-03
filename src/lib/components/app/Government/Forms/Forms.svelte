@@ -3,7 +3,7 @@
 	import { formatDate } from '$lib/helpers';
 
 	export let data;
-	data?.sort((a, b) => b.step - a.step);
+	data = data?.sort((a, b) => a?.form?.step - b?.form?.step);
 </script>
 
 {#if data && data?.length > 0}
@@ -13,7 +13,7 @@
 	>
 		<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll">
 			<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
-				{#each ['Form', 'Submitted', 'Submitted At', 'Submitted By', 'Sent', 'Deleted'] as header, i}
+				{#each ['Form', 'Submitted', 'Submitted At', 'Submitted By', 'Sent', 'Deleted'] as header}
 					<th class="text-sm">{header}</th>
 				{/each}
 			</thead>
