@@ -26,24 +26,34 @@ export async function POST({ request, cookies }) {
 	if (table === 'forms') {
 		// if government
 
-		const {
-			data: { user }
-		} = await supabase.from('form').select('user').eq('id', record.form).limit(1).single();
+		const { data, error } = await supabase
+			.from('forms')
+			.select('*, form(user, name), solicitation_matched(solicitation!inner(number))')
+			.eq('id', record.id)
+			.limit(1)
+			.single();
 
-		userId = user;
-		btnText = 'Open Solicitation Form';
-		subject = 'New Solicitation Form';
+		if (error) console.error(error);
+
+		userId = data.form.user;
+		btnText = `Open ${data.form.name}`;
+		subject = `${data.form.name}: ${data.solicitation_matched.solicitation.number}`;
 		formLink = `https://salespatriot.com/solicitation-form/${record.id}`;
 	} else {
 		// if oem
 
-		const {
-			data: { user }
-		} = await supabase.from('oem_form').select('user').eq('id', record.oem_form).limit(1).single();
+		const { data, error } = await supabase
+			.from('oem_forms')
+			.select('oem_form(name, user), oem_rfq(date_received, customer(name))')
+			.eq('id', record.id)
+			.limit(1)
+			.single();
 
-		userId = user;
-		btnText = 'Open OEM Form';
-		subject = 'New OEM Form';
+		if (error) console.error(error);
+
+		userId = data.oem_form.user;
+		btnText = `Open ${data.oem_form.name}`;
+		subject = `${data.oem_form.name}: ${data.oem_rfq.customer.name} / ${data.oem_rfq.date_received}`;
 		formLink = `https://salespatriot.com/oem-form/${record.id}`;
 	}
 
