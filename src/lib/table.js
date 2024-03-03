@@ -92,6 +92,8 @@ export const nsnColumns = [
 	{ type: 'formula', field: 'market_value' },
 	{ type: 'field', field: 'solicitation.price_won_at' },
 	{ type: 'formula', field: 'unit_price_won_at' },
+	{ type: 'field', field: 'estimated_labor_minutes' },
+	{ type: 'field', field: 'estimated_material_cost' },
 	{ type: 'formula', field: 'diff_unit_price' },
 	{ type: 'set_aside', field: 'solicitation.set_aside' },
 	{ type: 'field', field: 'solicitation.first_article' },

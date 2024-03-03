@@ -17,6 +17,7 @@
 	import { nsnColumns } from '$lib/table';
 	import PartnerSelect from '$lib/components/form/PartnerSelect.svelte';
 	import { formsValidation } from '$lib/validation';
+	import Forms from '$lib/components/app/Government/Forms/Forms.svelte';
 
 	export let solicitation_matched;
 	export let values;
@@ -105,7 +106,7 @@
 					<div>
 						<p class="mb-1">Max Labor Hours</p>
 						<Currency
-							value={parseFloat((solicitation_matched.unit_price * 0.1) / 18).toFixed(2)}
+							value={parseFloat(((solicitation_matched.unit_price * 0.1) / 18) * 60).toFixed(2)}
 							disabled
 						/>
 					</div>
@@ -141,8 +142,11 @@
 					</div>
 				{/if}
 
-				{#if form === null || form?.type === 'opportunity'}
+				{#if form === null || form?.type === 'opportunity' || form?.type === 'review'}
 					<div>
+						<p class="text-lg mt-5 mb-2 font-semibold">Forms</p>
+						<Forms data={solicitation_matched?.forms ?? []} />
+
 						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
 						{#if nsn_matches?.length > 0}
 							<Table data={nsn_matches} columns={nsnColumns} />
@@ -162,7 +166,7 @@
 		<div class="two bg-neutral-50">
 			<div class="flex flex-col p-6">
 				{#each forms as f}
-					{#if form === null || form.type === f}
+					{#if form === null || form.type === 'review' || form.type === f}
 						<div class="mb-3">
 							<p class="text-gray-400 mb-2 font-medium">{capitalizeFirstLetter(f) + ' Form'}</p>
 							{#each fieldsForForms[f] as field}

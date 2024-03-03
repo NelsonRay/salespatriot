@@ -32,7 +32,9 @@
 	async function loadData() {
 		let { data, error } = await supabase
 			.from('solicitations_matched')
-			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*))), matching_rule(*)')
+			.select(
+				'*, solicitation!inner(*, nsn(id, matching_nsns(*))), matching_rule(*), forms(*, form(*), submitted_by(*))'
+			)
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
@@ -48,7 +50,7 @@
 		);
 		solicitation_matched = data;
 
-		const { solicitation, matching_rule, ...rest } = data;
+		const { solicitation, matching_rule, forms, ...rest } = data;
 		values = rest;
 	}
 

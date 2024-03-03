@@ -1,11 +1,16 @@
+/* eslint-disable no-unused-vars */
 import { error, json } from '@sveltejs/kit';
 
-export async function POST({ request, locals: { supabase } }) {
+export async function POST({ request, locals: { supabase, session } }) {
 	const { values, id } = await request.json();
 
 	const { error: err } = await supabase
 		.from('oem_forms')
-		.update({ submitted_timestamp: new Date().toISOString(), submitted: true })
+		.update({
+			submitted_timestamp: new Date().toISOString(),
+			submitted: true,
+			submitted_at: session?.user.id
+		})
 		.eq('id', id);
 
 	const { oem_rfqs_parts, customer, ...rest } = values;

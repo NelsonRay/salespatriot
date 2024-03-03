@@ -5,7 +5,8 @@
 		formatCurrency,
 		getMatchingClass,
 		getReviewValues,
-		getSetAsideColor
+		getSetAsideColor,
+		getFamiliarityClass
 	} from '$lib/helpers.js';
 
 	export let solicitation_matched;
@@ -18,8 +19,7 @@
 <div class="flex flex-row justify-between">
 	<div class="space-y-2">
 		<div class="mb-3">
-			<div class="flex flex-row items-center space-x-2">
-				<p class="text-lg font-semibold">{solicitation_matched.solicitation.number}</p>
+			<div class="flex flex-row items-center space-x-2 mb-1">
 				{#if solicitation_matched?.matching_rule?.name}
 					<div
 						class="px-2 py-1 rounded-md {getMatchingClass(
@@ -29,7 +29,19 @@
 						<p class="text-xs">{solicitation_matched?.matching_rule?.name}</p>
 					</div>
 				{/if}
+				{#if solicitation_matched.familiarity_status}
+					<div
+						class="px-2 py-1 rounded-md {getFamiliarityClass(
+							solicitation_matched.familiarity_status
+						)}"
+					>
+						<p class="text-xs">
+							{solicitation_matched.familiarity_status}
+						</p>
+					</div>
+				{/if}
 			</div>
+			<p class="text-lg font-semibold">{solicitation_matched.solicitation.number}</p>
 			<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 		</div>
 

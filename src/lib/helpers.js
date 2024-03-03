@@ -49,6 +49,27 @@ export function getMatchingClass(name) {
 }
 
 // @ts-ignore
+export function getFamiliarityClass(status) {
+	let pClass = '';
+	switch (status) {
+		case 'Prev Won':
+			pClass = 'bg-green-600';
+			break;
+		case 'Prev Bid':
+			pClass = 'bg-green-500';
+			break;
+		case 'Seen':
+			pClass = 'bg-blue-300';
+			break;
+		case 'New':
+			pClass = 'bg-green-300';
+			break;
+	}
+
+	return pClass;
+}
+
+// @ts-ignore
 export function getSetAsideColor(setAside) {
 	let cClass = '';
 
@@ -117,6 +138,8 @@ export function getReviewValues(nsnMatches) {
 	let values = [];
 	let dates = [];
 
+	let estimated_labor_minutes;
+
 	for (let key of [
 		'estimated_labor_minutes',
 		'estimated_material_cost',
@@ -128,7 +151,8 @@ export function getReviewValues(nsnMatches) {
 			case 'estimated_labor_minutes':
 				for (let match of nsnMatches) {
 					if (match.estimated_labor_minutes) {
-						values.push(match.estimated_labor_minutes);
+						estimated_labor_minutes = match.estimated_labor_minutes;
+						values.push(parseFloat((estimated_labor_minutes / 60) * 18).toFixed(2));
 						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
 						break;
 					}
@@ -197,6 +221,11 @@ export function getReviewValues(nsnMatches) {
 			values[i] = formatCurrency(values[i]);
 		}
 	}
+
+	if (values[0] !== 'N/A') {
+		values[0] = `${values[0]} / ${estimated_labor_minutes} mins`;
+	}
+
 	return { values, dates };
 }
 

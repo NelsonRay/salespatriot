@@ -1,7 +1,7 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
-	import { getMatchingClass } from '$lib/helpers.js';
+	import { getMatchingClass, getFamiliarityClass } from '$lib/helpers.js';
 
 	export let data;
 
@@ -27,7 +27,7 @@
 			let formsQuery = supabase
 				.from('forms')
 				.select(
-					'id, submitted, response_timestamp, form!inner(*), solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
+					'id, submitted, submitted_timestamp, form!inner(*), solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
 				)
 				.eq('is_deleted', false);
 
@@ -132,26 +132,6 @@
 
 	function getOemForms(workflows, form) {
 		return workflows.forms.filter((e) => e.oem_form.id === form.id && !e.submitted);
-	}
-
-	function getFamiliarityClass(status) {
-		let pClass = '';
-		switch (status) {
-			case 'Prev Won':
-				pClass = 'bg-green-600';
-				break;
-			case 'Prev Bid':
-				pClass = 'bg-green-500';
-				break;
-			case 'Seen':
-				pClass = 'bg-blue-300';
-				break;
-			case 'New':
-				pClass = 'bg-green-300';
-				break;
-		}
-
-		return pClass;
 	}
 
 	function getPartsDescription(parts) {
