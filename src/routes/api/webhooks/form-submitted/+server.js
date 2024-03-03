@@ -102,8 +102,10 @@ export async function POST({ request, cookies }) {
 			case '18055704-d9b9-42d7-958b-f5d1d5b1ba4d':
 			case '53cc6979-4406-47aa-97a0-1d83d0504c12':
 				if (
-					data.status.includes('purchasing:within_budget') ||
-					data.status.includes('labor:within_time')
+					(data.status.includes('purchasing:within_budget') ||
+						data.status.includes('purchasing:slightly_outside_budget')) &&
+					(data.status.includes('labor:within_time') ||
+						data.status.includes('labor:slightly_outside_time'))
 				) {
 					await updateStatusInProgress(
 						data.status,
