@@ -46,7 +46,7 @@
 		}
 	});
 
-	async function handleSubmit() {
+	async function submitCallback() {
 		isSubmitting = true; // show loading spinner
 		const res = await fetch('/api/solicitations/form-submission', {
 			method: 'POST',
@@ -86,7 +86,7 @@
 		bind:values
 		form={form?.form}
 		bind:nsn_matches
-		{handleSubmit}
+		{submitCallback}
 		bind:isSubmitting
 	/>
 {:else}

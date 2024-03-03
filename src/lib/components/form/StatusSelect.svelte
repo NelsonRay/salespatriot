@@ -20,7 +20,7 @@
 	function filterTags(status) {
 		let filtered_tags = Object.keys(tags[status])
 			.map((key) => ({ ...tags[status][key], key }))
-			.filter((e) => (skipInProgress ? e.key.split(':')[1] !== 'in_progress' : true));
+			.filter((e) => (skipInProgress ? e.key !== 'in_progress' : true));
 
 		return filtered_tags;
 	}

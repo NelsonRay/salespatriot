@@ -16,13 +16,16 @@
 	import { fieldsForForms } from '$lib/forms';
 	import { nsnColumns } from '$lib/table';
 	import PartnerSelect from '$lib/components/form/PartnerSelect.svelte';
+	import { formsValidation } from '$lib/validation';
 
 	export let solicitation_matched;
 	export let values;
 	export let nsn_matches = null;
 	export let form = null;
-	export let handleSubmit;
+	export let submitCallback;
 	export let isSubmitting;
+
+	let errors;
 
 	function goBack() {
 		window.location.href = `${window.location.origin}`;
@@ -38,6 +41,15 @@
 		'bid',
 		'award'
 	];
+
+	function handleSubmit() {
+		const results = formsValidation[form.type]?.safeParse(values);
+		errors = results?.error?.flatten()?.fieldErrors;
+
+		if (!errors) {
+			submitCallback();
+		}
+	}
 </script>
 
 {#if solicitation_matched}
@@ -163,26 +175,56 @@
 											tags={govTags}
 											skipInProgress={form !== null}
 										/>
+										{#if errors?.status}
+											<label for="trim" class="label">
+												<span class="label-text-alt text-error">{errors?.status[0]}</span>
+											</label>
+										{/if}
 									{/if}
 									{#if field.type === 'currency'}
 										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 										<Currency bind:value={values[field.field]} />
+										{#if errors?.[field.field]}
+											<label for="trim" class="label">
+												<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
+											</label>
+										{/if}
 									{/if}
 									{#if field.type === 'textarea'}
 										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 										<Textarea bind:value={values[field.field]} />
+										{#if errors?.[field.field]}
+											<label for="trim" class="label">
+												<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
+											</label>
+										{/if}
 									{/if}
 									{#if field.type === 'checkbox'}
 										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 										<Boolean bind:value={values[field.field]} />
+										{#if errors?.[field.field]}
+											<label for="trim" class="label">
+												<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
+											</label>
+										{/if}
 									{/if}
 									{#if field.type === 'link' || field.type === 'text'}
 										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 										<TextInput bind:value={values[field.field]} />
+										{#if errors?.[field.field]}
+											<label for="trim" class="label">
+												<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
+											</label>
+										{/if}
 									{/if}
 									{#if field.type === 'partner'}
 										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 										<PartnerSelect bind:value={values[field.field]} />
+										{#if errors?.[field.field]}
+											<label for="trim" class="label">
+												<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
+											</label>
+										{/if}
 									{/if}
 								</div>
 							{/each}
@@ -193,6 +235,11 @@
 					<p class="mb-1">Skip Engineering Feasibility Form</p>
 
 					<Boolean bind:value={values['skip_engineering']} />
+					{#if errors?.skip_engineering}
+						<label for="trim" class="label">
+							<span class="label-text-alt text-error">{errors?.skip_engineering[0]}</span>
+						</label>
+					{/if}
 				{/if}
 				<div class="flex flex-row mt-5 items-center justify-center">
 					{#if !isSubmitting}

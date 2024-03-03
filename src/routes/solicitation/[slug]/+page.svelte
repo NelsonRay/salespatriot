@@ -14,7 +14,7 @@
 
 	let isSubmitting = false;
 
-	async function handleSubmit() {
+	async function submitCallback() {
 		isSubmitting = true; // show loading spinner
 		const res = await fetch('/api/solicitations/update', {
 			method: 'POST',
@@ -67,4 +67,4 @@
 	>
 </svelte:head>
 
-<SolicitationForm {solicitation_matched} {values} {nsn_matches} {handleSubmit} {isSubmitting} />
+<SolicitationForm {solicitation_matched} {values} {nsn_matches} {submitCallback} {isSubmitting} />
