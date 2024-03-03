@@ -45,7 +45,7 @@
 	];
 
 	function handleSubmit() {
-		if (form.type) {
+		if (form?.type) {
 			const results = formsValidation[form.type]?.safeParse(values);
 			errors = results?.error?.flatten()?.fieldErrors;
 		}
