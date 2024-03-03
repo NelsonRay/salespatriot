@@ -25,6 +25,7 @@
 	export let form = null;
 	export let submitCallback;
 	export let isSubmitting;
+	export let isAdmin = false;
 
 	let errors;
 
@@ -56,13 +57,25 @@
 {#if solicitation_matched}
 	<div class="parent">
 		<div class="one pl-4 pt-4 overflow-auto">
-			<div>
+			<div class="flex flex-row justify-between">
 				<button on:click={goBack}>
 					<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50">
 						<img src={Arrow} alt="1" class="h-5 w-5" />
 						<p class="mb-[0.5px]">Go Back</p>
 					</div>
 				</button>
+
+				{#if isAdmin}
+					<a
+						href={window.location.origin + '/solicitation/' + solicitation_matched.id}
+						target="_blank"
+						class="mr-4"
+					>
+						<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50">
+							<p class="mb-[0.5px]">View Master</p>
+						</div>
+					</a>
+				{/if}
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
 				<SolicitationInfo {solicitation_matched} {nsn_matches} {values} />

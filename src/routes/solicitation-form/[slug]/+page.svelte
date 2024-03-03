@@ -9,6 +9,7 @@
 
 	let form = null;
 	let nsn_matches = null;
+	let isAdmin = false;
 
 	let values = {};
 
@@ -35,6 +36,13 @@
 				new Date(a.solicitation.expires_on) > new Date(b.solicitation.expires_on) ? -1 : 1
 			);
 		}
+		const {
+			data: { is_admin },
+			error
+		} = await supabase.from('users').select('*').eq('id', session.user.id).limit(1).single();
+
+		isAdmin = is_admin;
+
 		form = data;
 		const { solicitation, matching_rule, forms, ...rest } = data.solicitation_matched;
 		values = rest;
@@ -88,6 +96,7 @@
 		bind:nsn_matches
 		{submitCallback}
 		bind:isSubmitting
+		{isAdmin}
 	/>
 {:else}
 	<p class="mt-12">Thank you for submitting form!</p>
