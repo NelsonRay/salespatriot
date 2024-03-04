@@ -88,16 +88,18 @@
 	</title>
 </svelte:head>
 
-{#if !form?.submitted}
-	<SolicitationForm
-		solicitation_matched={form?.solicitation_matched}
-		bind:values
-		form={form?.form}
-		bind:nsn_matches
-		{submitCallback}
-		bind:isSubmitting
-		{isAdmin}
-	/>
-{:else}
-	<p class="mt-12">Thank you for submitting form!</p>
+{#if form}
+	{#if !form?.submitted}
+		<SolicitationForm
+			solicitation_matched={form?.solicitation_matched}
+			bind:values
+			form={form?.form}
+			bind:nsn_matches
+			{submitCallback}
+			bind:isSubmitting
+			{isAdmin}
+		/>
+	{:else}
+		<p class="mt-12">Thank you for submitting form!</p>
+	{/if}
 {/if}

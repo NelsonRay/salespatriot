@@ -29,6 +29,10 @@
 
 	let errors;
 
+	if (form?.type === 'bid') {
+		values.status = [...(values.status.filter((s) => !s.includes('bid')) ?? []), 'bid:bid'];
+	}
+
 	function goBack() {
 		window.location.href = `${window.location.origin}`;
 	}
@@ -54,6 +58,21 @@
 			submitCallback();
 		}
 	}
+
+	function getEstimatedDays() {
+		const estimated_days_to_deliver = solicitation_matched?.estimated_purchasing_days;
+		const days_to_deliver = solicitation_matched?.solicitation_matched?.days_to_deliver;
+
+		if (estimated_days_to_deliver < days_to_deliver) {
+			return estimated_days_to_deliver;
+		} else if (estimated_days_to_deliver > days_to_deliver + 30) {
+			return days_to_deliver;
+		} else {
+			return estimated_days_to_deliver;
+		}
+	}
+
+	$: console.log(values.status);
 </script>
 
 {#if solicitation_matched}
@@ -80,7 +99,7 @@
 				{/if}
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				<SolicitationInfo {solicitation_matched} {nsn_matches} {values} />
+				<SolicitationInfo {solicitation_matched} {nsn_matches} {values} {form} />
 
 				<div>
 					<p class="mb-1 font-medium">Additional Notes</p>
@@ -142,8 +161,10 @@
 						/>
 						<p class="mb-1">Unit Price</p>
 						<Currency value={solicitation_matched?.unit_price} disabled />
+						<p class="mb-1">Quantity</p>
+						<Currency value={solicitation_matched?.solicitation.quantity} disabled />
 						<p class="mb-1">Estimated Days to Deliver</p>
-						<Currency value={solicitation_matched?.estimated_purchasing_days} disabled />
+						<Currency value={getEstimatedDays()} disabled />
 					</div>
 				{/if}
 				{#if form?.type === 'bom'}

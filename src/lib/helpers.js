@@ -100,7 +100,7 @@ export function getSetAsideColor(setAside) {
 export function getBidPartners() {
 	return [
 		{ id: '66ebce9c-66db-45cf-a91e-1425a45b47b2', name: 'ADG Bid Direct' },
-		{ id: '0a47172d-8394-4f28-a4be-1606aa395380', name: 'QPI' },
+		// { id: '0a47172d-8394-4f28-a4be-1606aa395380', name: 'QPI' },
 		{ id: '297ca905-a9dd-48f5-9af3-306547997320', name: 'Janels' },
 		{ id: '1c3ea0f7-a624-44b7-91fd-3efc82e982a8', name: 'Fortum Genus' },
 		{ id: '36d12554-f91f-4e16-a2e1-018d15552a54', name: 'DTI' }
