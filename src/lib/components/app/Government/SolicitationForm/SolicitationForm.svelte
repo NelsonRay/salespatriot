@@ -29,6 +29,13 @@
 
 	let errors;
 
+	if (form?.type === 'enter_quote') {
+		values.status = [
+			...(values.status.filter((s) => !s.includes('enter_quote')) ?? []),
+			'enter_quote:entered'
+		];
+	}
+
 	if (form?.type === 'bid') {
 		values.status = [...(values.status.filter((s) => !s.includes('bid')) ?? []), 'bid:bid'];
 	}
@@ -44,6 +51,7 @@
 		'purchasing',
 		'labor',
 		'review',
+		'enter_quote',
 		'bid',
 		'award'
 	];
@@ -72,7 +80,12 @@
 		}
 	}
 
-	$: console.log(values.status);
+	function getFormTitle(type) {
+		return `${type
+			.split('_')
+			.map((e) => capitalizeFirstLetter(e))
+			.join(' ')} Form`;
+	}
 </script>
 
 {#if solicitation_matched}
@@ -145,6 +158,30 @@
 						/>
 					</div>
 				{/if}
+				{#if form?.type === 'enter_quote'}
+					<div class="space-y-3">
+						<div>
+							<p class="mb-1">Total Value</p>
+							<Currency
+								value={solicitation_matched?.unit_price *
+									solicitation_matched?.solicitation?.quantity}
+								disabled
+							/>
+						</div>
+						<div>
+							<p class="mb-1">Unit Price</p>
+							<Currency value={solicitation_matched?.unit_price} disabled />
+						</div>
+						<div>
+							<p class="mb-1">Quantity</p>
+							<Currency value={solicitation_matched?.solicitation.quantity} disabled />
+						</div>
+						<div>
+							<p class="mb-1">Estimated Purchasing Days</p>
+							<Currency value={solicitation_matched?.estimated_purchasing_days} disabled />
+						</div>
+					</div>
+				{/if}
 				{#if form?.type === 'bid'}
 					<div>
 						<p class="mb-1">Link to DIBBS to place Bid</p>
@@ -204,7 +241,7 @@
 				{#each forms as f}
 					{#if form === null || form.type === 'review' || form.type === f}
 						<div class="mb-3">
-							<p class="text-gray-400 mb-2 font-medium">{capitalizeFirstLetter(f) + ' Form'}</p>
+							<p class="text-gray-400 mb-2 font-medium">{getFormTitle(f)}</p>
 							{#each fieldsForForms[f] as field}
 								<div class="mb-3">
 									{#if field.type === 'status'}

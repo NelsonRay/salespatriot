@@ -129,7 +129,12 @@ export function tableFieldMapper(obj, column) {
 			value = containsStatus[0];
 		}
 
-		return { header: capitalizeFirstLetter(column.status) + ' Status', value };
+		let header = `${column.status
+			.split('_')
+			.map((e) => capitalizeFirstLetter(e))
+			.join(' ')} Status`;
+
+		return { header, value };
 	} else if (column.type === 'matching_rule') {
 		return { header: 'Matching Rule', value: obj?.matching_rule?.name };
 	} else if (column.type === 'formula') {

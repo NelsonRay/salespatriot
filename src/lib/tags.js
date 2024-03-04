@@ -149,6 +149,20 @@ export const govTags = {
 			key: 'review:not_approved'
 		}
 	},
+	enter_quote: {
+		entered: {
+			name: 'Done',
+			level: 1,
+			color: 'green',
+			key: 'enter_quote:entered'
+		},
+		in_progress: {
+			name: 'In Progress',
+			level: 3,
+			color: 'yellow',
+			key: 'enter_quote:in_progress'
+		}
+	},
 	bid: {
 		bid: {
 			name: 'Bid',

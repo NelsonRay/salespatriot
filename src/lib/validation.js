@@ -120,6 +120,24 @@ export const formsValidation = {
 				});
 			}
 		}),
+	enter_quote: z
+		.object({
+			status: z.string().array().nonempty({ message: 'Status is required.' }),
+			quote_number: z
+				.string({ invalid_type_error: 'Quote Number is required.' })
+				.min(1, { message: 'Quote Number is required.' })
+		})
+		.superRefine((fields, ctx) => {
+			// if no engineering status
+
+			if (fields.status.filter((s) => s.includes('enter_quote')).length === 0) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Status is required.',
+					path: ['status']
+				});
+			}
+		}),
 	bid: z
 		.object({
 			status: z.string().array().nonempty({ message: 'Status is required.' }),

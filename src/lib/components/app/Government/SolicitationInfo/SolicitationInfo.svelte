@@ -46,7 +46,7 @@
 			<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 		</div>
 
-		{#if form?.type !== 'bid'}
+		{#if !['enter_quote', 'bid'].includes(form?.type)}
 			<div>
 				<div class="flex flex-row space-x-1 items-center">
 					<p class="text-gray-400">Set Aside:</p>

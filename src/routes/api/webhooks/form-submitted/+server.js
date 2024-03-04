@@ -11,6 +11,7 @@ import { createServerClient } from '@supabase/ssr';
 // 18055704-d9b9-42d7-958b-f5d1d5b1ba4d Pur
 // 53cc6979-4406-47aa-97a0-1d83d0504c12 Lab
 // 6bbf4342-1b50-4c1a-9dc5-ad40562c5626 Rev
+// a40a1d91-3295-4ca4-b343-ad58e2279fec Ent
 // 6a0d1585-d572-4d8f-bdb4-498a89506e85 Bid
 
 export async function POST({ request, cookies }) {
@@ -109,20 +110,27 @@ export async function POST({ request, cookies }) {
 				) {
 					await updateStatusInProgress(
 						data.status,
-						['review:in_progress'],
+						['enter_quote:in_progress'],
 						supabase,
 						solicitation_matched
 					);
 					await supabase
 						.from('forms')
-						.insert({ form: '6bbf4342-1b50-4c1a-9dc5-ad40562c5626', solicitation_matched });
+						.insert({ form: 'a40a1d91-3295-4ca4-b343-ad58e2279fec', solicitation_matched });
 				}
 				break;
 
-			case '6bbf4342-1b50-4c1a-9dc5-ad40562c5626':
+			case 'a40a1d91-3295-4ca4-b343-ad58e2279fec':
 				await supabase
 					.from('forms')
-					.insert({ form: '6a0d1585-d572-4d8f-bdb4-498a89506e85', solicitation_matched });
+					.insert({ form: '6bbf4342-1b50-4c1a-9dc5-ad40562c5626', solicitation_matched });
+				break;
+			case '6bbf4342-1b50-4c1a-9dc5-ad40562c5626':
+				if (data.status.includes('review:approved')) {
+					await supabase
+						.from('forms')
+						.insert({ form: '6a0d1585-d572-4d8f-bdb4-498a89506e85', solicitation_matched });
+				}
 				break;
 			case '6a0d1585-d572-4d8f-bdb4-498a89506e85':
 				break;

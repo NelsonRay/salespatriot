@@ -54,6 +54,7 @@ export function getColumns(pathname) {
 				{ type: 'status', status: 'purchasing' },
 				{ type: 'status', status: 'labor' },
 				{ type: 'status', status: 'review' },
+				{ type: 'status', status: 'enter_quote' },
 				{ type: 'status', status: 'bid' },
 				{ type: 'status', status: 'award' },
 				{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
