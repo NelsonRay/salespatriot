@@ -41,7 +41,11 @@
 	}
 
 	function goBack() {
-		window.location.href = `${window.location.origin}`;
+		if (form) {
+			window.location.href = `${window.location.origin}/workflows`;
+		} else {
+			window.location.href = `${window.location.origin}`;
+		}
 	}
 
 	const forms = [
@@ -179,6 +183,20 @@
 						<div>
 							<p class="mb-1">Estimated Purchasing Days</p>
 							<Currency value={solicitation_matched?.estimated_purchasing_days} disabled />
+						</div>
+						<div>
+							<p class="mb-1">NSN</p>
+							<Currency value={solicitation_matched?.solicitation.nsn.id} disabled />
+						</div>
+						<div>
+							<p class="mb-1">In-House Part Number</p>
+							<TextInput
+								value={solicitation_matched?.solicitation.nsn?.matching_nsns?.length > 0
+									? solicitation_matched?.solicitation.nsn?.matching_nsns[0]['part_number']
+									: ''}
+								disabled
+								fullWidth={false}
+							/>
 						</div>
 					</div>
 				{/if}
