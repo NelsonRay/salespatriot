@@ -9,6 +9,7 @@
 	import { getColumns } from '$lib/table.js';
 
 	export let data;
+	export let isAdmin = false;
 
 	$: ({ supabase, session } = data);
 
@@ -59,6 +60,12 @@
 		}
 
 		let { data, error } = await query;
+
+		const {
+			data: { is_admin }
+		} = await supabase.from('users').select('is_admin').eq('id', session.user.id).limit(1).single();
+
+		isAdmin = is_admin;
 
 		switch (pathname) {
 			case '/government/bidding-funnel':
@@ -140,7 +147,11 @@
 </div>
 
 {#if solicitations_matched}
-	<Table data={solicitations_matched} columns={getColumns($page.url.pathname)} />
+	<Table
+		data={solicitations_matched}
+		columns={getColumns($page.url.pathname)}
+		blockEditing={!isAdmin}
+	/>
 {:else}
 	<div class="flex flex-col gap-4 p-5">
 		<div class="skeleton h-4 w-full"></div>

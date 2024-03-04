@@ -7,6 +7,7 @@
 
 	export let data;
 	export let columns;
+	export let blockEditing = false;
 
 	function getStatusColor(status) {
 		if (!status) return '';
@@ -38,6 +39,7 @@
 	}
 
 	function navToSolicitation(id) {
+		if (blockEditing) return;
 		window.location.href = `${window.location.origin}/solicitation/${id}`;
 	}
 </script>
