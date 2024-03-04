@@ -30,7 +30,7 @@
 
 		switch (pathname) {
 			case '/government/bidding-funnel':
-				query = query.eq('is_killed', false);
+				query = query.eq('removed', false);
 
 				break;
 			case '/government/recently-released':
@@ -60,10 +60,10 @@
 		let { data, error } = await query;
 
 		const {
-			data: { is_admin }
-		} = await supabase.from('users').select('is_admin').eq('id', session.user.id).limit(1).single();
+			data: { admin }
+		} = await supabase.from('users').select('admin').eq('id', session.user.id).limit(1).single();
 
-		isAdmin = is_admin;
+		isAdmin = admin;
 
 		switch (pathname) {
 			case '/government/bidding-funnel':

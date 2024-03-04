@@ -26,7 +26,7 @@
 						>
 						<td>{form.submitted_by?.name ?? ''}</td>
 						<td>{formatDate(new Date(form.created_at))}</td>
-						<td>{form.is_deleted ? 'Yes' : 'No'}</td>
+						<td>{form.deleted ? 'Yes' : 'No'}</td>
 					</tr>
 				{/each}
 			</tbody>

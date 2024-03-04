@@ -37,11 +37,11 @@
 			);
 		}
 		const {
-			data: { is_admin },
+			data: { admin },
 			error
 		} = await supabase.from('users').select('*').eq('id', session.user.id).limit(1).single();
 
-		isAdmin = is_admin;
+		isAdmin = admin;
 
 		form = data;
 		const { solicitation, matching_rule, forms, ...rest } = data.solicitation_matched;

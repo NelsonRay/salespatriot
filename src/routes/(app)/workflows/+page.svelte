@@ -18,10 +18,10 @@
 		workflows = null; // reset
 
 		const {
-			data: { is_admin }
-		} = await supabase.from('users').select('is_admin').eq('id', session.user.id).limit(1).single();
+			data: { admin }
+		} = await supabase.from('users').select('admin').eq('id', session.user.id).limit(1).single();
 
-		isAdmin = is_admin;
+		isAdmin = admin;
 
 		if (isGov) {
 			let formsQuery = supabase
@@ -29,7 +29,7 @@
 				.select(
 					'id, submitted, submitted_timestamp, form!inner(*), solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
 				)
-				.eq('is_deleted', false);
+				.eq('deleted', false);
 
 			if (isUser) formsQuery = formsQuery.eq('form.user', session.user.id);
 
@@ -48,7 +48,7 @@
 			let formsQuery = supabase
 				.from('oem_forms')
 				.select('*, oem_form(*), oem_rfq(*, oem_rfqs_parts(*), customer(*))')
-				.eq('is_deleted', false);
+				.eq('deleted', false);
 
 			if (isUser) formsQuery = formsQuery.eq('oem_form.user', session.user.id);
 			const { data, error } = await formsQuery;
