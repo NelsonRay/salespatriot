@@ -2,6 +2,8 @@
 	// @ts-nocheck
 	import { getBidPartners } from '$lib/helpers';
 
+	const partners = getBidPartners().filter((p) => !p.inactive);
+
 	export let value;
 
 	function getTagClass(id, selected) {
@@ -40,19 +42,25 @@
 
 		let tclass = `py-3 px-6 rounded-3xl m-1 text-xs font-medium ${color}`;
 
-		selected === id
+		(selected ?? []).includes(id)
 			? (tclass += ` border-[2px] shadow-md ${shadowColor} ${borderColor}`)
-			: selected
-				? (tclass += ' border-[2px] opacity-40')
-				: (tclass += ' border-[2px]');
+			: (tclass += ' border-[2px] opacity-40');
 
 		return tclass;
+	}
+
+	function togglePartner(id) {
+		if ((value ?? []).includes(id)) {
+			value = (value ?? []).filter((p) => p !== id);
+		} else {
+			value = [...(value ?? []), id];
+		}
 	}
 </script>
 
 <div class="flex flex-row">
-	{#each getBidPartners() as partner}
-		<button class={getTagClass(partner.id, value)} on:click={() => (value = partner.id)}>
+	{#each partners as partner}
+		<button class={getTagClass(partner.id, value)} on:click={() => togglePartner(partner.id)}>
 			{partner.name}
 		</button>
 	{/each}

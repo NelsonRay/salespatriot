@@ -45,7 +45,7 @@ export function govMapper(field) {
 		bid_exception: 'Bid With Exception',
 		exception_notes: 'Exception Notes',
 		bid_notes: 'Bid Notes',
-		bid_partner: 'Bid Partner'
+		bid_partners: 'Bid Partner(s)'
 	};
 
 	return map[field] ?? 'Error';
@@ -120,86 +120,85 @@ export function oemTableFieldMapper(obj, column) {
 	}
 }
 export function tableFieldMapper(obj, column) {
-	if (column.type === 'position') return { header: '#' };
-	if (column.type === 'status') {
-		const containsStatus = (obj?.status ?? []).filter((e) => e.includes(column.status));
+	try {
+		if (column.type === 'position') return { header: '#' };
+		if (column.type === 'status') {
+			const containsStatus = (obj?.status ?? []).filter((e) => e.includes(column.status));
 
-		let value;
-		if (containsStatus.length > 0) {
-			value = containsStatus[0];
-		}
-
-		let header = `${column.status
-			.split('_')
-			.map((e) => capitalizeFirstLetter(e))
-			.join(' ')} Status`;
-
-		return { header, value };
-	} else if (column.type === 'matching_rule') {
-		return { header: 'Matching Rule', value: obj?.matching_rule?.name };
-	} else if (column.type === 'formula') {
-		if (column.field === 'market_value') {
 			let value;
-			if (obj?.unit_price && obj?.solicitation?.quantity) {
-				value = formatCurrency(obj?.unit_price * obj?.solicitation?.quantity);
+			if (containsStatus.length > 0) {
+				value = containsStatus[0];
 			}
-			return { header: 'Market Value', value: value ?? '' };
-		} else if (column.field === 'unit_price_won_at') {
-			let value;
 
-			if (obj?.solicitation.price_won_at && obj?.solicitation?.quantity) {
-				value = formatCurrency(obj?.solicitation.price_won_at / obj?.solicitation?.quantity);
+			let header = `${column.status
+				.split('_')
+				.map((e) => capitalizeFirstLetter(e))
+				.join(' ')} Status`;
+
+			return { header, value };
+		} else if (column.type === 'matching_rule') {
+			return { header: 'Matching Rule', value: obj?.matching_rule?.name };
+		} else if (column.type === 'formula') {
+			if (column.field === 'market_value') {
+				let value;
+				if (obj?.unit_price && obj?.solicitation?.quantity) {
+					value = formatCurrency(obj?.unit_price * obj?.solicitation?.quantity);
+				}
+				return { header: 'Market Value', value: value ?? '' };
+			} else if (column.field === 'unit_price_won_at') {
+				let value;
+
+				if (obj?.solicitation.price_won_at && obj?.solicitation?.quantity) {
+					value = formatCurrency(obj?.solicitation.price_won_at / obj?.solicitation?.quantity);
+				}
+				return { header: 'Unit Price Won At', value: value ?? '' };
+			} else if (column.field === 'diff_unit_price') {
+				let value;
+
+				if (obj?.solicitation.price_won_at && obj?.solicitation?.quantity && obj?.unit_price) {
+					value = formatCurrency(
+						obj?.solicitation.price_won_at / obj?.solicitation?.quantity - obj.unit_price
+					);
+				}
+				return { header: 'Unit Price Difference', value: value ?? [] };
 			}
-			return { header: 'Unit Price Won At', value: value ?? '' };
-		} else if (column.field === 'diff_unit_price') {
-			let value;
 
-			if (obj?.solicitation.price_won_at && obj?.solicitation?.quantity && obj?.unit_price) {
-				value = formatCurrency(
-					obj?.solicitation.price_won_at / obj?.solicitation?.quantity - obj.unit_price
+			return { header: 'Error', value: '' };
+		} else if (column.type === 'bid_partners') {
+			return { header: 'Bid Partner(s)', value: obj?.bid_partners || null };
+		} else {
+			const header =
+				column.header ??
+				govMapper(
+					column?.field?.toString().includes('solicitation.')
+						? column?.field?.split('.')[1]
+						: column?.field
 				);
-			}
-			return { header: 'Unit Price Difference', value: value ?? '' };
-		}
 
-		return { header: 'Error', value: '' };
-	} else if (column.type === 'bid_partner') {
-		let value;
+			let value;
+			if (obj) {
+				value = obj;
+				for (let key of column.field.split('.')) {
+					value = value[key];
+				}
 
-		if (obj?.bid_partner) {
-			value = obj.bid_partner.name;
-		}
-
-		return { header: 'Bid Partner', value: value ?? '' };
-	} else {
-		const header =
-			column.header ??
-			govMapper(
-				column?.field?.toString().includes('solicitation.')
-					? column?.field?.split('.')[1]
-					: column?.field
-			);
-
-		let value;
-		if (obj) {
-			value = obj;
-			for (let key of column.field.split('.')) {
-				value = value[key];
+				if (column.array_selector) {
+					value = value.length > 0 ? value[0][column.array_selector] : '';
+				}
 			}
 
-			if (column.array_selector) {
-				value = value.length > 0 ? value[0][column.array_selector] : '';
+			if (
+				['solicitation.estimated_value', 'solicitation.price_won_at', 'unit_price'].includes(
+					column.field
+				)
+			) {
+				value = formatCurrency(value);
 			}
-		}
 
-		if (
-			['solicitation.estimated_value', 'solicitation.price_won_at', 'unit_price'].includes(
-				column.field
-			)
-		) {
-			value = formatCurrency(value);
+			return { header, value };
 		}
-
-		return { header, value };
+	} catch (e) {
+		console.error(e);
+		console.log(column, obj);
 	}
 }

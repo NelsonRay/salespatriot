@@ -3,7 +3,12 @@
 
 	import { govTags } from '$lib/tags.js';
 	import { tableFieldMapper } from '$lib/mappers';
-	import { getMatchingClass, getPartnerColor, getSetAsideColor } from '$lib/helpers.js';
+	import {
+		getMatchingClass,
+		getPartnerColor,
+		getSetAsideColor,
+		getBidPartners
+	} from '$lib/helpers.js';
 
 	export let data;
 	export let columns;
@@ -42,6 +47,18 @@
 		if (blockEditing) return;
 		window.location.href = `${window.location.origin}/solicitation/${id}`;
 	}
+
+	function getPartnerName(id) {
+		const partners = getBidPartners();
+
+		const partnerById = partners.filter((p) => p.id === id);
+
+		if (partnerById.length > 0) {
+			return partnerById[0].name;
+		} else {
+			return 'Error';
+		}
+	}
 </script>
 
 <article
@@ -59,7 +76,7 @@
 		<tbody>
 			{#each data as obj, index (obj.id)}
 				<tr on:click={() => navToSolicitation(obj.id)} class="hover:bg-neutral-100">
-					{#each columns as column, i}
+					{#each columns as column}
 						{#if column.type === 'position'}
 							<td class="text-center"> {index + 1}</td>
 						{:else if column.type === 'status'}
@@ -84,18 +101,18 @@
 									</div>
 								{/if}</td
 							>
-						{:else if column.type === 'bid_partner'}
+						{:else if column.type === 'bid_partners'}
 							<td>
-								{#if tableFieldMapper(obj, column).value}
-									<div
-										class="p-2 rounded-md inline-block {getPartnerColor(
-											tableFieldMapper(obj, column).value
-										)}"
-									>
-										{tableFieldMapper(obj, column).value ?? ''}
-									</div>
-								{/if}</td
-							>
+								<div class="flex flex-row space-x-1">
+									{#each tableFieldMapper(obj, column).value ?? [] as partner}
+										<div
+											class="p-2 rounded-md inline-block {getPartnerColor(getPartnerName(partner))}"
+										>
+											{getPartnerName(partner)}
+										</div>
+									{/each}
+								</div>
+							</td>
 						{:else if column.type === 'set_aside'}
 							<td>
 								{#if tableFieldMapper(obj, column).value}

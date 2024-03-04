@@ -141,7 +141,7 @@ export const formsValidation = {
 	bid: z
 		.object({
 			status: z.string().array().nonempty({ message: 'Status is required.' }),
-			bid_partner: z.string().nullable().optional(),
+			bid_partners: z.string().array().nullable().optional(),
 			bid_exception: z.boolean().nullable().optional()
 		})
 		.superRefine((fields, ctx) => {
@@ -156,11 +156,11 @@ export const formsValidation = {
 			}
 
 			if (fields.status.includes('bid:bid')) {
-				if (!fields.bid_partner)
+				if ((fields.bid_partners ?? []).length === 0)
 					ctx.addIssue({
 						code: 'custom',
-						message: 'Bid Partner is required.',
-						path: ['bid_partner']
+						message: 'Bid Partner(s) is required.',
+						path: ['bid_partners']
 					});
 
 				if (fields.bid_exception == null)

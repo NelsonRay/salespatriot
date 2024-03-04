@@ -26,9 +26,7 @@
 	async function loadData(pathname) {
 		let query = supabase
 			.from('solicitations_matched')
-			.select(
-				'*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*), bid_partner(*)'
-			);
+			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*)');
 
 		switch (pathname) {
 			case '/government/bidding-funnel':

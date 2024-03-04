@@ -40,7 +40,7 @@ export const fieldsForForms = {
 	],
 	enter_quote: [{ type: 'text', field: 'quote_number' }],
 	bid: [
-		{ type: 'partner', field: 'bid_partner' },
+		{ type: 'bid_partners', field: 'bid_partners' },
 		{ type: 'checkbox', field: 'bid_exception' },
 		{ type: 'textarea', field: 'exception_notes' },
 		{ type: 'textarea', field: 'bid_notes' }

@@ -331,7 +331,7 @@
 											</label>
 										{/if}
 									{/if}
-									{#if field.type === 'partner'}
+									{#if field.type === 'bid_partners'}
 										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 										<PartnerSelect bind:value={values[field.field]} />
 										{#if errors?.[field.field]}
