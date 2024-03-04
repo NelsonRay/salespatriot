@@ -199,7 +199,7 @@
 						<p class="font-medium text-base">{form.user.name}</p>
 					</div>
 					{#each getForms(workflows, form) as forms (forms.id)}
-						<a href={window.location.origin + '/solicitation-form/' + forms.id} target="_blank">
+						<a href={window.location.origin + '/solicitation-form/' + forms.id}>
 							<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
 								<div class="flex flex-row justify-between items-center">
 									<p class="font-semibold text-sm">

@@ -78,6 +78,12 @@
 			values.status = values?.status?.filter((e) => !e.toString().includes('engineering'));
 		}
 	}
+
+	$: if (form?.submitted) {
+		setTimeout(() => {
+			window.location.href = `${window.location.origin}/workflows`;
+		}, 1500);
+	}
 </script>
 
 <svelte:head>
