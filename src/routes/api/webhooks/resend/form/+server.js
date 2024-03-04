@@ -28,12 +28,17 @@ export async function POST({ request, cookies }) {
 
 		const { data, error } = await supabase
 			.from('forms')
-			.select('*, form(user, name), solicitation_matched(solicitation!inner(number))')
+			.select('*, form(user, name, type), solicitation_matched(solicitation!inner(number))')
 			.eq('id', record.id)
 			.limit(1)
 			.single();
 
 		if (error) console.error(error);
+
+		// skip opportunity form
+		if (data.form.type === 'opportunity') {
+			return json({}, { status: 201 });
+		}
 
 		userId = data.form.user;
 		btnText = `Open ${data.form.name}`;
