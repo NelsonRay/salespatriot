@@ -202,11 +202,11 @@ export const govTags = {
 			color: 'red',
 			key: 'award:lost'
 		},
-		removed: {
-			name: 'Removed',
+		cancelled: {
+			name: 'Cancelled',
 			level: 5,
 			color: 'gray',
-			key: 'award:removed'
+			key: 'award:cancelled'
 		}
 	}
 };
