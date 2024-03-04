@@ -152,7 +152,7 @@ export function getReviewValues(nsnMatches) {
 				for (let match of nsnMatches) {
 					if (match.estimated_labor_minutes) {
 						estimated_labor_minutes = match.estimated_labor_minutes;
-						values.push(parseFloat((estimated_labor_minutes / 60) * 18).toFixed(2));
+						values.push(parseFloat((estimated_labor_minutes / 60) * 20).toFixed(2));
 						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
 						break;
 					}

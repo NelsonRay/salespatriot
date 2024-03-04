@@ -157,7 +157,7 @@
 					<div>
 						<p class="mb-1">Max Labor Hours</p>
 						<Currency
-							value={parseFloat(((solicitation_matched.unit_price * 0.1) / 18) * 60).toFixed(2)}
+							value={parseFloat(((solicitation_matched.unit_price * 0.1) / 20) * 60).toFixed(2)}
 							disabled
 						/>
 					</div>
