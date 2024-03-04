@@ -31,7 +31,7 @@ export function govMapper(field) {
 		bom_url: 'BOM URL',
 		bom_notes: 'BOM Notes',
 		purchasing_status: 'Purchasing Status',
-		estimated_material_cost: 'Estimated Material Cost',
+		estimated_material_cost: 'Estimated Material Cost (Per Unit)',
 		estimated_purchasing_days: 'Estimated Purchasing Days',
 		purchasing_notes: 'Purchasing Notes',
 		labor_status: 'Labor Status',

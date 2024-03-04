@@ -131,26 +131,34 @@
 					</div>
 				{/if}
 				{#if form?.type === 'purchasing'}
-					<div>
-						<p class="mb-1">Max Purchasing Budget for Total Contract</p>
-						<Currency
-							value={parseFloat(
-								(solicitation_matched?.unit_price ?? 0) *
-									0.34 *
-									(solicitation_matched?.solicitation.quantity ?? 0)
-							).toFixed(2)}
-							disabled
-						/>
-						<p class="mb-1">Max Purchasing Budget for Each Unit</p>
-						<Currency
-							value={parseFloat((solicitation_matched?.unit_price ?? 0) * 0.34).toFixed(2)}
-							disabled
-						/>
-						<p class="mb-1">Max Purchasing Days</p>
-						<Currency
-							value={parseInt(solicitation_matched?.solicitation?.days_to_deliver * 0.95)}
-							disabled
-						/>
+					<div class="space-y-3">
+						<div>
+							<p class="mb-1">Max Purchasing Budget for Total Contract</p>
+							<TextInput
+								value={formatCurrency(
+									(solicitation_matched?.unit_price ?? 0) *
+										0.34 *
+										(solicitation_matched?.solicitation.quantity ?? 0)
+								)}
+								disabled
+								fullWidth={false}
+							/>
+						</div>
+						<div>
+							<p class="mb-1">Max Purchasing Budget for Each Unit</p>
+							<TextInput
+								value={formatCurrency((solicitation_matched?.unit_price ?? 0) * 0.34)}
+								disabled
+								fullWidth={false}
+							/>
+						</div>
+						<div>
+							<p class="mb-1">Max Purchasing Days</p>
+							<Currency
+								value={parseInt(solicitation_matched?.solicitation?.days_to_deliver * 0.95)}
+								disabled
+							/>
+						</div>
 					</div>
 				{/if}
 				{#if form?.type === 'labor'}
