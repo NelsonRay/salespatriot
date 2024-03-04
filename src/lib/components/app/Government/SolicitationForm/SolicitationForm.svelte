@@ -155,7 +155,7 @@
 				{/if}
 				{#if form?.type === 'labor'}
 					<div>
-						<p class="mb-1">Max Labor Hours</p>
+						<p class="mb-1">Max Labor Minutes</p>
 						<Currency
 							value={parseFloat(((solicitation_matched.unit_price * 0.1) / 20) * 60).toFixed(2)}
 							disabled
