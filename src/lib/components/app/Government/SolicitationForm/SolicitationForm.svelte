@@ -12,7 +12,7 @@
 	import AwardHistory from '$lib/components/app/Government/AwardHistory/AwardHistory.svelte';
 	import SolicitationInfo from '$lib/components/app/Government/SolicitationInfo/SolicitationInfo.svelte';
 	import { govTags } from '$lib/tags';
-	import { capitalizeFirstLetter } from '$lib/helpers';
+	import { capitalizeFirstLetter, formatCurrency } from '$lib/helpers';
 	import { fieldsForForms } from '$lib/forms';
 	import { nsnColumns } from '$lib/table';
 	import PartnerSelect from '$lib/components/form/PartnerSelect.svelte';
@@ -221,15 +221,21 @@
 						</div>
 						<div>
 							<p class="mb-1">Total Bid Value</p>
-							<Currency
-								value={solicitation_matched?.unit_price *
-									solicitation_matched?.solicitation?.quantity}
+							<TextInput
+								value={formatCurrency(
+									solicitation_matched?.unit_price * solicitation_matched?.solicitation?.quantity
+								)}
 								disabled
+								fullWidth={false}
 							/>
 						</div>
 						<div>
 							<p class="mb-1">Unit Price</p>
-							<Currency value={solicitation_matched?.unit_price} disabled />
+							<TextInput
+								value={formatCurrency(solicitation_matched?.unit_price)}
+								disabled
+								fullWidth={false}
+							/>
 						</div>
 						<div>
 							<p class="mb-1">Quantity</p>
