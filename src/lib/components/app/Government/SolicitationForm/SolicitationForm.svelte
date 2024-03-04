@@ -201,25 +201,44 @@
 					</div>
 				{/if}
 				{#if form?.type === 'bid'}
-					<div>
-						<p class="mb-1">Link to DIBBS to place Bid</p>
-						<a
-							href={`https://www.dibbs.bsm.dla.mil/rfq/rfqrec.aspx?sn=${solicitation_matched?.solicitation?.number}`}
-							target="_blank"
-							class="mb-5 text-blue-500">Go to DIBBS</a
-						>
-						<p class="mb-1">Total Bid Value</p>
-						<Currency
-							value={solicitation_matched?.unit_price *
-								solicitation_matched?.solicitation?.quantity}
-							disabled
-						/>
-						<p class="mb-1">Unit Price</p>
-						<Currency value={solicitation_matched?.unit_price} disabled />
-						<p class="mb-1">Quantity</p>
-						<Currency value={solicitation_matched?.solicitation.quantity} disabled />
-						<p class="mb-1">Estimated Days to Deliver</p>
-						<Currency value={getEstimatedDays()} disabled />
+					<div class="space-y-3">
+						<div>
+							<a
+								href={`https://www.dibbs.bsm.dla.mil/rfq/rfqrec.aspx?sn=${solicitation_matched?.solicitation?.number}`}
+								target="_blank"
+								class="mb-5 text-blue-500">Open DIBBS</a
+							>
+						</div>
+						<div>
+							<p class="mb-1">In-House Part Number</p>
+							<TextInput
+								value={solicitation_matched?.solicitation.nsn?.matching_nsns?.length > 0
+									? solicitation_matched?.solicitation.nsn?.matching_nsns[0]['part_number']
+									: 'N/A'}
+								disabled
+								fullWidth={false}
+							/>
+						</div>
+						<div>
+							<p class="mb-1">Total Bid Value</p>
+							<Currency
+								value={solicitation_matched?.unit_price *
+									solicitation_matched?.solicitation?.quantity}
+								disabled
+							/>
+						</div>
+						<div>
+							<p class="mb-1">Unit Price</p>
+							<Currency value={solicitation_matched?.unit_price} disabled />
+						</div>
+						<div>
+							<p class="mb-1">Quantity</p>
+							<Currency value={solicitation_matched?.solicitation.quantity} disabled />
+						</div>
+						<div>
+							<p class="mb-1">Estimated Days to Deliver</p>
+							<Currency value={getEstimatedDays()} disabled />
+						</div>
 					</div>
 				{/if}
 				{#if form?.type === 'bom'}
