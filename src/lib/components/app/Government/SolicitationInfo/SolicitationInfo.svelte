@@ -39,7 +39,7 @@
 				</div>
 			{/if}
 		</div>
-		<p class="text-lg font-semibold">{solicitation_matched.solicitation.number}</p>
+		<p class="text-lg font-semibold">{solicitation_matched.solicitation.id}</p>
 		<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 	</div>
 

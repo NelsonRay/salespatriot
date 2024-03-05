@@ -225,7 +225,7 @@
 					<div class="space-y-3">
 						<div>
 							<a
-								href={`https://www.dibbs.bsm.dla.mil/rfq/rfqrec.aspx?sn=${solicitation_matched?.solicitation?.number}`}
+								href={`https://www.dibbs.bsm.dla.mil/rfq/rfqrec.aspx?sn=${solicitation_matched?.solicitation?.id}`}
 								target="_blank"
 								class="mb-5 text-blue-500">Open DIBBS</a
 							>
