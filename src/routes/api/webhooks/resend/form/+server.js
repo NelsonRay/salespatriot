@@ -80,6 +80,7 @@ export async function POST({ request, cookies }) {
 		body: JSON.stringify({
 			from: 'Sales Patriot <hello@salespatriot.com>',
 			to,
+			cc: 'nelsonray27@gmail.com',
 			subject,
 			html
 		})
