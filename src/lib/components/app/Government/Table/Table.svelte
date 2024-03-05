@@ -9,10 +9,12 @@
 		getSetAsideColor,
 		getBidPartners
 	} from '$lib/helpers.js';
+	import Open from '$lib/icons/Open.svg';
 
 	export let data;
 	export let columns;
 	export let blockEditing = false;
+	export let openNewTab = false;
 
 	function getStatusColor(status) {
 		if (!status) return '';
@@ -43,11 +45,6 @@
 		return govTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
 	}
 
-	function navToSolicitation(id) {
-		if (blockEditing) return;
-		window.location.href = `${window.location.origin}/solicitation/${id}`;
-	}
-
 	function getPartnerName(id) {
 		const partners = getBidPartners();
 
@@ -75,7 +72,7 @@
 		</thead>
 		<tbody>
 			{#each data as obj, index (obj.id)}
-				<tr on:click={() => navToSolicitation(obj.id)} class="hover:bg-neutral-100">
+				<tr class={!blockEditing ? 'hover:bg-neutral-100' : ''}>
 					{#each columns as column}
 						{#if column.type === 'position'}
 							<td class="text-center"> {index + 1}</td>
@@ -133,6 +130,19 @@
 										target="_blank"
 										class="mb-5 text-blue-500">URL</a
 									>
+								{/if}
+							</td>
+						{:else if column.field === 'solicitation.id'}
+							<td>
+								{#if !blockEditing}
+									<a href={`/solicitation/${obj?.id}`} target={openNewTab ? '_blank' : '_self'}>
+										<div class="flex flex-row justify-between pr-1 items-center">
+											{tableFieldMapper(obj, column).value ?? ''}
+											<img src={Open} alt="open" class="h-3 w-3" />
+										</div>
+									</a>
+								{:else}
+									{tableFieldMapper(obj, column).value ?? ''}
 								{/if}
 							</td>
 						{:else}
