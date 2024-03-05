@@ -98,6 +98,7 @@ export const nsnColumns = [
 	{ type: 'field', field: 'bid_notes' },
 	{ type: 'field', field: 'estimated_labor_minutes' },
 	{ type: 'field', field: 'estimated_material_cost' },
+	{ type: 'field', field: 'estimated_purchasing_days' },
 	{ type: 'formula', field: 'diff_unit_price' },
 	{ type: 'set_aside', field: 'solicitation.set_aside' },
 	{ type: 'field', field: 'solicitation.first_article' },

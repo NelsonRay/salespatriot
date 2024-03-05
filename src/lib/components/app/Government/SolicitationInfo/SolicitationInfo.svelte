@@ -14,7 +14,11 @@
 	export let values;
 	export let form;
 
-	const { values: reviewValues, dates } = nsn_matches ? getReviewValues(nsn_matches) : {};
+	const {
+		values: reviewValues,
+		dates,
+		award_details
+	} = nsn_matches ? getReviewValues(nsn_matches) : {};
 </script>
 
 <div class="flex flex-col">
@@ -189,25 +193,45 @@
 				</div>
 			</div>
 			{#if nsn_matches}
-				<div class="ml-5 p-4 bg-neutral-100 rounded-md">
-					<div class="flex flex-row space-x-5">
-						<div class="flex flex-col space-y-3">
-							<p class="text-gray-400">Estimated Labor Cost:</p>
-							<p class="text-gray-400">Estimated Mat. Cost:</p>
-							<p class="text-gray-400">Estimated Total Cost:</p>
-							<p class="text-gray-400">Price Last Bid:</p>
-							<p class="text-gray-400">Prev Bid Outcome:</p>
+				<div class="ml-5 bg-neutral-100 rounded-md">
+					<div class="flex flex-col">
+						<div class="flex flex-row space-x-5 p-4">
+							<div class="flex flex-col space-y-3">
+								<p class="text-gray-400">Estimated Labor Cost:</p>
+								<p class="text-gray-400">Estimated Mat. Cost:</p>
+								<p class="text-gray-400">Estimated Pur. Days:</p>
+								<p class="text-gray-400">Estimated Total Cost:</p>
+								<p class="text-gray-400">Price Last Bid:</p>
+								<p class="text-gray-400">Prev Bid Outcome:</p>
+							</div>
+							<div class="flex flex-col space-y-3">
+								{#each reviewValues as value}
+									<p>{value}</p>
+								{/each}
+							</div>
+							<div class="flex flex-col space-y-3">
+								{#each dates as date}
+									<p>{date}</p>
+								{/each}
+							</div>
 						</div>
-						<div class="flex flex-col space-y-3">
-							{#each reviewValues as value}
-								<p>{value}</p>
-							{/each}
-						</div>
-						<div class="flex flex-col space-y-3">
-							{#each dates as date}
-								<p>{date}</p>
-							{/each}
-						</div>
+						{#if award_details}
+							<div class="flex flex-col justify-between bg-neutral-200 rounded-md m-2 p-2">
+								<p class="text-gray-400">Award Details:</p>
+								<div class="flex flex-row space-x-3">
+									<p>Company:</p>
+									<p>{award_details.company_awarded}</p>
+								</div>
+								<div class="flex flex-row space-x-3">
+									<p>Unit Price:</p>
+									<p>{award_details.unit_price_won_at}</p>
+								</div>
+								<div class="flex flex-row space-x-3">
+									<p>Awarded:</p>
+									<p>{award_details.date_awarded}</p>
+								</div>
+							</div>
+						{/if}
 					</div>
 				</div>
 			{/if}

@@ -147,6 +147,7 @@ export function getReviewValues(nsnMatches) {
 	for (let key of [
 		'estimated_labor_minutes',
 		'estimated_material_cost',
+		'estimated_purchasing_days',
 		'Estimated Total Cost',
 		'Price Last Bid',
 		'Previous Bid Outcome'
@@ -167,6 +168,7 @@ export function getReviewValues(nsnMatches) {
 					dates.push('N/A');
 				}
 				break;
+
 			case 'estimated_material_cost':
 				for (let match of nsnMatches) {
 					if (match.estimated_material_cost) {
@@ -180,6 +182,21 @@ export function getReviewValues(nsnMatches) {
 					dates.push('N/A');
 				}
 				break;
+
+			case 'estimated_purchasing_days':
+				for (let match of nsnMatches) {
+					if (match.estimated_purchasing_days) {
+						values.push(match.estimated_purchasing_days);
+						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
+						break;
+					}
+				}
+				if (values.length === 2) {
+					values.push('N/A');
+					dates.push('N/A');
+				}
+				break;
+
 			case 'Estimated Total Cost':
 				// @ts-ignore
 				if (!values.includes('N/A')) {
@@ -198,7 +215,7 @@ export function getReviewValues(nsnMatches) {
 						break;
 					}
 				}
-				if (values.length === 3) {
+				if (values.length === 4) {
 					values.push('N/A');
 					dates.push('N/A');
 				}
@@ -217,7 +234,7 @@ export function getReviewValues(nsnMatches) {
 						break;
 					}
 				}
-				if (values.length === 4) {
+				if (values.length === 5) {
 					values.push('N/A');
 					dates.push('N/A');
 				}
@@ -225,7 +242,24 @@ export function getReviewValues(nsnMatches) {
 		}
 	}
 
-	for (let i of [0, 1, 2, 3]) {
+	let award_details = null;
+
+	if (values[5] === 'Lost') {
+		const match = nsnMatches.filter((m) => m.status.includes('award:lost'))[0];
+
+		award_details = {};
+
+		if (match?.solicitation.price_won_at && match?.solicitation?.quantity) {
+			award_details.unit_price_won_at = formatCurrency(
+				match?.solicitation.price_won_at / match?.solicitation?.quantity
+			);
+		}
+
+		award_details.company_awarded = match.solicitation.company_awarded;
+		award_details.date_awarded = formatMonthDayYearDate(match.solicitation.date_awarded);
+	}
+
+	for (let i of [0, 1, 3, 4]) {
 		if (values[i] !== 'N/A') {
 			values[i] = formatCurrency(values[i]);
 		}
@@ -235,7 +269,7 @@ export function getReviewValues(nsnMatches) {
 		values[0] = `${values[0]} / ${estimated_labor_minutes} mins`;
 	}
 
-	return { values, dates };
+	return { values, dates, award_details };
 }
 
 // @ts-ignore
