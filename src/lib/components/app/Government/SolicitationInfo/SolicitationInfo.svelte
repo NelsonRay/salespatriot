@@ -14,11 +14,14 @@
 	export let values;
 	export let form;
 
-	const {
+	// get updated review values
+	$: ({
 		values: reviewValues,
 		dates,
 		award_details
-	} = nsn_matches ? getReviewValues(nsn_matches) : {};
+	} = nsn_matches
+		? getReviewValues([{ ...solicitation_matched, ...(values || {}) }, ...(nsn_matches ?? [])])
+		: {});
 </script>
 
 <div class="flex flex-col">
