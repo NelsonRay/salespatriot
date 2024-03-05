@@ -125,7 +125,8 @@ export const formsValidation = {
 			status: z.string().array().nonempty({ message: 'Status is required.' }),
 			quote_number: z
 				.string({ invalid_type_error: 'Quote Number is required.' })
-				.min(1, { message: 'Quote Number is required.' })
+				.nullable()
+				.optional()
 		})
 		.superRefine((fields, ctx) => {
 			// if no engineering status
@@ -135,6 +136,14 @@ export const formsValidation = {
 					code: 'custom',
 					message: 'Status is required.',
 					path: ['status']
+				});
+			}
+
+			if (fields.status.includes('enter_quote:entered')) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Quote Number is required.',
+					path: ['quote_number']
 				});
 			}
 		}),

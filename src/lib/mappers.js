@@ -42,6 +42,7 @@ export function govMapper(field) {
 		review_notes: 'Review Notes',
 		bid_status: 'Bid Status',
 		quote_number: 'Quote Number',
+		quote_number_notes: 'Notes',
 		bid_exception: 'Bid With Exception',
 		exception_notes: 'Exception Notes',
 		bid_notes: 'Bid Notes',

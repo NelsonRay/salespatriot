@@ -29,12 +29,12 @@
 
 	let errors;
 
-	if (form?.type === 'enter_quote') {
-		values.status = [
-			...(values.status.filter((s) => !s.includes('enter_quote')) ?? []),
-			'enter_quote:entered'
-		];
-	}
+	// if (form?.type === 'enter_quote') {
+	// 	values.status = [
+	// 		...(values.status.filter((s) => !s.includes('enter_quote')) ?? []),
+	// 		'enter_quote:entered'
+	// 	];
+	// }
 
 	if (form?.type === 'bid') {
 		values.status = [...(values.status.filter((s) => !s.includes('bid')) ?? []), 'bid:bid'];
@@ -89,6 +89,13 @@
 			.split('_')
 			.map((e) => capitalizeFirstLetter(e))
 			.join(' ')} Form`;
+	}
+
+	function getStatusTitle(status) {
+		return `${status
+			.split('_')
+			.map((e) => capitalizeFirstLetter(e))
+			.join(' ')} Status`;
 	}
 </script>
 
@@ -302,7 +309,7 @@
 							{#each fieldsForForms[f] as field}
 								<div class="mb-3">
 									{#if field.type === 'status'}
-										<p class="mb-1 text-sm">{capitalizeFirstLetter(field.status)} Status</p>
+										<p class="mb-1 text-sm">{getStatusTitle(field.status)}</p>
 										<StatusSelect
 											status={field.status}
 											bind:value={values.status}
