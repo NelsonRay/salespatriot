@@ -174,15 +174,21 @@
 					<div class="space-y-3">
 						<div>
 							<p class="mb-1">Total Value</p>
-							<Currency
-								value={solicitation_matched?.unit_price *
-									solicitation_matched?.solicitation?.quantity}
+							<TextInput
+								value={formatCurrency(
+									solicitation_matched?.unit_price * solicitation_matched?.solicitation?.quantity
+								)}
 								disabled
+								fullWidth={false}
 							/>
 						</div>
 						<div>
 							<p class="mb-1">Unit Price</p>
-							<Currency value={solicitation_matched?.unit_price} disabled />
+							<TextInput
+								value={formatCurrency(solicitation_matched?.unit_price)}
+								disabled
+								fullWidth={false}
+							/>
 						</div>
 						<div>
 							<p class="mb-1">Quantity</p>
