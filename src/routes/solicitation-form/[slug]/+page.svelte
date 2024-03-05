@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import SolicitationForm from '$lib/components/app/Government/SolicitationForm/SolicitationForm.svelte';
+	import { solColumns } from '$lib/helpers.js';
 
 	export let data;
 	$: ({ supabase, session } = data);
@@ -19,7 +20,7 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), solicitation_matched!inner(*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), forms(*, form(*), submitted_by(*)), matching_rule(*))'
+				`*, form!inner(*), solicitation_matched!inner(*, solicitation!inner(${solColumns}, nsn(id, matching_nsns(*))), forms(*, form(*), submitted_by(*)), matching_rule(*))`
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)

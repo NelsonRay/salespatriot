@@ -4,7 +4,7 @@
 	import { govTags } from '$lib/tags.js';
 	import Views from '$lib/components/app/Views/Views.svelte';
 	import { page } from '$app/stores';
-	import { formatDate } from '$lib/helpers.js';
+	import { formatDate, solColumns } from '$lib/helpers.js';
 	import Table from '$lib/components/app/Government/Table/Table.svelte';
 	import { getColumns } from '$lib/table.js';
 
@@ -26,7 +26,7 @@
 	async function loadData(pathname) {
 		let query = supabase
 			.from('solicitations_matched')
-			.select('*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*)');
+			.select(`*, solicitation!inner(${solColumns}, nsn(id, matching_nsns(*))), matching_rule(*)`);
 
 		switch (pathname) {
 			case '/government/bidding-funnel':

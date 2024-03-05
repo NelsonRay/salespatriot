@@ -1,4 +1,8 @@
 // @ts-ignore
+export const solColumns =
+	'id, number, created_at, description, estimated_value, issued_on, expires_on, contract_status, days_to_deliver, quantity, solicitation_url, tech_docs, first_article, contact_name, contact_phone, contact_email, line_number, quantity_units, amsc, company_awarded, price_won_at, date_awarded, higher_quality';
+
+// @ts-ignore
 export function formatDate(date) {
 	const year = date.getFullYear();
 	const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
@@ -152,6 +156,7 @@ export function getReviewValues(nsnMatches) {
 				for (let match of nsnMatches) {
 					if (match.estimated_labor_minutes) {
 						estimated_labor_minutes = match.estimated_labor_minutes;
+						// @ts-ignore
 						values.push(parseFloat((estimated_labor_minutes / 60) * 20).toFixed(2));
 						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
 						break;
@@ -176,7 +181,9 @@ export function getReviewValues(nsnMatches) {
 				}
 				break;
 			case 'Estimated Total Cost':
+				// @ts-ignore
 				if (!values.includes('N/A')) {
+					// @ts-ignore
 					values.push(values[0] + values[1]);
 				} else {
 					values.push('N/A');
@@ -198,10 +205,12 @@ export function getReviewValues(nsnMatches) {
 				break;
 			case 'Previous Bid Outcome':
 				for (let match of nsnMatches) {
+					// @ts-ignore
 					if (match.status.some((s) => s.includes('award:won'))) {
 						values.push('Won');
 						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
 						break;
+						// @ts-ignore
 					} else if (match.status.some((s) => s.includes('award:lost'))) {
 						values.push('Lost');
 						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
