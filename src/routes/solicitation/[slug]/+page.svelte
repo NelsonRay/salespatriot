@@ -65,7 +65,7 @@
 <svelte:head>
 	<title
 		>{solicitation_matched
-			? solicitation_matched.solicitation.number + ' Solicitation Form'
+			? solicitation_matched.solicitation.id + ' Solicitation Form'
 			: 'Solicitation Form'}</title
 	>
 </svelte:head>

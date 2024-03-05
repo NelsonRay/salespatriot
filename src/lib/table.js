@@ -4,7 +4,7 @@ export function getColumns(pathname) {
 		case '/government/contracts-bid':
 			return [
 				{ type: 'position' },
-				{ type: 'field', field: 'solicitation.number' },
+				{ type: 'field', field: 'solicitation.id' },
 				{ type: 'field', field: 'solicitation.description' },
 				{ type: 'field', field: 'solicitation.expires_on' },
 				{ type: 'status', status: 'award' },
@@ -43,7 +43,7 @@ export function getColumns(pathname) {
 		default:
 			return [
 				{ type: 'position' },
-				{ type: 'field', field: 'solicitation.number' },
+				{ type: 'field', field: 'solicitation.id' },
 				{ type: 'field', field: 'solicitation.description' },
 				{ type: 'field', field: 'solicitation.expires_on' },
 				{ type: 'formula', field: 'market_value' },
@@ -84,7 +84,7 @@ export function getColumns(pathname) {
 export const nsnColumns = [
 	{ type: 'position' },
 	{ type: 'field', field: 'solicitation.expires_on' },
-	{ type: 'field', field: 'solicitation.number' },
+	{ type: 'field', field: 'solicitation.id' },
 	{ type: 'field', field: 'solicitation.quantity' },
 	{ type: 'field', field: 'unit_price' },
 	{ type: 'status', status: 'bid' },

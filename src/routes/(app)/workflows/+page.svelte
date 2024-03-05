@@ -27,7 +27,7 @@
 			let formsQuery = supabase
 				.from('forms')
 				.select(
-					'id, submitted, submitted_timestamp, form!inner(*), solicitation_matched(solicitation(number, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
+					'id, submitted, submitted_timestamp, form!inner(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
 				)
 				.eq('deleted', false);
 
@@ -203,7 +203,7 @@
 							<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
 								<div class="flex flex-row justify-between items-center">
 									<p class="font-semibold text-sm">
-										{forms.solicitation_matched.solicitation.number}
+										{forms.solicitation_matched.solicitation.id}
 									</p>
 									<div class="flex flex-row items-center space-x-1">
 										{#if forms.solicitation_matched?.matching_rule?.name}

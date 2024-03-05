@@ -4,6 +4,7 @@ import { capitalizeFirstLetter } from '$lib/helpers';
 export function govMapper(field) {
 	const map = {
 		// solicitations table
+		id: 'Solicitation Number',
 		issued_on: 'Issued',
 		expires_on: 'Expires',
 		award_history: 'Award History',
@@ -17,7 +18,6 @@ export function govMapper(field) {
 		contract_status: 'Status',
 		estimated_value: 'Estimated Value',
 		description: 'Description',
-		number: 'Solicitation Number',
 		first_article: 'First Article',
 		price_won_at: 'Won Price',
 

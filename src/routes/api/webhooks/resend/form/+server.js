@@ -28,7 +28,7 @@ export async function POST({ request, cookies }) {
 
 		const { data, error } = await supabase
 			.from('forms')
-			.select('*, form(user, name, type), solicitation_matched(solicitation!inner(number))')
+			.select('*, form(user, name, type), solicitation_matched(solicitation!inner(id))')
 			.eq('id', record.id)
 			.limit(1)
 			.single();
@@ -42,7 +42,7 @@ export async function POST({ request, cookies }) {
 
 		userId = data.form.user;
 		btnText = `Open ${data.form.name}`;
-		subject = `${data.form.name}: ${data.solicitation_matched.solicitation.number}`;
+		subject = `${data.form.name}: ${data.solicitation_matched.solicitation.id}`;
 		formLink = `https://salespatriot.com/solicitation-form/${record.id}`;
 	} else {
 		// if oem

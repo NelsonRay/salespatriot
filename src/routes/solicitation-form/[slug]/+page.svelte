@@ -90,7 +90,7 @@
 <svelte:head>
 	<title>
 		{form?.solicitation_matched
-			? form.solicitation_matched.solicitation.number + ' - ' + form.form.name
+			? form.solicitation_matched.solicitation.id + ' - ' + form.form.name
 			: 'Sales Patriot'}
 	</title>
 </svelte:head>
