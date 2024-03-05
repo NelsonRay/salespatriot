@@ -195,6 +195,9 @@ export function tableFieldMapper(obj, column) {
 				value = formatCurrency(value);
 			}
 
+			if (column?.field === 'solicitation.first_article') {
+				value = value ? 'Yes' : 'No';
+			}
 			return { header, value };
 		}
 	} catch (e) {
