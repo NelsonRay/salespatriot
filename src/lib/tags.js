@@ -151,7 +151,7 @@ export const govTags = {
 	},
 	enter_quote: {
 		entered: {
-			name: 'Done',
+			name: 'Entered',
 			level: 1,
 			color: 'green',
 			key: 'enter_quote:entered'
@@ -161,6 +161,12 @@ export const govTags = {
 			level: 3,
 			color: 'yellow',
 			key: 'enter_quote:in_progress'
+		},
+		not_entered: {
+			name: 'Not Entered',
+			level: 4,
+			color: 'red',
+			key: 'enter_quote:not_entered'
 		}
 	},
 	bid: {

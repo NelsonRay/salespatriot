@@ -29,12 +29,12 @@
 
 	let errors;
 
-	if (form?.type === 'enter_quote') {
-		values.status = [
-			...(values.status.filter((s) => !s.includes('enter_quote')) ?? []),
-			'enter_quote:entered'
-		];
-	}
+	// if (form?.type === 'enter_quote') {
+	// 	values.status = [
+	// 		...(values.status.filter((s) => !s.includes('enter_quote')) ?? []),
+	// 		'enter_quote:entered'
+	// 	];
+	// }
 
 	if (form?.type === 'bid') {
 		values.status = [...(values.status.filter((s) => !s.includes('bid')) ?? []), 'bid:bid'];
@@ -89,6 +89,13 @@
 			.split('_')
 			.map((e) => capitalizeFirstLetter(e))
 			.join(' ')} Form`;
+	}
+
+	function getStatusTitle(status) {
+		return `${status
+			.split('_')
+			.map((e) => capitalizeFirstLetter(e))
+			.join(' ')} Status`;
 	}
 </script>
 
@@ -174,15 +181,21 @@
 					<div class="space-y-3">
 						<div>
 							<p class="mb-1">Total Value</p>
-							<Currency
-								value={solicitation_matched?.unit_price *
-									solicitation_matched?.solicitation?.quantity}
+							<TextInput
+								value={formatCurrency(
+									solicitation_matched?.unit_price * solicitation_matched?.solicitation?.quantity
+								)}
 								disabled
+								fullWidth={false}
 							/>
 						</div>
 						<div>
 							<p class="mb-1">Unit Price</p>
-							<Currency value={solicitation_matched?.unit_price} disabled />
+							<TextInput
+								value={formatCurrency(solicitation_matched?.unit_price)}
+								disabled
+								fullWidth={false}
+							/>
 						</div>
 						<div>
 							<p class="mb-1">Quantity</p>
@@ -296,7 +309,7 @@
 							{#each fieldsForForms[f] as field}
 								<div class="mb-3">
 									{#if field.type === 'status'}
-										<p class="mb-1 text-sm">{capitalizeFirstLetter(field.status)} Status</p>
+										<p class="mb-1 text-sm">{getStatusTitle(field.status)}</p>
 										<StatusSelect
 											status={field.status}
 											bind:value={values.status}

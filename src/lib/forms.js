@@ -38,7 +38,11 @@ export const fieldsForForms = {
 		{ type: 'status', status: 'review' },
 		{ type: 'textarea', field: 'review_notes' }
 	],
-	enter_quote: [{ type: 'text', field: 'quote_number' }],
+	enter_quote: [
+		{ type: 'status', status: 'enter_quote' },
+		{ type: 'text', field: 'quote_number' },
+		{ type: 'textarea', field: 'quote_number_notes' }
+	],
 	bid: [
 		{ type: 'bid_partners', field: 'bid_partners' },
 		{ type: 'checkbox', field: 'bid_exception' },
