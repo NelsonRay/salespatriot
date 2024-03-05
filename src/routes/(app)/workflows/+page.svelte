@@ -1,7 +1,12 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
-	import { getMatchingClass, getFamiliarityClass } from '$lib/helpers.js';
+	import {
+		getMatchingClass,
+		getFamiliarityClass,
+		calculateDaysDifference,
+		formatMonthDayYearDate
+	} from '$lib/helpers.js';
 
 	export let data;
 
@@ -102,21 +107,6 @@
 				minute: '2-digit'
 			});
 		}
-	}
-
-	function calculateDaysDifference(expires_on) {
-		let date = new Date(expires_on);
-		const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
-		const currentDate = new Date();
-		const givenDate = new Date(date);
-
-		// Calculate the difference in milliseconds
-		const differenceInMilliseconds = Math.abs(currentDate - givenDate);
-
-		// Convert the difference to days
-		const differenceInDays = Math.round(differenceInMilliseconds / oneDay);
-
-		return differenceInDays;
 	}
 
 	function getForms(workflows, form) {
@@ -231,9 +221,10 @@
 									{`${forms.solicitation_matched.solicitation.quantity} ${forms.solicitation_matched.solicitation.quantity_units}`}
 								</p>
 								<p>
-									Expires in {calculateDaysDifference(
+									Expires on {formatMonthDayYearDate(
 										forms.solicitation_matched.solicitation.expires_on
-									)} days
+									) +
+										` (${calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)} days)`}
 								</p>
 								<div class="flex flex-row justify-end">
 									<p class="text-gray-500">{formatDate(forms.created_at)}</p>

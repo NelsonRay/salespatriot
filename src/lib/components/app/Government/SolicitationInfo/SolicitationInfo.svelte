@@ -6,7 +6,9 @@
 		getMatchingClass,
 		getReviewValues,
 		getSetAsideColor,
-		getFamiliarityClass
+		getFamiliarityClass,
+		formatMonthDayYearDate,
+		calculateDaysDifference
 	} from '$lib/helpers.js';
 
 	export let solicitation_matched;
@@ -135,14 +137,15 @@
 						<div class="flex flex-row space-x-1">
 							<p class="text-gray-400">Expires:</p>
 							<p>
-								{solicitation_matched.solicitation.expires_on}
+								{formatMonthDayYearDate(solicitation_matched.solicitation.expires_on) +
+									` (${calculateDaysDifference(solicitation_matched.solicitation.expires_on)} days)`}
 							</p>
 						</div>
 
 						<div class="flex flex-row space-x-1">
 							<p class="text-gray-400">Issued:</p>
 							<p>
-								{solicitation_matched.solicitation.issued_on}
+								{formatMonthDayYearDate(solicitation_matched.solicitation.issued_on)}
 							</p>
 						</div>
 					</div>

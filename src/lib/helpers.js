@@ -12,6 +12,21 @@ export function formatDate(date) {
 }
 
 // @ts-ignore
+export function calculateDaysDifference(date) {
+	const givenDate = new Date(formatDate(new Date(date)));
+	const currentDate = new Date(formatDate(new Date()));
+
+	// Calculate the difference in milliseconds
+	// @ts-ignore
+	const differenceInMilliseconds = givenDate - currentDate;
+	// Convert the difference to days
+	const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
+	const differenceInDays = differenceInMilliseconds / oneDay;
+
+	return differenceInDays;
+}
+
+// @ts-ignore
 export function formatCurrency(number) {
 	if (!number) return '';
 	return '$' + number.toLocaleString('en-US', { minimumFractionDigits: 2 });
@@ -245,17 +260,21 @@ export function getReviewValues(nsnMatches) {
 	let award_details = null;
 
 	if (values[5] === 'Lost') {
+		// @ts-ignore
 		const match = nsnMatches.filter((m) => m.status.includes('award:lost'))[0];
 
 		award_details = {};
 
 		if (match?.solicitation.price_won_at && match?.solicitation?.quantity) {
+			// @ts-ignore
 			award_details.unit_price_won_at = formatCurrency(
 				match?.solicitation.price_won_at / match?.solicitation?.quantity
 			);
 		}
 
+		// @ts-ignore
 		award_details.company_awarded = match.solicitation.company_awarded;
+		// @ts-ignore
 		award_details.date_awarded = formatMonthDayYearDate(match.solicitation.date_awarded);
 	}
 
