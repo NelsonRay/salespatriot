@@ -50,6 +50,18 @@ export function capitalizeFirstLetter(sentence) {
 }
 
 // @ts-ignore
+export function addCommasToNumber(number) {
+	// Convert number to string and split it at the decimal point (if any)
+	let parts = number.toString().split('.');
+
+	// Add commas to the integer part
+	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+	// Join integer and decimal parts (if any) with a dot
+	return parts.join('.');
+}
+
+// @ts-ignore
 export function getMatchingClass(name) {
 	let mClass = '';
 
@@ -199,8 +211,6 @@ export function getReviewValues(nsnMatches) {
 		estimated_labor_cost_date: null,
 		estimated_material_cost: null,
 		estimated_material_cost_date: null,
-		estimated_purchasing_days: null,
-		estimated_purchasing_days_date: null,
 		estimated_cost: null,
 		estimated_profit: null,
 		previous_bid_outcome: null,
@@ -258,18 +268,6 @@ export function getReviewValues(nsnMatches) {
 						values.estimated_material_cost = match.estimated_material_cost;
 						// @ts-ignore
 						values.estimated_material_cost_date = formatMonthDayYearDate(
-							match.solicitation.expires_on
-						);
-						break;
-					}
-				}
-				break;
-			case 'estimated_purchasing_days':
-				for (let match of nsnMatches) {
-					if (match.estimated_purchasing_days) {
-						values.estimated_purchasing_days = match.estimated_purchasing_days;
-						// @ts-ignore
-						values.estimated_purchasing_days_date = formatMonthDayYearDate(
 							match.solicitation.expires_on
 						);
 						break;
@@ -350,7 +348,7 @@ export function getReviewValues(nsnMatches) {
 		'unit_price',
 		'estimated_labor_cost',
 		'estimated_material_cost',
-		'estimated_total_cost',
+		'estimated_cost',
 		'estimated_profit',
 		'market_value',
 		'estimated_total_profit'
@@ -367,7 +365,7 @@ export function getReviewValues(nsnMatches) {
 		// @ts-ignore
 		values.estimated_labor_cost = `${values.estimated_labor_cost} / ${estimated_labor_minutes} mins`;
 	}
-	console.log(award_details);
+
 	return { values, award_details };
 }
 
