@@ -324,8 +324,8 @@
 				{#if form === null || form.type === 'review'}
 					<div class="flex flex-row overflow-x-auto mb-2">
 						{#each statuses as status}
-							<div class="flex flex-col">
-								<p class="text-sm text-neutral-400 ml-1">{getStatusTitle(status, true)}</p>
+							<div class="flex flex-col items-center">
+								<p class="text-sm text-neutral-400">{getStatusTitle(status, true)}</p>
 								<StatusSelect
 									{status}
 									bind:value={values.status}

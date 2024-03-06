@@ -62,7 +62,7 @@
 							<div class="flex flex-row space-x-1">
 								<p class="text-gray-400">Status:</p>
 								<p>
-									{solicitation_matched.solicitation.contract_status}
+									{solicitation_matched.solicitation.contract_status ?? 'Unsure - check'}
 								</p>
 							</div>
 							<div>
@@ -236,9 +236,9 @@
 						<div class="flex flex-row space-x-5">
 							<div class="flex flex-col space-y-2">
 								<p class="text-gray-400">Unit Price:</p>
-								<p class="text-gray-400">Estimated Labor Cost:</p>
-								<p class="text-gray-400">Estimated Mat. Cost:</p>
 								<p class="text-gray-400">Estimated Cost:</p>
+								<p class="text-gray-400 ml-2">Estimated Mat. Cost:</p>
+								<p class="text-gray-400 ml-2">Estimated Labor Cost:</p>
 								<p class="text-gray-400">Estimated Profit:</p>
 
 								<div class="h-2" />
@@ -249,14 +249,14 @@
 								<p class={reviewValues.unit_price ? '' : 'text-gray-300'}>
 									{reviewValues.unit_price ?? 'N/A'}
 								</p>
-								<p class={reviewValues.estimated_labor_cost ? '' : 'text-gray-300'}>
-									{reviewValues.estimated_labor_cost ?? 'N/A'}
-								</p>
-								<p class={reviewValues.estimated_material_cost ? '' : 'text-gray-300'}>
-									{reviewValues.estimated_material_cost ?? 'N/A'}
-								</p>
 								<p class={reviewValues.estimated_cost ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_cost ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_labor_cost ? 'ml-2' : 'ml-2 text-gray-300'}>
+									{reviewValues.estimated_labor_cost ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_material_cost ? 'ml-2' : 'ml-2 text-gray-300'}>
+									{reviewValues.estimated_material_cost ?? 'N/A'}
 								</p>
 								<p class={reviewValues.estimated_profit ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_profit ?? 'N/A'}
@@ -273,19 +273,15 @@
 								<p class={reviewValues.unit_price_date ? '' : 'text-gray-300'}>
 									{reviewValues.unit_price_date ?? 'N/A'}
 								</p>
+								<div class="h-6"></div>
 								<p class={reviewValues.estimated_labor_cost_date ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_labor_cost_date ?? 'N/A'}
 								</p>
 								<p class={reviewValues.estimated_material_cost_date ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_material_cost_date ?? 'N/A'}
 								</p>
-								<p class="h-[72px]"></p>
-								<p class={reviewValues.quantity ? '' : 'text-gray-300'}>
-									{addCommasToNumber(solicitation_matched.solicitation.quantity)}
-									{solicitation_matched.solicitation.quantity_units}
-								</p>
 								<p class={reviewValues.profit_margin ? '' : 'text-gray-300'}>
-									{reviewValues.profit_margin ?? 'N/A'}
+									{reviewValues.profit_margin ?? ''}
 								</p>
 							</div>
 						</div>
