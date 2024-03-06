@@ -22,7 +22,8 @@ export const fieldsForForms = {
 	labor: [
 		{ type: 'status', status: 'labor' },
 		{ type: 'currency', field: 'estimated_labor_minutes' },
-		{ type: 'textarea', field: 'special_equipment' }
+		{ type: 'checkbox', field: 'requires_special_equipment' },
+		{ type: 'textarea', field: 'special_equipment_notes' }
 	],
 	review: [{ type: 'status', status: 'review' }],
 	enter_quote: [

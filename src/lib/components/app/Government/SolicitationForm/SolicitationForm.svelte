@@ -114,6 +114,13 @@
 
 		return title;
 	}
+
+	function showTextarea(field, obj) {
+		if (field.field === 'special_equipment_notes') {
+			return obj?.requires_special_equipment;
+		}
+		return true;
+	}
 </script>
 
 {#if solicitation_matched}
@@ -373,15 +380,18 @@
 										</div>
 									{/if}
 									{#if field.type === 'textarea'}
-										<div class="mb-2">
-											<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-											<Textarea bind:value={values[field.field]} />
-											{#if errors?.[field.field]}
-												<label for="trim" class="label">
-													<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
-												</label>
-											{/if}
-										</div>
+										{#if showTextarea(field, values)}
+											<div class="mb-2">
+												<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+												<Textarea bind:value={values[field.field]} />
+												{#if errors?.[field.field]}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">{errors?.[field.field][0]}</span
+														>
+													</label>
+												{/if}
+											</div>
+										{/if}
 									{/if}
 									{#if field.type === 'checkbox'}
 										<div class="mb-2">
