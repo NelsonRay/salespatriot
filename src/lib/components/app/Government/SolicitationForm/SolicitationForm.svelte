@@ -118,6 +118,8 @@
 	function showTextarea(field, obj) {
 		if (field.field === 'special_equipment_notes') {
 			return obj?.requires_special_equipment;
+		} else if (field.field === 'exception_notes') {
+			return obj?.bid_exception;
 		}
 		return true;
 	}
