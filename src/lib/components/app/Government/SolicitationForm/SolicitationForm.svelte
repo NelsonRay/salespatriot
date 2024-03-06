@@ -18,6 +18,7 @@
 	import PartnerSelect from '$lib/components/form/PartnerSelect.svelte';
 	import { formsValidation } from '$lib/validation';
 	import Forms from '$lib/components/app/Government/Forms/Forms.svelte';
+	import Comments from '$lib/components/form/Comments.svelte';
 
 	export let solicitation_matched;
 	export let values;
@@ -26,6 +27,7 @@
 	export let submitCallback;
 	export let isSubmitting;
 	export let isAdmin = false;
+	export let commentSubmitCallback;
 
 	let errors;
 
@@ -60,6 +62,17 @@
 		'award'
 	];
 
+	const statuses = [
+		'opportunity',
+		'engineering',
+		'bom',
+		'purchasing',
+		'labor',
+		'review',
+		'enter_quote',
+		'bid'
+	];
+
 	function handleSubmit() {
 		if (form?.type) {
 			const results = formsValidation[form.type]?.safeParse(values);
@@ -91,11 +104,15 @@
 			.join(' ')} Form`;
 	}
 
-	function getStatusTitle(status) {
-		return `${status
+	function getStatusTitle(status, excludeStatus) {
+		let title = `${status
 			.split('_')
 			.map((e) => capitalizeFirstLetter(e))
-			.join(' ')} Status`;
+			.join(' ')}`;
+		if (status === 'bom') title = 'BOM';
+		if (!excludeStatus) title += '  Status';
+
+		return title;
 	}
 </script>
 
@@ -126,9 +143,11 @@
 				<SolicitationInfo {solicitation_matched} {nsn_matches} {values} {form} />
 
 				<div>
-					<p class="mb-1 font-medium">Additional Notes</p>
-
-					<Textarea bind:value={values.additional_notes} />
+					<p class="text-lg mt-5 mb-2 font-semibold">Comments</p>
+					<Comments
+						comments={solicitation_matched.solicitations_matched_comments}
+						{commentSubmitCallback}
+					/>
 				</div>
 
 				{#if form?.type === 'bom' || (form?.type === 'labor' && solicitation_matched?.engineering_notes)}
@@ -301,71 +320,101 @@
 			</div>
 		</div>
 		<div class="two bg-neutral-50">
-			<div class="flex flex-col p-6">
+			<div class="flex flex-col pl-6 py-6">
+				{#if form === null || form.type === 'review'}
+					<div class="flex flex-row overflow-x-auto mb-2">
+						{#each statuses as status}
+							<div class="flex flex-col">
+								<p class="text-sm text-neutral-400 ml-1">{getStatusTitle(status, true)}</p>
+								<StatusSelect
+									{status}
+									bind:value={values.status}
+									tags={govTags}
+									dropdown
+									skipInProgress={false}
+								/>
+							</div>
+						{/each}
+					</div>
+				{/if}
 				{#each forms as f}
 					{#if form === null || form.type === 'review' || form.type === f}
-						<div class="mb-3">
-							<p class="text-gray-400 mb-2 font-medium">{getFormTitle(f)}</p>
+						<div>
+							{#if !(form === null || form.type === 'review')}
+								<p class="text-gray-400 mb-2 font-medium">{getFormTitle(f)}</p>
+							{/if}
 							{#each fieldsForForms[f] as field}
-								<div class="mb-3">
-									{#if field.type === 'status'}
-										<p class="mb-1 text-sm">{getStatusTitle(field.status)}</p>
-										<StatusSelect
-											status={field.status}
-											bind:value={values.status}
-											tags={govTags}
-											skipInProgress={form !== null}
-										/>
-										{#if errors?.status}
-											<label for="trim" class="label">
-												<span class="label-text-alt text-error">{errors?.status[0]}</span>
-											</label>
-										{/if}
+								<div>
+									{#if field.type === 'status' && !(form === null || form.type === 'review')}
+										<div class="mb-2">
+											<p class="mb-1 text-sm">{getStatusTitle(field.status)}</p>
+											<StatusSelect
+												status={field.status}
+												bind:value={values.status}
+												tags={govTags}
+												skipInProgress={form !== null}
+											/>
+											{#if errors?.status}
+												<label for="trim" class="label">
+													<span class="label-text-alt text-error">{errors?.status[0]}</span>
+												</label>
+											{/if}
+										</div>
 									{/if}
 									{#if field.type === 'currency'}
-										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-										<Currency bind:value={values[field.field]} />
-										{#if errors?.[field.field]}
-											<label for="trim" class="label">
-												<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
-											</label>
-										{/if}
+										<div class="mb-2">
+											<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+											<Currency bind:value={values[field.field]} />
+											{#if errors?.[field.field]}
+												<label for="trim" class="label">
+													<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
+												</label>
+											{/if}
+										</div>
 									{/if}
 									{#if field.type === 'textarea'}
-										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-										<Textarea bind:value={values[field.field]} />
-										{#if errors?.[field.field]}
-											<label for="trim" class="label">
-												<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
-											</label>
-										{/if}
+										<div class="mb-2">
+											<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+											<Textarea bind:value={values[field.field]} />
+											{#if errors?.[field.field]}
+												<label for="trim" class="label">
+													<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
+												</label>
+											{/if}
+										</div>
 									{/if}
 									{#if field.type === 'checkbox'}
-										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-										<Boolean bind:value={values[field.field]} />
-										{#if errors?.[field.field]}
-											<label for="trim" class="label">
-												<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
-											</label>
-										{/if}
+										<div class="mb-2">
+											<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+											<Boolean bind:value={values[field.field]} />
+											{#if errors?.[field.field]}
+												<label for="trim" class="label">
+													<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
+												</label>
+											{/if}
+										</div>
 									{/if}
 									{#if field.type === 'link' || field.type === 'text'}
-										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-										<TextInput bind:value={values[field.field]} />
-										{#if errors?.[field.field]}
-											<label for="trim" class="label">
-												<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
-											</label>
-										{/if}
+										<div class="mb-2">
+											<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+											<TextInput bind:value={values[field.field]} fullWidth={false} />
+											{#if errors?.[field.field]}
+												<label for="trim" class="label">
+													<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
+												</label>
+											{/if}
+										</div>
 									{/if}
 									{#if field.type === 'bid_partners'}
-										<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-										<PartnerSelect bind:value={values[field.field]} />
-										{#if errors?.[field.field]}
-											<label for="trim" class="label">
-												<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
-											</label>
-										{/if}
+										<div class="mb-2">
+											<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+											<PartnerSelect bind:value={values[field.field]} />
+											{#if errors?.[field.field]}
+												<label for="trim" class="label">
+													<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
+												</label>
+											{/if}
+										</div>
 									{/if}
 								</div>
 							{/each}

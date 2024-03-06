@@ -5,7 +5,8 @@
 		getMatchingClass,
 		getFamiliarityClass,
 		calculateDaysDifference,
-		formatMonthDayYearDate
+		formatMonthDayYearDate,
+		formatDateWithTime
 	} from '$lib/helpers.js';
 
 	export let data;
@@ -76,37 +77,6 @@
 
 	$: if (isMounted && session && isUser !== null) {
 		loadData(isGov);
-	}
-
-	function formatDate(created_at) {
-		let date = new Date(created_at);
-		const today = new Date();
-		const yesterday = new Date(today);
-		yesterday.setDate(yesterday.getDate() - 1);
-
-		const diffInDays = Math.floor((today - date) / (1000 * 60 * 60 * 24));
-
-		if (diffInDays === 0) {
-			return (
-				'Today ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase()
-			);
-		} else if (diffInDays === 1) {
-			return (
-				'Yesterday ' +
-				date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase()
-			);
-		} else if (diffInDays <= 6) {
-			return date
-				.toLocaleDateString('en-US', { weekday: 'long', hour: 'numeric', minute: '2-digit' })
-				.replace(',', '');
-		} else {
-			return date.toLocaleDateString('en-US', {
-				month: 'short',
-				day: 'numeric',
-				hour: 'numeric',
-				minute: '2-digit'
-			});
-		}
 	}
 
 	function getForms(workflows, form) {
@@ -227,7 +197,7 @@
 										` (${calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)} days)`}
 								</p>
 								<div class="flex flex-row justify-end">
-									<p class="text-gray-500">{formatDate(forms.created_at)}</p>
+									<p class="text-gray-500">{formatDateWithTime(forms.created_at)}</p>
 								</div>
 							</div>
 						</a>
@@ -263,7 +233,7 @@
 									</p>
 								{/if}
 								<div class="flex flex-row justify-end">
-									<p class="text-gray-500">{formatDate(forms.created_at)}</p>
+									<p class="text-gray-500">{formatDateWithTime(forms.created_at)}</p>
 								</div>
 							</div>
 						</a>

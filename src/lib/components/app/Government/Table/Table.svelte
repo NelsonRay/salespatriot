@@ -67,8 +67,8 @@
 									>
 										{tableFieldMapper(obj, column).value ?? ''}
 									</div>
-								{/if}</td
-							>
+								{/if}
+							</td>
 						{:else if column.type === 'bid_partners'}
 							<td>
 								<div class="flex flex-row space-x-1">

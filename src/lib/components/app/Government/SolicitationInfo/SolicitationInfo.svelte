@@ -10,7 +10,8 @@
 		formatMonthDayYearDate,
 		calculateDaysDifference,
 		getStatusColor,
-		getStatusName
+		getStatusName,
+		addCommasToNumber
 	} from '$lib/helpers.js';
 	import Download from '$lib/icons/Download.svg';
 
@@ -25,7 +26,7 @@
 		: {});
 </script>
 
-<div class="flex flex-col text-[15px] pr-2">
+<div class="flex flex-col text-[14px] pr-2">
 	<div class="mb-3">
 		<div class="flex flex-row items-center space-x-2 mb-1">
 			{#if solicitation_matched?.matching_rule?.name}
@@ -53,10 +54,10 @@
 
 	{#if !['enter_quote', 'bid'].includes(form?.type)}
 		<div class="grid grid-cols-2 gap-3">
-			<div class="flex flex-col justify-between bg-neutral-100 rounded-md p-3">
+			<div class="flex flex-col justify-between bg-neutral-50 shadow-sm rounded-md p-3">
 				<div>
 					<p class="text-base font-medium mb-2">Solicitation Info</p>
-					<div class="flex flex-row space-x-10">
+					<div class="flex flex-row space-x-8">
 						<div class="space-y-2">
 							<div class="flex flex-row space-x-1">
 								<p class="text-gray-400">Status:</p>
@@ -89,7 +90,7 @@
 								<div class="flex flex-row space-x-1">
 									<p class="text-gray-400">Quantity:</p>
 									<p>
-										{solicitation_matched.solicitation.quantity}
+										{addCommasToNumber(solicitation_matched.solicitation.quantity)}
 										{solicitation_matched.solicitation.quantity_units}
 									</p>
 								</div>
@@ -166,21 +167,33 @@
 									</p>
 								</div>
 							</div>
-
-							<div class="flex flex-row space-x-1">
-								<p class="text-gray-400">Days to Deliver:</p>
-								<p>
-									{solicitation_matched.solicitation.days_to_deliver}
-								</p>
+							<div>
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">Days to Deliver:</p>
+									<p>
+										{solicitation_matched.solicitation.days_to_deliver}
+									</p>
+								</div>
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">Est. Purchasing Days:</p>
+									<p
+										class={values.estimated_purchasing_days >
+										solicitation_matched.solicitation.days_to_deliver
+											? 'text-red-500'
+											: ''}
+									>
+										{values.estimated_purchasing_days ?? 'N/A'}
+									</p>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="flex flex-row justify-between">
+				<div class="flex flex-row justify-between mt-5">
 					<a
 						class="w-full mr-2 p-2 {solicitation_matched.solicitation.solicitation_url
-							? 'bg-neutral-200 rounded-md shadow-md'
+							? 'bg-gray-100 rounded-md shadow-md'
 							: ''}"
 						href={solicitation_matched.solicitation.solicitation_url || null}
 						target="_blank"
@@ -192,14 +205,14 @@
 									: 'No Solicitation URL'}
 							</p>
 							{#if solicitation_matched.solicitation.solicitation_url}
-								<img src={Download} alt="download" class="w-5 h-5" />
+								<img src={Download} alt="download" class="w-4 h-4" />
 							{/if}
 						</div>
 					</a>
 
 					<a
 						class="w-full mr-2 p-2 {solicitation_matched.solicitation.tech_docs
-							? 'bg-neutral-200 rounded-md shadow-md'
+							? 'bg-neutral-100 rounded-md shadow-md'
 							: ''}"
 						href={solicitation_matched.solicitation.tech_docs || null}
 						target="_blank"
@@ -209,7 +222,7 @@
 								{solicitation_matched.solicitation.tech_docs ? 'Tech Docs' : 'No Tech Docs'}
 							</p>
 							{#if solicitation_matched.solicitation.tech_docs}
-								<img src={Download} alt="download" class="w-5 h-5" />
+								<img src={Download} alt="download" class="w-4 h-4" />
 							{/if}
 						</div>
 					</a>
@@ -217,7 +230,7 @@
 			</div>
 
 			{#if nsn_matches}
-				<div class=" bg-neutral-100 rounded-md p-3">
+				<div class="bg-neutral-50 shadow-sm rounded-md p-3">
 					<div class="flex flex-col">
 						<p class="text-base font-medium mb-2">Value Calculator</p>
 						<div class="flex flex-row space-x-5">
@@ -225,7 +238,6 @@
 								<p class="text-gray-400">Unit Price:</p>
 								<p class="text-gray-400">Estimated Labor Cost:</p>
 								<p class="text-gray-400">Estimated Mat. Cost:</p>
-								<p class="text-gray-400">Estimated Pur. Days:</p>
 								<p class="text-gray-400">Estimated Cost:</p>
 								<p class="text-gray-400">Estimated Profit:</p>
 
@@ -242,9 +254,6 @@
 								</p>
 								<p class={reviewValues.estimated_material_cost ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_material_cost ?? 'N/A'}
-								</p>
-								<p class={reviewValues.estimated_purchasing_days ? '' : 'text-gray-300'}>
-									{reviewValues.estimated_purchasing_days ?? 'N/A'}
 								</p>
 								<p class={reviewValues.estimated_cost ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_cost ?? 'N/A'}
@@ -270,12 +279,10 @@
 								<p class={reviewValues.estimated_material_cost_date ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_material_cost_date ?? 'N/A'}
 								</p>
-								<p class={reviewValues.estimated_purchasing_days_date ? '' : 'text-gray-300'}>
-									{reviewValues.estimated_purchasing_days_date ?? 'N/A'}
-								</p>
 								<p class="h-[72px]"></p>
 								<p class={reviewValues.quantity ? '' : 'text-gray-300'}>
-									{reviewValues.quantity ?? 'N/A'}
+									{addCommasToNumber(solicitation_matched.solicitation.quantity)}
+									{solicitation_matched.solicitation.quantity_units}
 								</p>
 								<p class={reviewValues.profit_margin ? '' : 'text-gray-300'}>
 									{reviewValues.profit_margin ?? 'N/A'}
@@ -286,7 +293,7 @@
 				</div>
 				{#if reviewValues.previous_bid_outcome}
 					<div />
-					<div class=" bg-neutral-100 rounded-md p-3">
+					<div class="bg-neutral-50 shadow-sm rounded-md p-3">
 						<div class="flex flex-col">
 							<div class="flex flex-row justify-between">
 								<p class="text-base font-medium mb-2">Previous Bid Outcome</p>

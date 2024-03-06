@@ -16,7 +16,7 @@
 			shadowColor = 'shadow-red-300';
 		}
 
-		let tclass = `py-3 px-6 rounded-3xl m-1 text-xs font-medium ${color}`;
+		let tclass = `py-2 px-4 rounded-3xl m-1 text-xs font-medium ${color}`;
 		answer === value
 			? (tclass += ` border-[2px] shadow-md ${shadowColor} ${borderColor}`)
 			: value !== undefined
