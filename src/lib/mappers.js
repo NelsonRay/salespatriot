@@ -49,7 +49,9 @@ export function govMapper(field) {
 		bid_notes: 'Bid Notes',
 		bid_partners: 'Bid Partner(s)',
 		date_awarded: 'Date Awarded',
-		company_awarded: 'Company Awarded'
+		company_awarded: 'Company Awarded',
+		first_article_price: 'First Article Price',
+		first_article_lead_time: 'First Article Lead Time'
 	};
 
 	return map[field] ?? 'Error';

@@ -34,7 +34,7 @@
 		let { data, error } = await supabase
 			.from('solicitations_matched')
 			.select(
-				`*, solicitation!inner(${solColumns}, nsn(id, matching_nsns(*))), matching_rule(*), forms(*, form(*), submitted_by(*)), solicitations_matched_comments(*, user(name), form(form(name)))`
+				`*, solicitation!inner(*, nsn(id, matching_nsns(*))), matching_rule(*), forms(*, form(*), submitted_by(*)), solicitations_matched_comments(*, user(name), form(form(name)))`
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)

@@ -25,6 +25,10 @@ export const fieldsForForms = {
 		{ type: 'checkbox', field: 'requires_special_equipment' },
 		{ type: 'textarea', field: 'special_equipment_notes' }
 	],
+	first_article: [
+		{ type: 'currency', field: 'first_article_price' },
+		{ type: 'currency', field: 'first_article_lead_time' }
+	],
 	review: [{ type: 'status', status: 'review' }],
 	enter_quote: [
 		{ type: 'status', status: 'enter_quote' },

@@ -6,13 +6,14 @@
 	let total = 0;
 	formatData(data);
 
-	function formatData(forcecast) {
-		const keys = Object.keys(data ?? {})
+	function formatData(forecast) {
+		if (forecast?.length > 0) forecast = forecast[0];
+		const keys = Object.keys(forecast ?? {})
 			.filter((k) => k.includes(' '))
 			.sort((a, b) => parseDateString(a) - parseDateString(b));
 
 		formattedForecast = keys
-			.map((e) => [e, forcecast[e]])
+			.map((e) => [e, forecast[e]])
 			.filter((e) => {
 				return e[1] !== '0';
 			});

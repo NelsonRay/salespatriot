@@ -56,6 +56,7 @@
 		'bom',
 		'purchasing',
 		'labor',
+		'first_article',
 		'review',
 		'enter_quote',
 		'bid',
@@ -122,6 +123,15 @@
 			return obj?.bid_exception;
 		}
 		return true;
+	}
+
+	function showForm(form, type) {
+		switch (type) {
+			case 'first_article':
+				return form === null && solicitation_matched.solicitation.first_article;
+			default:
+				return form === null || form.type === 'review' || form.type === type;
+		}
 	}
 </script>
 
@@ -294,6 +304,20 @@
 							<p class="mb-1">Estimated Days to Deliver</p>
 							<Currency value={getEstimatedDays()} disabled />
 						</div>
+						{#if solicitation_matched.solicitation.first_article}
+							<div>
+								<p class="mb-1">First Article Price</p>
+								<TextInput
+									value={formatCurrency(solicitation_matched.first_article_price)}
+									disabled
+									fullWidth={false}
+								/>
+							</div>
+							<div>
+								<p class="mb-1">First Article Lead Time</p>
+								<Currency value={solicitation_matched.first_article_lead_time} disabled />
+							</div>
+						{/if}
 					</div>
 				{/if}
 				{#if form?.type === 'bom'}
@@ -346,13 +370,13 @@
 						{/each}
 					</div>
 				{/if}
-				{#each forms as f}
-					{#if form === null || form.type === 'review' || form.type === f}
+				{#each forms as type}
+					{#if showForm(form, type)}
 						<div>
 							{#if !(form === null || form.type === 'review')}
-								<p class="text-gray-400 mb-2 font-medium">{getFormTitle(f)}</p>
+								<p class="text-gray-400 mb-2 font-medium">{getFormTitle(type)}</p>
 							{/if}
-							{#each fieldsForForms[f] as field}
+							{#each fieldsForForms[type] as field}
 								<div>
 									{#if field.type === 'status' && !(form === null || form.type === 'review')}
 										<div class="mb-2">
