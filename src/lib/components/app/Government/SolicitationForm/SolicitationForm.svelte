@@ -60,6 +60,17 @@
 		'award'
 	];
 
+	const statuses = [
+		'opportunity',
+		'engineering',
+		'bom',
+		'purchasing',
+		'labor',
+		'review',
+		'enter_quote',
+		'bid'
+	];
+
 	function handleSubmit() {
 		if (form?.type) {
 			const results = formsValidation[form.type]?.safeParse(values);
@@ -91,11 +102,14 @@
 			.join(' ')} Form`;
 	}
 
-	function getStatusTitle(status) {
-		return `${status
+	function getStatusTitle(status, excludeStatus) {
+		let title = `${status
 			.split('_')
 			.map((e) => capitalizeFirstLetter(e))
-			.join(' ')} Status`;
+			.join(' ')}`;
+		if (!excludeStatus) title += '  Status';
+
+		return title;
 	}
 </script>
 
@@ -301,14 +315,32 @@
 			</div>
 		</div>
 		<div class="two bg-neutral-50">
-			<div class="flex flex-col p-6">
+			<div class="flex flex-col pl-6 py-6">
+				{#if form === null || form.type === 'review'}
+					<div class="flex flex-row overflow-x-auto">
+						{#each statuses as status}
+							<div class="flex flex-col">
+								<p class="text-sm text-neutral-400 ml-1">{getStatusTitle(status, true)}</p>
+								<StatusSelect
+									{status}
+									bind:value={values.status}
+									tags={govTags}
+									dropdown
+									skipInProgress={false}
+								/>
+							</div>
+						{/each}
+					</div>
+				{/if}
 				{#each forms as f}
 					{#if form === null || form.type === 'review' || form.type === f}
 						<div class="mb-3">
-							<p class="text-gray-400 mb-2 font-medium">{getFormTitle(f)}</p>
+							{#if !(form === null || form.type === 'review')}
+								<p class="text-gray-400 mb-2 font-medium">{getFormTitle(f)}</p>
+							{/if}
 							{#each fieldsForForms[f] as field}
 								<div class="mb-3">
-									{#if field.type === 'status'}
+									{#if field.type === 'status' && !(form === null || form.type === 'review')}
 										<p class="mb-1 text-sm">{getStatusTitle(field.status)}</p>
 										<StatusSelect
 											status={field.status}

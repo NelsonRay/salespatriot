@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { capitalizeFirstLetter } from '$lib/helpers';
+import { addCommasToNumber, capitalizeFirstLetter } from '$lib/helpers';
 
 export function govMapper(field) {
 	const map = {
@@ -197,6 +197,8 @@ export function tableFieldMapper(obj, column) {
 			) {
 				value = formatCurrency(value);
 			}
+
+			if (column?.field === 'solicitation.quantity' && obj) value = addCommasToNumber(value);
 
 			if (column?.field === 'solicitation.first_article') {
 				value = value ? 'Yes' : 'No';
