@@ -1,13 +1,13 @@
 <script>
 	// @ts-nocheck
-
-	import { govTags } from '$lib/tags.js';
 	import { tableFieldMapper } from '$lib/mappers';
 	import {
 		getMatchingClass,
 		getPartnerColor,
 		getSetAsideColor,
-		getBidPartners
+		getBidPartners,
+		getStatusColor,
+		getStatusName
 	} from '$lib/helpers.js';
 	import Open from '$lib/icons/Open.svg';
 
@@ -15,35 +15,6 @@
 	export let columns;
 	export let blockEditing = false;
 	export let openNewTab = false;
-
-	function getStatusColor(status) {
-		if (!status) return '';
-		let color = '';
-
-		switch (govTags[status.toString().split(':')[0]][status.toString().split(':')[1]].color) {
-			case 'green':
-				color = 'bg-green-400';
-				break;
-			case 'yellow':
-				color = 'bg-yellow-400';
-				break;
-			case 'red':
-				color = 'bg-red-400';
-				break;
-			case 'blue':
-				color = 'bg-blue-400';
-				break;
-			case 'gray':
-				color = 'bg-gray-300';
-				break;
-		}
-		return color;
-	}
-
-	function getStatusName(status) {
-		if (!status) return '';
-		return govTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
-	}
 
 	function getPartnerName(id) {
 		const partners = getBidPartners();
