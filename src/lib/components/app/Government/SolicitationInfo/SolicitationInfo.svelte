@@ -54,7 +54,7 @@
 
 	{#if !['enter_quote', 'bid'].includes(form?.type)}
 		<div class="grid grid-cols-2 gap-3">
-			<div class="flex flex-col justify-between bg-neutral-100 rounded-md p-3">
+			<div class="flex flex-col justify-between bg-neutral-50 shadow-sm rounded-md p-3">
 				<div>
 					<p class="text-base font-medium mb-2">Solicitation Info</p>
 					<div class="flex flex-row space-x-8">
@@ -193,7 +193,7 @@
 				<div class="flex flex-row justify-between mt-5">
 					<a
 						class="w-full mr-2 p-2 {solicitation_matched.solicitation.solicitation_url
-							? 'bg-neutral-200 rounded-md shadow-md'
+							? 'bg-gray-100 rounded-md shadow-md'
 							: ''}"
 						href={solicitation_matched.solicitation.solicitation_url || null}
 						target="_blank"
@@ -205,14 +205,14 @@
 									: 'No Solicitation URL'}
 							</p>
 							{#if solicitation_matched.solicitation.solicitation_url}
-								<img src={Download} alt="download" class="w-5 h-5" />
+								<img src={Download} alt="download" class="w-4 h-4" />
 							{/if}
 						</div>
 					</a>
 
 					<a
 						class="w-full mr-2 p-2 {solicitation_matched.solicitation.tech_docs
-							? 'bg-neutral-200 rounded-md shadow-md'
+							? 'bg-neutral-100 rounded-md shadow-md'
 							: ''}"
 						href={solicitation_matched.solicitation.tech_docs || null}
 						target="_blank"
@@ -222,7 +222,7 @@
 								{solicitation_matched.solicitation.tech_docs ? 'Tech Docs' : 'No Tech Docs'}
 							</p>
 							{#if solicitation_matched.solicitation.tech_docs}
-								<img src={Download} alt="download" class="w-5 h-5" />
+								<img src={Download} alt="download" class="w-4 h-4" />
 							{/if}
 						</div>
 					</a>
@@ -230,7 +230,7 @@
 			</div>
 
 			{#if nsn_matches}
-				<div class=" bg-neutral-100 rounded-md p-3">
+				<div class="bg-neutral-50 shadow-sm rounded-md p-3">
 					<div class="flex flex-col">
 						<p class="text-base font-medium mb-2">Value Calculator</p>
 						<div class="flex flex-row space-x-5">
@@ -293,7 +293,7 @@
 				</div>
 				{#if reviewValues.previous_bid_outcome}
 					<div />
-					<div class=" bg-neutral-100 rounded-md p-3">
+					<div class="bg-neutral-50 shadow-sm rounded-md p-3">
 						<div class="flex flex-col">
 							<div class="flex flex-row justify-between">
 								<p class="text-base font-medium mb-2">Previous Bid Outcome</p>

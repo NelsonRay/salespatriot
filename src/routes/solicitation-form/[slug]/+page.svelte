@@ -20,7 +20,7 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				`*, form!inner(*), solicitation_matched!inner(*, solicitation!inner(${solColumns}, nsn(id, matching_nsns(*))), forms(*, form(*), submitted_by(*)), matching_rule(*))`
+				`*, form!inner(*), solicitation_matched!inner(*, solicitations_matched_comments(*, user(name), form(form(name))), solicitation!inner(${solColumns}, nsn(id, matching_nsns(*))), forms(*, form(*), submitted_by(*)), matching_rule(*))`
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
@@ -45,8 +45,32 @@
 		isAdmin = admin;
 
 		form = data;
-		const { solicitation, matching_rule, forms, ...rest } = data.solicitation_matched;
+		const { solicitation, matching_rule, forms, solicitations_matched_comments, ...rest } =
+			data.solicitation_matched;
 		values = rest;
+	}
+
+	async function commentSubmitCallback(message) {
+		if (message) {
+			const { data, error } = await supabase
+				.from('solicitations_matched_comments')
+				.insert({
+					message,
+					user: session.user.id,
+					solicitation_matched: form.solicitation_matched.id,
+					form: form.id
+				})
+				.select('*, form(form(name)), user(name)')
+				.limit(1)
+				.single();
+
+			if (data) {
+				form.solicitation_matched.solicitations_matched_comments = [
+					...(form?.solicitation_matched?.solicitations_matched_comments ?? []),
+					data
+				];
+			}
+		}
 	}
 
 	onMount(() => {
@@ -106,6 +130,7 @@
 				{submitCallback}
 				bind:isSubmitting
 				{isAdmin}
+				{commentSubmitCallback}
 			/>
 		{:else}
 			<p class="mt-12 ml-12">Thank you for submitting form!</p>

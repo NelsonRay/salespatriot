@@ -34,7 +34,7 @@
 		let { data, error } = await supabase
 			.from('solicitations_matched')
 			.select(
-				`*, solicitation!inner(${solColumns}, nsn(id, matching_nsns(*))), matching_rule(*), forms(*, form(*), submitted_by(*))`
+				`*, solicitation!inner(${solColumns}, nsn(id, matching_nsns(*))), matching_rule(*), forms(*, form(*), submitted_by(*)), solicitations_matched_comments(*, user(name), form(form(name)))`
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -51,8 +51,31 @@
 		);
 		solicitation_matched = data;
 
-		const { solicitation, matching_rule, forms, ...rest } = data;
+		const { solicitation, matching_rule, forms, solicitations_matched_comments, ...rest } = data;
 		values = rest;
+	}
+
+	async function commentSubmitCallback(message) {
+		if (message) {
+			const { data, error } = await supabase
+				.from('solicitations_matched_comments')
+				.insert({
+					message,
+					user: session.user.id,
+					solicitation_matched: solicitation_matched.id,
+					form: null
+				})
+				.select('*, form(form(name)), user(name)')
+				.limit(1)
+				.single();
+
+			if (data) {
+				solicitation_matched.solicitations_matched_comments = [
+					...(solicitation_matched.solicitations_matched_comments ?? []),
+					data
+				];
+			}
+		}
 	}
 
 	onMount(() => {
@@ -70,4 +93,11 @@
 	>
 </svelte:head>
 
-<SolicitationForm {solicitation_matched} {values} {nsn_matches} {submitCallback} {isSubmitting} />
+<SolicitationForm
+	{solicitation_matched}
+	{values}
+	{nsn_matches}
+	{submitCallback}
+	{isSubmitting}
+	{commentSubmitCallback}
+/>

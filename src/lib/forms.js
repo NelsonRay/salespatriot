@@ -7,47 +7,32 @@ export const fieldsForForms = {
 		{
 			type: 'currency',
 			field: 'unit_price'
-		},
-		{
-			type: 'textarea',
-			field: 'opportunity_notes'
 		}
 	],
-	engineering: [
-		{ type: 'status', status: 'engineering' },
-		{ type: 'textarea', field: 'engineering_notes' }
-	],
+	engineering: [{ type: 'status', status: 'engineering' }],
 	bom: [
 		{ type: 'status', status: 'bom' },
-		{ type: 'link', field: 'bom_url' },
-		{ type: 'textarea', field: 'bom_notes' }
+		{ type: 'link', field: 'bom_url' }
 	],
 	purchasing: [
 		{ type: 'status', status: 'purchasing' },
 		{ type: 'currency', field: 'estimated_material_cost' },
-		{ type: 'currency', field: 'estimated_purchasing_days' },
-		{ type: 'textarea', field: 'purchasing_notes' }
+		{ type: 'currency', field: 'estimated_purchasing_days' }
 	],
 	labor: [
 		{ type: 'status', status: 'labor' },
 		{ type: 'currency', field: 'estimated_labor_minutes' },
-		{ type: 'textarea', field: 'special_equipment' },
-		{ type: 'textarea', field: 'labor_notes' }
+		{ type: 'textarea', field: 'special_equipment' }
 	],
-	review: [
-		{ type: 'status', status: 'review' },
-		{ type: 'textarea', field: 'review_notes' }
-	],
+	review: [{ type: 'status', status: 'review' }],
 	enter_quote: [
 		{ type: 'status', status: 'enter_quote' },
-		{ type: 'text', field: 'quote_number' },
-		{ type: 'textarea', field: 'quote_number_notes' }
+		{ type: 'text', field: 'quote_number' }
 	],
 	bid: [
 		{ type: 'bid_partners', field: 'bid_partners' },
 		{ type: 'checkbox', field: 'bid_exception' },
-		{ type: 'textarea', field: 'exception_notes' },
-		{ type: 'textarea', field: 'bid_notes' }
+		{ type: 'textarea', field: 'exception_notes' }
 	],
 	award: [
 		{

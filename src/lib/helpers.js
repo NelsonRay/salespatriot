@@ -13,6 +13,35 @@ export function formatDate(date) {
 	return `${year}-${month}-${day}`;
 }
 
+export function formatDateWithTime(created_at) {
+	let date = new Date(created_at.toString());
+	const today = new Date();
+
+	const diffInDays = Math.floor((today - date) / (1000 * 60 * 60 * 24));
+
+	if (diffInDays === 0) {
+		return (
+			'Today ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase()
+		);
+	} else if (diffInDays === 1) {
+		return (
+			'Yesterday ' +
+			date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase()
+		);
+	} else if (diffInDays <= 6) {
+		return date
+			.toLocaleDateString('en-US', { weekday: 'long', hour: 'numeric', minute: '2-digit' })
+			.replace(',', '');
+	} else {
+		return date.toLocaleDateString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: '2-digit'
+		});
+	}
+}
+
 // @ts-ignore
 export function calculateDaysDifference(date) {
 	const givenDate = new Date(formatDate(new Date(date)));
