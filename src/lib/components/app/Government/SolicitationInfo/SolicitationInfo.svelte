@@ -12,6 +12,7 @@
 		getStatusColor,
 		getStatusName
 	} from '$lib/helpers.js';
+	import Download from '$lib/icons/Download.svg';
 
 	export let solicitation_matched;
 	export let nsn_matches;
@@ -52,137 +53,166 @@
 
 	{#if !['enter_quote', 'bid'].includes(form?.type)}
 		<div class="grid grid-cols-2 gap-3">
-			<div class="flex flex-col bg-neutral-100 rounded-md p-3">
-				<p class="text-base font-medium mb-2">Solicitation Info</p>
-				<div class="flex flex-row space-x-10">
-					<div class="space-y-2">
-						<div>
-							<div class="flex flex-row space-x-1 items-center">
-								<p class="text-gray-400">Set Aside:</p>
-								{#if solicitation_matched.solicitation.set_aside}
-									<div
-										class="py-1 px-2 rounded-md inline-block text-xs {getSetAsideColor(
-											solicitation_matched.solicitation.set_aside
-										)}"
-									>
-										{solicitation_matched.solicitation.set_aside}
-									</div>
-								{:else}
-									<p>None</p>
-								{/if}
+			<div class="flex flex-col justify-between bg-neutral-100 rounded-md p-3">
+				<div>
+					<p class="text-base font-medium mb-2">Solicitation Info</p>
+					<div class="flex flex-row space-x-10">
+						<div class="space-y-2">
+							<div class="flex flex-row space-x-1">
+								<p class="text-gray-400">Status:</p>
+								<p>
+									{solicitation_matched.solicitation.contract_status}
+								</p>
+							</div>
+							<div>
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">NSN:</p>
+									<p>
+										{solicitation_matched.solicitation.nsn.id}
+									</p>
+								</div>
+
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">In-House PN:</p>
+									<p>
+										{tableFieldMapper(solicitation_matched, {
+											type: 'field',
+											field: 'solicitation.nsn.matching_nsns',
+											array_selector: 'part_number',
+											header: 'In-House PN'
+										}).value || 'N/A'}
+									</p>
+								</div>
+							</div>
+
+							<div>
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">Quantity:</p>
+									<p>
+										{solicitation_matched.solicitation.quantity}
+										{solicitation_matched.solicitation.quantity_units}
+									</p>
+								</div>
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">Est. Value:</p>
+									<p>
+										{formatCurrency(solicitation_matched.solicitation.estimated_value)}
+									</p>
+								</div>
+							</div>
+
+							<div>
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">Expires:</p>
+									<p>
+										{formatMonthDayYearDate(solicitation_matched.solicitation.expires_on) +
+											` (${calculateDaysDifference(solicitation_matched.solicitation.expires_on)}d)`}
+									</p>
+								</div>
+
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">Issued:</p>
+									<p>
+										{formatMonthDayYearDate(solicitation_matched.solicitation.issued_on)}
+									</p>
+								</div>
 							</div>
 						</div>
 
-						<div>
-							<div class="flex flex-row space-x-1">
-								<p class="text-gray-400">NSN:</p>
-								<p>
-									{solicitation_matched.solicitation.nsn.id}
-								</p>
+						<div class="space-y-2">
+							<div>
+								<div class="flex flex-row space-x-1 items-center">
+									<p class="text-gray-400">Set Aside:</p>
+									{#if solicitation_matched.solicitation.set_aside}
+										<div
+											class="py-1 px-2 rounded-md inline-block text-xs {getSetAsideColor(
+												solicitation_matched.solicitation.set_aside
+											)}"
+										>
+											{solicitation_matched.solicitation.set_aside}
+										</div>
+									{:else}
+										<p>None</p>
+									{/if}
+								</div>
+							</div>
+
+							<div>
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">First Article:</p>
+									<p>
+										{solicitation_matched.solicitation.first_article ? 'Yes' : 'No'}
+									</p>
+								</div>
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">Higher Quality (Mfg):</p>
+									<p>
+										{solicitation_matched.solicitation.first_article ? 'Yes' : 'No'}
+									</p>
+								</div>
+							</div>
+
+							<div>
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">Inspection At:</p>
+									<p>
+										{solicitation_matched.solicitation.inspection_location ?? 'N/A'}
+									</p>
+								</div>
+								<div class="flex flex-row space-x-1">
+									<p class="text-gray-400">FOB:</p>
+									<p>
+										{solicitation_matched.solicitation.fob ?? 'N/A'}
+									</p>
+								</div>
 							</div>
 
 							<div class="flex flex-row space-x-1">
-								<p class="text-gray-400">In-House PN:</p>
+								<p class="text-gray-400">Days to Deliver:</p>
 								<p>
-									{tableFieldMapper(solicitation_matched, {
-										type: 'field',
-										field: 'solicitation.nsn.matching_nsns',
-										array_selector: 'part_number',
-										header: 'In-House PN'
-									}).value || 'N/A'}
-								</p>
-							</div>
-						</div>
-
-						<div>
-							<div class="flex flex-row space-x-1">
-								<p class="text-gray-400">Quantity:</p>
-								<p>
-									{solicitation_matched.solicitation.quantity}
-									{solicitation_matched.solicitation.quantity_units}
-								</p>
-							</div>
-							<div class="flex flex-row space-x-1">
-								<p class="text-gray-400">Est. Value:</p>
-								<p>
-									{formatCurrency(solicitation_matched.solicitation.estimated_value)}
+									{solicitation_matched.solicitation.days_to_deliver}
 								</p>
 							</div>
 						</div>
 					</div>
+				</div>
 
-					<div class="space-y-2">
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">Status:</p>
-							<p>
-								{solicitation_matched.solicitation.contract_status}
+				<div class="flex flex-row justify-between">
+					<a
+						class="w-full mr-2 p-2 {solicitation_matched.solicitation.solicitation_url
+							? 'bg-neutral-200 rounded-md shadow-md'
+							: ''}"
+						href={solicitation_matched.solicitation.solicitation_url || null}
+						target="_blank"
+					>
+						<div class="flex flex-row justify-center items-center space-x-1">
+							<p class={solicitation_matched.solicitation.solicitation_url ? '' : 'text-gray-400'}>
+								{solicitation_matched.solicitation.solicitation_url
+									? 'Solicitation URL'
+									: 'No Solicitation URL'}
 							</p>
+							{#if solicitation_matched.solicitation.solicitation_url}
+								<img src={Download} alt="download" class="w-5 h-5" />
+							{/if}
 						</div>
+					</a>
 
-						<div>
-							<div class="flex flex-row space-x-1">
-								<p class="text-gray-400">Expires:</p>
-								<p>
-									{formatMonthDayYearDate(solicitation_matched.solicitation.expires_on) +
-										` (${calculateDaysDifference(solicitation_matched.solicitation.expires_on)} days)`}
-								</p>
-							</div>
-
-							<div class="flex flex-row space-x-1">
-								<p class="text-gray-400">Issued:</p>
-								<p>
-									{formatMonthDayYearDate(solicitation_matched.solicitation.issued_on)}
-								</p>
-							</div>
-						</div>
-
-						<div>
-							<div class="flex flex-row space-x-1">
-								<p class="text-gray-400">First Article:</p>
-								<p>
-									{solicitation_matched.solicitation.first_article ? 'Yes' : 'No'}
-								</p>
-							</div>
-						</div>
-
-						<div>
-							<div class="flex flex-row space-x-1">
-								<p class="text-gray-400">Tech Docs:</p>
-								{#if solicitation_matched.solicitation.tech_docs}
-									<a
-										href={solicitation_matched.solicitation.tech_docs}
-										target="_blank"
-										class="text-blue-500"
-									>
-										URL
-									</a>
-								{:else}
-									<p>None</p>
-								{/if}
-							</div>
-							<div class="flex flex-row space-x-1">
-								<p class="text-gray-400">Solicitation URL:</p>
-								{#if solicitation_matched.solicitation.solicitation_url}
-									<a
-										href={solicitation_matched.solicitation.solicitation_url}
-										target="_blank"
-										class="text-blue-500"
-									>
-										URL
-									</a>
-								{:else}
-									<p>None</p>
-								{/if}
-							</div>
-						</div>
-
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">Days to Deliver:</p>
-							<p>
-								{solicitation_matched.solicitation.days_to_deliver}
+					<a
+						class="w-full mr-2 p-2 {solicitation_matched.solicitation.tech_docs
+							? 'bg-neutral-200 rounded-md shadow-md'
+							: ''}"
+						href={solicitation_matched.solicitation.tech_docs || null}
+						target="_blank"
+					>
+						<div class="flex flex-row justify-center items-center space-x-1">
+							<p class={solicitation_matched.solicitation.tech_docs ? '' : 'text-gray-400'}>
+								{solicitation_matched.solicitation.tech_docs ? 'Tech Docs' : 'No Tech Docs'}
 							</p>
+							{#if solicitation_matched.solicitation.tech_docs}
+								<img src={Download} alt="download" class="w-5 h-5" />
+							{/if}
 						</div>
-					</div>
+					</a>
 				</div>
 			</div>
 
