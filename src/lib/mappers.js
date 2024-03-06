@@ -36,7 +36,8 @@ export function govMapper(field) {
 		purchasing_notes: 'Purchasing Notes',
 		labor_status: 'Labor Status',
 		estimated_labor_minutes: 'Estimated Labor Minutes',
-		special_equipment: 'Special Equipment',
+		requires_special_equipment: 'Requires Special Equipment',
+		special_equipment_notes: 'Special Equipment Notes',
 		labor_notes: 'Labor Notes',
 		review_status: 'Review Status',
 		review_notes: 'Review Notes',
@@ -48,7 +49,9 @@ export function govMapper(field) {
 		bid_notes: 'Bid Notes',
 		bid_partners: 'Bid Partner(s)',
 		date_awarded: 'Date Awarded',
-		company_awarded: 'Company Awarded'
+		company_awarded: 'Company Awarded',
+		first_article_price: 'First Article Price',
+		first_article_lead_time: 'First Article Lead Time'
 	};
 
 	return map[field] ?? 'Error';

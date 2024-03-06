@@ -19,6 +19,12 @@
 		}
 	}
 
+	function handleKeyPress(event) {
+		if (event.key === 'Enter') {
+			handleSubmit();
+		}
+	}
+
 	let addComment = false;
 </script>
 
@@ -45,7 +51,7 @@
 
 {#if addComment}
 	<div class="flex flex-row space-x-2 mr-4 {comments?.length > 0 ? 'mt-3' : ''}">
-		<input class="w-full rounded-md border p-1" bind:value={message} />
+		<input class="w-full rounded-md border p-1" bind:value={message} on:keypress={handleKeyPress} />
 		<button
 			class="h-9 w-9 bg-neutral-100 rounded-md flex justify-center items-center"
 			on:click={handleSubmit}

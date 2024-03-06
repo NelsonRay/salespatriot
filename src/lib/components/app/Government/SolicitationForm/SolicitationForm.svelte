@@ -56,6 +56,7 @@
 		'bom',
 		'purchasing',
 		'labor',
+		'first_article',
 		'review',
 		'enter_quote',
 		'bid',
@@ -113,6 +114,24 @@
 		if (!excludeStatus) title += '  Status';
 
 		return title;
+	}
+
+	function showTextarea(field, obj) {
+		if (field.field === 'special_equipment_notes') {
+			return obj?.requires_special_equipment;
+		} else if (field.field === 'exception_notes') {
+			return obj?.bid_exception;
+		}
+		return true;
+	}
+
+	function showForm(form, type) {
+		switch (type) {
+			case 'first_article':
+				return form === null && solicitation_matched.solicitation.first_article;
+			default:
+				return form === null || form.type === 'review' || form.type === type;
+		}
 	}
 </script>
 
@@ -285,6 +304,20 @@
 							<p class="mb-1">Estimated Days to Deliver</p>
 							<Currency value={getEstimatedDays()} disabled />
 						</div>
+						{#if solicitation_matched.solicitation.first_article}
+							<div>
+								<p class="mb-1">First Article Price</p>
+								<TextInput
+									value={formatCurrency(solicitation_matched.first_article_price)}
+									disabled
+									fullWidth={false}
+								/>
+							</div>
+							<div>
+								<p class="mb-1">First Article Lead Time</p>
+								<Currency value={solicitation_matched.first_article_lead_time} disabled />
+							</div>
+						{/if}
 					</div>
 				{/if}
 				{#if form?.type === 'bom'}
@@ -324,8 +357,8 @@
 				{#if form === null || form.type === 'review'}
 					<div class="flex flex-row overflow-x-auto mb-2">
 						{#each statuses as status}
-							<div class="flex flex-col">
-								<p class="text-sm text-neutral-400 ml-1">{getStatusTitle(status, true)}</p>
+							<div class="flex flex-col items-center">
+								<p class="text-sm text-neutral-400">{getStatusTitle(status, true)}</p>
 								<StatusSelect
 									{status}
 									bind:value={values.status}
@@ -337,13 +370,13 @@
 						{/each}
 					</div>
 				{/if}
-				{#each forms as f}
-					{#if form === null || form.type === 'review' || form.type === f}
+				{#each forms as type}
+					{#if showForm(form, type)}
 						<div>
 							{#if !(form === null || form.type === 'review')}
-								<p class="text-gray-400 mb-2 font-medium">{getFormTitle(f)}</p>
+								<p class="text-gray-400 mb-2 font-medium">{getFormTitle(type)}</p>
 							{/if}
-							{#each fieldsForForms[f] as field}
+							{#each fieldsForForms[type] as field}
 								<div>
 									{#if field.type === 'status' && !(form === null || form.type === 'review')}
 										<div class="mb-2">
@@ -373,15 +406,18 @@
 										</div>
 									{/if}
 									{#if field.type === 'textarea'}
-										<div class="mb-2">
-											<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-											<Textarea bind:value={values[field.field]} />
-											{#if errors?.[field.field]}
-												<label for="trim" class="label">
-													<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
-												</label>
-											{/if}
-										</div>
+										{#if showTextarea(field, values)}
+											<div class="mb-2">
+												<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+												<Textarea bind:value={values[field.field]} />
+												{#if errors?.[field.field]}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">{errors?.[field.field][0]}</span
+														>
+													</label>
+												{/if}
+											</div>
+										{/if}
 									{/if}
 									{#if field.type === 'checkbox'}
 										<div class="mb-2">
