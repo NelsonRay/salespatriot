@@ -286,7 +286,7 @@
 
 						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
 						{#if nsn_matches?.length > 0}
-							<Table data={nsn_matches} columns={nsnColumns} />
+							<Table data={nsn_matches} columns={nsnColumns} openNewTab={true} />
 						{:else}
 							<p class="text-gray-400">NSN not seen before</p>
 						{/if}

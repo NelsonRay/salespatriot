@@ -6,7 +6,11 @@
 		getMatchingClass,
 		getReviewValues,
 		getSetAsideColor,
-		getFamiliarityClass
+		getFamiliarityClass,
+		formatMonthDayYearDate,
+		calculateDaysDifference,
+		getStatusColor,
+		getStatusName
 	} from '$lib/helpers.js';
 
 	export let solicitation_matched;
@@ -14,10 +18,13 @@
 	export let values;
 	export let form;
 
-	const { values: reviewValues, dates } = nsn_matches ? getReviewValues(nsn_matches) : {};
+	// get updated review values
+	$: ({ values: reviewValues, award_details } = nsn_matches
+		? getReviewValues([{ ...solicitation_matched, ...(values || {}) }, ...(nsn_matches ?? [])])
+		: {});
 </script>
 
-<div class="flex flex-col">
+<div class="flex flex-col text-[15px] pr-2">
 	<div class="mb-3">
 		<div class="flex flex-row items-center space-x-2 mb-1">
 			{#if solicitation_matched?.matching_rule?.name}
@@ -44,172 +51,250 @@
 	</div>
 
 	{#if !['enter_quote', 'bid'].includes(form?.type)}
-		<div class="flex flex-row">
-			<div class="flex flex-row bg-neutral-100 space-x-10 rounded-md p-4">
-				<div class="space-y-2">
-					<div>
-						<div class="flex flex-row space-x-1 items-center">
-							<p class="text-gray-400">Set Aside:</p>
-							{#if solicitation_matched.solicitation.set_aside}
-								<div
-									class="py-1 px-2 rounded-md inline-block text-xs {getSetAsideColor(
-										solicitation_matched.solicitation.set_aside
-									)}"
-								>
-									{solicitation_matched.solicitation.set_aside}
-								</div>
-							{:else}
-								<p>None</p>
-							{/if}
+		<div class="grid grid-cols-2 gap-3">
+			<div class="flex flex-col bg-neutral-100 rounded-md p-3">
+				<p class="text-base font-medium mb-2">Solicitation Info</p>
+				<div class="flex flex-row space-x-10">
+					<div class="space-y-2">
+						<div>
+							<div class="flex flex-row space-x-1 items-center">
+								<p class="text-gray-400">Set Aside:</p>
+								{#if solicitation_matched.solicitation.set_aside}
+									<div
+										class="py-1 px-2 rounded-md inline-block text-xs {getSetAsideColor(
+											solicitation_matched.solicitation.set_aside
+										)}"
+									>
+										{solicitation_matched.solicitation.set_aside}
+									</div>
+								{:else}
+									<p>None</p>
+								{/if}
+							</div>
+						</div>
+
+						<div>
+							<div class="flex flex-row space-x-1">
+								<p class="text-gray-400">NSN:</p>
+								<p>
+									{solicitation_matched.solicitation.nsn.id}
+								</p>
+							</div>
+
+							<div class="flex flex-row space-x-1">
+								<p class="text-gray-400">In-House PN:</p>
+								<p>
+									{tableFieldMapper(solicitation_matched, {
+										type: 'field',
+										field: 'solicitation.nsn.matching_nsns',
+										array_selector: 'part_number',
+										header: 'In-House PN'
+									}).value || 'N/A'}
+								</p>
+							</div>
+						</div>
+
+						<div>
+							<div class="flex flex-row space-x-1">
+								<p class="text-gray-400">Quantity:</p>
+								<p>
+									{solicitation_matched.solicitation.quantity}
+									{solicitation_matched.solicitation.quantity_units}
+								</p>
+							</div>
+							<div class="flex flex-row space-x-1">
+								<p class="text-gray-400">Est. Value:</p>
+								<p>
+									{formatCurrency(solicitation_matched.solicitation.estimated_value)}
+								</p>
+							</div>
 						</div>
 					</div>
 
-					<div>
+					<div class="space-y-2">
 						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">NSN:</p>
+							<p class="text-gray-400">Status:</p>
 							<p>
-								{solicitation_matched.solicitation.nsn.id}
+								{solicitation_matched.solicitation.contract_status}
 							</p>
 						</div>
 
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">In-House PN:</p>
-							<p>
-								{tableFieldMapper(solicitation_matched, {
-									type: 'field',
-									field: 'solicitation.nsn.matching_nsns',
-									array_selector: 'part_number',
-									header: 'In-House PN'
-								}).value || 'N/A'}
-							</p>
-						</div>
-					</div>
+						<div>
+							<div class="flex flex-row space-x-1">
+								<p class="text-gray-400">Expires:</p>
+								<p>
+									{formatMonthDayYearDate(solicitation_matched.solicitation.expires_on) +
+										` (${calculateDaysDifference(solicitation_matched.solicitation.expires_on)} days)`}
+								</p>
+							</div>
 
-					<div>
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">Quantity:</p>
-							<p>
-								{solicitation_matched.solicitation.quantity}
-								{solicitation_matched.solicitation.quantity_units}
-							</p>
+							<div class="flex flex-row space-x-1">
+								<p class="text-gray-400">Issued:</p>
+								<p>
+									{formatMonthDayYearDate(solicitation_matched.solicitation.issued_on)}
+								</p>
+							</div>
 						</div>
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">Unit Price:</p>
-							<p>
-								{values?.unit_price ? formatCurrency(values?.unit_price) : 'N/A'}
-							</p>
-						</div>
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">Market Value:</p>
-							<p>
-								{values?.unit_price
-									? formatCurrency(values?.unit_price * solicitation_matched.solicitation.quantity)
-									: 'N/A'}
-							</p>
-						</div>
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">Est. Value:</p>
-							<p>
-								{formatCurrency(solicitation_matched.solicitation.estimated_value)}
-							</p>
-						</div>
-					</div>
-				</div>
 
-				<div class="space-y-2">
-					<div class="flex flex-row space-x-1">
-						<p class="text-gray-400">Status:</p>
-						<p>
-							{solicitation_matched.solicitation.contract_status}
-						</p>
-					</div>
+						<div>
+							<div class="flex flex-row space-x-1">
+								<p class="text-gray-400">First Article:</p>
+								<p>
+									{solicitation_matched.solicitation.first_article ? 'Yes' : 'No'}
+								</p>
+							</div>
+						</div>
 
-					<div>
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">Expires:</p>
-							<p>
-								{solicitation_matched.solicitation.expires_on}
-							</p>
+						<div>
+							<div class="flex flex-row space-x-1">
+								<p class="text-gray-400">Tech Docs:</p>
+								{#if solicitation_matched.solicitation.tech_docs}
+									<a
+										href={solicitation_matched.solicitation.tech_docs}
+										target="_blank"
+										class="text-blue-500"
+									>
+										URL
+									</a>
+								{:else}
+									<p>None</p>
+								{/if}
+							</div>
+							<div class="flex flex-row space-x-1">
+								<p class="text-gray-400">Solicitation URL:</p>
+								{#if solicitation_matched.solicitation.solicitation_url}
+									<a
+										href={solicitation_matched.solicitation.solicitation_url}
+										target="_blank"
+										class="text-blue-500"
+									>
+										URL
+									</a>
+								{:else}
+									<p>None</p>
+								{/if}
+							</div>
 						</div>
 
 						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">Issued:</p>
+							<p class="text-gray-400">Days to Deliver:</p>
 							<p>
-								{solicitation_matched.solicitation.issued_on}
+								{solicitation_matched.solicitation.days_to_deliver}
 							</p>
 						</div>
-					</div>
-
-					<div>
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">First Article:</p>
-							<p>
-								{solicitation_matched.solicitation.first_article ? 'Yes' : 'No'}
-							</p>
-						</div>
-					</div>
-
-					<div>
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">Tech Docs:</p>
-							{#if solicitation_matched.solicitation.tech_docs}
-								<a
-									href={solicitation_matched.solicitation.tech_docs}
-									target="_blank"
-									class="text-blue-500"
-								>
-									URL
-								</a>
-							{:else}
-								<p>None</p>
-							{/if}
-						</div>
-						<div class="flex flex-row space-x-1">
-							<p class="text-gray-400">Solicitation URL:</p>
-							{#if solicitation_matched.solicitation.solicitation_url}
-								<a
-									href={solicitation_matched.solicitation.solicitation_url}
-									target="_blank"
-									class="text-blue-500"
-								>
-									URL
-								</a>
-							{:else}
-								<p>None</p>
-							{/if}
-						</div>
-					</div>
-
-					<div class="flex flex-row space-x-1">
-						<p class="text-gray-400">Days to Deliver:</p>
-						<p>
-							{solicitation_matched.solicitation.days_to_deliver}
-						</p>
 					</div>
 				</div>
 			</div>
+
 			{#if nsn_matches}
-				<div class="ml-5 p-4 bg-neutral-100 rounded-md">
-					<div class="flex flex-row space-x-5">
-						<div class="flex flex-col space-y-3">
-							<p class="text-gray-400">Estimated Labor Cost:</p>
-							<p class="text-gray-400">Estimated Mat. Cost:</p>
-							<p class="text-gray-400">Estimated Total Cost:</p>
-							<p class="text-gray-400">Price Last Bid:</p>
-							<p class="text-gray-400">Prev Bid Outcome:</p>
-						</div>
-						<div class="flex flex-col space-y-3">
-							{#each reviewValues as value}
-								<p>{value}</p>
-							{/each}
-						</div>
-						<div class="flex flex-col space-y-3">
-							{#each dates as date}
-								<p>{date}</p>
-							{/each}
+				<div class=" bg-neutral-100 rounded-md p-3">
+					<div class="flex flex-col">
+						<p class="text-base font-medium mb-2">Value Calculator</p>
+						<div class="flex flex-row space-x-5">
+							<div class="flex flex-col space-y-2">
+								<p class="text-gray-400">Unit Price:</p>
+								<p class="text-gray-400">Estimated Labor Cost:</p>
+								<p class="text-gray-400">Estimated Mat. Cost:</p>
+								<p class="text-gray-400">Estimated Pur. Days:</p>
+								<p class="text-gray-400">Estimated Cost:</p>
+								<p class="text-gray-400">Estimated Profit:</p>
+
+								<div class="h-2" />
+								<p class="text-gray-400">Market Value:</p>
+								<p class="text-gray-400">Estimated Total Profit:</p>
+							</div>
+							<div class="flex flex-col space-y-2">
+								<p class={reviewValues.unit_price ? '' : 'text-gray-300'}>
+									{reviewValues.unit_price ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_labor_cost ? '' : 'text-gray-300'}>
+									{reviewValues.estimated_labor_cost ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_material_cost ? '' : 'text-gray-300'}>
+									{reviewValues.estimated_material_cost ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_purchasing_days ? '' : 'text-gray-300'}>
+									{reviewValues.estimated_purchasing_days ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_cost ? '' : 'text-gray-300'}>
+									{reviewValues.estimated_cost ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_profit ? '' : 'text-gray-300'}>
+									{reviewValues.estimated_profit ?? 'N/A'}
+								</p>
+								<div class="h-2" />
+								<p class={reviewValues.market_value ? '' : 'text-gray-300'}>
+									{reviewValues.market_value ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_total_profit ? '' : 'text-gray-300'}>
+									{reviewValues.estimated_total_profit ?? 'N/A'}
+								</p>
+							</div>
+							<div class="flex flex-col space-y-2">
+								<p class={reviewValues.unit_price_date ? '' : 'text-gray-300'}>
+									{reviewValues.unit_price_date ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_labor_cost_date ? '' : 'text-gray-300'}>
+									{reviewValues.estimated_labor_cost_date ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_material_cost_date ? '' : 'text-gray-300'}>
+									{reviewValues.estimated_material_cost_date ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_purchasing_days_date ? '' : 'text-gray-300'}>
+									{reviewValues.estimated_purchasing_days_date ?? 'N/A'}
+								</p>
+								<p class="h-[72px]"></p>
+								<p class={reviewValues.quantity ? '' : 'text-gray-300'}>
+									{reviewValues.quantity ?? 'N/A'}
+								</p>
+								<p class={reviewValues.profit_margin ? '' : 'text-gray-300'}>
+									{reviewValues.profit_margin ?? 'N/A'}
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
+				{#if reviewValues.previous_bid_outcome}
+					<div />
+					<div class=" bg-neutral-100 rounded-md p-3">
+						<div class="flex flex-col">
+							<div class="flex flex-row justify-between">
+								<p class="text-base font-medium mb-2">Previous Bid Outcome</p>
+								<div
+									class="p-1 px-2 rounded-md inline-block text-xs mb-2 {getStatusColor(
+										reviewValues.previous_bid_outcome
+									) ?? ''}"
+								>
+									{getStatusName(reviewValues.previous_bid_outcome) ?? ''}
+								</div>
+							</div>
+							{#if award_details}
+								<div class="flex flex-row space-x-5 mt-2">
+									<div class="flex flex-col space-y-2">
+										<p class="text-gray-400">Price Won At:</p>
+										{#if reviewValues.previous_bid_outcome === 'award:lost'}
+											<p class="text-gray-400">Company Awarded:</p>
+											<p class="text-gray-400">Estimated Pur. Days:</p>
+										{/if}
+									</div>
+									<div class="flex flex-col space-y-2">
+										<p class={award_details.unit_price_won_at ? '' : 'text-gray-300'}>
+											{award_details.unit_price_won_at ?? 'N/A'}
+										</p>
+										{#if reviewValues.previous_bid_outcome === 'award:lost'}
+											<p class={award_details.company_awarded ? '' : 'text-gray-300'}>
+												{award_details.company_awarded ?? 'N/A'}
+											</p>
+											<p class={award_details.date_awarded ? '' : 'text-gray-300'}>
+												{award_details.date_awarded ?? 'N/A'}
+											</p>
+										{/if}
+									</div>
+								</div>
+							{/if}
+						</div>
+					</div>
+				{/if}
 			{/if}
 		</div>
 	{/if}

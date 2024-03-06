@@ -1,3 +1,5 @@
+import { govTags } from './tags';
+
 // @ts-ignore
 export const solColumns =
 	'id, created_at, description, estimated_value, issued_on, expires_on, contract_status, days_to_deliver, quantity, solicitation_url, tech_docs, first_article, contact_name, contact_phone, contact_email, line_number, quantity_units, amsc, company_awarded, price_won_at, date_awarded, higher_quality';
@@ -12,9 +14,31 @@ export function formatDate(date) {
 }
 
 // @ts-ignore
+export function calculateDaysDifference(date) {
+	const givenDate = new Date(formatDate(new Date(date)));
+	const currentDate = new Date(formatDate(new Date()));
+
+	// Calculate the difference in milliseconds
+	// @ts-ignore
+	const differenceInMilliseconds = givenDate - currentDate;
+	// Convert the difference to days
+	const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
+	const differenceInDays = differenceInMilliseconds / oneDay;
+
+	return differenceInDays;
+}
+
+// @ts-ignore
 export function formatCurrency(number) {
 	if (!number) return '';
-	return '$' + number.toLocaleString('en-US', { minimumFractionDigits: 2 });
+
+	let formatted = '$' + Math.abs(number).toLocaleString('en-US', { minimumFractionDigits: 2 });
+
+	if (number < 0) {
+		formatted = '(' + formatted + ')';
+	}
+
+	return formatted;
 }
 
 // @ts-ignore
@@ -101,6 +125,35 @@ export function getSetAsideColor(setAside) {
 	return cClass;
 }
 
+export function getStatusColor(status) {
+	if (!status) return '';
+	let color = '';
+
+	switch (govTags[status.toString().split(':')[0]][status.toString().split(':')[1]].color) {
+		case 'green':
+			color = 'bg-green-400';
+			break;
+		case 'yellow':
+			color = 'bg-yellow-400';
+			break;
+		case 'red':
+			color = 'bg-red-400';
+			break;
+		case 'blue':
+			color = 'bg-blue-400';
+			break;
+		case 'gray':
+			color = 'bg-gray-300';
+			break;
+	}
+	return color;
+}
+
+export function getStatusName(status) {
+	if (!status) return '';
+	return govTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
+}
+
 export function getBidPartners() {
 	return [
 		{ id: '66ebce9c-66db-45cf-a91e-1425a45b47b2', name: 'ADG Bid Direct' },
@@ -139,103 +192,183 @@ export function getPartnerColor(id) {
 // @ts-ignore
 export function getReviewValues(nsnMatches) {
 	// @ts-ignore
-	let values = [];
-	let dates = [];
+	let values = {
+		unit_price: null,
+		unit_price_date: null,
+		estimated_labor_cost: null,
+		estimated_labor_cost_date: null,
+		estimated_material_cost: null,
+		estimated_material_cost_date: null,
+		estimated_purchasing_days: null,
+		estimated_purchasing_days_date: null,
+		estimated_cost: null,
+		estimated_profit: null,
+		previous_bid_outcome: null,
+		previous_bid_outcome_date: null,
+		market_value: null,
+		estimated_total_profit: null,
+		quantity: nsnMatches[0].solicitation.quantity,
+		profit_margin: null
+	};
 
 	let estimated_labor_minutes;
+	let award_details;
 
 	for (let key of [
+		'unit_price',
 		'estimated_labor_minutes',
 		'estimated_material_cost',
-		'Estimated Total Cost',
-		'Price Last Bid',
-		'Previous Bid Outcome'
+		'estimated_purchasing_days',
+		'estimated_cost',
+		'price_last_bid',
+		'previous_bid_outcome'
 	]) {
 		switch (key) {
+			case 'unit_price':
+				for (let match of nsnMatches) {
+					if (match.unit_price) {
+						// @ts-ignore
+						values.unit_price = match.unit_price;
+
+						// @ts-ignore
+						values.unit_price_date = formatMonthDayYearDate(match.solicitation.expires_on);
+						break;
+					}
+				}
+				break;
 			case 'estimated_labor_minutes':
 				for (let match of nsnMatches) {
 					if (match.estimated_labor_minutes) {
 						estimated_labor_minutes = match.estimated_labor_minutes;
 						// @ts-ignore
-						values.push(parseFloat((estimated_labor_minutes / 60) * 20).toFixed(2));
-						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
+						values.estimated_labor_cost = parseFloat((estimated_labor_minutes / 60) * 20).toFixed(
+							2
+						);
+						// @ts-ignore
+						values.estimated_labor_cost_date = formatMonthDayYearDate(
+							match.solicitation.expires_on
+						);
 						break;
 					}
-				}
-				if (values.length === 0) {
-					values.push('N/A');
-					dates.push('N/A');
 				}
 				break;
 			case 'estimated_material_cost':
 				for (let match of nsnMatches) {
 					if (match.estimated_material_cost) {
-						values.push(match.estimated_material_cost);
-						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
-						break;
-					}
-				}
-				if (values.length === 1) {
-					values.push('N/A');
-					dates.push('N/A');
-				}
-				break;
-			case 'Estimated Total Cost':
-				// @ts-ignore
-				if (!values.includes('N/A')) {
-					// @ts-ignore
-					values.push(values[0] + values[1]);
-				} else {
-					values.push('N/A');
-				}
-				dates.push('N/A');
-				break;
-			case 'Price Last Bid':
-				for (let match of nsnMatches) {
-					if (match.unit_price) {
-						values.push(match.unit_price);
-						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
-						break;
-					}
-				}
-				if (values.length === 3) {
-					values.push('N/A');
-					dates.push('N/A');
-				}
-				break;
-			case 'Previous Bid Outcome':
-				for (let match of nsnMatches) {
-					// @ts-ignore
-					if (match.status.some((s) => s.includes('award:won'))) {
-						values.push('Won');
-						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
-						break;
+						values.estimated_material_cost = match.estimated_material_cost;
 						// @ts-ignore
-					} else if (match.status.some((s) => s.includes('award:lost'))) {
-						values.push('Lost');
-						dates.push(formatMonthDayYearDate(match.solicitation.expires_on));
+						values.estimated_material_cost_date = formatMonthDayYearDate(
+							match.solicitation.expires_on
+						);
 						break;
 					}
 				}
-				if (values.length === 4) {
-					values.push('N/A');
-					dates.push('N/A');
+				break;
+			case 'estimated_purchasing_days':
+				for (let match of nsnMatches) {
+					if (match.estimated_purchasing_days) {
+						values.estimated_purchasing_days = match.estimated_purchasing_days;
+						// @ts-ignore
+						values.estimated_purchasing_days_date = formatMonthDayYearDate(
+							match.solicitation.expires_on
+						);
+						break;
+					}
+				}
+				break;
+			case 'estimated_cost':
+				// @ts-ignore
+				if (values.estimated_material_cost && values.estimated_labor_cost && values.unit_price) {
+					// @ts-ignore
+					values.estimated_cost =
+						parseFloat(values.estimated_material_cost) + parseFloat(values.estimated_labor_cost);
+					// @ts-ignore
+					values.estimated_profit =
+						nsnMatches[0].unit_price -
+						// @ts-ignore
+						values.estimated_cost;
+				}
+				break;
+			case 'previous_bid_outcome':
+				for (let match of (nsnMatches ?? []).slice(1)) {
+					// @ts-ignore
+					if (match.status.some((s) => s.includes('award'))) {
+						// @ts-ignore
+						values.previous_bid_outcome = match.status.filter((s) => s.includes('award'))[0];
+						// @ts-ignore
+						values.previous_bid_outcome_date = formatMonthDayYearDate(
+							match.solicitation.expires_on
+						);
+
+						if (values.previous_bid_outcome === 'award:lost') {
+							award_details = {};
+
+							if (match?.solicitation.price_won_at && match?.solicitation?.quantity) {
+								// @ts-ignore
+								award_details.unit_price_won_at = formatCurrency(
+									match?.solicitation.price_won_at / match?.solicitation?.quantity
+								);
+							}
+
+							// @ts-ignore
+							award_details.company_awarded = match.solicitation.company_awarded;
+							// @ts-ignore
+							award_details.date_awarded = formatMonthDayYearDate(match.solicitation.date_awarded);
+						} else if (values.previous_bid_outcome === 'award:won') {
+							award_details = {};
+							// @ts-ignore
+							award_details.price_won_at = match?.unit_price;
+						}
+						break;
+					}
 				}
 				break;
 		}
 	}
 
-	for (let i of [0, 1, 2, 3]) {
-		if (values[i] !== 'N/A') {
-			values[i] = formatCurrency(values[i]);
+	if (values.estimated_profit) {
+		// @ts-ignore
+		values.estimated_total_profit = values.estimated_profit * nsnMatches[0].solicitation.quantity;
+	}
+
+	if (values.unit_price) {
+		// @ts-ignore
+		values.market_value = values.unit_price * nsnMatches[0].solicitation.quantity;
+	}
+
+	if (values.market_value && values.estimated_total_profit) {
+		const margin = (values.estimated_total_profit / Math.abs(values.market_value)) * 100;
+
+		// Round the margin to one decimal place
+		const roundedMargin = Math.round(margin * 10) / 10;
+
+		// @ts-ignore
+		values.profit_margin = `${roundedMargin.toFixed(1)}%`;
+	}
+
+	for (let key of [
+		'unit_price',
+		'estimated_labor_cost',
+		'estimated_material_cost',
+		'estimated_total_cost',
+		'estimated_profit',
+		'market_value',
+		'estimated_total_profit'
+	]) {
+		// @ts-ignore
+		if (values[key]) {
+			// @ts-ignore
+			values[key] = formatCurrency(values[key]);
 		}
 	}
 
-	if (values[0] !== 'N/A') {
-		values[0] = `${values[0]} / ${estimated_labor_minutes} mins`;
+	// @ts-ignore
+	if (estimated_labor_minutes) {
+		// @ts-ignore
+		values.estimated_labor_cost = `${values.estimated_labor_cost} / ${estimated_labor_minutes} mins`;
 	}
-
-	return { values, dates };
+	console.log(award_details);
+	return { values, award_details };
 }
 
 // @ts-ignore
