@@ -19,6 +19,7 @@
 	export let nsn_matches;
 	export let values;
 	export let form;
+	export let awardModalOpen;
 
 	// get updated review values
 	$: ({ values: reviewValues, award_details } = nsn_matches
@@ -27,29 +28,43 @@
 </script>
 
 <div class="flex flex-col text-[14px] pr-2">
-	<div class="mb-3">
-		<div class="flex flex-row items-center space-x-2 mb-1">
-			{#if solicitation_matched?.matching_rule?.name}
-				<div
-					class="px-2 py-1 rounded-md {getMatchingClass(solicitation_matched?.matching_rule?.name)}"
+	<div class="flex flex-row mb-3 justify-between items-end">
+		<div class="">
+			<div class="flex flex-row items-center space-x-2 mb-1">
+				{#if solicitation_matched?.matching_rule?.name}
+					<div
+						class="px-2 py-1 rounded-md {getMatchingClass(
+							solicitation_matched?.matching_rule?.name
+						)}"
+					>
+						<p class="text-xs">{solicitation_matched?.matching_rule?.name}</p>
+					</div>
+				{/if}
+				{#if solicitation_matched.familiarity_status}
+					<div
+						class="px-2 py-1 rounded-md {getFamiliarityClass(
+							solicitation_matched.familiarity_status
+						)}"
+					>
+						<p class="text-xs">
+							{solicitation_matched.familiarity_status}
+						</p>
+					</div>
+				{/if}
+			</div>
+			<p class="text-lg font-semibold">{solicitation_matched.solicitation.id}</p>
+			<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
+		</div>
+		<div>
+			{#if form === null && solicitation_matched.status?.includes('award:waiting')}
+				<button
+					class="flex flex-row items-center p-2 rounded-md bg-neutral-50"
+					on:click={() => (awardModalOpen = true)}
 				>
-					<p class="text-xs">{solicitation_matched?.matching_rule?.name}</p>
-				</div>
-			{/if}
-			{#if solicitation_matched.familiarity_status}
-				<div
-					class="px-2 py-1 rounded-md {getFamiliarityClass(
-						solicitation_matched.familiarity_status
-					)}"
-				>
-					<p class="text-xs">
-						{solicitation_matched.familiarity_status}
-					</p>
-				</div>
+					<p class="mb-[0.5px]">Awarded?</p>
+				</button>
 			{/if}
 		</div>
-		<p class="text-lg font-semibold">{solicitation_matched.solicitation.id}</p>
-		<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 	</div>
 
 	{#if !['enter_quote', 'bid'].includes(form?.type)}
@@ -252,11 +267,11 @@
 								<p class={reviewValues.estimated_cost ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_cost ?? 'N/A'}
 								</p>
-								<p class={reviewValues.estimated_labor_cost ? 'ml-2' : 'ml-2 text-gray-300'}>
-									{reviewValues.estimated_labor_cost ?? 'N/A'}
-								</p>
 								<p class={reviewValues.estimated_material_cost ? 'ml-2' : 'ml-2 text-gray-300'}>
 									{reviewValues.estimated_material_cost ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_labor_cost ? 'ml-2' : 'ml-2 text-gray-300'}>
+									{reviewValues.estimated_labor_cost ?? 'N/A'}
 								</p>
 								<p class={reviewValues.estimated_profit ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_profit ?? 'N/A'}

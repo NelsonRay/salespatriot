@@ -3,7 +3,6 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import SolicitationForm from '$lib/components/app/Government/SolicitationForm/SolicitationForm.svelte';
-	import { solColumns } from '$lib/helpers.js';
 
 	export let data;
 	$: ({ supabase, session } = data);

@@ -26,7 +26,7 @@
 	function filterTags(status) {
 		let filtered_tags = Object.keys(tags[status])
 			.map((key) => ({ ...tags[status][key], key }))
-			.filter((e) => (skipInProgress ? e.key !== 'in_progress' : true));
+			.filter((e) => (skipInProgress ? e.key !== 'in_progress' && e.key !== 'waiting' : true));
 
 		return filtered_tags;
 	}
@@ -69,8 +69,8 @@
 				shadowColor = 'shadow-blue-300';
 				break;
 			case 'gray':
-				color = 'bg-gray-500';
-				borderColor = 'border-gray-600';
+				color = 'bg-gray-300';
+				borderColor = 'border-gray-400';
 				shadowColor = 'shadow-gray-300';
 				break;
 			case 'orange':

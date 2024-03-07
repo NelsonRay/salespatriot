@@ -28,6 +28,7 @@
 	export let isSubmitting;
 	export let isAdmin = false;
 	export let commentSubmitCallback;
+	export let awardModalOpen;
 
 	let errors;
 
@@ -159,7 +160,13 @@
 				{/if}
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				<SolicitationInfo {solicitation_matched} {nsn_matches} {values} {form} />
+				<SolicitationInfo
+					{solicitation_matched}
+					{nsn_matches}
+					{values}
+					{form}
+					bind:awardModalOpen
+				/>
 
 				<div>
 					<p class="text-lg mt-5 mb-2 font-semibold">Comments</p>

@@ -3,15 +3,17 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import SolicitationForm from '$lib/components/app/Government/SolicitationForm/SolicitationForm.svelte';
-	import { solColumns } from '$lib/helpers.js';
+	import AwardModal from '$lib/components/app/Government/Modals/AwardModal/AwardModal.svelte';
 
 	export let data;
 	$: ({ supabase, session } = data);
 
 	let solicitation_matched = null;
 	let nsn_matches = null;
+	let awardModalOpen = false;
 
 	let values = {};
+	let awardValues = {};
 
 	let isSubmitting = false;
 
@@ -53,6 +55,7 @@
 
 		const { solicitation, matching_rule, forms, solicitations_matched_comments, ...rest } = data;
 		values = rest;
+		awardValues = { status: values.status };
 	}
 
 	async function commentSubmitCallback(message) {
@@ -78,6 +81,27 @@
 		}
 	}
 
+	async function awardModalSubmitCallback(award) {
+		await supabase
+			.from('solicitations_matched')
+			.update({ status: award.status })
+			.eq('id', solicitation_matched.id);
+
+		if (award.status.includes('award:lost')) {
+			await supabase
+				.from('solicitations')
+				.update({
+					company_awarded: award.company_awarded,
+					date_awarded: award.date_awarded,
+					price_won_at: award.price_won_at
+				})
+				.eq('id', solicitation_matched.solicitation.id);
+		}
+
+		awardModalOpen = false;
+		window.location.reload();
+	}
+
 	onMount(() => {
 		if (session) {
 			loadData();
@@ -100,4 +124,11 @@
 	{submitCallback}
 	{isSubmitting}
 	{commentSubmitCallback}
+	bind:awardModalOpen
+/>
+
+<AwardModal
+	bind:open={awardModalOpen}
+	values={awardValues}
+	submitCallback={awardModalSubmitCallback}
 />
