@@ -1,5 +1,46 @@
 import { z } from 'zod';
 
+export const awardModalValidation = z
+	.object({
+		status: z.string().array().nonempty({ message: 'Status is required.' }),
+		company_awarded: z.string().nullable().optional(),
+		price_won_at: z.number().positive().nullable().optional(),
+		date_awarded: z.string().nullable().optional()
+	})
+	.superRefine((fields, ctx) => {
+		if (fields.status.filter((s) => s.includes('award') && s !== 'award:waiting').length === 0) {
+			ctx.addIssue({
+				code: 'custom',
+				message: 'Status is required.',
+				path: ['status']
+			});
+		}
+
+		if (fields.status.filter((s) => s === 'award:lost')?.length > 0) {
+			if (!fields.company_awarded) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Company Awarded is required.',
+					path: ['company_awarded']
+				});
+			}
+			if (!fields.price_won_at) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Price is required.',
+					path: ['price_won_at']
+				});
+			}
+			if (!fields.date_awarded) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Date is required.',
+					path: ['date_awarded']
+				});
+			}
+		}
+	});
+
 export const formsValidation = {
 	opportunity: z
 		.object({
