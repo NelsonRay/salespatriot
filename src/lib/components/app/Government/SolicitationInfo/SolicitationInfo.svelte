@@ -11,16 +11,20 @@
 		calculateDaysDifference,
 		getStatusColor,
 		getStatusName,
-		addCommasToNumber
+		addCommasToNumber,
+		getRemoveOptionClass,
+		getRemoveOptionName
 	} from '$lib/helpers.js';
 	import Download from '$lib/icons/Download.svg';
 	import Edit from '$lib/icons/Edit.svg';
+	import Remove from '$lib/icons/Remove.svg';
 
 	export let solicitation_matched;
 	export let nsn_matches;
 	export let values;
 	export let form;
 	export let awardModalOpen;
+	export let removeModalOpen;
 
 	// get updated review values
 	$: ({ values: reviewValues, award_details } = nsn_matches
@@ -56,9 +60,39 @@
 			<p class="text-lg font-semibold">{solicitation_matched.solicitation.id}</p>
 			<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 		</div>
-		<div>
+
+		<div class="flex flex-row items-center space-x-3">
+			{#if solicitation_matched.removed_option}
+				<div>
+					<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-3">
+						<p>Removed:</p>
+						<div class="flex flex-row items-center space-x-2">
+							<div
+								class="p-1 px-2 rounded-md inline-block text-xs {getRemoveOptionClass(
+									solicitation_matched.removed_option
+								) ?? ''}"
+							>
+								{getRemoveOptionName(solicitation_matched.removed_option) ?? ''}
+							</div>
+							<button on:click={() => (removeModalOpen = true)}>
+								<img src={Edit} alt="edit" class="h-4 w-4" />
+							</button>
+						</div>
+					</div>
+				</div>
+			{:else}
+				<div>
+					<button
+						class="flex flex-row items-center p-2 rounded-md bg-red-400 space-x-2"
+						on:click={() => (removeModalOpen = true)}
+					>
+						<p class="text-white text-sm">Remove</p>
+						<img src={Remove} alt="edit" class="h-5 w-5" />
+					</button>
+				</div>
+			{/if}
 			{#if form === null && solicitation_matched.status?.filter( (s) => s.includes('award') )?.length > 0}
-				<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-4">
+				<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-3">
 					<p>Award Status:</p>
 					<div class="flex flex-row items-center space-x-2">
 						<div

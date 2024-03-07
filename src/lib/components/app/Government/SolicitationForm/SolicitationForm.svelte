@@ -28,7 +28,8 @@
 	export let isSubmitting;
 	export let isAdmin = false;
 	export let commentSubmitCallback;
-	export let awardModalOpen;
+	export let awardModalOpen = false;
+	export let removeModalOpen = false;
 
 	let errors;
 
@@ -166,6 +167,7 @@
 					{values}
 					{form}
 					bind:awardModalOpen
+					bind:removeModalOpen
 				/>
 
 				<div>

@@ -44,7 +44,9 @@
 
 		(selected ?? []).includes(id)
 			? (tclass += ` border-[2px] shadow-md ${shadowColor} ${borderColor}`)
-			: (tclass += ' border-[2px] opacity-40');
+			: (selected ?? [])?.length > 0
+				? (tclass += ' border-[2px] opacity-40')
+				: (tclass += ' border-[2px]');
 
 		return tclass;
 	}
