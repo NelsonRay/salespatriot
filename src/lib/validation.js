@@ -1,5 +1,29 @@
 import { z } from 'zod';
 
+export const removeModalValidation = z
+	.object({
+		removed: z.boolean({ required_error: 'Removed is required.' }),
+		removed_option: z.string().nullable().optional(),
+		removed_notes: z.string().nullable().optional()
+	})
+	.superRefine((fields, ctx) => {
+		if (fields.removed && !fields.removed_option) {
+			ctx.addIssue({
+				code: 'custom',
+				message: 'Reason is required.',
+				path: ['removed_option']
+			});
+		}
+
+		if (fields.removed_option === 'f6ae8ba7-1ede-4dc6-8de6-7f8367a9c53f' && !fields.removed_notes) {
+			ctx.addIssue({
+				code: 'custom',
+				message: 'Comment is required.',
+				path: ['removed_notes']
+			});
+		}
+	});
+
 export const awardModalValidation = z
 	.object({
 		status: z.string().array().nonempty({ message: 'Status is required.' }),

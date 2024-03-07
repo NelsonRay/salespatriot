@@ -13,10 +13,12 @@ export function formatDate(date) {
 	return `${year}-${month}-${day}`;
 }
 
+// @ts-ignore
 export function formatDateWithTime(created_at) {
 	let date = new Date(created_at.toString());
 	const today = new Date();
 
+	// @ts-ignore
 	const diffInDays = Math.floor((today - date) / (1000 * 60 * 60 * 24));
 
 	if (diffInDays === 0) {
@@ -88,6 +90,53 @@ export function addCommasToNumber(number) {
 
 	// Join integer and decimal parts (if any) with a dot
 	return parts.join('.');
+}
+
+export const removeOptions = [
+	{ id: '5df8b8f5-0351-41d3-85d4-f9761f3986cd', name: 'Chose Not to Review', color: 'orange' },
+	{ id: '9a449b49-a64e-4c90-9498-87bf7db2cde5', name: 'Cancelled', color: 'gray' },
+	{ id: '0d5b57e3-2a33-497e-9962-5b0a7a66a91d', name: 'Expired', color: 'gray' },
+	{ id: '6c197796-b1e1-41b0-ad97-f93565fec17e', name: 'No Tech Docs', color: 'blue' },
+	{ id: 'd8bc4e06-ef4f-403e-97aa-8f5a97888de8', name: 'Unauthorized Access', color: 'blue' },
+	{ id: 'c714e8d7-277e-4f39-8e9e-b92352b1c26e', name: 'Not Pursue', color: 'red' },
+	{ id: '45c9d55c-dd2b-4bd9-b53d-be65bd70863f', name: 'Cannot Build', color: 'red' },
+	{ id: '24b3d87a-1b2f-4a2c-b4b2-1cf223f9496f', name: 'Material Cost', color: 'red' },
+	{ id: 'c27c1a72-04a6-4c23-bdaa-d9e2233feddf', name: 'Labor Time', color: 'red' },
+	{ id: 'f6ae8ba7-1ede-4dc6-8de6-7f8367a9c53f', name: 'Other', color: 'gray' }
+];
+
+// @ts-ignore
+export function getRemoveOptionName(id) {
+	const option = removeOptions.filter((r) => r.id === id)[0];
+
+	return option?.name;
+}
+
+// @ts-ignore
+export function getRemoveOptionClass(id) {
+	const option = removeOptions.filter((r) => r.id === id)[0];
+
+	let rClass = '';
+
+	switch (option?.color) {
+		case 'green':
+			rClass = 'bg-green-400';
+			break;
+		case 'orange':
+			rClass = 'bg-orange-400';
+			break;
+		case 'red':
+			rClass = 'bg-red-400';
+			break;
+		case 'blue':
+			rClass = 'bg-blue-400';
+			break;
+		case 'gray':
+			rClass = 'bg-gray-300';
+			break;
+	}
+
+	return rClass;
 }
 
 // @ts-ignore
@@ -166,10 +215,12 @@ export function getSetAsideColor(setAside) {
 	return cClass;
 }
 
+// @ts-ignore
 export function getStatusColor(status) {
 	if (!status) return '';
 	let color = '';
 
+	// @ts-ignore
 	switch (govTags[status.toString().split(':')[0]][status.toString().split(':')[1]].color) {
 		case 'green':
 			color = 'bg-green-400';
@@ -190,8 +241,10 @@ export function getStatusColor(status) {
 	return color;
 }
 
+// @ts-ignore
 export function getStatusName(status) {
 	if (!status) return '';
+	// @ts-ignore
 	return govTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
 }
 

@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import SolicitationForm from '$lib/components/app/Government/SolicitationForm/SolicitationForm.svelte';
 	import AwardModal from '$lib/components/app/Government/Modals/AwardModal/AwardModal.svelte';
+	import RemoveModal from '$lib/components/app/Government/Modals/RemoveModal/RemoveModal.svelte';
 
 	export let data;
 	$: ({ supabase, session } = data);
@@ -11,9 +12,11 @@
 	let solicitation_matched = null;
 	let nsn_matches = null;
 	let awardModalOpen = false;
+	let removeModalOpen = false;
 
 	let values = {};
 	let awardValues = {};
+	let removeValues = {};
 
 	let isSubmitting = false;
 
@@ -55,7 +58,13 @@
 
 		const { solicitation, matching_rule, forms, solicitations_matched_comments, ...rest } = data;
 		values = rest;
+
+		// Queue values for modals
 		awardValues = { status: values.status };
+		removeValues = {
+			removed_option: values.removed_option,
+			removed: values.removed
+		};
 	}
 
 	async function commentSubmitCallback(message) {
@@ -124,6 +133,31 @@
 		window.location.reload();
 	}
 
+	async function removeModalSubmitCallback(removedValues) {
+		const { data, error } = await supabase
+			.from('solicitations_matched')
+			.update({
+				removed_option: removedValues.removed ? removedValues.removed_option : null,
+				removed: removedValues.removed
+			})
+			.eq('id', solicitation_matched.id);
+
+		if (removedValues.removed && removedValues.removed_notes)
+			await supabase.from('solicitations_matched_comments').insert({
+				solicitation_matched: solicitation_matched.id,
+				user: session.user.id,
+				message: removedValues.removed_notes
+			});
+
+		removeModalOpen = false;
+
+		if (removeValues.removed) {
+			window.location.href = `${window.location.origin}/government`;
+		} else {
+			window.location.reload();
+		}
+	}
+
 	onMount(() => {
 		if (session) {
 			loadData();
@@ -147,6 +181,13 @@
 	{isSubmitting}
 	{commentSubmitCallback}
 	bind:awardModalOpen
+	bind:removeModalOpen
+/>
+
+<RemoveModal
+	bind:open={removeModalOpen}
+	values={removeValues}
+	submitCallback={removeModalSubmitCallback}
 />
 
 <AwardModal
