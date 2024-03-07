@@ -14,6 +14,7 @@
 		addCommasToNumber
 	} from '$lib/helpers.js';
 	import Download from '$lib/icons/Download.svg';
+	import Edit from '$lib/icons/Edit.svg';
 
 	export let solicitation_matched;
 	export let nsn_matches;
@@ -56,13 +57,23 @@
 			<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 		</div>
 		<div>
-			{#if form === null && solicitation_matched.status?.includes('award:waiting')}
-				<button
-					class="flex flex-row items-center p-2 rounded-md bg-neutral-50"
-					on:click={() => (awardModalOpen = true)}
-				>
-					<p class="mb-[0.5px]">Awarded?</p>
-				</button>
+			{#if form === null && solicitation_matched.status?.filter( (s) => s.includes('award') )?.length > 0}
+				<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-4">
+					<p>Award Status:</p>
+					<div class="flex flex-row items-center space-x-2">
+						<div
+							class="p-1 px-2 rounded-md inline-block text-xs {getStatusColor(
+								solicitation_matched.status?.filter((s) => s.includes('award'))[0]
+							) ?? ''}"
+						>
+							{getStatusName(solicitation_matched.status?.filter((s) => s.includes('award'))[0]) ??
+								''}
+						</div>
+						<button on:click={() => (awardModalOpen = true)}>
+							<img src={Edit} alt="edit" class="h-4 w-4" />
+						</button>
+					</div>
+				</div>
 			{/if}
 		</div>
 	</div>

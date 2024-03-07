@@ -15,7 +15,7 @@
 	$: if (value?.filter((e) => e.includes(status))?.length > 0) {
 		if (
 			skipInProgress &&
-			value?.filter((e) => e.includes(status))[0].split(':')[1] === 'in_progress'
+			['in_progress', 'waiting'].includes(value?.filter((e) => e.includes(status))[0].split(':')[1])
 		) {
 			value = value.filter((e) => !e.includes(status));
 		} else {
