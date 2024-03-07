@@ -16,6 +16,16 @@ export const awardModalValidation = z
 			});
 		}
 
+		if (fields.status.filter((s) => s === 'award:won')?.length > 0) {
+			if (!fields.date_awarded) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Date is required.',
+					path: ['date_awarded']
+				});
+			}
+		}
+
 		if (fields.status.filter((s) => s === 'award:lost')?.length > 0) {
 			if (!fields.company_awarded) {
 				ctx.addIssue({

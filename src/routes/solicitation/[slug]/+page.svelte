@@ -98,6 +98,28 @@
 				.eq('id', solicitation_matched.solicitation.id);
 		}
 
+		if (award.status.includes('award:won')) {
+			const { data } = await supabase
+				.from('users')
+				.select('firm(name)')
+				.eq('id', session.user.id)
+				.limit(1)
+				.single();
+
+			const company_awarded = data.firm.name;
+			const price_won_at =
+				solicitation_matched.unit_price * solicitation_matched.solicitation.quantity;
+
+			await supabase
+				.from('solicitations')
+				.update({
+					company_awarded,
+					price_won_at,
+					date_awarded: award.date_awarded
+				})
+				.eq('id', solicitation_matched.solicitation.id);
+		}
+
 		awardModalOpen = false;
 		window.location.reload();
 	}

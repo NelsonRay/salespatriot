@@ -59,7 +59,20 @@
 					</div>
 
 					{#if values?.status?.includes('award:won')}
-						<p>Congratulations!</p>
+						<p class="font-bold py-3">Congratulations!</p>
+						<div>
+							<p class="mb-1 text-sm">Date Awarded</p>
+							<input
+								type="date"
+								class="w-52 rounded-md border p-1"
+								bind:value={values.date_awarded}
+							/>
+							{#if errors?.date_awarded}
+								<label for="trim" class="label">
+									<span class="label-text-alt text-error">{errors?.date_awarded[0]}</span>
+								</label>
+							{/if}
+						</div>
 					{:else if values?.status?.includes('award:lost')}
 						<div>
 							<p class="mb-1 text-sm">Company Awarded</p>
