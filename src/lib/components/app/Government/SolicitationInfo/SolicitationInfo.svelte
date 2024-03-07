@@ -252,11 +252,11 @@
 								<p class={reviewValues.estimated_cost ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_cost ?? 'N/A'}
 								</p>
-								<p class={reviewValues.estimated_labor_cost ? 'ml-2' : 'ml-2 text-gray-300'}>
-									{reviewValues.estimated_labor_cost ?? 'N/A'}
-								</p>
 								<p class={reviewValues.estimated_material_cost ? 'ml-2' : 'ml-2 text-gray-300'}>
 									{reviewValues.estimated_material_cost ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_labor_cost ? 'ml-2' : 'ml-2 text-gray-300'}>
+									{reviewValues.estimated_labor_cost ?? 'N/A'}
 								</p>
 								<p class={reviewValues.estimated_profit ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_profit ?? 'N/A'}
