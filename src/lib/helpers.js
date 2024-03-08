@@ -14,28 +14,50 @@ export function formatDate(date) {
 }
 
 // @ts-ignore
-export function formatDateWithTime(created_at) {
-	let date = new Date(created_at.toString());
-	const today = new Date();
+export function formatDateWithTime(created_at, withOutTime) {
+	let dateWithTime = new Date(new Date(created_at).toISOString());
+	let date = new Date(formatDate(dateWithTime));
+	const today = new Date(formatDate(new Date()));
 
 	// @ts-ignore
-	const diffInDays = Math.floor((today - date) / (1000 * 60 * 60 * 24));
+	const diffInDays = (today - date) / (1000 * 60 * 60 * 24);
 
 	if (diffInDays === 0) {
-		return (
-			'Today ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase()
-		);
+		let dateString = 'Today';
+
+		if (!withOutTime) {
+			dateString +=
+				' ' +
+				dateWithTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
+		}
+
+		return dateString;
 	} else if (diffInDays === 1) {
-		return (
-			'Yesterday ' +
-			date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase()
-		);
-	} else if (diffInDays <= 6) {
-		return date
+		let dateString = 'Yesterday';
+
+		if (!withOutTime) {
+			dateString +=
+				' ' +
+				dateWithTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
+		}
+
+		return dateString;
+	} else if (diffInDays === -1) {
+		let dateString = 'Tomorrow';
+
+		if (!withOutTime) {
+			dateString +=
+				' ' +
+				dateWithTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
+		}
+
+		return dateString;
+	} else if (diffInDays >= 6 || diffInDays <= 6) {
+		return dateWithTime
 			.toLocaleDateString('en-US', { weekday: 'long', hour: 'numeric', minute: '2-digit' })
 			.replace(',', '');
 	} else {
-		return date.toLocaleDateString('en-US', {
+		return dateWithTime.toLocaleDateString('en-US', {
 			month: 'short',
 			day: 'numeric',
 			hour: 'numeric',
