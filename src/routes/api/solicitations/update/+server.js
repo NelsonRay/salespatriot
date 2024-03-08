@@ -13,6 +13,7 @@ export async function POST({ request, locals: { supabase } }) {
 		purchasing: '18055704-d9b9-42d7-958b-f5d1d5b1ba4d',
 		labor: '53cc6979-4406-47aa-97a0-1d83d0504c12',
 		review: '6bbf4342-1b50-4c1a-9dc5-ad40562c5626',
+		enter_quote: 'a40a1d91-3295-4ca4-b343-ad58e2279fec',
 		bid: '6a0d1585-d572-4d8f-bdb4-498a89506e85'
 	};
 
@@ -25,8 +26,9 @@ export async function POST({ request, locals: { supabase } }) {
 		const { data: d, error: e } = await supabase
 			.from('forms')
 			.insert({ form: forms[type], solicitation_matched: id });
-		console.log(id);
-		console.log(d, e);
+		if (e) {
+			console.error(d, e);
+		}
 	}
 
 	const oldTypes = oldValues.status
@@ -40,14 +42,15 @@ export async function POST({ request, locals: { supabase } }) {
 			.delete()
 			.eq('form', forms[type])
 			.eq('solicitation_matched', id);
-		console.log(data, dErr);
+
+		if (dErr) {
+			console.error(data, dErr);
+		}
 	}
 
-	console.log(newTypes);
-	console.log(oldTypes);
-
 	if (err) {
-		console.error(err);
+		console.error('sol', err);
+		console.log(values);
 
 		error(400, err.toString());
 	}
