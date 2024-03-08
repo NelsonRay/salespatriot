@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { addCommasToNumber, capitalizeFirstLetter } from '$lib/helpers';
+import { addCommasToNumber, capitalizeFirstLetter, formatMonthDayYearDate } from '$lib/helpers';
 
 export function govMapper(field) {
 	const map = {
@@ -199,6 +199,10 @@ export function tableFieldMapper(obj, column) {
 				)
 			) {
 				value = formatCurrency(value);
+			}
+
+			if (['solicitation.expires_on', 'solicitation.issued_on'].includes(column?.field)) {
+				value = formatMonthDayYearDate(value);
 			}
 
 			if (column?.field === 'solicitation.quantity' && obj) value = addCommasToNumber(value);

@@ -53,10 +53,12 @@ export function formatDateWithTime(created_at, withOutTime) {
 
 		return dateString;
 	} else if (diffInDays >= 6 || diffInDays <= 6) {
+		if (withOutTime) return formatMonthDayYearDate(dateWithTime);
 		return dateWithTime
 			.toLocaleDateString('en-US', { weekday: 'long', hour: 'numeric', minute: '2-digit' })
 			.replace(',', '');
 	} else {
+		if (withOutTime) return formatMonthDayYearDate(dateWithTime);
 		return dateWithTime.toLocaleDateString('en-US', {
 			month: 'short',
 			day: 'numeric',

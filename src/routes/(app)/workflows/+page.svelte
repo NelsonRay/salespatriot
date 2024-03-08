@@ -190,11 +190,20 @@
 								<p>
 									{`${forms.solicitation_matched.solicitation.quantity} ${forms.solicitation_matched.solicitation.quantity_units}`}
 								</p>
-								<p>
-									Expires on {formatMonthDayYearDate(
+								<p
+									class={calculateDaysDifference(
 										forms.solicitation_matched.solicitation.expires_on
-									) +
-										` (${calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)} days)`}
+									) <= 2
+										? 'text-red-400'
+										: ''}
+								>
+									Expires {([1, -1, 0].includes(
+										calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)
+									)
+										? ''
+										: ' on ') +
+										formatDateWithTime(forms.solicitation_matched.solicitation.expires_on) +
+										` (${calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)}d)`}
 								</p>
 								<div class="flex flex-row justify-end">
 									<p class="text-gray-500">{formatDateWithTime(forms.created_at)}</p>

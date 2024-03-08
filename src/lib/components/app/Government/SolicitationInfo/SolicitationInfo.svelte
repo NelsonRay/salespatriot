@@ -165,7 +165,12 @@
 							<div>
 								<div class="flex flex-row space-x-1">
 									<p class="text-gray-400">Expires:</p>
-									<p>
+									<p
+										class={calculateDaysDifference(solicitation_matched.solicitation.expires_on) <=
+										2
+											? 'text-red-400'
+											: ''}
+									>
 										{formatMonthDayYearDate(solicitation_matched.solicitation.expires_on) +
 											` (${calculateDaysDifference(solicitation_matched.solicitation.expires_on)}d)`}
 									</p>
