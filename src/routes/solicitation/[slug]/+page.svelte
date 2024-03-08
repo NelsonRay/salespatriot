@@ -175,7 +175,7 @@
 
 <SolicitationForm
 	{solicitation_matched}
-	{values}
+	bind:values
 	{nsn_matches}
 	{submitCallback}
 	{isSubmitting}
