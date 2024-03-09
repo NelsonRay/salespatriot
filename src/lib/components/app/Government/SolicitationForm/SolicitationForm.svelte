@@ -140,7 +140,7 @@
 {#if solicitation_matched}
 	<div class="parent">
 		<div class="one pl-4 pt-4 overflow-auto">
-			<div class="flex flex-row justify-between">
+			<div class="flex flex-row justify-between items-center">
 				<button on:click={goBack}>
 					<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50">
 						<img src={Arrow} alt="1" class="h-5 w-5" />

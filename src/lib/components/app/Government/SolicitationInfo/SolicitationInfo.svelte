@@ -34,7 +34,7 @@
 
 <div class="flex flex-col text-[14px] pr-2">
 	<div class="flex flex-row mb-3 justify-between items-end">
-		<div class="">
+		<div>
 			<div class="flex flex-row items-center space-x-2 mb-1">
 				{#if solicitation_matched?.matching_rule?.name}
 					<div
@@ -60,56 +60,58 @@
 			<p class="text-lg font-semibold">{solicitation_matched.solicitation.id}</p>
 			<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 		</div>
-
-		<div class="flex flex-row items-center space-x-3">
-			{#if solicitation_matched.removed_option}
-				<div>
+		{#if form === null}
+			<div class="flex flex-row items-center space-x-3">
+				{#if solicitation_matched.removed_option}
+					<div>
+						<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-3">
+							<p>Removed:</p>
+							<div class="flex flex-row items-center space-x-2">
+								<div
+									class="p-1 px-2 rounded-md inline-block text-xs {getRemoveOptionClass(
+										solicitation_matched.removed_option
+									) ?? ''}"
+								>
+									{getRemoveOptionName(solicitation_matched.removed_option) ?? ''}
+								</div>
+								<button on:click={() => (removeModalOpen = true)}>
+									<img src={Edit} alt="edit" class="h-4 w-4" />
+								</button>
+							</div>
+						</div>
+					</div>
+				{:else}
+					<div>
+						<button
+							class="flex flex-row items-center p-2 rounded-md bg-red-400 space-x-2"
+							on:click={() => (removeModalOpen = true)}
+						>
+							<p class="text-white text-sm">Remove</p>
+							<img src={Remove} alt="edit" class="h-5 w-5" />
+						</button>
+					</div>
+				{/if}
+				{#if form === null && solicitation_matched.status?.filter( (s) => s.includes('award') )?.length > 0}
 					<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-3">
-						<p>Removed:</p>
+						<p>Award Status:</p>
 						<div class="flex flex-row items-center space-x-2">
 							<div
-								class="p-1 px-2 rounded-md inline-block text-xs {getRemoveOptionClass(
-									solicitation_matched.removed_option
+								class="p-1 px-2 rounded-md inline-block text-xs {getStatusColor(
+									solicitation_matched.status?.filter((s) => s.includes('award'))[0]
 								) ?? ''}"
 							>
-								{getRemoveOptionName(solicitation_matched.removed_option) ?? ''}
+								{getStatusName(
+									solicitation_matched.status?.filter((s) => s.includes('award'))[0]
+								) ?? ''}
 							</div>
-							<button on:click={() => (removeModalOpen = true)}>
+							<button on:click={() => (awardModalOpen = true)}>
 								<img src={Edit} alt="edit" class="h-4 w-4" />
 							</button>
 						</div>
 					</div>
-				</div>
-			{:else}
-				<div>
-					<button
-						class="flex flex-row items-center p-2 rounded-md bg-red-400 space-x-2"
-						on:click={() => (removeModalOpen = true)}
-					>
-						<p class="text-white text-sm">Remove</p>
-						<img src={Remove} alt="edit" class="h-5 w-5" />
-					</button>
-				</div>
-			{/if}
-			{#if form === null && solicitation_matched.status?.filter( (s) => s.includes('award') )?.length > 0}
-				<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-3">
-					<p>Award Status:</p>
-					<div class="flex flex-row items-center space-x-2">
-						<div
-							class="p-1 px-2 rounded-md inline-block text-xs {getStatusColor(
-								solicitation_matched.status?.filter((s) => s.includes('award'))[0]
-							) ?? ''}"
-						>
-							{getStatusName(solicitation_matched.status?.filter((s) => s.includes('award'))[0]) ??
-								''}
-						</div>
-						<button on:click={() => (awardModalOpen = true)}>
-							<img src={Edit} alt="edit" class="h-4 w-4" />
-						</button>
-					</div>
-				</div>
-			{/if}
-		</div>
+				{/if}
+			</div>
+		{/if}
 	</div>
 
 	{#if !['enter_quote', 'bid'].includes(form?.type)}
