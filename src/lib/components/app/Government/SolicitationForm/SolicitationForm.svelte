@@ -16,7 +16,7 @@
 	import { fieldsForForms } from '$lib/forms';
 	import { nsnColumns } from '$lib/table';
 	import PartnerSelect from '$lib/components/form/PartnerSelect.svelte';
-	import { formsValidation } from '$lib/validation';
+	import { formsValidation, masterFormValidation } from '$lib/validation';
 	import Forms from '$lib/components/app/Government/Forms/Forms.svelte';
 	import Comments from '$lib/components/form/Comments.svelte';
 
@@ -76,23 +76,26 @@
 	];
 
 	function handleSubmit() {
-		if (form?.type) {
-			let validationObj;
+		let validationObj;
 
-			switch (form?.type) {
-				case 'bid':
-					validationObj = formsValidation[form.type](
-						solicitation_matched?.solicitation?.first_article
-					);
-					break;
-				default:
-					validationObj = formsValidation[form.type]();
-					break;
-			}
-
-			const results = validationObj?.safeParse(values);
-			errors = results?.error?.flatten()?.fieldErrors;
+		switch (form?.type) {
+			case 'bid':
+				validationObj = formsValidation[form.type](
+					solicitation_matched?.solicitation?.first_article
+				);
+				break;
+			case 'final_pricing':
+			case null:
+			case undefined:
+				validationObj = masterFormValidation(solicitation_matched?.solicitation?.first_article);
+				break;
+			default:
+				validationObj = formsValidation[form.type]();
+				break;
 		}
+
+		const results = validationObj?.safeParse(values);
+		errors = results?.error?.flatten()?.fieldErrors;
 
 		if (!errors) {
 			submitCallback();
