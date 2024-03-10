@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import SolicitationForm from '$lib/components/app/Government/SolicitationForm/SolicitationForm.svelte';
+	import RemoveModal from '$lib/components/app/Government/Modals/RemoveModal/RemoveModal.svelte';
 
 	export let data;
 	$: ({ supabase, session } = data);
@@ -10,6 +11,8 @@
 	let form = null;
 	let nsn_matches = null;
 	let isAdmin = false;
+	let removeModalOpen = false;
+	let removeValues = {};
 
 	let values = {};
 
@@ -47,6 +50,11 @@
 		const { solicitation, matching_rule, forms, solicitations_matched_comments, ...rest } =
 			data.solicitation_matched;
 		values = rest;
+		removeValues = {
+			removed_option: values.removed_option,
+			removed: values.removed,
+			flagged: values.flagged
+		};
 	}
 
 	async function commentSubmitCallback(message) {
@@ -69,6 +77,32 @@
 					data
 				];
 			}
+		}
+	}
+
+	async function removeModalSubmitCallback(removedValues) {
+		await supabase
+			.from('solicitations_matched')
+			.update({
+				removed_option: removedValues.removed ? removedValues.removed_option : null,
+				removed: removedValues.removed,
+				flagged: removedValues.flagged
+			})
+			.eq('id', solicitation_matched.id);
+
+		if (removedValues.removed && removedValues.removed_notes)
+			await supabase.from('solicitations_matched_comments').insert({
+				solicitation_matched: solicitation_matched.id,
+				user: session.user.id,
+				message: removedValues.removed_notes
+			});
+
+		removeModalOpen = false;
+
+		if (removeValues.removed) {
+			window.location.href = `${window.location.origin}/workflows`;
+		} else {
+			window.location.reload();
 		}
 	}
 
@@ -130,6 +164,8 @@
 				bind:isSubmitting
 				{isAdmin}
 				{commentSubmitCallback}
+				bind:removeModalOpen
+				{removeModalSubmitCallback}
 			/>
 		{:else}
 			<p class="mt-12 ml-12">Thank you for submitting form!</p>
@@ -138,3 +174,9 @@
 		<p class="mt-12 ml-12">Form is no longer active.</p>
 	{/if}
 {/if}
+
+<RemoveModal
+	bind:open={removeModalOpen}
+	values={removeValues}
+	submitCallback={removeModalSubmitCallback}
+/>

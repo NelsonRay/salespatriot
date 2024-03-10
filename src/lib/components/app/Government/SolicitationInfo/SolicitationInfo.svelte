@@ -60,7 +60,7 @@
 			<p class="text-lg font-semibold">{solicitation_matched.solicitation.id}</p>
 			<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 		</div>
-		{#if form === null}
+		{#if form === null || form?.type == 'opportunity'}
 			<div class="flex flex-row items-center space-x-3">
 				{#if solicitation_matched.removed_option}
 					<div>
