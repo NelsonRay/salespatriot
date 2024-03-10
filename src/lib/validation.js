@@ -4,7 +4,8 @@ export const removeModalValidation = z
 	.object({
 		removed: z.boolean({ required_error: 'Removed is required.' }),
 		removed_option: z.string().nullable().optional(),
-		removed_notes: z.string().nullable().optional()
+		removed_notes: z.string().nullable().optional(),
+		flagged: z.boolean().nullable().optional()
 	})
 	.superRefine((fields, ctx) => {
 		if (fields.removed && !fields.removed_option) {
@@ -20,6 +21,14 @@ export const removeModalValidation = z
 				code: 'custom',
 				message: 'Comment is required.',
 				path: ['removed_notes']
+			});
+		}
+
+		if (fields.removed && fields.flagged == null) {
+			ctx.addIssue({
+				code: 'custom',
+				message: 'Flagged is required.',
+				path: ['flagged']
 			});
 		}
 	});

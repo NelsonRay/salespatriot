@@ -38,7 +38,8 @@ export function getColumns(pathname) {
 				{ type: 'link', field: 'bom_url' },
 				{ type: 'field', field: 'unit_price' },
 				{ type: 'link', field: 'solicitation.solicitation_url' },
-				{ type: 'link', field: 'solicitation.tech_docs' }
+				{ type: 'link', field: 'solicitation.tech_docs' },
+				{ type: 'field', field: 'flagged' }
 			];
 		default:
 			return [
@@ -77,7 +78,8 @@ export function getColumns(pathname) {
 				{ type: 'link', field: 'solicitation.tech_docs' },
 				{ type: 'field', field: 'solicitation.price_won_at' },
 				{ type: 'formula', field: 'unit_price_won_at' },
-				{ type: 'formula', field: 'diff_unit_price' }
+				{ type: 'formula', field: 'diff_unit_price' },
+				{ type: 'field', field: 'flagged' }
 			];
 	}
 }

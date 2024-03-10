@@ -53,6 +53,9 @@
 			case '/government/contracts-bid':
 				query = query.filter('status', 'cs', `{"${govTags.bid.bid.key}"}`);
 				break;
+			case '/government/flagged':
+				query = query.eq('flagged', true);
+				break;
 			default:
 				break;
 		}
@@ -126,6 +129,7 @@
 		'/government/recently-released': 'Recently Released',
 		'/government/expiring-soon': 'Expiring Soon',
 		'/government/contracts-bid': 'Contracts Bid',
+		'/government/flagged': 'Flagged',
 		'/government/all-contracts': 'All Contracts'
 	};
 </script>
