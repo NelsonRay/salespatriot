@@ -1,11 +1,8 @@
 <script>
 	// @ts-nocheck
-	import { Dropdown } from 'flowbite-svelte';
 	import { removeOptions } from '$lib/helpers';
 
 	export let value;
-
-	let dropdownOpen = false;
 
 	function getTagClass(option, selected_id) {
 		let color = '';
@@ -66,28 +63,13 @@
 
 	function toggleOption(option) {
 		value = option.id;
-		dropdownOpen = false;
 	}
 </script>
 
-<div class="z-10">
-	<button
-		class={value
-			? getTagClass(null, value)
-			: 'py-2 px-4 rounded-3xl m-1 text-xs font-medium bg-neutral-50 border-[2px] shadow-sm shadow-neutral-200 border-neutral-200 whitespace-nowrap text-neutral-600'}
-	>
-		{value ? removeOptions.filter((r) => r.id === value)[0]?.name : 'Select'}
-	</button>
-
-	<Dropdown bind:open={dropdownOpen} class="bg-white">
-		<ul>
-			{#each removeOptions as option}
-				<li>
-					<button class={getTagClass(option, value)} on:click={() => toggleOption(option)}>
-						{option.name}
-					</button>
-				</li>
-			{/each}
-		</ul>
-	</Dropdown>
+<div class="grid grid-cols-4">
+	{#each removeOptions.filter((r) => !r.ignore) as option}
+		<button class={getTagClass(option, value)} on:click={() => toggleOption(option)}>
+			{option.name}
+		</button>
+	{/each}
 </div>

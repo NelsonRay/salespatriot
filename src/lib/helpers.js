@@ -118,12 +118,12 @@ export function addCommasToNumber(number) {
 
 export const removeOptions = [
 	{ id: '5df8b8f5-0351-41d3-85d4-f9761f3986cd', name: 'Chose Not to Review', color: 'orange' },
+	{ id: '6c197796-b1e1-41b0-ad97-f93565fec17e', name: 'No Tech Docs', color: 'blue' },
 	{ id: '9a449b49-a64e-4c90-9498-87bf7db2cde5', name: 'Cancelled', color: 'gray' },
 	{ id: '0d5b57e3-2a33-497e-9962-5b0a7a66a91d', name: 'Expired', color: 'gray' },
-	{ id: '6c197796-b1e1-41b0-ad97-f93565fec17e', name: 'No Tech Docs', color: 'blue' },
 	{ id: 'd8bc4e06-ef4f-403e-97aa-8f5a97888de8', name: 'Unauthorized Access', color: 'blue' },
-	{ id: 'c714e8d7-277e-4f39-8e9e-b92352b1c26e', name: 'Not Pursue', color: 'red' },
-	{ id: '45c9d55c-dd2b-4bd9-b53d-be65bd70863f', name: 'Cannot Build', color: 'red' },
+	{ id: 'c714e8d7-277e-4f39-8e9e-b92352b1c26e', name: 'Not Pursue', color: 'red', ignore: true },
+	{ id: '45c9d55c-dd2b-4bd9-b53d-be65bd70863f', name: 'Cannot Build', color: 'red', ignore: true },
 	{ id: '24b3d87a-1b2f-4a2c-b4b2-1cf223f9496f', name: 'Material Cost', color: 'red' },
 	{ id: 'c27c1a72-04a6-4c23-bdaa-d9e2233feddf', name: 'Labor Time', color: 'red' },
 	{ id: 'f6ae8ba7-1ede-4dc6-8de6-7f8367a9c53f', name: 'Other', color: 'gray' }

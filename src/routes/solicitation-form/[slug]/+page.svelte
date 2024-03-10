@@ -52,7 +52,7 @@
 		values = rest;
 		removeValues = {
 			removed_option: values.removed_option,
-			removed: values.removed,
+			removed: values.removed || true,
 			flagged: values.flagged
 		};
 	}
