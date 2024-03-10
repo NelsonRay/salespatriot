@@ -26,7 +26,7 @@ export function getColumns(pathname) {
 				{ type: 'status', status: 'bom' },
 				{ type: 'status', status: 'purchasing' },
 				{ type: 'status', status: 'labor' },
-				{ type: 'status', status: 'review' },
+				{ type: 'status', status: 'final_pricing' },
 				{ type: 'status', status: 'bid' },
 				{ type: 'field', field: 'solicitation.estimated_value' },
 				{ type: 'set_aside', field: 'solicitation.set_aside' },
@@ -38,7 +38,8 @@ export function getColumns(pathname) {
 				{ type: 'link', field: 'bom_url' },
 				{ type: 'field', field: 'unit_price' },
 				{ type: 'link', field: 'solicitation.solicitation_url' },
-				{ type: 'link', field: 'solicitation.tech_docs' }
+				{ type: 'link', field: 'solicitation.tech_docs' },
+				{ type: 'field', field: 'flagged' }
 			];
 		default:
 			return [
@@ -53,7 +54,7 @@ export function getColumns(pathname) {
 				{ type: 'status', status: 'bom' },
 				{ type: 'status', status: 'purchasing' },
 				{ type: 'status', status: 'labor' },
-				{ type: 'status', status: 'review' },
+				{ type: 'status', status: 'final_pricing' },
 				{ type: 'status', status: 'enter_quote' },
 				{ type: 'status', status: 'bid' },
 				{ type: 'status', status: 'award' },
@@ -77,7 +78,8 @@ export function getColumns(pathname) {
 				{ type: 'link', field: 'solicitation.tech_docs' },
 				{ type: 'field', field: 'solicitation.price_won_at' },
 				{ type: 'formula', field: 'unit_price_won_at' },
-				{ type: 'formula', field: 'diff_unit_price' }
+				{ type: 'formula', field: 'diff_unit_price' },
+				{ type: 'field', field: 'flagged' }
 			];
 	}
 }
@@ -108,7 +110,7 @@ export const nsnColumns = [
 	{ type: 'status', status: 'bom' },
 	{ type: 'status', status: 'purchasing' },
 	{ type: 'status', status: 'labor' },
-	{ type: 'status', status: 'review' },
+	{ type: 'status', status: 'final_pricing' },
 	{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
 	{ type: 'field', field: 'solicitation.description' },
 	{ type: 'field', field: 'solicitation.estimated_value' },

@@ -12,7 +12,7 @@ export async function POST({ request, locals: { supabase } }) {
 		bom: 'bee07e8a-3c83-4bce-89a7-f91ca65804e6',
 		purchasing: '18055704-d9b9-42d7-958b-f5d1d5b1ba4d',
 		labor: '53cc6979-4406-47aa-97a0-1d83d0504c12',
-		review: '6bbf4342-1b50-4c1a-9dc5-ad40562c5626',
+		final_pricing: '6bbf4342-1b50-4c1a-9dc5-ad40562c5626',
 		enter_quote: 'a40a1d91-3295-4ca4-b343-ad58e2279fec',
 		bid: '6a0d1585-d572-4d8f-bdb4-498a89506e85'
 	};

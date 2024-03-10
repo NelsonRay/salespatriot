@@ -129,24 +129,18 @@ export const govTags = {
 			key: 'labor:not_within_time'
 		}
 	},
-	review: {
-		approved: {
-			name: 'Approved',
+	final_pricing: {
+		assigned: {
+			name: 'Assigned',
 			level: 1,
 			color: 'green',
-			key: 'review:approved'
+			key: 'final_pricing:assigned'
 		},
 		in_progress: {
 			name: 'In Progress',
 			level: 3,
 			color: 'yellow',
-			key: 'review:in_progress'
-		},
-		not_approved: {
-			name: 'Not Approved',
-			level: 4,
-			color: 'red',
-			key: 'review:not_approved'
+			key: 'final_pricing:in_progress'
 		}
 	},
 	enter_quote: {

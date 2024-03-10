@@ -26,6 +26,7 @@
 	$: if (values.removed != null && !values.removed) {
 		values.removed_option = null;
 		values.removed_notes = null;
+		values.flagged = null;
 	}
 </script>
 
@@ -66,6 +67,10 @@
 									<span class="label-text-alt text-error">{errors?.removed_option[0]}</span>
 								</label>
 							{/if}
+						</div>
+						<div>
+							<p class="mb-1 text-sm">Flag for later review:</p>
+							<Boolean bind:value={values.flagged} />
 						</div>
 						<div>
 							<p class="mb-1 text-sm">Add Comment:</p>

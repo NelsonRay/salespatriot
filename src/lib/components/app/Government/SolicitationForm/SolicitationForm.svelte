@@ -59,7 +59,7 @@
 		'purchasing',
 		'labor',
 		'first_article',
-		'review',
+		'final_pricing',
 		'enter_quote',
 		'bid',
 		'award'
@@ -71,7 +71,7 @@
 		'bom',
 		'purchasing',
 		'labor',
-		'review',
+		'final_pricing',
 		'enter_quote',
 		'bid'
 	];
@@ -132,7 +132,7 @@
 			case 'first_article':
 				return form === null && solicitation_matched.solicitation.first_article;
 			default:
-				return form === null || form.type === 'review' || form.type === type;
+				return form === null || form.type === 'final_pricing' || form.type === type;
 		}
 	}
 </script>
@@ -340,7 +340,7 @@
 					</div>
 				{/if}
 
-				{#if form === null || form?.type === 'opportunity' || form?.type === 'review'}
+				{#if form === null || form?.type === 'opportunity' || form?.type === 'final_pricing'}
 					<div>
 						<p class="text-lg mt-5 mb-2 font-semibold">Forms</p>
 						<Forms data={solicitation_matched?.forms ?? []} />
@@ -363,7 +363,7 @@
 		</div>
 		<div class="two bg-neutral-50">
 			<div class="flex flex-col pl-6 py-6">
-				{#if form === null || form.type === 'review'}
+				{#if form === null || form.type === 'final_pricing'}
 					<div class="flex flex-row overflow-x-auto mb-2">
 						{#each statuses as status}
 							<div class="flex flex-col items-center">
@@ -382,12 +382,12 @@
 				{#each forms as type}
 					{#if showForm(form, type)}
 						<div>
-							{#if !(form === null || form.type === 'review')}
+							{#if !(form === null || form.type === 'final_pricing')}
 								<p class="text-gray-400 mb-2 font-medium">{getFormTitle(type)}</p>
 							{/if}
 							{#each fieldsForForms[type] as field}
 								<div>
-									{#if field.type === 'status' && !(form === null || form.type === 'review')}
+									{#if field.type === 'status' && !(form === null || form.type === 'final_pricing')}
 										<div class="mb-2">
 											<p class="mb-1 text-sm">{getStatusTitle(field.status)}</p>
 											<StatusSelect
@@ -504,7 +504,7 @@
 		top: 0;
 		left: 0;
 		bottom: 0;
-		width: 55%;
+		width: 60%;
 		display: flex;
 		flex-direction: column;
 		/* background: #333; */
@@ -512,9 +512,9 @@
 	.two {
 		position: absolute;
 		top: 0;
-		left: 55%;
+		left: 60%;
 		bottom: 0;
-		width: 45%;
+		width: 40%;
 		overflow-y: auto;
 		/* background: #999; */
 		/* height: 120%; */

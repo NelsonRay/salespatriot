@@ -25,7 +25,7 @@
 			.limit(1)
 			.single();
 
-		if (['opportunity', 'review'].includes(data.form.type)) {
+		if (['opportunity', 'final_pricing'].includes(data.form.type)) {
 			const { data: n_data, error: n_error } = await supabase
 				.from('solicitations_matched')
 				.select('*, solicitation!inner(*, nsn(id, matching_nsns(*)), expires_on), matching_rule(*)')

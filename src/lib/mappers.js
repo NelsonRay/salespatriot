@@ -22,36 +22,23 @@ export function govMapper(field) {
 		price_won_at: 'Won Price',
 
 		// solicitations_matched table
-		opportunity_status: 'Opportunity Status',
 		unit_price: 'Unit Price',
-		opportunity_notes: 'Opportunity Notes',
-		engineering_status: 'Engineering Status',
-		engineering_notes: 'Engineering Notes',
-		bom_status: 'BOM Status',
 		bom_url: 'BOM URL',
-		bom_notes: 'BOM Notes',
-		purchasing_status: 'Purchasing Status',
 		estimated_material_cost: 'Estimated Material Cost (Per Unit)',
 		estimated_purchasing_days: 'Estimated Purchasing Days',
-		purchasing_notes: 'Purchasing Notes',
-		labor_status: 'Labor Status',
 		estimated_labor_minutes: 'Estimated Labor Minutes',
 		requires_special_equipment: 'Requires Special Equipment',
 		special_equipment_notes: 'Special Equipment Notes',
-		labor_notes: 'Labor Notes',
-		review_status: 'Review Status',
-		review_notes: 'Review Notes',
-		bid_status: 'Bid Status',
 		quote_number: 'Quote Number',
 		quote_number_notes: 'Notes',
 		bid_exception: 'Bid With Exception',
 		exception_notes: 'Exception Notes',
-		bid_notes: 'Bid Notes',
 		bid_partners: 'Bid Partner(s)',
 		date_awarded: 'Date Awarded',
 		company_awarded: 'Company Awarded',
 		first_article_price: 'First Article Price',
-		first_article_lead_time: 'First Article Lead Time'
+		first_article_lead_time: 'First Article Lead Time',
+		flagged: 'Flagged'
 	};
 
 	return map[field] ?? 'Error';
@@ -207,7 +194,7 @@ export function tableFieldMapper(obj, column) {
 
 			if (column?.field === 'solicitation.quantity' && obj) value = addCommasToNumber(value);
 
-			if (column?.field === 'solicitation.first_article') {
+			if (column?.field === 'solicitation.first_article' || column?.field == 'flagged') {
 				value = value ? 'Yes' : 'No';
 			}
 			return { header, value };

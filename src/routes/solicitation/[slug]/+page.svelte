@@ -138,7 +138,8 @@
 			.from('solicitations_matched')
 			.update({
 				removed_option: removedValues.removed ? removedValues.removed_option : null,
-				removed: removedValues.removed
+				removed: removedValues.removed,
+				flagged: removedValues.flagged
 			})
 			.eq('id', solicitation_matched.id);
 
