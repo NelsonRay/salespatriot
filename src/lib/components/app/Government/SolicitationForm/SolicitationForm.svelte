@@ -504,14 +504,34 @@
 					{/if}
 				{/each}
 				{#if (values.status ?? []).includes('opportunity:pursue') && form?.type === 'opportunity'}
-					<p class="mb-1">Skip Engineering Feasibility Form</p>
+					<div class="space-y-2">
+						<div>
+							<p class="mb-1 text-sm">Skip Engineering Feasibility Form</p>
+							<Boolean bind:value={values['skip_engineering']} />
+							{#if errors?.skip_engineering}
+								<label for="trim" class="label">
+									<span class="label-text-alt text-error">{errors?.skip_engineering[0]}</span>
+								</label>
+							{/if}
+						</div>
 
-					<Boolean bind:value={values['skip_engineering']} />
-					{#if errors?.skip_engineering}
-						<label for="trim" class="label">
-							<span class="label-text-alt text-error">{errors?.skip_engineering[0]}</span>
-						</label>
-					{/if}
+						{#if values?.skip_engineering}
+							<div>
+								<p class="mb-1 text-sm">BOM Status</p>
+								<StatusSelect
+									status="bom"
+									bind:value={values.status}
+									tags={govTags}
+									skipInProgress={false}
+								/>
+								{#if errors?.bom_status}
+									<label for="trim" class="label">
+										<span class="label-text-alt text-error">{errors?.bom_status[0]}</span>
+									</label>
+								{/if}
+							</div>
+						{/if}
+					</div>
 				{/if}
 				<div class="flex flex-row mt-5 items-center justify-center">
 					{#if !isSubmitting}

@@ -45,19 +45,28 @@ export async function POST({ request, cookies }) {
 			// opportunity form
 			case '50e95568-180b-46d5-a341-f216bb2a3c17':
 				if (response.skip_engineering) {
-					await updateStatusInProgress(
-						data.status,
-						['purchasing:in_progress', 'labor:in_progress'],
-						supabase,
-						solicitation_matched
-					);
-					await supabase
-						.from('forms')
-						.insert({ form: '18055704-d9b9-42d7-958b-f5d1d5b1ba4d', solicitation_matched });
+					let status = ['engineering:can_build'];
 
-					await supabase
-						.from('forms')
-						.insert({ form: '53cc6979-4406-47aa-97a0-1d83d0504c12', solicitation_matched });
+					if (
+						(response.status ?? []).includes('bom:created') ||
+						(response.status ?? []).includes('bom:in_house_part')
+					) {
+						status = [...status, 'purchasing:in_progress', 'labor:in_progress'];
+
+						await updateStatusInProgress(data.status, status, supabase, solicitation_matched);
+						await supabase
+							.from('forms')
+							.insert({ form: '18055704-d9b9-42d7-958b-f5d1d5b1ba4d', solicitation_matched });
+
+						await supabase
+							.from('forms')
+							.insert({ form: '53cc6979-4406-47aa-97a0-1d83d0504c12', solicitation_matched });
+					} else if ((response.status ?? []).includes('bom:in_progress')) {
+						await updateStatusInProgress(data.status, status, supabase, solicitation_matched);
+						await supabase
+							.from('forms')
+							.insert({ form: 'bee07e8a-3c83-4bce-89a7-f91ca65804e6', solicitation_matched });
+					}
 				} else if (data.status.includes('opportunity:pursue')) {
 					await updateStatusInProgress(
 						data.status,
