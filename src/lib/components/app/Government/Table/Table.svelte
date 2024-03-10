@@ -7,9 +7,11 @@
 		getSetAsideColor,
 		getBidPartners,
 		getStatusColor,
-		getStatusName
+		getStatusName,
+		calculateDaysDifference
 	} from '$lib/helpers.js';
 	import Open from '$lib/icons/Open.svg';
+	import { page } from '$app/stores';
 
 	export let data;
 	export let columns;
@@ -26,6 +28,17 @@
 		} else {
 			return 'Error';
 		}
+	}
+
+	function getFieldClass(obj, column) {
+		if (
+			column?.field === 'solicitation.expires_on' &&
+			calculateDaysDifference(obj?.solicitation?.expires_on ?? 10) <= 2 &&
+			$page.url.pathname.includes('bidding-funnel')
+		) {
+			return 'text-red-400';
+		}
+		return '';
 	}
 </script>
 
@@ -117,7 +130,11 @@
 								{/if}
 							</td>
 						{:else}
-							<td>{tableFieldMapper(obj, column).value ?? ''}</td>
+							<td>
+								<p class={getFieldClass(obj, column)}>
+									{tableFieldMapper(obj, column).value ?? ''}
+								</p>
+							</td>
 						{/if}
 					{/each}
 				</tr>

@@ -29,7 +29,7 @@
 		});
 
 		if (res.status === 200) {
-			window.location.href = `${window.location.origin}`;
+			window.location.reload();
 		} else {
 			isSubmitting = false; // hide loading spinner
 		}
