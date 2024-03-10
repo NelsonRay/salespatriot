@@ -29,7 +29,7 @@ export const fieldsForForms = {
 		{ type: 'currency', field: 'first_article_price' },
 		{ type: 'currency', field: 'first_article_lead_time' }
 	],
-	review: [{ type: 'status', status: 'review' }],
+	final_pricing: [{ type: 'status', status: 'final_pricing' }],
 	enter_quote: [
 		{ type: 'status', status: 'enter_quote' },
 		{ type: 'text', field: 'quote_number' }

@@ -189,14 +189,14 @@ export const formsValidation = {
 				});
 			}
 		}),
-	review: z
+	final_pricing: z
 		.object({
 			status: z.string().array().nonempty({ message: 'Status is required.' })
 		})
 		.superRefine((fields, ctx) => {
 			// if no engineering status
 
-			if (fields.status.filter((s) => s.includes('review')).length === 0) {
+			if (fields.status.filter((s) => s.includes('final_pricing')).length === 0) {
 				ctx.addIssue({
 					code: 'custom',
 					message: 'Status is required.',

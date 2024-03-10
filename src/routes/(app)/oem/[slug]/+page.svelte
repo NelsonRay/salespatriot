@@ -39,7 +39,7 @@
 					'bom',
 					'purchasing',
 					'labor',
-					'review',
+					'final_pricing',
 					'bid'
 				].reverse()) {
 					data = data.sort(function (a, b) {
