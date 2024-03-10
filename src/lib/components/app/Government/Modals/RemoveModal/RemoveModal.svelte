@@ -26,7 +26,7 @@
 	$: if (values.removed != null && !values.removed) {
 		values.removed_option = null;
 		values.removed_notes = null;
-		values.flagged = null;
+		values.flagged = false;
 	}
 </script>
 
