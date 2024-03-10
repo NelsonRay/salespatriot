@@ -63,7 +63,8 @@
 		awardValues = { status: values.status };
 		removeValues = {
 			removed_option: values.removed_option,
-			removed: values.removed
+			removed: values.removed,
+			flagged: values.flagged
 		};
 	}
 
