@@ -130,6 +130,16 @@ export const formsValidation = {
 							message: 'Field is required.',
 							path: ['skip_engineering']
 						});
+
+					if (
+						fields.skip_engineering &&
+						fields.status.filter((s) => s.includes('bom')).length === 0
+					)
+						ctx.addIssue({
+							code: 'custom',
+							message: 'BOM Status is required.',
+							path: ['bom_status']
+						});
 				}
 			}),
 
