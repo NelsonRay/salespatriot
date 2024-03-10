@@ -21,6 +21,8 @@ export function getColumns(pathname) {
 					array_selector: 'part_number',
 					header: 'In-House PN'
 				},
+				{ type: 'field', field: 'first_article_waive_requested' },
+				{ type: 'field', field: 'first_article_waive_request_honored' },
 				{ type: 'matching_rule', status: 'matching_rule' },
 				{ type: 'status', status: 'engineering' },
 				{ type: 'status', status: 'bom' },

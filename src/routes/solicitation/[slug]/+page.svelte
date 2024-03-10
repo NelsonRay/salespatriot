@@ -60,7 +60,13 @@
 		values = rest;
 
 		// Queue values for modals
-		awardValues = { status: values.status };
+		awardValues = {
+			status: values.status,
+			company_awarded: values.company_awarded,
+			price_won_at: values.price_won_at,
+			date_awarded: values.date_awarded,
+			first_article_waive_request_honored: values.first_article_waive_request_honored
+		};
 		removeValues = {
 			removed_option: values.removed_option,
 			removed: values.removed,
@@ -92,23 +98,17 @@
 	}
 
 	async function awardModalSubmitCallback(award) {
-		await supabase
-			.from('solicitations_matched')
-			.update({ status: award.status })
-			.eq('id', solicitation_matched.id);
-
 		if (award.status.includes('award:lost')) {
 			await supabase
-				.from('solicitations')
+				.from('solicitations_matched')
 				.update({
+					status: award.status,
 					company_awarded: award.company_awarded,
 					date_awarded: award.date_awarded,
 					price_won_at: award.price_won_at
 				})
-				.eq('id', solicitation_matched.solicitation.id);
-		}
-
-		if (award.status.includes('award:won')) {
+				.eq('id', solicitation_matched.id);
+		} else if (award.status.includes('award:won')) {
 			const { data } = await supabase
 				.from('users')
 				.select('firm(name)')
@@ -121,13 +121,15 @@
 				solicitation_matched.unit_price * solicitation_matched.solicitation.quantity;
 
 			await supabase
-				.from('solicitations')
+				.from('solicitations_matched')
 				.update({
+					status: award.status,
 					company_awarded,
 					price_won_at,
-					date_awarded: award.date_awarded
+					date_awarded: award.date_awarded,
+					first_article_waive_request_honored: award.first_article_waive_request_honored
 				})
-				.eq('id', solicitation_matched.solicitation.id);
+				.eq('id', solicitation_matched.id);
 		}
 
 		awardModalOpen = false;
@@ -195,5 +197,6 @@
 <AwardModal
 	bind:open={awardModalOpen}
 	values={awardValues}
+	{solicitation_matched}
 	submitCallback={awardModalSubmitCallback}
 />

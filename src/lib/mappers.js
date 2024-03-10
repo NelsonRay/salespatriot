@@ -38,7 +38,9 @@ export function govMapper(field) {
 		company_awarded: 'Company Awarded',
 		first_article_price: 'First Article Price',
 		first_article_lead_time: 'First Article Lead Time',
-		flagged: 'Flagged'
+		flagged: 'Flagged',
+		first_article_waive_requested: 'First Article Waive Requested',
+		first_article_waive_request_honored: 'First Article Waive Honored'
 	};
 
 	return map[field] ?? 'Error';
@@ -194,8 +196,15 @@ export function tableFieldMapper(obj, column) {
 
 			if (column?.field === 'solicitation.quantity' && obj) value = addCommasToNumber(value);
 
-			if (column?.field === 'solicitation.first_article' || column?.field == 'flagged') {
-				value = value ? 'Yes' : 'No';
+			if (
+				[
+					'solicitation.first_article',
+					'flagged',
+					'first_article_waive_request_honored',
+					'first_article_waive_requested'
+				].includes(column?.field)
+			) {
+				value = value != null ? (value ? 'Yes' : 'No') : '';
 			}
 			return { header, value };
 		}

@@ -93,21 +93,32 @@
 				{/if}
 				{#if form === null && solicitation_matched.status?.filter( (s) => s.includes('award') )?.length > 0}
 					<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-3">
-						<p>Award Status:</p>
-						<div class="flex flex-row items-center space-x-2">
-							<div
-								class="p-1 px-2 rounded-md inline-block text-xs {getStatusColor(
-									solicitation_matched.status?.filter((s) => s.includes('award'))[0]
-								) ?? ''}"
-							>
-								{getStatusName(
-									solicitation_matched.status?.filter((s) => s.includes('award'))[0]
-								) ?? ''}
+						<div class="flex flex-col">
+							<div class="flex flex-row items-center space-x-2">
+								<p>Award Status:</p>
+								<div class="flex flex-row items-center space-x-2">
+									<div
+										class="p-1 px-2 rounded-md inline-block text-xs {getStatusColor(
+											solicitation_matched.status?.filter((s) => s.includes('award'))[0]
+										) ?? ''}"
+									>
+										{getStatusName(
+											solicitation_matched.status?.filter((s) => s.includes('award'))[0]
+										) ?? ''}
+									</div>
+								</div>
 							</div>
-							<button on:click={() => (awardModalOpen = true)}>
-								<img src={Edit} alt="edit" class="h-4 w-4" />
-							</button>
+							{#if solicitation_matched.first_article_waive_request_honored != null}
+								<p>
+									FAT Required: {solicitation_matched.first_article_waive_request_honored
+										? 'Yes'
+										: 'No'}
+								</p>
+							{/if}
 						</div>
+						<button on:click={() => (awardModalOpen = true)}>
+							<img src={Edit} alt="edit" class="h-4 w-4" />
+						</button>
 					</div>
 				{/if}
 			</div>

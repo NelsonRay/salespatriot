@@ -14,7 +14,7 @@
 	let isLoading = false;
 
 	async function handleSubmit() {
-		const results = removeModalValidation?.safeParse(values);
+		const results = removeModalValidation()?.safeParse(values);
 		errors = results?.error?.flatten()?.fieldErrors;
 
 		if (!errors) {
