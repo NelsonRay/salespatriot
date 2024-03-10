@@ -2,6 +2,7 @@
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import AppBar from '$lib/components/app/Navigation/AppBar/AppBar.svelte';
 	import AppSidebar from '$lib/components/app/Navigation/AppSidebar/AppSidebar.svelte';
+	import { page } from '$app/stores';
 
 	export let data;
 
@@ -9,7 +10,9 @@
 
 	// @ts-ignore
 	async function handleFeedbackSubmit(message) {
-		await supabase.from('feedback').insert({ message, user: session?.user.id });
+		await supabase
+			.from('feedback')
+			.insert({ message, user: session?.user.id, pathname: $page.url.pathname });
 	}
 </script>
 

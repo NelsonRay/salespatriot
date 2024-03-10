@@ -37,12 +37,7 @@ export const fieldsForForms = {
 	bid: [
 		{ type: 'bid_partners', field: 'bid_partners' },
 		{ type: 'checkbox', field: 'bid_exception' },
-		{ type: 'textarea', field: 'exception_notes' }
-	],
-	award: [
-		{
-			type: 'status',
-			status: 'award'
-		}
+		{ type: 'textarea', field: 'exception_notes' },
+		{ type: 'checkbox', field: 'first_article_waive_requested' }
 	]
 };

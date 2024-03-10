@@ -61,8 +61,7 @@
 		'first_article',
 		'final_pricing',
 		'enter_quote',
-		'bid',
-		'award'
+		'bid'
 	];
 
 	const statuses = [
@@ -78,7 +77,20 @@
 
 	function handleSubmit() {
 		if (form?.type) {
-			const results = formsValidation[form.type]?.safeParse(values);
+			let validationObj;
+
+			switch (form?.type) {
+				case 'bid':
+					validationObj = formsValidation[form.type](
+						solicitation_matched?.solicitation?.first_article
+					);
+					break;
+				default:
+					validationObj = formsValidation[form.type]();
+					break;
+			}
+
+			const results = validationObj?.safeParse(values);
 			errors = results?.error?.flatten()?.fieldErrors;
 		}
 
@@ -89,7 +101,7 @@
 
 	function getEstimatedDays() {
 		const estimated_days_to_deliver = solicitation_matched?.estimated_purchasing_days;
-		const days_to_deliver = solicitation_matched?.solicitation_matched?.days_to_deliver;
+		const days_to_deliver = solicitation_matched?.solicitation?.days_to_deliver;
 
 		if (estimated_days_to_deliver < days_to_deliver) {
 			return estimated_days_to_deliver;
@@ -118,11 +130,13 @@
 		return title;
 	}
 
-	function showTextarea(field, obj) {
+	function showInput(field, obj, matched) {
 		if (field.field === 'special_equipment_notes') {
 			return obj?.requires_special_equipment;
 		} else if (field.field === 'exception_notes') {
 			return obj?.bid_exception;
+		} else if (field.field === 'first_article_waive_requested') {
+			return matched?.solicitation?.first_article;
 		}
 		return true;
 	}
@@ -313,6 +327,14 @@
 							<p class="mb-1">Estimated Days to Deliver</p>
 							<Currency value={getEstimatedDays()} disabled />
 						</div>
+						<div>
+							<p class="mb-1">First Article</p>
+							<TextInput
+								value={solicitation_matched.solicitation.first_article ? 'Yes' : 'No'}
+								disabled
+								fullWidth={false}
+							/>
+						</div>
 						{#if solicitation_matched.solicitation.first_article}
 							<div>
 								<p class="mb-1">First Article Price</p>
@@ -354,6 +376,18 @@
 
 						<p class="text-lg mt-5 mb-2 font-semibold">DLA Forecast (Next 2 Years)</p>
 						<DlaForecast data={solicitation_matched?.solicitation?.dla_forecast} />
+
+						<p class="text-lg mt-5 mb-2 font-semibold">Award History</p>
+						<AwardHistory data={solicitation_matched.solicitation.award_history} />
+					</div>
+				{:else if form?.type === 'bid'}
+					<div>
+						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
+						{#if nsn_matches?.length > 0}
+							<Table data={nsn_matches} columns={nsnColumns} openNewTab={true} blockEditing />
+						{:else}
+							<p class="text-gray-400">NSN not seen before</p>
+						{/if}
 
 						<p class="text-lg mt-5 mb-2 font-semibold">Award History</p>
 						<AwardHistory data={solicitation_matched.solicitation.award_history} />
@@ -415,7 +449,7 @@
 										</div>
 									{/if}
 									{#if field.type === 'textarea'}
-										{#if showTextarea(field, values)}
+										{#if showInput(field, values, solicitation_matched)}
 											<div class="mb-2">
 												<p class="mb-1 text-sm">{govMapper(field.field)}</p>
 												<Textarea bind:value={values[field.field]} />
@@ -429,15 +463,18 @@
 										{/if}
 									{/if}
 									{#if field.type === 'checkbox'}
-										<div class="mb-2">
-											<p class="mb-1 text-sm">{govMapper(field.field)}</p>
-											<Boolean bind:value={values[field.field]} />
-											{#if errors?.[field.field]}
-												<label for="trim" class="label">
-													<span class="label-text-alt text-error">{errors?.[field.field][0]}</span>
-												</label>
-											{/if}
-										</div>
+										{#if showInput(field, values, solicitation_matched)}
+											<div class="mb-2">
+												<p class="mb-1 text-sm">{govMapper(field.field)}</p>
+												<Boolean bind:value={values[field.field]} />
+												{#if errors?.[field.field]}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">{errors?.[field.field][0]}</span
+														>
+													</label>
+												{/if}
+											</div>
+										{/if}
 									{/if}
 									{#if field.type === 'link' || field.type === 'text'}
 										<div class="mb-2">

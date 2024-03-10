@@ -1,5 +1,6 @@
 <script>
 	// @ts-nocheck
+	import Boolean from '$lib/components/form/Boolean.svelte';
 	import Currency from '$lib/components/form/Currency.svelte';
 	import StatusSelect from '$lib/components/form/StatusSelect.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
@@ -10,12 +11,15 @@
 	export let submitCallback;
 
 	export let values;
+	export let solicitation_matched;
 
 	let errors;
 	let isLoading = false;
 
 	async function handleSubmit() {
-		const results = awardModalValidation?.safeParse(values);
+		const results = awardModalValidation(
+			solicitation_matched?.first_article_waive_requested
+		)?.safeParse(values);
 		errors = results?.error?.flatten()?.fieldErrors;
 
 		if (!errors) {
@@ -73,6 +77,19 @@
 								</label>
 							{/if}
 						</div>
+						{#if solicitation_matched?.first_article_waive_requested}
+							<div>
+								<p class="mb-1 text-sm">First Article Waive Honored</p>
+								<Boolean bind:value={values.first_article_waive_request_honored} />
+								{#if errors?.first_article_waive_request_honored}
+									<label for="trim" class="label">
+										<span class="label-text-alt text-error"
+											>{errors?.first_article_waive_request_honored[0]}</span
+										>
+									</label>
+								{/if}
+							</div>
+						{/if}
 					{:else if values?.status?.includes('award:lost')}
 						<div>
 							<p class="mb-1 text-sm">Company Awarded</p>
