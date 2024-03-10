@@ -380,6 +380,18 @@
 						<p class="text-lg mt-5 mb-2 font-semibold">Award History</p>
 						<AwardHistory data={solicitation_matched.solicitation.award_history} />
 					</div>
+				{:else if form?.type === 'bid'}
+					<div>
+						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
+						{#if nsn_matches?.length > 0}
+							<Table data={nsn_matches} columns={nsnColumns} openNewTab={true} blockEditing />
+						{:else}
+							<p class="text-gray-400">NSN not seen before</p>
+						{/if}
+
+						<p class="text-lg mt-5 mb-2 font-semibold">Award History</p>
+						<AwardHistory data={solicitation_matched.solicitation.award_history} />
+					</div>
 				{/if}
 			</div>
 		</div>
