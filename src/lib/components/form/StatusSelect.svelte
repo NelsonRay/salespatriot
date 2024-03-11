@@ -32,11 +32,16 @@
 	}
 
 	function updateValues(key) {
-		selected_tag_key = key;
+		if (dropdown && key === selected_tag_key) {
+			value = value?.filter((e) => !e.includes(status)) ?? [];
+			selected_tag_key = undefined;
+		} else {
+			selected_tag_key = key;
 
-		value = value?.filter((e) => !e.includes(status)) ?? [];
-		if (selected_tag_key) {
-			value = [...value, `${status}:${selected_tag_key}`];
+			value = value?.filter((e) => !e.includes(status)) ?? [];
+			if (selected_tag_key) {
+				value = [...value, `${status}:${selected_tag_key}`];
+			}
 		}
 
 		dropdownOpen = false; // if needed
