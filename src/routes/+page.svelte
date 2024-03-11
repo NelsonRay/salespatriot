@@ -25,7 +25,7 @@
 					supabaseClient={data.supabase}
 					view="sign_in"
 					redirectTo={`${$page.url.origin}/auth/callback`}
-					showLinks={true}
+					showLinks={false}
 					appearance={{ theme: ThemeSupa, style: { input: 'color: #000000' } }}
 				/>
 			</div>
