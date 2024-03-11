@@ -5,7 +5,7 @@
 	import Views from '$lib/components/app/Views/Views.svelte';
 	import { page } from '$app/stores';
 	import { formatDate } from '$lib/helpers.js';
-	import OEMTable from '$lib/components/app/OEM/OEMTable/OEMTable.svelte';
+	import Table from '$lib/components/app/Commercial/Table/Table.svelte';
 
 	export let data;
 
@@ -22,7 +22,7 @@
 	});
 
 	async function loadData(pathname) {
-		let query = supabase.from('oem_rfqs').select('*, customer!inner(*)');
+		let query = supabase.from('commercial_rfqs').select('*, customer!inner(*)');
 
 		switch (pathname) {
 			default:
@@ -71,12 +71,12 @@
 	});
 
 	const views = {
-		'/oem/quoting-process': 'Quoting Process'
+		'/commercial/rfqs': 'RFQS'
 	};
 </script>
 
 <svelte:head>
-	<title>OEM RFQs - Sales Patriot</title>
+	<title>Commercial RFQs - Sales Patriot</title>
 </svelte:head>
 
 <div class="relative top-0">
@@ -87,14 +87,14 @@
 		</div>
 		<a
 			class="text-sm p-2 bg-neutral-100 rounded-md mr-4"
-			href={`${$page.url.origin}/oem-new`}
-			target="_blank">+ OEM RFQ</a
+			href={`${$page.url.origin}/commercial-new`}
+			target="_blank">+ RFQ</a
 		>
 	</div>
 </div>
 
 {#if rfqs}
-	<OEMTable data={rfqs} />
+	<Table data={rfqs} />
 {:else}
 	<div class="flex flex-col gap-4 p-5">
 		<div class="skeleton h-4 w-full"></div>

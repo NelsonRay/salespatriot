@@ -45,21 +45,21 @@ export async function POST({ request, cookies }) {
 		subject = `${data.form.name}: ${data.solicitation_matched.solicitation.id}`;
 		formLink = `https://salespatriot.com/solicitation-form/${record.id}`;
 	} else {
-		// if oem
+		// if commercial
 
 		const { data, error } = await supabase
-			.from('oem_forms')
-			.select('oem_form(name, user), oem_rfq(date_received, customer(name))')
+			.from('commercial_forms')
+			.select('commercial_form(name, user), commercial_rfq(date_received, customer(name))')
 			.eq('id', record.id)
 			.limit(1)
 			.single();
 
 		if (error) console.error(error);
 
-		userId = data.oem_form.user;
-		btnText = `Open ${data.oem_form.name}`;
-		subject = `${data.oem_form.name}: ${data.oem_rfq.customer.name} / ${data.oem_rfq.date_received}`;
-		formLink = `https://salespatriot.com/oem-form/${record.id}`;
+		userId = data.commercial_form.user;
+		btnText = `Open ${data.commercial_form.name}`;
+		subject = `${data.commercial_form.name}: ${data.commercial_rfq.customer.name} / ${data.commercial_rfq.date_received}`;
+		formLink = `https://salespatriot.com/commercial-form/${record.id}`;
 	}
 
 	const {

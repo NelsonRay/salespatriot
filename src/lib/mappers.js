@@ -46,7 +46,7 @@ export function govMapper(field) {
 	return map[field] ?? 'Error';
 }
 
-export function oemMapper(field) {
+export function commercialFieldsMapper(field) {
 	const map = {
 		date_received: 'Date Received',
 		requested_return_date: 'Requested Return Date',
@@ -82,7 +82,7 @@ function formatCurrency(number) {
 	}
 }
 
-export function oemTableFieldMapper(obj, column) {
+export function commercialTableFieldMapper(obj, column) {
 	if (column.type === 'position') return { header: '#' };
 	if (column.type === 'status') {
 		const containsStatus = (obj?.status ?? []).filter((e) => e.includes(column.status));
@@ -102,7 +102,7 @@ export function oemTableFieldMapper(obj, column) {
 	} else if (column.type === 'value') {
 		return { header: 'Est. Value', value: '' };
 	} else {
-		const header = oemMapper(column.field);
+		const header = commercialFieldsMapper(column.field);
 
 		let value;
 		if (obj) {

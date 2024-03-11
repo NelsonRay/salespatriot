@@ -2,12 +2,12 @@
 	// @ts-nocheck
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
-	import OEMForm from '$lib/components/app/OEM/OEMForm/OEMForm.svelte';
+	import Form from '$lib/components/app/Commercial/Form/Form.svelte';
 
 	export let data;
 	$: ({ supabase, session } = data);
 
-	let oem_rfq = null;
+	let commercial_rfq = null;
 
 	let values;
 
@@ -30,13 +30,13 @@
 
 	async function loadData() {
 		let { data, error } = await supabase
-			.from('oem_rfqs')
-			.select('*, customer!inner(*), oem_rfqs_parts(*)')
+			.from('commercial_rfqs')
+			.select('*, customer!inner(*), commercial_rfqs_parts(*)')
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
 
-		oem_rfq = data;
+		commercial_rfq = data;
 
 		values = data;
 	}
@@ -50,12 +50,15 @@
 
 <svelte:head>
 	<title>
-		{oem_rfq
-			? oem_rfq?.customer?.name + ' / ' + oem_rfq?.date_received + ' OEM RFQ Form'
-			: 'OEM RFQ Form'}
+		{commercial_rfq
+			? commercial_rfq?.customer?.name +
+				' / ' +
+				commercial_rfq?.date_received +
+				' Commercial RFQ Form'
+			: 'Commercial RFQ Form'}
 	</title>
 </svelte:head>
 
 {#if values}
-	<OEMForm data={oem_rfq} {values} {handleSubmit} {isSubmitting} />
+	<Form data={commercial_rfq} {values} {handleSubmit} {isSubmitting} />
 {/if}

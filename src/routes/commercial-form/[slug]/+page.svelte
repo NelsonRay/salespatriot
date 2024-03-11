@@ -2,7 +2,7 @@
 	// @ts-nocheck
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
-	import OEMForm from '$lib/components/app/OEM/OEMForm/OEMForm.svelte';
+	import Form from '$lib/components/app/Commercial/Form/Form.svelte';
 
 	export let data;
 	$: ({ supabase, session } = data);
@@ -16,14 +16,16 @@
 
 	async function loadData() {
 		const { data, error: err } = await supabase
-			.from('oem_forms')
-			.select('*, oem_form!inner(*), oem_rfq!inner(*, oem_rfqs_parts(*), customer(*))')
+			.from('commercial_forms')
+			.select(
+				'*, commercial_form!inner(*), commercial_rfq!inner(*, commercial_rfqs_parts(*), customer(*))'
+			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
 			.single();
 
 		form = data;
-		values = data.oem_rfq;
+		values = data.commercial_rfq;
 	}
 
 	onMount(() => {
@@ -34,7 +36,7 @@
 
 	async function handleSubmit() {
 		isSubmitting = true; // show loading spinner
-		const res = await fetch('/api/oem/form-submission', {
+		const res = await fetch('/api/commercial/form-submission', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ values, id: form.id })
@@ -51,21 +53,21 @@
 <svelte:head>
 	<title>
 		{form
-			? form.oem_rfq?.customer?.name +
+			? form.commercial_rfq?.customer?.name +
 				' / ' +
-				form.oem_rfq?.date_received +
+				form.commercial_rfq?.date_received +
 				' ' +
-				form.oem_form.name
-			: 'OEM RFQ Form'}
+				form.commercial_form.name
+			: 'Commercial RFQ Form'}
 	</title>
 </svelte:head>
 
 {#if !form?.submitted}
 	{#if form}
-		<OEMForm
-			data={form?.oem_rfq}
+		<Form
+			data={form?.commercial_rfq}
 			bind:values
-			form={form?.oem_form}
+			form={form?.commercial_form}
 			{handleSubmit}
 			bind:isSubmitting
 		/>

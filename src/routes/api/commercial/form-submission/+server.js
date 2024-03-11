@@ -5,7 +5,7 @@ export async function POST({ request, locals: { supabase, session } }) {
 	const { values, id } = await request.json();
 
 	const { error: err } = await supabase
-		.from('oem_forms')
+		.from('commercial_forms')
 		.update({
 			submitted_timestamp: new Date().toISOString(),
 			submitted: true,
@@ -13,11 +13,13 @@ export async function POST({ request, locals: { supabase, session } }) {
 		})
 		.eq('id', id);
 
-	const { oem_rfqs_parts, customer, ...rest } = values;
+	const { commercial_rfqs_parts, customer, ...rest } = values;
 
-	const { error: oErr } = await supabase.from('oem_rfqs').update(rest).eq('id', values.id);
+	const { error: oErr } = await supabase.from('commercial_rfqs').update(rest).eq('id', values.id);
 
-	const { error: pErr } = await supabase.from('oem_rfqs_parts').upsert(oem_rfqs_parts);
+	const { error: pErr } = await supabase
+		.from('commercial_rfqs_parts')
+		.upsert(commercial_rfqs_parts);
 
 	if (err) {
 		console.error(err);

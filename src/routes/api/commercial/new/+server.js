@@ -16,7 +16,7 @@ export async function POST({ request, locals: { supabase } }) {
 
 	if (!customerId) {
 		const { data: cData, error: cError } = await supabase
-			.from('oem_customers')
+			.from('customers')
 			.upsert(customer)
 			.select('id')
 			.limit(1)
@@ -26,7 +26,7 @@ export async function POST({ request, locals: { supabase } }) {
 	}
 
 	const { data, error } = await supabase
-		.from('oem_rfqs')
+		.from('commercial_rfqs')
 		.upsert({
 			...rest,
 			customer: customerId,
@@ -38,12 +38,12 @@ export async function POST({ request, locals: { supabase } }) {
 		.single();
 
 	const { data: pData, error: pError } = await supabase
-		.from('oem_rfqs_parts')
-		.upsert(parts.map((p) => ({ ...p, oem_rfq: data.id })));
+		.from('commercial_rfqs_parts')
+		.upsert(parts.map((p) => ({ ...p, commercial_rfq: data.id })));
 
 	const { data: fData, error: fError } = await supabase
-		.from('oem_forms')
-		.insert({ oem_form: '64f61fff-0e3a-4993-9fd0-3c563adacca3', oem_rfq: data.id });
+		.from('commercial_forms')
+		.insert({ commercial_form: '64f61fff-0e3a-4993-9fd0-3c563adacca3', commercial_rfq: data.id });
 
 	return json({}, { status: 200 });
 }

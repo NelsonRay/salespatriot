@@ -1,5 +1,5 @@
 <script>
-	import OEMParts from '$lib/components/app/OEM/OEMParts/OEMParts.svelte';
+	import Parts from '$lib/components/app/Commercial/Parts/Parts.svelte';
 
 	let value = {
 		customer: { name: '', email_address: '', customer_number: '' },
@@ -20,7 +20,7 @@
 	let isSubmitting = false;
 
 	async function handleSubmit() {
-		const res = await fetch('/api/oem/new', {
+		const res = await fetch('/api/commercial/new', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ value })
@@ -45,7 +45,7 @@
 <div class="flex h-screen w-screen justify-center overflow-y-auto">
 	<div class="flex flex-col">
 		{#if !submitted}
-			<h1 class="text-3xl mb-8 mt-8">New OEM RFQ Form</h1>
+			<h1 class="text-3xl mb-8 mt-8">New Commercial RFQ Form</h1>
 			<div class="grid grid-cols-3 gap-5 mb-5">
 				<div class="flex flex-col">
 					<label for="customer_name">Customer Name</label>
@@ -95,7 +95,7 @@
 					/>
 				</div>
 			</div>
-			<OEMParts bind:parts={value.parts} showRemove />
+			<Parts bind:parts={value.parts} showRemove />
 
 			<p class="text-lg mt-10 font-medium">Notes</p>
 			<textarea class="flex min-h-16 overflow-y-auto {appInput}" bind:value={value.notes} />

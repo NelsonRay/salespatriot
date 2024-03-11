@@ -1,7 +1,7 @@
 <script>
 	// @ts-nocheck
 
-	import { oemTableFieldMapper } from '$lib/mappers';
+	import { commercialTableFieldMapper } from '$lib/mappers';
 
 	export let data;
 
@@ -24,14 +24,14 @@
 	<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll text-xs">
 		<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
 			{#each columns as column}
-				<th>{oemTableFieldMapper(undefined, column).header}</th>
+				<th>{commercialTableFieldMapper(undefined, column).header}</th>
 			{/each}
 		</thead>
 		<tbody>
 			{#each data as obj (obj.id)}
 				<tr on:click={() => {}} class="hover:bg-neutral-100">
 					{#each columns as column, i}
-						<td>{oemTableFieldMapper(obj, column).value ?? ''}</td>
+						<td>{commercialTableFieldMapper(obj, column).value ?? ''}</td>
 					{/each}
 				</tr>
 			{/each}

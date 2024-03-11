@@ -52,14 +52,15 @@
 			workflows.form = f_data.sort((a, b) => (a.step > b.step ? 1 : -1));
 		} else {
 			let formsQuery = supabase
-				.from('oem_forms')
-				.select('*, oem_form(*), oem_rfq(*, oem_rfqs_parts(*), customer(*))')
+				.from('commercial_forms')
+				.select('*, commercial_form(*), commercial_rfq(*, commercial_rfqs_parts(*), customer(*))')
 				.eq('deleted', false);
 
-			if (isUser) formsQuery = formsQuery.eq('oem_form.user', session.user.id);
+			if (isUser) formsQuery = formsQuery.eq('commercial_form.user', session.user.id);
 			const { data, error } = await formsQuery;
+			console.log(data, error);
 
-			let formQuery = supabase.from('oem_form').select('*, user!inner(id, name)');
+			let formQuery = supabase.from('commercial_form').select('*, user!inner(id, name)');
 
 			if (isUser) formQuery = formQuery.eq('user.id', session.user.id);
 
@@ -90,8 +91,8 @@
 		];
 	}
 
-	function getOemForms(workflows, form) {
-		return workflows.forms.filter((e) => e.oem_form.id === form.id && !e.submitted);
+	function getCommercialForms(workflows, form) {
+		return workflows.forms?.filter((e) => e.commercial_form.id === form.id && !e.submitted);
 	}
 
 	function getPartsDescription(parts) {
@@ -110,7 +111,7 @@
 </svelte:head>
 
 <div class="h-12 bg-neutral-50 flex flex-row items-center justify-between pl-6 pr-10">
-	<p>{isGov ? 'Government' : 'OEM'}</p>
+	<p>{isGov ? 'Government' : 'Commercial'}</p>
 	<div class="flex flex-row items-center space-x-5">
 		<div class="flex flex-row items-center">
 			<button
@@ -123,7 +124,7 @@
 				class="rounded-l-none text-xs bg-neutral-200 p-2 rounded-r-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {!isGov
 					? 'bg-neutral-300'
 					: ''}"
-				on:click={() => (isGov = false)}>OEM</button
+				on:click={() => (isGov = false)}>Commercial</button
 			>
 		</div>
 		{#if isAdmin}
@@ -218,25 +219,27 @@
 				<div class="flex flex-col">
 					<div class="flex flex-row justify-between w-96 items-center">
 						<p class="font-semibold text-base">
-							{`${form.name} (${workflows.forms.filter((e) => e.oem_form.id === form.id && !e.submitted).length})`}
+							{`${form.name} (${workflows.forms?.filter((e) => e.commercial_form.id === form.id && !e.submitted).length})`}
 						</p>
 						<p class="font-medium text-base">{form.user.name}</p>
 					</div>
-					{#each getOemForms(workflows, form) as forms (forms.id)}
-						<a href={window.location.origin + '/oem-form/' + forms.id} target="_blank">
+					{#each getCommercialForms(workflows, form) as forms (forms.id)}
+						<a href={window.location.origin + '/commercial-form/' + forms.id} target="_blank">
 							<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
 								<div class="flex flex-row justify-between items-center">
 									<p class="font-semibold text-sm">
-										{forms.oem_rfq.customer.name + ' / ' + forms.oem_rfq.date_received}
+										{forms.commercial_rfq.customer.name +
+											' / ' +
+											forms.commercial_rfq.date_received}
 									</p>
 								</div>
 								<p>
-									{getPartsDescription(forms.oem_rfq.oem_rfqs_parts)}
+									{getPartsDescription(forms.commercial_rfq.commercial_rfqs_parts)}
 								</p>
-								{#if forms.oem_rfq.requested_return_date}
+								{#if forms.commercial_rfq.requested_return_date}
 									<p>
 										Requested return in {calculateDaysDifference(
-											forms.oem_rfq.requested_return_date
+											forms.commercial_rfq.requested_return_date
 										)}
 										days
 									</p>

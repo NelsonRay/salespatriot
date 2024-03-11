@@ -3,7 +3,7 @@
 	import Contracts from '$lib/icons/Contracts.svg';
 	import Workflows from '$lib/icons/Workflows.svg';
 	import Reports from '$lib/icons/Reports.svg';
-	import OEM from '$lib/icons/OEM.svg';
+	import Commercial from '$lib/icons/Commercial.svg';
 	import { page } from '$app/stores';
 </script>
 
@@ -25,16 +25,16 @@
 			<span>Government</span>
 		</AppRailAnchor>
 		<AppRailAnchor
-			title="OEM"
-			href="/oem"
-			selected={$page.url.pathname.toString().includes('/oem')}
+			title="Commercial"
+			href="/commercial/rfqs"
+			selected={$page.url.pathname.toString().includes('/commercial/rfqs')}
 		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={OEM} class="h-8 w-8" alt="OEM" />
+					<img src={Commercial} class="h-8 w-8" alt="Commercial" />
 				</div>
 			</svelte:fragment>
-			<span>OEM</span>
+			<span>Commercial</span>
 		</AppRailAnchor>
 		<AppRailAnchor
 			title="Workflows"

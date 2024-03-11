@@ -1,8 +1,8 @@
 <script>
 	// @ts-nocheck
 
-	import { oemTags } from '$lib/tags.js';
-	import { oemTableFieldMapper } from '$lib/mappers';
+	import { commercialTags } from '$lib/tags.js';
+	import { commercialTableFieldMapper } from '$lib/mappers';
 	import { getMatchingClass } from '$lib/helpers.js';
 
 	export let data;
@@ -28,7 +28,9 @@
 		if (!status) return '';
 		let color = '';
 
-		switch (oemTags[status.toString().split(':')[0]][status.toString().split(':')[1]].color) {
+		switch (
+			commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]].color
+		) {
 			case 'green':
 				color = 'bg-green-400';
 				break;
@@ -50,11 +52,11 @@
 
 	function getStatusName(status) {
 		if (!status) return '';
-		return oemTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
+		return commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
 	}
 
-	function navToOemRfq(id) {
-		window.location.href = `${window.location.origin}/oem-rfq/${id}`;
+	function navToCommercialRfq(id) {
+		window.location.href = `${window.location.origin}/commercial-rfq/${id}`;
 	}
 </script>
 
@@ -65,13 +67,14 @@
 	<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll text-xs">
 		<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
 			{#each columns as column, i}
-				<th class={i === 0 ? 'text-center' : ''}>{oemTableFieldMapper(undefined, column).header}</th
+				<th class={i === 0 ? 'text-center' : ''}
+					>{commercialTableFieldMapper(undefined, column).header}</th
 				>
 			{/each}
 		</thead>
 		<tbody>
 			{#each data as obj, index (obj.id)}
-				<tr on:click={() => navToOemRfq(obj.id)} class="hover:bg-neutral-100">
+				<tr on:click={() => navToCommercialRfq(obj.id)} class="hover:bg-neutral-100">
 					{#each columns as column, i}
 						{#if column.type === 'position'}
 							<td class="text-center">{index + 1}</td>
@@ -79,32 +82,32 @@
 							<td>
 								<div
 									class="p-2 rounded-md inline-block {getStatusColor(
-										oemTableFieldMapper(obj, column).value
+										commercialTableFieldMapper(obj, column).value
 									) ?? ''}"
 								>
-									{getStatusName(oemTableFieldMapper(obj, column).value) ?? ''}
+									{getStatusName(commercialTableFieldMapper(obj, column).value) ?? ''}
 								</div>
 							</td>
 						{:else if column.type === 'matching_rule'}
 							<td
 								><div
 									class="p-2 rounded-md inline-block {getMatchingClass(
-										oemTableFieldMapper(obj, column).value
+										commercialTableFieldMapper(obj, column).value
 									)}"
 								>
-									{oemTableFieldMapper(obj, column).value ?? ''}
+									{commercialTableFieldMapper(obj, column).value ?? ''}
 								</div></td
 							>
 						{:else if column.type === 'link'}
 							<td>
 								<a
-									href={oemTableFieldMapper(obj, column).value ?? ''}
+									href={commercialTableFieldMapper(obj, column).value ?? ''}
 									target="_blank"
 									class="mb-5 text-blue-500">URL</a
 								>
 							</td>
 						{:else}
-							<td>{oemTableFieldMapper(obj, column).value ?? ''}</td>
+							<td>{commercialTableFieldMapper(obj, column).value ?? ''}</td>
 						{/if}
 					{/each}
 				</tr>

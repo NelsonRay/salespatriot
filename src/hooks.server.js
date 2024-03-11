@@ -27,7 +27,7 @@ export const handle = async ({ event, resolve }) => {
 		event.url.pathname !== '/' &&
 		![
 			'/api/webhooks/form-submitted',
-			'/api/webhooks/oem-form-submitted',
+			'/api/webhooks/commercial-form-submitted',
 			'/api/webhooks/resend/form',
 			'/api/pb-upload'
 		].includes(event.url.pathname) &&
