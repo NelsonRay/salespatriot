@@ -165,7 +165,6 @@
 				{isAdmin}
 				{commentSubmitCallback}
 				bind:removeModalOpen
-				{removeModalSubmitCallback}
 			/>
 		{:else}
 			<p class="mt-12 ml-12">Thank you for submitting form!</p>

@@ -1,5 +1,132 @@
 import { z } from 'zod';
 
+export const masterFormValidation = (/** @type {Boolean} */ includeWaive) =>
+	z
+		.object({
+			status: z.string().array(),
+			unit_price: z.number().positive().nullable().optional(),
+			bom_url: z.string().nullable().optional(),
+			estimated_material_cost: z.number().nullable().optional(),
+			estimated_purchasing_days: z.number().int().nullable().optional(),
+			estimated_labor_minutes: z.number().nullable().optional(),
+			requires_special_equipment: z.boolean().nullable().optional(),
+			first_article_price: z.number().positive().nullable().optional(),
+			first_article_lead_time: z.number().positive().nullable().optional(),
+			quote_number: z.string().nullable().optional(),
+			bid_partners: z.string().array().nullable().optional(),
+			bid_exception: z.boolean().nullable().optional(),
+			first_article_waive_requested: z.boolean().nullable().optional()
+		})
+		.superRefine((fields, ctx) => {
+			const forceCheck = fields.status.includes('final_pricing:assigned');
+
+			if (forceCheck || fields.status.includes('opportunity:pursue')) {
+				if (!fields.unit_price)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Unit Price is required.',
+						path: ['unit_price']
+					});
+			}
+
+			if (forceCheck || fields.status.includes('bom:created')) {
+				if (!fields.bom_url)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'BOM URL is required.',
+						path: ['bom_url']
+					});
+			}
+
+			if (
+				forceCheck ||
+				(fields.status.some((s) => s.includes('purchasing')) &&
+					!fields.status.includes('purchasing:in_progress'))
+			) {
+				if (!fields.estimated_material_cost)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'MAT Cost is required.',
+						path: ['estimated_material_cost']
+					});
+
+				if (!fields.estimated_purchasing_days)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Purchasing Days is required.',
+						path: ['estimated_purchasing_days']
+					});
+			}
+
+			if (
+				forceCheck ||
+				(fields.status.some((s) => s.includes('labor')) &&
+					!fields.status.includes('labor:in_progress'))
+			) {
+				if (!fields.estimated_labor_minutes)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Labor Mins are required.',
+						path: ['estimated_labor_minutes']
+					});
+
+				if (fields.requires_special_equipment == null)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Special Equipment is required.',
+						path: ['requires_special_equipment']
+					});
+			}
+
+			if (forceCheck && includeWaive) {
+				if (!fields.first_article_price)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Price is required.',
+						path: ['first_article_price']
+					});
+
+				if (!fields.first_article_lead_time)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Lead Time is required.',
+						path: ['first_article_lead_time']
+					});
+			}
+
+			if (fields.status.includes('enter_quote:entered')) {
+				if (!fields.quote_number)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Quote Number is required.',
+						path: ['quote_number']
+					});
+			}
+
+			if (fields.status.includes('bid:bid')) {
+				if (!fields.bid_partners?.length)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Bid Partner(s) is required.',
+						path: ['bid_partners']
+					});
+
+				if (fields.bid_exception == null)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Bid Exception is required.',
+						path: ['bid_exception']
+					});
+
+				if (includeWaive && fields.first_article_waive_requested == null)
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Waive Request must be answered.',
+						path: ['first_article_waive_requested']
+					});
+			}
+		});
+
 export const removeModalValidation = () =>
 	z
 		.object({
@@ -205,7 +332,10 @@ export const formsValidation = {
 		z
 			.object({
 				status: z.string().array().nonempty({ message: 'Status is required.' }),
-				estimated_labor_minutes: z.number()
+				estimated_labor_minutes: z.number(),
+				requires_special_equipment: z.boolean({
+					invalid_type_error: 'Special Equipment is required.'
+				})
 			})
 			.superRefine((fields, ctx) => {
 				// if no engineering status
