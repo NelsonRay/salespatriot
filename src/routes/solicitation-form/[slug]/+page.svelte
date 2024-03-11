@@ -81,12 +81,23 @@
 	}
 
 	async function removeModalSubmitCallback(removedValues) {
+		let status = solicitation_matched.status ?? [];
+
+		if (removeValues?.removed_option === 'c714e8d7-277e-4f39-8e9e-b92352b1c26e') {
+			status = status.filter((s) => !s.includes('opportunity'));
+			status = [...(status ?? []), 'opportunity:not_pursue'];
+		} else if (removeValues?.removed_option === '45c9d55c-dd2b-4bd9-b53d-be65bd70863f') {
+			status = status.filter((s) => !s.includes('engineering'));
+			status = [...(status ?? []), 'engineering:cannot_build'];
+		}
+
 		await supabase
 			.from('solicitations_matched')
 			.update({
 				removed_option: removedValues.removed ? removedValues.removed_option : null,
 				removed: removedValues.removed,
-				flagged: removedValues.flagged
+				flagged: removedValues.flagged,
+				status
 			})
 			.eq('id', solicitation_matched.id);
 
