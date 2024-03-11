@@ -211,7 +211,7 @@ export const govTags = {
 	}
 };
 
-export const oemTags = {
+export const commercialTags = {
 	purchasing: {
 		complete: {
 			name: 'Complete',

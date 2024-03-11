@@ -5,9 +5,9 @@
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Boolean from '$lib/components/form/Boolean.svelte';
 	import Arrow from '$lib/icons/Arrow.svg';
-	import OEMInfo from '$lib/components/app/OEM/OEMInfo/OEMInfo.svelte';
-	import OEMParts from '$lib/components/app/OEM/OEMParts/OEMParts.svelte';
-	import { oemTags } from '$lib/tags';
+	import Info from '$lib/components/app/Commercial/Info/Info.svelte';
+	import Parts from '$lib/components/app/Commercial/Parts/Parts.svelte';
+	import { commercialTags } from '$lib/tags';
 
 	export let data;
 	export let values;
@@ -32,11 +32,11 @@
 				</button>
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				<OEMInfo {data} />
+				<Info {data} />
 
 				<div>
-					<OEMParts
-						bind:parts={values.oem_rfqs_parts}
+					<Parts
+						bind:parts={values.commercial_rfqs_parts}
 						showRemove={form === null}
 						showPurchasing={['purchasing', 'final_pricing', null].includes(form?.type)}
 						showLabor={['labor', 'final_pricing', null].includes(form?.type)}
@@ -116,7 +116,7 @@
 						<div class="mb-3">
 							<p class="text-gray-400 mb-2 font-medium">Response Form</p>
 							<p class="mb-1 text-sm">Response Status</p>
-							<StatusSelect status="response" bind:value={values.status} tags={oemTags} />
+							<StatusSelect status="response" bind:value={values.status} tags={commercialTags} />
 						</div>
 
 						<p class="mb-1 text-sm">Notes</p>
