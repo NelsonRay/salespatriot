@@ -67,7 +67,7 @@
 </script>
 
 <div class="grid grid-cols-4">
-	{#each removeOptions.filter((r) => !r.ignore) as option}
+	{#each removeOptions as option}
 		<button class={getTagClass(option, value)} on:click={() => toggleOption(option)}>
 			{option.name}
 		</button>
