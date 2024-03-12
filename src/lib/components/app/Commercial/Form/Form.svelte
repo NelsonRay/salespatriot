@@ -8,14 +8,17 @@
 	import Arrow from '$lib/icons/Arrow.svg';
 	import Info from '$lib/components/app/Commercial/Info/Info.svelte';
 	import Products from '$lib/components/app/Commercial/Products/Products.svelte';
-	import { capitalizeFirstLetter, formatCurrency } from '$lib/helpers';
+	import { capitalizeFirstLetter } from '$lib/helpers';
+	import { commercialFormsValidation } from '$lib/validation';
 
 	export let data;
 	export let values;
 	export let form = null;
-	export let handleSubmit;
+	export let submitCallback;
+	export let waitingCallback;
 	export let isSubmitting;
-	export let errors;
+
+	let errors;
 
 	function goBack() {
 		window.location.href = `${window.location.origin}`;
@@ -26,6 +29,25 @@
 			.split('_')
 			.map((e) => capitalizeFirstLetter(e))
 			.join(' ')} Form`;
+	}
+
+	function handleSubmit() {
+		let validationObj;
+
+		switch (form?.type) {
+			case 'purchasing':
+			case 'labor':
+				validationObj = commercialFormsValidation[form.type]();
+			default:
+				break;
+		}
+
+		const results = validationObj?.safeParse(values);
+		errors = results?.error?.flatten()?.fieldErrors;
+
+		if (!errors) {
+			submitCallback();
+		}
 	}
 </script>
 
@@ -53,7 +75,7 @@
 						/>
 					</div>
 				{/if}
-				{#if form.type === 'labor'}
+				{#if ['labor', 'purchasing'].includes(form?.type)}
 					<div>
 						<p class="mb-1">Product Number</p>
 						<TextInput value={data?.product?.number} disabled fullWidth={false} />
@@ -66,6 +88,16 @@
 						<p class="mb-1">Cross Ref</p>
 						<TextInput value={data?.product?.cross_reference} disabled fullWidth={false} />
 					</div>
+					{#if form?.type === 'purchasing'}
+						<div>
+							<p class="mb-1">Waiting on Vendors?</p>
+							<button
+								class="btn px-6 py-2 rounded-3xl text-xs bg-orange-400 shadow-md"
+								disabled={data.waiting}
+								on:click={waitingCallback}>Waiting</button
+							>
+						</div>
+					{/if}
 				{/if}
 			</div>
 		</div>
@@ -82,6 +114,30 @@
 							</label>
 						{/if}
 					</div>
+				{:else}
+					{#each ['5', '25', '50', '100', '250'] as i}
+						<p class="font-medium">Quantity: {i}</p>
+						<div class="mb-2">
+							<p class="mb-1 text-sm">Material Cost</p>
+							<Currency bind:value={values['material_cost_' + i]} />
+							{#if errors?.['material_cost_' + i]}
+								<label for="trim" class="label">
+									<span class="label-text-alt text-error"
+										>{errors?.['material_cost_' + i]?.[0]}</span
+									>
+								</label>
+							{/if}
+						</div>
+						<div class="mb-2">
+							<p class="mb-1 text-sm">Lead Time</p>
+							<Currency bind:value={values['lead_time_' + i]} />
+							{#if errors?.['lead_time_' + i]}
+								<label for="trim" class="label">
+									<span class="label-text-alt text-error">{errors?.['lead_time_' + i]?.[0]}</span>
+								</label>
+							{/if}
+						</div>
+					{/each}
 				{/if}
 				<div class="flex flex-row mt-5 items-center justify-center">
 					{#if !isSubmitting}

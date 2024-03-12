@@ -29,7 +29,12 @@
 		}
 	});
 
-	async function handleSubmit() {
+	async function waitingCallback() {
+		await supabase.from('forms').update({ waiting: true }).eq('id', form.id);
+		window.location.href = `${window.location.origin}/workflows`;
+	}
+
+	async function submitCallback() {
 		isSubmitting = true; // show loading spinner
 		const res = await fetch('/api/commercial/form-submission', {
 			method: 'POST',
@@ -53,7 +58,14 @@
 
 {#if !form?.submitted}
 	{#if form}
-		<Form data={form} bind:values form={form?.form} {handleSubmit} bind:isSubmitting />
+		<Form
+			data={form}
+			bind:values
+			form={form?.form}
+			{submitCallback}
+			bind:isSubmitting
+			{waitingCallback}
+		/>
 	{/if}
 {:else}
 	<p class="mt-12">Thank you for submitting form!</p>
