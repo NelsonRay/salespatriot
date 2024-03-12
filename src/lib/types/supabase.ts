@@ -159,7 +159,6 @@ export type Database = {
           created_at: string
           firm: string
           id: string
-          matched_fields: Json[] | null
           name: string
           step: number
           type: Database["public"]["Enums"]["form_type"]
@@ -169,7 +168,6 @@ export type Database = {
           created_at?: string
           firm: string
           id?: string
-          matched_fields?: Json[] | null
           name: string
           step: number
           type: Database["public"]["Enums"]["form_type"]
@@ -179,7 +177,6 @@ export type Database = {
           created_at?: string
           firm?: string
           id?: string
-          matched_fields?: Json[] | null
           name?: string
           step?: number
           type?: Database["public"]["Enums"]["form_type"]
@@ -204,34 +201,43 @@ export type Database = {
       }
       forms: {
         Row: {
+          commercial: boolean
           created_at: string
           deleted: boolean
           form: string
           id: number
+          product: number | null
           response: Json | null
-          solicitation_matched: string
+          rfq: number | null
+          solicitation_matched: string | null
           submitted: boolean
           submitted_by: string | null
           submitted_timestamp: string | null
         }
         Insert: {
+          commercial?: boolean
           created_at?: string
           deleted?: boolean
           form: string
           id?: number
+          product?: number | null
           response?: Json | null
-          solicitation_matched: string
+          rfq?: number | null
+          solicitation_matched?: string | null
           submitted?: boolean
           submitted_by?: string | null
           submitted_timestamp?: string | null
         }
         Update: {
+          commercial?: boolean
           created_at?: string
           deleted?: boolean
           form?: string
           id?: number
+          product?: number | null
           response?: Json | null
-          solicitation_matched?: string
+          rfq?: number | null
+          solicitation_matched?: string | null
           submitted?: boolean
           submitted_by?: string | null
           submitted_timestamp?: string | null
@@ -249,6 +255,20 @@ export type Database = {
             columns: ["solicitation_matched"]
             isOneToOne: false
             referencedRelation: "solicitations_matched"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_forms_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_forms_rfq_fkey"
+            columns: ["rfq"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
             referencedColumns: ["id"]
           },
           {
@@ -361,32 +381,134 @@ export type Database = {
         }
         Relationships: []
       }
-      products: {
+      product_final_pricing: {
         Row: {
           created_at: string
-          description: string
+          final_pricing: number
+          id: number
+          product: number
+          quantity: number
+        }
+        Insert: {
+          created_at?: string
+          final_pricing: number
+          id?: number
+          product: number
+          quantity: number
+        }
+        Update: {
+          created_at?: string
+          final_pricing?: number
+          id?: number
+          product?: number
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_product_final_pricing_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      product_labor_minutes: {
+        Row: {
+          created_at: string
+          id: number
+          labor_minutes: number
+          product: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          labor_minutes: number
+          product: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          labor_minutes?: number
+          product?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_product_labor_minutes_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      product_purchasing: {
+        Row: {
+          created_at: string
+          id: number
+          lead_time: number
+          material_cost: number
+          product: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          lead_time: number
+          material_cost: number
+          product: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          lead_time?: number
+          material_cost?: number
+          product?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_product_purchasing_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      products: {
+        Row: {
+          active: boolean
+          created_at: string
+          cross_reference: string | null
+          description: string | null
           firm: string | null
           id: number
           labor_minutes: number | null
           material_cost: number | null
+          nsn: number | null
           number: string
         }
         Insert: {
+          active?: boolean
           created_at?: string
-          description: string
+          cross_reference?: string | null
+          description?: string | null
           firm?: string | null
           id?: number
           labor_minutes?: number | null
           material_cost?: number | null
+          nsn?: number | null
           number: string
         }
         Update: {
+          active?: boolean
           created_at?: string
-          description?: string
+          cross_reference?: string | null
+          description?: string | null
           firm?: string | null
           id?: number
           labor_minutes?: number | null
           material_cost?: number | null
+          nsn?: number | null
           number?: string
         }
         Relationships: [
@@ -395,6 +517,13 @@ export type Database = {
             columns: ["firm"]
             isOneToOne: false
             referencedRelation: "firms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_products_nsn_fkey"
+            columns: ["nsn"]
+            isOneToOne: false
+            referencedRelation: "nsns"
             referencedColumns: ["id"]
           }
         ]
@@ -421,6 +550,7 @@ export type Database = {
         Row: {
           created_at: string
           customer: string
+          deleted: boolean
           firm: string
           id: number
           notes: string | null
@@ -434,6 +564,7 @@ export type Database = {
         Insert: {
           created_at?: string
           customer: string
+          deleted?: boolean
           firm: string
           id?: number
           notes?: string | null
@@ -447,6 +578,7 @@ export type Database = {
         Update: {
           created_at?: string
           customer?: string
+          deleted?: boolean
           firm?: string
           id?: number
           notes?: string | null
@@ -527,22 +659,22 @@ export type Database = {
         Row: {
           created_at: string
           id: number
-          labor_minutes: number | null
           product: number
+          product_labor_minutes: number | null
           rfq: number
         }
         Insert: {
           created_at?: string
           id?: number
-          labor_minutes?: number | null
           product: number
+          product_labor_minutes?: number | null
           rfq: number
         }
         Update: {
           created_at?: string
           id?: number
-          labor_minutes?: number | null
           product?: number
+          product_labor_minutes?: number | null
           rfq?: number
         }
         Relationships: [
@@ -551,6 +683,13 @@ export type Database = {
             columns: ["product"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_rfqs_products_product_labor_minutes_fkey"
+            columns: ["product_labor_minutes"]
+            isOneToOne: false
+            referencedRelation: "product_labor_minutes"
             referencedColumns: ["id"]
           },
           {
@@ -565,37 +704,92 @@ export type Database = {
       rfqs_products_quantities: {
         Row: {
           created_at: string
-          final_pricing: number | null
           id: number
           lead_time: number | null
           material_cost: number | null
+          product_final_pricing: number | null
           quantity: number
           rfqs_product: number
         }
         Insert: {
           created_at?: string
-          final_pricing?: number | null
           id?: number
           lead_time?: number | null
           material_cost?: number | null
+          product_final_pricing?: number | null
           quantity: number
           rfqs_product: number
         }
         Update: {
           created_at?: string
-          final_pricing?: number | null
           id?: number
           lead_time?: number | null
           material_cost?: number | null
+          product_final_pricing?: number | null
           quantity?: number
           rfqs_product?: number
         }
         Relationships: [
           {
+            foreignKeyName: "public_rfqs_products_quantities_product_final_pricing_fkey"
+            columns: ["product_final_pricing"]
+            isOneToOne: false
+            referencedRelation: "product_final_pricing"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "public_rfqs_products_quantities_rfqs_product_fkey"
             columns: ["rfqs_product"]
             isOneToOne: false
             referencedRelation: "rfqs_products"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      rfqs_uploaded: {
+        Row: {
+          created_at: string
+          error: Json | null
+          id: number
+          public: boolean
+          rfq: number | null
+          success: boolean
+          user: string | null
+          values: Json
+        }
+        Insert: {
+          created_at?: string
+          error?: Json | null
+          id?: number
+          public?: boolean
+          rfq?: number | null
+          success?: boolean
+          user?: string | null
+          values: Json
+        }
+        Update: {
+          created_at?: string
+          error?: Json | null
+          id?: number
+          public?: boolean
+          rfq?: number | null
+          success?: boolean
+          user?: string | null
+          values?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_rfqs_uploaded_rfq_fkey"
+            columns: ["rfq"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_rfqs_uploaded_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           }
         ]
@@ -974,126 +1168,6 @@ export type Database = {
             columns: ["user"]
             isOneToOne: false
             referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      update_final_pricing: {
-        Row: {
-          created_at: string
-          id: number
-          product: number
-          quantity: number
-          rfqs_products_quantity: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          product: number
-          quantity: number
-          rfqs_products_quantity: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          product?: number
-          quantity?: number
-          rfqs_products_quantity?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_update_final_pricing_product_fkey"
-            columns: ["product"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_update_final_pricing_rfqs_products_quantity_fkey"
-            columns: ["rfqs_products_quantity"]
-            isOneToOne: false
-            referencedRelation: "rfqs_products_quantities"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      update_labor_minutes: {
-        Row: {
-          created_at: string
-          id: number
-          labor_minutes: number
-          product: number
-          rfqs_product: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          labor_minutes: number
-          product: number
-          rfqs_product: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          labor_minutes?: number
-          product?: number
-          rfqs_product?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_update_labor_minutes_product_fkey"
-            columns: ["product"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_update_labor_minutes_rfqs_product_fkey"
-            columns: ["rfqs_product"]
-            isOneToOne: false
-            referencedRelation: "rfqs_products"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      update_purchasing: {
-        Row: {
-          created_at: string
-          id: number
-          lead_time: number
-          material_cost: number
-          product: number
-          rfqs_products_quantity: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          lead_time: number
-          material_cost: number
-          product: number
-          rfqs_products_quantity: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          lead_time?: number
-          material_cost?: number
-          product?: number
-          rfqs_products_quantity?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_update_purchasing_product_fkey"
-            columns: ["product"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_update_purchasing_rfqs_products_quantity_fkey"
-            columns: ["rfqs_products_quantity"]
-            isOneToOne: false
-            referencedRelation: "rfqs_products_quantities"
             referencedColumns: ["id"]
           }
         ]

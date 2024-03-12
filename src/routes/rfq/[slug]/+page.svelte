@@ -7,7 +7,7 @@
 	export let data;
 	$: ({ supabase, session } = data);
 
-	let commercial_rfq = null;
+	let rfq = null;
 
 	let values;
 
@@ -30,13 +30,13 @@
 
 	async function loadData() {
 		let { data, error } = await supabase
-			.from('commercial_rfqs')
-			.select('*, customer!inner(*), commercial_rfqs_parts(*)')
+			.from('rfqs')
+			.select('*, customer!inner(*), rfqs_products(*)')
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
 
-		commercial_rfq = data;
+		rfq = data;
 
 		values = data;
 	}
@@ -50,15 +50,12 @@
 
 <svelte:head>
 	<title>
-		{commercial_rfq
-			? commercial_rfq?.customer?.name +
-				' / ' +
-				commercial_rfq?.date_received +
-				' Commercial RFQ Form'
+		{rfq
+			? rfq?.customer?.name + ' / ' + rfq?.received_at + ' Commercial RFQ Form'
 			: 'Commercial RFQ Form'}
 	</title>
 </svelte:head>
 
 {#if values}
-	<Form data={commercial_rfq} {values} {handleSubmit} {isSubmitting} />
+	<Form data={rfq} {values} {handleSubmit} {isSubmitting} />
 {/if}

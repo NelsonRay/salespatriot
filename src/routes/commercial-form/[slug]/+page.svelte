@@ -8,24 +8,19 @@
 	$: ({ supabase, session } = data);
 
 	let form = null;
-	let nsn_matches = null;
-
 	let values = {};
-
 	let isSubmitting = false;
 
 	async function loadData() {
 		const { data, error: err } = await supabase
-			.from('commercial_forms')
-			.select(
-				'*, commercial_form!inner(*), commercial_rfq!inner(*, commercial_rfqs_parts(*), customer(*))'
-			)
+			.from('forms')
+			.select('*, form!inner(*), product(*)')
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
 			.single();
 
 		form = data;
-		values = data.commercial_rfq;
+		values = {};
 	}
 
 	onMount(() => {
@@ -52,25 +47,13 @@
 
 <svelte:head>
 	<title>
-		{form
-			? form.commercial_rfq?.customer?.name +
-				' / ' +
-				form.commercial_rfq?.date_received +
-				' ' +
-				form.commercial_form.name
-			: 'Commercial RFQ Form'}
+		{form ? form.form.name : 'Commercial RFQ Form'}
 	</title>
 </svelte:head>
 
 {#if !form?.submitted}
 	{#if form}
-		<Form
-			data={form?.commercial_rfq}
-			bind:values
-			form={form?.commercial_form}
-			{handleSubmit}
-			bind:isSubmitting
-		/>
+		<Form data={form} bind:values form={form?.form} {handleSubmit} bind:isSubmitting />
 	{/if}
 {:else}
 	<p class="mt-12">Thank you for submitting form!</p>
