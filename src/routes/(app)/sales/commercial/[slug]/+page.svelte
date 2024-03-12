@@ -1,10 +1,8 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
-	import { govTags } from '$lib/tags.js';
 	import Views from '$lib/components/app/Views/Views.svelte';
 	import { page } from '$app/stores';
-	import { formatDate } from '$lib/helpers.js';
 	import Table from '$lib/components/app/Commercial/Table/Table.svelte';
 
 	export let data;
@@ -31,35 +29,27 @@
 
 		let { data, error } = await query;
 
-		// switch (pathname) {
-		// 	case '/sales/commerical/bidding-funnel':
-		// 		for (let status of [
-		// 			'opportunity',
-		// 			'engineering',
-		// 			'bom',
-		// 			'purchasing',
-		// 			'labor',
-		// 			'final_pricing',
-		// 			'bid'
-		// 		].reverse()) {
-		// 			data = data.sort(function (a, b) {
-		// 				let alevel = 10;
-		// 				let blevel = 10;
-		// 				if (a.status.some((e) => e.includes(status))) {
-		// 					alevel =
-		// 						govTags[status][a.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
-		// 				}
+		switch (pathname) {
+			case '/sales/commerical/rfqs':
+				for (let status of ['purchasing', 'labor', 'final_pricing'].reverse()) {
+					data = data.sort(function (a, b) {
+						let alevel = 10;
+						let blevel = 10;
+						if (a.status.some((e) => e.includes(status))) {
+							alevel =
+								govTags[status][a.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
+						}
 
-		// 				if (b.status.some((e) => e.includes(status))) {
-		// 					blevel =
-		// 						govTags[status][b.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
-		// 				}
+						if (b.status.some((e) => e.includes(status))) {
+							blevel =
+								govTags[status][b.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
+						}
 
-		// 				return alevel < blevel ? -1 : 1;
-		// 			});
-		// 		}
-		// 		break;
-		// }
+						return alevel < blevel ? -1 : 1;
+					});
+				}
+				break;
+		}
 		rfqs = data;
 	}
 

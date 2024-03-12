@@ -213,11 +213,11 @@ export const govTags = {
 
 export const commercialTags = {
 	purchasing: {
-		complete: {
-			name: 'Complete',
+		assigned: {
+			name: 'Assigned',
 			level: 1,
 			color: 'green',
-			key: 'purchasing:complete'
+			key: 'purchasing:assigned'
 		},
 		waiting: {
 			name: 'Waiting',
@@ -233,11 +233,11 @@ export const commercialTags = {
 		}
 	},
 	labor: {
-		complete: {
-			name: 'Complete',
+		assigned: {
+			name: 'Assigned',
 			level: 1,
 			color: 'green',
-			key: 'labor:complete'
+			key: 'labor:assigned'
 		},
 		in_progress: {
 			name: 'In Progress',
@@ -247,11 +247,11 @@ export const commercialTags = {
 		}
 	},
 	final_pricing: {
-		complete: {
-			name: 'Complete',
+		assigned: {
+			name: 'Assigned',
 			level: 1,
 			color: 'green',
-			key: 'final_pricing:complete'
+			key: 'final_pricing:assigned'
 		},
 		in_progress: {
 			name: 'In Progress',

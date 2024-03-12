@@ -5,8 +5,6 @@ import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import { createServerClient } from '@supabase/ssr';
 
-// 53cc6979-4406-47aa-97a0-1d83d0504c12 Labor
-
 export async function POST({ request, cookies }) {
 	const {
 		record: { id, product, rfq, response, form }
@@ -22,10 +20,21 @@ export async function POST({ request, cookies }) {
 	});
 
 	switch (form) {
-		case '53cc6979-4406-47aa-97a0-1d83d0504c12': {
-			console.log(123);
-			if (!response.labor_minutes) break;
+		// purchasing form
+		case '18055704-d9b9-42d7-958b-f5d1d5b1ba4d': {
+			const spread = ['5', '25', '50', '100', '250'];
 
+			for (let value of spread) {
+				await supabase.from('product_purchasing').insert({
+					lead_time: response['lead_time_' + value],
+					material_cost: response['material_cost_' + value],
+					product
+				});
+			}
+			break;
+		}
+		// labor form
+		case '53cc6979-4406-47aa-97a0-1d83d0504c12': {
 			const { data, error } = await supabase
 				.from('product_labor_minutes')
 				.insert({ labor_minutes: response.labor_minutes, product })

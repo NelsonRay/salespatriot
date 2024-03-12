@@ -1,5 +1,22 @@
 import { z } from 'zod';
 
+export const commercialFormsValidation = {
+	labor: () => z.object({ labor_minutes: z.number().positive() }),
+	purchasing: () =>
+		z.object({
+			material_cost_5: z.number().positive(),
+			material_cost_25: z.number().positive(),
+			material_cost_50: z.number().positive(),
+			material_cost_100: z.number().positive(),
+			material_cost_250: z.number().positive(),
+			lead_time_5: z.number().positive(),
+			lead_time_25: z.number().positive(),
+			lead_time_50: z.number().positive(),
+			lead_time_100: z.number().positive(),
+			lead_time_250: z.number().positive()
+		})
+};
+
 export const addRFQFormValidation = () =>
 	z.object({
 		received_at: z.string().min(1),

@@ -118,6 +118,13 @@
 									<p class="font-semibold text-sm">
 										{forms?.product?.number}
 									</p>
+									<div class="flex flex-row items-center space-x-1">
+										{#if forms.waiting}
+											<div class="px-2 py-1 rounded-md bg-orange-400">
+												<p>Waiting</p>
+											</div>
+										{/if}
+									</div>
 								</div>
 								<p class="mt-1 font-medium">{forms?.product?.description}</p>
 								<div class="flex flex-row justify-end">
