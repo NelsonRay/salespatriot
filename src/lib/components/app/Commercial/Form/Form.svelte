@@ -4,19 +4,28 @@
 	import Textarea from '$lib/components/form/Textarea.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Boolean from '$lib/components/form/Boolean.svelte';
+	import Currency from '$lib/components/form/Currency.svelte';
 	import Arrow from '$lib/icons/Arrow.svg';
 	import Info from '$lib/components/app/Commercial/Info/Info.svelte';
 	import Products from '$lib/components/app/Commercial/Products/Products.svelte';
-	import { commercialTags } from '$lib/tags';
+	import { capitalizeFirstLetter, formatCurrency } from '$lib/helpers';
 
 	export let data;
 	export let values;
 	export let form = null;
 	export let handleSubmit;
 	export let isSubmitting;
+	export let errors;
 
 	function goBack() {
 		window.location.href = `${window.location.origin}`;
+	}
+
+	function getFormTitle(type) {
+		return `${type
+			.split('_')
+			.map((e) => capitalizeFirstLetter(e))
+			.join(' ')} Form`;
 	}
 </script>
 
@@ -32,97 +41,48 @@
 				</button>
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				<Info {data} />
+				{#if !form.type}
+					<Info {data} />
 
-				<div>
-					<Products
-						bind:products={values.rfqs_products}
-						showRemove={form === null}
-						showPurchasing={['purchasing', 'final_pricing', null].includes(form?.type)}
-						showPricing={['final_pricing', null].includes(form?.type)}
-					/>
-				</div>
+					<div>
+						<Products
+							bind:products={values.rfqs_products}
+							showRemove={form === null}
+							showPurchasing={['purchasing', 'final_pricing', null].includes(form?.type)}
+							showPricing={['final_pricing', null].includes(form?.type)}
+						/>
+					</div>
+				{/if}
+				{#if form.type === 'labor'}
+					<div>
+						<p class="mb-1">Product Number</p>
+						<TextInput value={data?.product?.number} disabled fullWidth={false} />
+					</div>
+					<div>
+						<p class="mb-1">Product NSN</p>
+						<TextInput value={data?.product?.nsn} disabled fullWidth={false} />
+					</div>
+					<div>
+						<p class="mb-1">Cross Ref</p>
+						<TextInput value={data?.product?.cross_reference} disabled fullWidth={false} />
+					</div>
+				{/if}
 			</div>
 		</div>
 		<div class="two bg-neutral-50">
 			<div class="flex flex-col p-6 space-y-5">
-				{#if form === null || form?.type === 'purchasing'}
-					<div>
-						<p class="text-gray-400 mb-2 font-medium">Purchasing Form</p>
-
-						<p class="text-gray-500 mb-2 text-sm">
-							Please provide material costs and lead times for each part.
-						</p>
-
-						<div class="mb-3">
-							<p class="mb-1 text-sm">Resale</p>
-							<Boolean bind:value={values.resale} />
-						</div>
-
-						<p class="mb-1 text-sm">Notes</p>
-						<Textarea bind:value={values.purchasing_notes} />
+				<p class="text-gray-400 mb-2 font-medium">{getFormTitle(form?.type)}</p>
+				{#if form.type === 'labor'}
+					<div class="mb-2">
+						<p class="mb-1 text-sm">Labor Minutes</p>
+						<Currency bind:value={values.labor_minutes} />
+						{#if errors?.labor_minutes}
+							<label for="trim" class="label">
+								<span class="label-text-alt text-error">{errors?.labor_minutes[0]}</span>
+							</label>
+						{/if}
 					</div>
 				{/if}
-
-				{#if form === null || form?.type === 'labor'}
-					<div>
-						<p class="text-gray-400 mb-2 font-medium">Labor Form</p>
-						<p class="text-gray-500 text-sm mb-3">Please provide labor minutes for each part.</p>
-
-						<p class="mb-1 text-sm">Notes</p>
-						<Textarea bind:value={values.labor_notes} />
-					</div>
-				{/if}
-
-				{#if form === null || form?.type === 'final_pricing'}
-					<div>
-						<p class="text-gray-400 mb-2 font-medium">Final Pricing Form</p>
-						<p class="text-gray-500 mb-3 text-sm">Please provide final pricing for each part:</p>
-
-						<p class="mb-1 text-sm">Final Pricing Notes</p>
-						<Textarea bind:value={values.final_pricing_notes} />
-					</div>
-				{/if}
-
-				{#if form === null || form?.type === 'enter_quote'}
-					<div>
-						<p class="text-gray-400 mb-2 font-medium">Enter Quote Number Form</p>
-						<div class="mb-3">
-							<p class="mb-1 text-sm">Quote Number</p>
-							<TextInput bind:value={values.quote_number} fullWidth={false} />
-						</div>
-
-						<p class="mb-1 text-sm">Notes</p>
-						<Textarea bind:value={values.enter_quote_number_notes} />
-					</div>
-				{/if}
-
-				{#if form === null || form?.type === 'send_quote'}
-					<div>
-						<p class="text-gray-400 mb-2 font-medium">Send Quote Form</p>
-						<div class="mb-3">
-							<p class="mb-1 text-sm">Quote Sent</p>
-							<Boolean bind:value={values.quote_sent} />
-						</div>
-
-						<p class="mb-1 text-sm">Notes</p>
-						<Textarea bind:value={values.send_quote_notes} />
-					</div>
-				{/if}
-
-				{#if form === null || form?.type === 'response'}
-					<div>
-						<div class="mb-3">
-							<p class="text-gray-400 mb-2 font-medium">Response Form</p>
-							<p class="mb-1 text-sm">Response Status</p>
-							<StatusSelect status="response" bind:value={values.status} tags={commercialTags} />
-						</div>
-
-						<p class="mb-1 text-sm">Notes</p>
-						<Textarea bind:value={values.response_notes} />
-					</div>
-				{/if}
-
 				<div class="flex flex-row mt-5 items-center justify-center">
 					{#if !isSubmitting}
 						<button

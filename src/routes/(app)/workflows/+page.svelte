@@ -16,11 +16,10 @@
 	let workflows;
 	let isAdmin = false;
 	let showSubmitted = {};
-	let isGov = true;
 	let isUser = true;
 	let isMounted = false;
 
-	async function loadData(isGov) {
+	async function loadData() {
 		workflows = null; // reset
 
 		const {
@@ -29,47 +28,27 @@
 
 		isAdmin = admin;
 
-		if (isGov) {
-			let formsQuery = supabase
-				.from('forms')
-				.select(
-					'id, submitted, submitted_timestamp, form!inner(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
-				)
-				.eq('deleted', false);
+		let formsQuery = supabase
+			.from('forms')
+			.select(
+				'*, form!inner(*), product(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
+			)
+			.eq('deleted', false)
+			.eq('submitted', false);
 
-			if (isUser) formsQuery = formsQuery.eq('form.user', session.user.id);
+		if (isUser) formsQuery = formsQuery.eq('form.user', session.user.id);
 
-			const { data, error } = await formsQuery;
+		const { data, error } = await formsQuery;
 
-			let formQuery = supabase.from('form').select('id, name, user!inner(*), step');
+		let formQuery = supabase.from('form').select('id, name, user!inner(*), step');
 
-			if (isUser) formQuery = formQuery.eq('user.id', session.user.id);
+		if (isUser) formQuery = formQuery.eq('user.id', session.user.id);
 
-			const { data: f_data, error: f_error } = await formQuery;
+		const { data: f_data, error: f_error } = await formQuery;
 
-			workflows = {};
-			workflows.forms = data;
-			workflows.form = f_data.sort((a, b) => (a.step > b.step ? 1 : -1));
-		} else {
-			let formsQuery = supabase
-				.from('commercial_forms')
-				.select('*, commercial_form(*), commercial_rfq(*, commercial_rfqs_parts(*), customer(*))')
-				.eq('deleted', false);
-
-			if (isUser) formsQuery = formsQuery.eq('commercial_form.user', session.user.id);
-			const { data, error } = await formsQuery;
-			console.log(data, error);
-
-			let formQuery = supabase.from('commercial_form').select('*, user!inner(id, name)');
-
-			if (isUser) formQuery = formQuery.eq('user.id', session.user.id);
-
-			const { data: f_data, error: f_error } = await formQuery;
-
-			workflows = {};
-			workflows.forms = data;
-			workflows.form = f_data?.sort((a, b) => (a.step > b.step ? 1 : -1));
-		}
+		workflows = {};
+		workflows.forms = data;
+		workflows.form = f_data.sort((a, b) => (a.step > b.step ? 1 : -1));
 	}
 
 	onMount(() => {
@@ -77,32 +56,19 @@
 	});
 
 	$: if (isMounted && session && isUser !== null) {
-		loadData(isGov);
+		loadData();
 	}
 
 	function getForms(workflows, form) {
 		let forms = workflows.forms.filter((e) => e.form.id === form.id && !e.submitted);
 
 		return [
-			...forms.filter((e) => e.solicitation_matched.familiarity_status === 'Prev Won'),
-			...forms.filter((e) => e.solicitation_matched.familiarity_status === 'Prev Bid'),
-			...forms.filter((e) => e.solicitation_matched.familiarity_status === 'Seen'),
-			...forms.filter((e) => e.solicitation_matched.familiarity_status === 'New')
+			...forms.filter((e) => e?.commercial),
+			...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Prev Won'),
+			...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Prev Bid'),
+			...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Seen'),
+			...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'New')
 		];
-	}
-
-	function getCommercialForms(workflows, form) {
-		return workflows.forms?.filter((e) => e.commercial_form.id === form.id && !e.submitted);
-	}
-
-	function getPartsDescription(parts) {
-		let qty = 0;
-
-		parts?.forEach((e) => {
-			qty += e?.quantities?.length || 0;
-		});
-
-		return `Parts: ${parts.length}, Quantities: ${qty}`;
 	}
 </script>
 
@@ -111,22 +77,8 @@
 </svelte:head>
 
 <div class="h-12 bg-neutral-50 flex flex-row items-center justify-between pl-6 pr-10">
-	<p>{isGov ? 'Government' : 'Commercial'}</p>
+	<p class="text-lg font-medium">Workflows</p>
 	<div class="flex flex-row items-center space-x-5">
-		<div class="flex flex-row items-center">
-			<button
-				class="rounded-r-none text-xs bg-neutral-200 p-2 rounded-l-md border-r-[1px] border-gray-300 hover:bg-neutral-300 {isGov
-					? 'bg-neutral-300'
-					: ''}"
-				on:click={() => (isGov = true)}>Government</button
-			>
-			<button
-				class="rounded-l-none text-xs bg-neutral-200 p-2 rounded-r-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {!isGov
-					? 'bg-neutral-300'
-					: ''}"
-				on:click={() => (isGov = false)}>Commercial</button
-			>
-		</div>
 		{#if isAdmin}
 			<div class="flex flex-row items-center">
 				<button
@@ -150,16 +102,30 @@
 		class="bg-neutral-50 w-[100%] h-[93%] p-5 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro flex flex-row overflow-auto space-x-5"
 		style="direction: ltr;"
 	>
-		{#if isGov}
-			{#each workflows.form.sort((a, b) => (a.step > b.step ? 1 : -1)) as form (form.id)}
-				<div class="flex flex-col">
-					<div class="flex flex-row justify-between w-96 items-center">
-						<p class="font-semibold text-base">
-							{`${form.name} (${workflows.forms.filter((e) => e.form.id === form.id && !e.submitted).length})`}
-						</p>
-						<p class="font-medium text-base">{form.user.name}</p>
-					</div>
-					{#each getForms(workflows, form) as forms (forms.id)}
+		{#each workflows.form.sort((a, b) => (a.step > b.step ? 1 : -1)) as form (form.id)}
+			<div class="flex flex-col">
+				<div class="flex flex-row justify-between w-96 items-center">
+					<p class="font-semibold text-base">
+						{`${form.name} (${workflows.forms.filter((e) => e.form.id === form.id && !e.submitted).length})`}
+					</p>
+					<p class="font-medium text-base">{form.user.name}</p>
+				</div>
+				{#each getForms(workflows, form) as forms (forms.id)}
+					{#if forms?.commercial}
+						<a href={window.location.origin + '/commercial-form/' + forms.id}>
+							<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
+								<div class="flex flex-row justify-between items-center">
+									<p class="font-semibold text-sm">
+										{forms?.product?.number}
+									</p>
+								</div>
+								<p class="mt-1 font-medium">{forms?.product?.description}</p>
+								<div class="flex flex-row justify-end">
+									<p class="text-gray-500">{formatDateWithTime(forms.created_at)}</p>
+								</div>
+							</div>
+						</a>
+					{:else}
 						<a href={window.location.origin + '/solicitation-form/' + forms.id}>
 							<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
 								<div class="flex flex-row justify-between items-center">
@@ -187,7 +153,9 @@
 										</div>
 									</div>
 								</div>
-								<p class="mt-2">{forms.solicitation_matched.solicitation.description}</p>
+								<p class="mt-2 font-medium">
+									{forms.solicitation_matched.solicitation.description}
+								</p>
 								<p>
 									{`${forms.solicitation_matched.solicitation.quantity} ${forms.solicitation_matched.solicitation.quantity_units}`}
 								</p>
@@ -211,48 +179,10 @@
 								</div>
 							</div>
 						</a>
-					{/each}
-				</div>
-			{/each}
-		{:else}
-			{#each workflows.form.sort((a, b) => (a.step > b.step ? 1 : -1)) as form (form.id)}
-				<div class="flex flex-col">
-					<div class="flex flex-row justify-between w-96 items-center">
-						<p class="font-semibold text-base">
-							{`${form.name} (${workflows.forms?.filter((e) => e.commercial_form.id === form.id && !e.submitted).length})`}
-						</p>
-						<p class="font-medium text-base">{form.user.name}</p>
-					</div>
-					{#each getCommercialForms(workflows, form) as forms (forms.id)}
-						<a href={window.location.origin + '/commercial-form/' + forms.id} target="_blank">
-							<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
-								<div class="flex flex-row justify-between items-center">
-									<p class="font-semibold text-sm">
-										{forms.commercial_rfq.customer.name +
-											' / ' +
-											forms.commercial_rfq.date_received}
-									</p>
-								</div>
-								<p>
-									{getPartsDescription(forms.commercial_rfq.commercial_rfqs_parts)}
-								</p>
-								{#if forms.commercial_rfq.requested_return_date}
-									<p>
-										Requested return in {calculateDaysDifference(
-											forms.commercial_rfq.requested_return_date
-										)}
-										days
-									</p>
-								{/if}
-								<div class="flex flex-row justify-end">
-									<p class="text-gray-500">{formatDateWithTime(forms.created_at)}</p>
-								</div>
-							</div>
-						</a>
-					{/each}
-				</div>
-			{/each}
-		{/if}
+					{/if}
+				{/each}
+			</div>
+		{/each}
 	</article>
 {:else}
 	<div class="flex flex-col gap-4 p-5">

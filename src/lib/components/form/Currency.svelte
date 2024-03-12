@@ -2,7 +2,7 @@
 	//  @ts-nocheck
 	export let value;
 	export let disabled = false;
-	export let width;
+	export let width = null;
 </script>
 
 <input
