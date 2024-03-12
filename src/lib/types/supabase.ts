@@ -74,222 +74,6 @@ export type Database = {
           }
         ]
       }
-      commercial_form: {
-        Row: {
-          created_at: string
-          firm: string
-          id: string
-          name: string
-          step: number
-          type: string
-          user: string
-        }
-        Insert: {
-          created_at?: string
-          firm: string
-          id?: string
-          name: string
-          step: number
-          type: string
-          user: string
-        }
-        Update: {
-          created_at?: string
-          firm?: string
-          id?: string
-          name?: string
-          step?: number
-          type?: string
-          user?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_oem_form_firm_fkey"
-            columns: ["firm"]
-            isOneToOne: false
-            referencedRelation: "firms"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_oem_form_user_fkey"
-            columns: ["user"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      commercial_forms: {
-        Row: {
-          commercial_form: string
-          commercial_rfq: string
-          created_at: string
-          deleted: boolean
-          id: number
-          submitted: boolean
-          submitted_by: string | null
-          submitted_timestamp: string | null
-        }
-        Insert: {
-          commercial_form: string
-          commercial_rfq: string
-          created_at?: string
-          deleted?: boolean
-          id?: number
-          submitted?: boolean
-          submitted_by?: string | null
-          submitted_timestamp?: string | null
-        }
-        Update: {
-          commercial_form?: string
-          commercial_rfq?: string
-          created_at?: string
-          deleted?: boolean
-          id?: number
-          submitted?: boolean
-          submitted_by?: string | null
-          submitted_timestamp?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_oem_forms_oem_form_fkey"
-            columns: ["commercial_form"]
-            isOneToOne: false
-            referencedRelation: "commercial_form"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_oem_forms_oem_rfq_fkey"
-            columns: ["commercial_rfq"]
-            isOneToOne: false
-            referencedRelation: "commercial_rfqs"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_oem_forms_submitted_by_fkey"
-            columns: ["submitted_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      commercial_rfqs: {
-        Row: {
-          created_at: string
-          customer: string
-          date_received: string
-          enter_quote_number_notes: string | null
-          final_pricing_notes: string | null
-          firm: string
-          from_airtable: boolean
-          id: string
-          labor_notes: string | null
-          notes: string | null
-          purchasing_notes: string | null
-          quote_number: string | null
-          requested_return_date: string | null
-          resale: boolean
-          response_notes: string | null
-          response_timestamp: string | null
-          send_quote_notes: string | null
-          status: string[]
-        }
-        Insert: {
-          created_at?: string
-          customer: string
-          date_received: string
-          enter_quote_number_notes?: string | null
-          final_pricing_notes?: string | null
-          firm: string
-          from_airtable?: boolean
-          id?: string
-          labor_notes?: string | null
-          notes?: string | null
-          purchasing_notes?: string | null
-          quote_number?: string | null
-          requested_return_date?: string | null
-          resale?: boolean
-          response_notes?: string | null
-          response_timestamp?: string | null
-          send_quote_notes?: string | null
-          status?: string[]
-        }
-        Update: {
-          created_at?: string
-          customer?: string
-          date_received?: string
-          enter_quote_number_notes?: string | null
-          final_pricing_notes?: string | null
-          firm?: string
-          from_airtable?: boolean
-          id?: string
-          labor_notes?: string | null
-          notes?: string | null
-          purchasing_notes?: string | null
-          quote_number?: string | null
-          requested_return_date?: string | null
-          resale?: boolean
-          response_notes?: string | null
-          response_timestamp?: string | null
-          send_quote_notes?: string | null
-          status?: string[]
-        }
-        Relationships: [
-          {
-            foreignKeyName: "oem_rfqs_firm_fkey"
-            columns: ["firm"]
-            isOneToOne: false
-            referencedRelation: "firms"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_oem_rfqs_customer_fkey"
-            columns: ["customer"]
-            isOneToOne: false
-            referencedRelation: "customers"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      commercial_rfqs_parts: {
-        Row: {
-          commercial_rfq: string
-          created_at: string
-          cross_reference: string | null
-          id: string
-          nsn: string | null
-          part_number: string | null
-          quantities: Json[]
-        }
-        Insert: {
-          commercial_rfq?: string
-          created_at?: string
-          cross_reference?: string | null
-          id?: string
-          nsn?: string | null
-          part_number?: string | null
-          quantities?: Json[]
-        }
-        Update: {
-          commercial_rfq?: string
-          created_at?: string
-          cross_reference?: string | null
-          id?: string
-          nsn?: string | null
-          part_number?: string | null
-          quantities?: Json[]
-        }
-        Relationships: [
-          {
-            foreignKeyName: "public_oem_rfqs_parts_oem_rfq_fkey"
-            columns: ["commercial_rfq"]
-            isOneToOne: false
-            referencedRelation: "commercial_rfqs"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       customers: {
         Row: {
           created_at: string
@@ -577,6 +361,44 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          created_at: string
+          description: string
+          firm: string | null
+          id: number
+          labor_minutes: number | null
+          material_cost: number | null
+          number: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          firm?: string | null
+          id?: number
+          labor_minutes?: number | null
+          material_cost?: number | null
+          number: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          firm?: string | null
+          id?: number
+          labor_minutes?: number | null
+          material_cost?: number | null
+          number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_products_firm_fkey"
+            columns: ["firm"]
+            isOneToOne: false
+            referencedRelation: "firms"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       removed_options: {
         Row: {
           created_at: string
@@ -594,6 +416,189 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      rfqs: {
+        Row: {
+          created_at: string
+          customer: string
+          firm: string
+          id: number
+          notes: string | null
+          quote_number: string | null
+          received_at: string
+          requested_return_date: string | null
+          resale: boolean
+          response_timestamp: string | null
+          status: string[]
+        }
+        Insert: {
+          created_at?: string
+          customer: string
+          firm: string
+          id?: number
+          notes?: string | null
+          quote_number?: string | null
+          received_at: string
+          requested_return_date?: string | null
+          resale?: boolean
+          response_timestamp?: string | null
+          status?: string[]
+        }
+        Update: {
+          created_at?: string
+          customer?: string
+          firm?: string
+          id?: number
+          notes?: string | null
+          quote_number?: string | null
+          received_at?: string
+          requested_return_date?: string | null
+          resale?: boolean
+          response_timestamp?: string | null
+          status?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_rfqs_customer_fkey"
+            columns: ["customer"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_rfqs_firm_fkey"
+            columns: ["firm"]
+            isOneToOne: false
+            referencedRelation: "firms"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      rfqs_comments: {
+        Row: {
+          created_at: string
+          form: number | null
+          id: number
+          message: string
+          rfq: number
+          user: string
+        }
+        Insert: {
+          created_at?: string
+          form?: number | null
+          id?: number
+          message: string
+          rfq: number
+          user: string
+        }
+        Update: {
+          created_at?: string
+          form?: number | null
+          id?: number
+          message?: string
+          rfq?: number
+          user?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_rfqs_comments_form_fkey"
+            columns: ["form"]
+            isOneToOne: false
+            referencedRelation: "forms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_rfqs_comments_rfq_fkey"
+            columns: ["rfq"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_rfqs_comments_user_fkey"
+            columns: ["user"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      rfqs_products: {
+        Row: {
+          created_at: string
+          id: number
+          labor_minutes: number | null
+          product: number
+          rfq: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          labor_minutes?: number | null
+          product: number
+          rfq: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          labor_minutes?: number | null
+          product?: number
+          rfq?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_rfqs_products_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_rfqs_products_rfq_fkey"
+            columns: ["rfq"]
+            isOneToOne: false
+            referencedRelation: "rfqs"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      rfqs_products_quantities: {
+        Row: {
+          created_at: string
+          final_pricing: number | null
+          id: number
+          lead_time: number | null
+          material_cost: number | null
+          quantity: number
+          rfqs_product: number
+        }
+        Insert: {
+          created_at?: string
+          final_pricing?: number | null
+          id?: number
+          lead_time?: number | null
+          material_cost?: number | null
+          quantity: number
+          rfqs_product: number
+        }
+        Update: {
+          created_at?: string
+          final_pricing?: number | null
+          id?: number
+          lead_time?: number | null
+          material_cost?: number | null
+          quantity?: number
+          rfqs_product?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_rfqs_products_quantities_rfqs_product_fkey"
+            columns: ["rfqs_product"]
+            isOneToOne: false
+            referencedRelation: "rfqs_products"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       solicitations: {
         Row: {
@@ -969,6 +974,126 @@ export type Database = {
             columns: ["user"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      update_final_pricing: {
+        Row: {
+          created_at: string
+          id: number
+          product: number
+          quantity: number
+          rfqs_products_quantity: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          product: number
+          quantity: number
+          rfqs_products_quantity: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          product?: number
+          quantity?: number
+          rfqs_products_quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_update_final_pricing_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_update_final_pricing_rfqs_products_quantity_fkey"
+            columns: ["rfqs_products_quantity"]
+            isOneToOne: false
+            referencedRelation: "rfqs_products_quantities"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      update_labor_minutes: {
+        Row: {
+          created_at: string
+          id: number
+          labor_minutes: number
+          product: number
+          rfqs_product: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          labor_minutes: number
+          product: number
+          rfqs_product: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          labor_minutes?: number
+          product?: number
+          rfqs_product?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_update_labor_minutes_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_update_labor_minutes_rfqs_product_fkey"
+            columns: ["rfqs_product"]
+            isOneToOne: false
+            referencedRelation: "rfqs_products"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      update_purchasing: {
+        Row: {
+          created_at: string
+          id: number
+          lead_time: number
+          material_cost: number
+          product: number
+          rfqs_products_quantity: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          lead_time: number
+          material_cost: number
+          product: number
+          rfqs_products_quantity: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          lead_time?: number
+          material_cost?: number
+          product?: number
+          rfqs_products_quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_update_purchasing_product_fkey"
+            columns: ["product"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_update_purchasing_rfqs_products_quantity_fkey"
+            columns: ["rfqs_products_quantity"]
+            isOneToOne: false
+            referencedRelation: "rfqs_products_quantities"
             referencedColumns: ["id"]
           }
         ]

@@ -22,7 +22,7 @@
 	});
 
 	async function loadData(pathname) {
-		let query = supabase.from('commercial_rfqs').select('*, customer!inner(*)');
+		let query = supabase.from('rfqs').select('*, customer!inner(*)');
 
 		switch (pathname) {
 			default:

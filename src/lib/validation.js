@@ -1,5 +1,33 @@
 import { z } from 'zod';
 
+export const addRFQFormValidation = () =>
+	z.object({
+		received_at: z.string().min(1),
+		customer: z.object({
+			name: z.string().min(1)
+		}),
+		rfqs_products: z
+			.object({
+				product: z.object({
+					number: z.string().min(1),
+					nsn: z.number().nullable().optional()
+				}),
+				rfqs_products_quantities: z.object({ quantity: z.number().positive() }).array()
+			})
+			.array()
+			.superRefine((fields, ctx) => {
+				for (let i = 0; i < fields.length; i++) {
+					if (fields[i].product.nsn != null && fields[i].product.nsn?.toString().length !== 13) {
+						ctx.addIssue({
+							code: 'custom',
+							message: 'Not 13 digits',
+							path: [i, 'product', 'nsn']
+						});
+					}
+				}
+			})
+	});
+
 export const masterFormValidation = (/** @type {Boolean} */ includeWaive) =>
 	z
 		.object({
