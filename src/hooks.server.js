@@ -19,7 +19,7 @@ export const handle = async ({ event, resolve }) => {
 	event.locals.session = await event.locals.getSession();
 
 	if (['/'].includes(event.url.pathname) && event.locals.session) {
-		throw redirect(303, '/government');
+		throw redirect(303, '/sales/commercial/rfqs');
 	}
 
 	// if trying to access paths other than accepted api routes, redirect to auth

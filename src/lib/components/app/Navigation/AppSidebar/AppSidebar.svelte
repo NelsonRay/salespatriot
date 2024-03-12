@@ -1,9 +1,8 @@
 <script>
 	import { AppRail, AppRailAnchor } from '@skeletonlabs/skeleton';
-	import Contracts from '$lib/icons/Contracts.svg';
+	import Sales from '$lib/icons/Sales.svg';
 	import Workflows from '$lib/icons/Workflows.svg';
 	import Reports from '$lib/icons/Reports.svg';
-	import Commercial from '$lib/icons/Commercial.svg';
 	import { page } from '$app/stores';
 </script>
 
@@ -14,27 +13,15 @@
 	<AppRail>
 		<AppRailAnchor
 			title="Government"
-			href="/government"
-			selected={$page.url.pathname.toString().includes('/government')}
+			href="/sales/commercial/rfqs"
+			selected={$page.url.pathname.toString().includes('/sales')}
 		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={Contracts} class="h-8 w-8" alt="Government" />
+					<img src={Sales} class="h-7 w-7" alt="Government" />
 				</div>
 			</svelte:fragment>
-			<span>Government</span>
-		</AppRailAnchor>
-		<AppRailAnchor
-			title="Commercial"
-			href="/commercial/rfqs"
-			selected={$page.url.pathname.toString().includes('/commercial/rfqs')}
-		>
-			<svelte:fragment slot="lead"
-				><div class="flex items-center justify-center">
-					<img src={Commercial} class="h-8 w-8" alt="Commercial" />
-				</div>
-			</svelte:fragment>
-			<span>Commercial</span>
+			<span>Sales</span>
 		</AppRailAnchor>
 		<AppRailAnchor
 			title="Workflows"
@@ -55,7 +42,7 @@
 		>
 			<svelte:fragment slot="lead"
 				><div class="flex items-center justify-center">
-					<img src={Reports} class="h-7 w-7" alt="reports" />
+					<img src={Reports} class="h-9 w-9" alt="reports" />
 				</div></svelte:fragment
 			>
 			<span>Reports</span>

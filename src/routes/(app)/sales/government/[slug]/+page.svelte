@@ -29,18 +29,18 @@
 			.select(`*, solicitation!inner(${solColumns}, nsn(id, matching_nsns(*))), matching_rule(*)`);
 
 		switch (pathname) {
-			case '/government/bidding-funnel':
+			case '/sales/government/bidding-funnel':
 				query = query.eq('removed', false);
 
 				break;
-			case '/government/recently-released':
+			case '/sales/government/recently-released':
 				query = query
 					.order('solicitation(issued_on)', {
 						ascending: false
 					})
 					.limit(100);
 				break;
-			case '/government/expiring-soon':
+			case '/sales/government/expiring-soon':
 				let yesterday = new Date();
 				yesterday.setDate(new Date().getDate() - 1);
 
@@ -50,10 +50,10 @@
 						ascending: true
 					});
 				break;
-			case '/government/contracts-bid':
+			case '/sales/government/contracts-bid':
 				query = query.filter('status', 'cs', `{"${govTags.bid.bid.key}"}`);
 				break;
-			case '/government/flagged':
+			case '/sales/government/flagged':
 				query = query.eq('flagged', true);
 				break;
 			default:
@@ -69,7 +69,7 @@
 		isAdmin = admin;
 
 		switch (pathname) {
-			case '/government/bidding-funnel':
+			case '/sales/government/bidding-funnel':
 				for (let status of [
 					'opportunity',
 					'engineering',
@@ -96,7 +96,7 @@
 					});
 				}
 				break;
-			case '/government/contracts-bid':
+			case '/sales/government/contracts-bid':
 				data = data.sort(function (a, b) {
 					let alevel = 10;
 					let blevel = 10;
@@ -125,12 +125,12 @@
 	});
 
 	const views = {
-		'/government/bidding-funnel': 'Bidding Funnel',
-		'/government/recently-released': 'Recently Released',
-		'/government/expiring-soon': 'Expiring Soon',
-		'/government/contracts-bid': 'Contracts Bid',
-		'/government/flagged': 'Flagged',
-		'/government/all-contracts': 'All Contracts'
+		'/sales/government/bidding-funnel': 'Bidding Funnel',
+		'/sales/government/recently-released': 'Recently Released',
+		'/sales/government/expiring-soon': 'Expiring Soon',
+		'/sales/government/contracts-bid': 'Contracts Bid',
+		'/sales/government/flagged': 'Flagged',
+		'/sales/government/all-contracts': 'All Contracts'
 	};
 </script>
 
@@ -143,6 +143,24 @@
 		<div class="flex flex-row items-center">
 			<Views {views} />
 			<p class="font-semibold ml-4 text-sm">{views[$page.url.pathname]}</p>
+		</div>
+		<div class="flex flex-row items-center">
+			<a
+				href="/sales/commercial/rfqs"
+				class="rounded-r-none text-xs bg-neutral-200 p-2 rounded-l-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {$page.url.pathname.includes(
+					'commercial'
+				)
+					? 'bg-neutral-300'
+					: ''}">Commercial</a
+			>
+			<a
+				href="/sales/government/bidding-funnel"
+				class="rounded-l-none text-xs bg-neutral-200 p-2 rounded-r-md border-r-[1px] border-gray-300 hover:bg-neutral-300 {$page.url.pathname.includes(
+					'government'
+				)
+					? 'bg-neutral-300'
+					: ''}">Government</a
+			>
 		</div>
 		<!-- <p class="text-xs">Last Updated: Today 8:30 AM</p> -->
 	</div>

@@ -10,6 +10,7 @@
 
 	// @ts-ignore
 	async function handleFeedbackSubmit(message) {
+		// @ts-ignore
 		await supabase
 			.from('feedback')
 			.insert({ message, user: session?.user.id, pathname: $page.url.pathname });
