@@ -49,7 +49,7 @@ export async function POST({ request, cookies }) {
 
 		const { data, error } = await supabase
 			.from('forms')
-			.select('form(name, user), product(name), rfq(received_at, customer(name))')
+			.select('form(name, user), product(number), rfq(received_at, customer(name))')
 			.eq('id', record.id)
 			.limit(1)
 			.single();
