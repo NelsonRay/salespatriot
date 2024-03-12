@@ -36,10 +36,9 @@
 
 				<div>
 					<Products
-						bind:rfqs_products={values.commercial_rfqs_parts}
+						bind:products={values.rfqs_products}
 						showRemove={form === null}
 						showPurchasing={['purchasing', 'final_pricing', null].includes(form?.type)}
-						showLabor={['labor', 'final_pricing', null].includes(form?.type)}
 						showPricing={['final_pricing', null].includes(form?.type)}
 					/>
 				</div>

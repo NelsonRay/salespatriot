@@ -48,7 +48,7 @@ export function govMapper(field) {
 
 export function commercialFieldsMapper(field) {
 	const map = {
-		date_received: 'Date Received',
+		received_at: 'Date Received',
 		requested_return_date: 'Requested Return Date',
 		quote_number: 'Quote Number',
 		'customer.name': 'Customer',
@@ -98,7 +98,10 @@ export function commercialTableFieldMapper(obj, column) {
 
 		return { header, value };
 	} else if (column.type === 'name') {
-		return { header: 'Name', value: `${obj?.customer?.name} / ${obj?.date_received}` };
+		return {
+			header: 'Name',
+			value: `${obj?.customer?.name} - ${formatMonthDayYearDate(obj?.received_at)}`
+		};
 	} else if (column.type === 'value') {
 		return { header: 'Est. Value', value: '' };
 	} else {

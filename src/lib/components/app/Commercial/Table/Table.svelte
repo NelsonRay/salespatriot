@@ -17,7 +17,7 @@
 		{ type: 'status', status: 'enter_quote' },
 		{ type: 'status', status: 'send_quote' },
 		{ type: 'status', status: 'response' },
-		{ type: 'field', field: 'date_received' },
+		{ type: 'field', field: 'received_at' },
 		{ type: 'field', field: 'requested_return_date' },
 		{ type: 'field', field: 'quote_number' },
 		{ type: 'field', field: 'customer.name' },
@@ -56,7 +56,7 @@
 	}
 
 	function navToCommercialRfq(id) {
-		window.location.href = `${window.location.origin}/commercial-rfq/${id}`;
+		window.location.href = `${window.location.origin}/rfq/${id}`;
 	}
 </script>
 
