@@ -5,11 +5,7 @@ import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import { createServerClient } from '@supabase/ssr';
 
-// 64f61fff-0e3a-4993-9fd0-3c563adacca3 Pur
-// f657fadb-c9a7-493b-bc2e-c655bcd8c92d Lab
-// 5129a9cb-02c0-4bee-8568-e0b8d86a8f31 Fin
-// 715b26c6-1ba0-4300-b4b0-a45857ed230e Ent
-// f6ab4e4b-a109-4e46-858e-f498428453ad Sen
+// 53cc6979-4406-47aa-97a0-1d83d0504c12 Labor
 
 export async function POST({ request, cookies }) {
 	const {
@@ -26,25 +22,28 @@ export async function POST({ request, cookies }) {
 	});
 
 	switch (form) {
-		case 'f657fadb-c9a7-493b-bc2e-c655bcd8c92d': {
+		case '53cc6979-4406-47aa-97a0-1d83d0504c12': {
+			console.log(123);
 			if (!response.labor_minutes) break;
 
-			const { data } = await supabase
+			const { data, error } = await supabase
 				.from('product_labor_minutes')
 				.insert({ labor_minutes: response.labor_minutes, product })
 				.select('id')
 				.limit(1)
 				.single();
 
-			const { data: pData, error } = await supabase
+			console.log(data, error);
+
+			const { data: pData, error: pErr } = await supabase
 				.from('rfqs_products')
 				.update({ product_labor_minutes: data.id })
 				.eq('product', product)
-				.eq('product_labor_minutes', null)
+				.is('product_labor_minutes', null)
 				.eq('rfq.deleted', false)
 				.select('rfq(*)');
 
-			if (error) console.error(error);
+			if (pErr) console.error(pErr);
 
 			for (let rfqs_product of pData) {
 				updateStatusInProgress(

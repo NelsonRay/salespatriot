@@ -5,7 +5,7 @@ import { createServerClient } from '@supabase/ssr';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request, cookies }) {
-	const { record, table } = await request.json();
+	const { record } = await request.json();
 
 	/** @type {import('@supabase/supabase-js').SupabaseClient<import('$lib/types/supabase.js').Database>} */
 	const supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
@@ -23,7 +23,7 @@ export async function POST({ request, cookies }) {
 	let subject = '';
 	let formLink = '';
 
-	if (table === 'forms') {
+	if (!record.commercial) {
 		// if government
 
 		const { data, error } = await supabase
@@ -48,17 +48,17 @@ export async function POST({ request, cookies }) {
 		// if commercial
 
 		const { data, error } = await supabase
-			.from('commercial_forms')
-			.select('commercial_form(name, user), commercial_rfq(date_received, customer(name))')
+			.from('forms')
+			.select('form(name, user), product(name), rfq(received_at, customer(name))')
 			.eq('id', record.id)
 			.limit(1)
 			.single();
 
 		if (error) console.error(error);
 
-		userId = data.commercial_form.user;
-		btnText = `Open ${data.commercial_form.name}`;
-		subject = `${data.commercial_form.name}: ${data.commercial_rfq.customer.name} / ${data.commercial_rfq.date_received}`;
+		userId = data.form.user;
+		btnText = `Open ${data.form.name}`;
+		subject = `${data.form.name}: ${data.product?.number ?? data.rfq.customer.name + ' / ' + data.rfq.date_received}`;
 		formLink = `https://salespatriot.com/commercial-form/${record.id}`;
 	}
 
