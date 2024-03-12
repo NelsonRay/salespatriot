@@ -6,7 +6,7 @@
 	import Boolean from '$lib/components/form/Boolean.svelte';
 	import Arrow from '$lib/icons/Arrow.svg';
 	import Info from '$lib/components/app/Commercial/Info/Info.svelte';
-	import Parts from '$lib/components/app/Commercial/Parts/Parts.svelte';
+	import Products from '$lib/components/app/Commercial/Products/Products.svelte';
 	import { commercialTags } from '$lib/tags';
 
 	export let data;
@@ -35,8 +35,8 @@
 				<Info {data} />
 
 				<div>
-					<Parts
-						bind:parts={values.commercial_rfqs_parts}
+					<Products
+						bind:rfqs_products={values.commercial_rfqs_parts}
 						showRemove={form === null}
 						showPurchasing={['purchasing', 'final_pricing', null].includes(form?.type)}
 						showLabor={['labor', 'final_pricing', null].includes(form?.type)}
