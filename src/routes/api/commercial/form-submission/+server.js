@@ -10,7 +10,7 @@ export async function POST({ request, locals: { supabase, session } }) {
 			submitted_timestamp: new Date().toISOString(),
 			submitted: true,
 			submitted_by: session?.user?.id,
-			values
+			response: values
 		})
 		.eq('id', id);
 
