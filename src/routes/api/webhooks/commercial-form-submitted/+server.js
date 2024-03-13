@@ -28,7 +28,8 @@ export async function POST({ request, cookies }) {
 				await supabase.from('product_purchasing').insert({
 					lead_time: response['lead_time_' + value],
 					material_cost: response['material_cost_' + value],
-					product
+					product,
+					quantity: parseInt(value)
 				});
 			}
 			break;
