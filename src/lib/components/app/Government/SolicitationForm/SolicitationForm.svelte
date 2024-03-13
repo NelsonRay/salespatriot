@@ -144,6 +144,21 @@
 		return true;
 	}
 
+	function getProducts(solicitation_matched) {
+		let text = '';
+
+		let skipComma = true;
+		for (let match of solicitation_matched?.solicitation.nsn?.matching_nsns ?? []) {
+			text += match.product.number;
+			if (!skipComma) text += ', ';
+			skipComma = false;
+		}
+
+		if (text === '') text = 'N/A';
+
+		return text;
+	}
+
 	function showForm(form, type) {
 		switch (type) {
 			case 'first_article':
@@ -275,13 +290,7 @@
 						</div>
 						<div>
 							<p class="mb-1">In-House Part Number</p>
-							<TextInput
-								value={solicitation_matched?.solicitation.nsn?.matching_nsns?.length > 0
-									? solicitation_matched?.solicitation.nsn?.matching_nsns[0]['part_number']
-									: ''}
-								disabled
-								fullWidth={false}
-							/>
+							<TextInput value={getProducts(solicitation_matched)} disabled fullWidth={false} />
 						</div>
 					</div>
 				{/if}
@@ -296,13 +305,7 @@
 						</div>
 						<div>
 							<p class="mb-1">In-House Part Number</p>
-							<TextInput
-								value={solicitation_matched?.solicitation.nsn?.matching_nsns?.length > 0
-									? solicitation_matched?.solicitation.nsn?.matching_nsns[0]['part_number']
-									: 'N/A'}
-								disabled
-								fullWidth={false}
-							/>
+							<TextInput value={getProducts(solicitation_matched)} disabled fullWidth={false} />
 						</div>
 						<div>
 							<p class="mb-1">Total Bid Value</p>

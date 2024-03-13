@@ -150,9 +150,7 @@
 									<p class="text-gray-400">In-House PN:</p>
 									<p>
 										{tableFieldMapper(solicitation_matched, {
-											type: 'field',
-											field: 'solicitation.nsn.matching_nsns',
-											array_selector: 'part_number',
+											type: 'products',
 											header: 'In-House PN'
 										}).value || 'N/A'}
 									</p>
