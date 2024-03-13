@@ -132,6 +132,10 @@
 					first_article_waive_request_honored: award.first_article_waive_request_honored
 				})
 				.eq('id', solicitation_matched.id);
+		} else if (award.status.includes('award:cancelled')) {
+			await supabase.from('solicitations').update({
+				status: award.status
+			});
 		}
 
 		awardModalOpen = false;
