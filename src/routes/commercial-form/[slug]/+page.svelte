@@ -11,16 +11,40 @@
 	let values = {};
 	let isSubmitting = false;
 
+	function fixRFQData(form) {
+		let fix = form;
+
+		for (let index = 0; index < form?.rfq?.rfqs_products?.length ?? 0; index++) {
+			for (
+				let i = 0;
+				i < form?.rfq?.rfqs_products?.[index].rfqs_products_quantities?.length ?? 0;
+				i++
+			) {
+				if (!form?.rfq?.rfqs_products?.[index].rfqs_products_quantities[i].product_final_pricing) {
+					fix.rfq.rfqs_products[index].rfqs_products_quantities[i].product_final_pricing = {};
+				}
+			}
+		}
+
+		return fix;
+	}
+
 	async function loadData() {
 		const { data, error: err } = await supabase
 			.from('forms')
-			.select('*, form!inner(*), product(*)')
+			.select(
+				'*, form!inner(*), product(*), rfq(*, customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*, product_final_pricing(*))))'
+			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
 			.single();
 
-		form = data;
-		values = {};
+		form = fixRFQData(data);
+		if (form?.form?.type === 'final_pricing') {
+			values = form.rfq;
+		} else {
+			values = {};
+		}
 	}
 
 	onMount(() => {

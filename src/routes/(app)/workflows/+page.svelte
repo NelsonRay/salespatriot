@@ -76,9 +76,10 @@
 		let qty = 0;
 
 		for (let p of rfq.rfqs_products) {
+			qty += p.rfqs_products_quantities?.length ?? 0;
 		}
 
-		return '';
+		return `Parts: ${parts}, Quantities: ${qty}`;
 	}
 </script>
 
@@ -137,7 +138,9 @@
 										{/if}
 									</div>
 								</div>
-								<p class="mt-1 font-medium">{forms?.product?.description}</p>
+								{#if forms?.rfq}
+									<p class="mt-1 font-medium">{getRFQDescription(forms?.rfq)}</p>
+								{/if}
 								<div class="flex flex-row justify-end">
 									<p class="text-gray-500">{formatDateWithTime(forms.created_at)}</p>
 								</div>
