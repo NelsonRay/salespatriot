@@ -31,7 +31,7 @@
 		let formsQuery = supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), rfq(*, customer(name)), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
+				'*, form!inner(*), product(*), rfq(*, customer(name), rfqs_products(id, rfqs_products_quantities(id))), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
 			)
 			.eq('deleted', false)
 			.eq('submitted', false);
@@ -69,6 +69,16 @@
 			...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Seen'),
 			...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'New')
 		];
+	}
+
+	function getRFQDescription(rfq) {
+		let parts = rfq?.rfqs_products?.length ?? 0;
+		let qty = 0;
+
+		for (let p of rfq.rfqs_products) {
+		}
+
+		return '';
 	}
 </script>
 
