@@ -133,9 +133,12 @@
 				})
 				.eq('id', solicitation_matched.id);
 		} else if (award.status.includes('award:cancelled')) {
-			await supabase.from('solicitations').update({
-				status: award.status
-			});
+			const { data, error } = await supabase
+				.from('solicitations_matched')
+				.update({
+					status: award.status
+				})
+				.eq('id', solicitation_matched.id);
 		}
 
 		awardModalOpen = false;
