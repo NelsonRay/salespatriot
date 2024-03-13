@@ -1,7 +1,7 @@
 // @ts-ignore
 export function getColumns(pathname) {
 	switch (pathname) {
-		case '/government/contracts-bid':
+		case '/sales/government/contracts-bid':
 			return [
 				{ type: 'position' },
 				{ type: 'field', field: 'solicitation.id' },
