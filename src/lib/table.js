@@ -16,9 +16,7 @@ export function getColumns(pathname) {
 				{ type: 'status', status: 'opportunity' },
 				{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
 				{
-					type: 'field',
-					field: 'solicitation.nsn.matching_nsns',
-					array_selector: 'part_number',
+					type: 'products',
 					header: 'In-House PN'
 				},
 				{ type: 'field', field: 'first_article_waive_requested' },
@@ -68,9 +66,7 @@ export function getColumns(pathname) {
 				{ type: 'field', field: 'solicitation.quantity_units' },
 				{ type: 'field', field: 'solicitation.first_article' },
 				{
-					type: 'field',
-					field: 'solicitation.nsn.matching_nsns',
-					array_selector: 'part_number',
+					type: 'products',
 					header: 'In-House PN'
 				},
 				{ type: 'field', field: 'solicitation.days_to_deliver' },
@@ -117,9 +113,7 @@ export const nsnColumns = [
 	{ type: 'field', field: 'solicitation.description' },
 	{ type: 'field', field: 'solicitation.estimated_value' },
 	{
-		type: 'field',
-		field: 'solicitation.nsn.matching_nsns',
-		array_selector: 'part_number',
+		type: 'products',
 		header: 'In-House PN'
 	},
 	{ type: 'matching_rule', status: 'matching_rule' },

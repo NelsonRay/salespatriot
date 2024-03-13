@@ -158,12 +158,23 @@ export function tableFieldMapper(obj, column) {
 						obj?.solicitation.price_won_at / obj?.solicitation?.quantity - obj.unit_price
 					);
 				}
-				return { header: 'Unit Price Difference', value: value ?? [] };
+				return { header: 'Unit Price Difference', value: value ?? '' };
 			}
 
 			return { header: 'Error', value: '' };
 		} else if (column.type === 'bid_partners') {
 			return { header: 'Bid Partner(s)', value: obj?.bid_partners || null };
+		} else if (column.type === 'products') {
+			let value = '';
+
+			let skipComma = true;
+			for (let match of obj?.solicitation.nsn?.matching_nsns ?? []) {
+				value += match.product.number;
+				if (!skipComma) value += ', ';
+				skipComma = false;
+			}
+
+			return { header: 'In-House PN', value };
 		} else {
 			const header =
 				column.header ??
