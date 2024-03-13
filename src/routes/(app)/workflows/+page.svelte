@@ -31,7 +31,7 @@
 		let formsQuery = supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
+				'*, form!inner(*), product(*), rfq(*, customer(name)), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
 			)
 			.eq('deleted', false)
 			.eq('submitted', false);
@@ -116,7 +116,8 @@
 							<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
 								<div class="flex flex-row justify-between items-center">
 									<p class="font-semibold text-sm">
-										{forms?.product?.number}
+										{forms?.product?.number ??
+											forms.rfq?.customer?.name + ' / ' + forms.rfq.received_at}
 									</p>
 									<div class="flex flex-row items-center space-x-1">
 										{#if forms.waiting}

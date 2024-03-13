@@ -169,7 +169,7 @@
 		removeModalOpen = false;
 
 		if (removeValues.removed) {
-			window.location.href = `${window.location.origin}/government`;
+			window.location.href = `${window.location.origin}/sales/government/bidding-funnel`;
 		} else {
 			window.location.reload();
 		}
