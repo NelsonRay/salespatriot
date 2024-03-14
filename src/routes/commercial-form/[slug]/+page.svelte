@@ -33,7 +33,7 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), rfq(*, customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*, product_final_pricing(*))))'
+				'*, form!inner(*), product(*), rfq(*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*, product_final_pricing(*))))'
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
@@ -56,6 +56,28 @@
 	async function waitingCallback() {
 		await supabase.from('forms').update({ waiting: true }).eq('id', form.id);
 		window.location.href = `${window.location.origin}/workflows`;
+	}
+
+	async function commentSubmitCallback(message) {
+		if (message) {
+			const { data, error } = await supabase
+				.from('rfqs_comments')
+				.insert({
+					message,
+					user: session.user.id,
+					rfq: form.rfq.id,
+					form: form.id
+				})
+				.select('*, form(form(name)), user(name)')
+				.limit(1)
+				.single();
+
+			console.log(data, error);
+
+			if (data) {
+				form.rfq.rfqs_comments = [...(form?.rfq?.rfqs_comments ?? []), data];
+			}
+		}
 	}
 
 	async function submitCallback() {
@@ -89,6 +111,7 @@
 			{submitCallback}
 			bind:isSubmitting
 			{waitingCallback}
+			{commentSubmitCallback}
 		/>
 	{/if}
 {:else}

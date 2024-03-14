@@ -5,6 +5,7 @@
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Boolean from '$lib/components/form/Boolean.svelte';
 	import Currency from '$lib/components/form/Currency.svelte';
+	import Comments from '$lib/components/form/Comments.svelte';
 	import Arrow from '$lib/icons/Arrow.svg';
 	import Info from '$lib/components/app/Commercial/Info/Info.svelte';
 	import Products from '$lib/components/app/Commercial/Products/Products.svelte';
@@ -18,6 +19,7 @@
 	export let submitCallback;
 	export let waitingCallback;
 	export let isSubmitting;
+	export let commentSubmitCallback;
 
 	let focusedRfqProductQty;
 	let reviewValues;
@@ -91,6 +93,12 @@
 							bind:focusedRfqProductQty
 						/>
 					</div>
+					{#if data.rfq}
+						<div>
+							<p class="text-lg mt-5 mb-2 font-semibold">Comments</p>
+							<Comments comments={data.rfq.rfqs_comments} {commentSubmitCallback} />
+						</div>
+					{/if}
 				{/if}
 				{#if ['labor', 'purchasing'].includes(form?.type)}
 					<div>

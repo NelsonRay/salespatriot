@@ -155,7 +155,7 @@
 													>Labor Minutes
 												</label>
 												<Currency
-													bind:value={rfqs_product.product_labor_minutes.labor_minutes}
+													value={rfqs_product?.product_labor_minutes?.labor_minutes}
 													width={'w-20'}
 													disabled
 												/>
