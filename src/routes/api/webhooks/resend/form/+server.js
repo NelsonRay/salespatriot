@@ -58,7 +58,7 @@ export async function POST({ request, cookies }) {
 
 		userId = data.form.user;
 		btnText = `Open ${data.form.name}`;
-		subject = `${data.form.name}: ${data.product?.number ?? data.rfq.customer.name + ' / ' + data.rfq.date_received}`;
+		subject = `${data.form.name}: ${data.product?.number ?? data.rfq.customer.name + ' / ' + data.rfq.received_at}`;
 		formLink = `https://salespatriot.com/commercial-form/${record.id}`;
 	}
 

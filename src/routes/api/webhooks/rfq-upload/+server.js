@@ -25,7 +25,7 @@ export async function POST({ request, cookies }) {
 		}
 	});
 
-	let rfqId;
+	let rfqId = null;
 
 	try {
 		const { customer, rfqs_products, ...rest } = rfq;
@@ -103,11 +103,14 @@ export async function POST({ request, cookies }) {
 			}
 		}
 
-		await supabase.from('rfqs_uploaded').update({ success: true, rfq: rfq }).eq('id', id);
+		await supabase.from('rfqs_uploaded').update({ success: true, rfq: rfqId }).eq('id', id);
 
 		return json({}, { status: 200 });
 	} catch (e) {
-		await supabase.from('rfqs_uploaded').update({ success: false, error: e }).eq('id', id);
+		await supabase
+			.from('rfqs_uploaded')
+			.update({ success: false, error: e, rfq: rfqId })
+			.eq('id', id);
 
 		return json({ e }, { status: 500 });
 	}

@@ -5,11 +5,13 @@
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Boolean from '$lib/components/form/Boolean.svelte';
 	import Currency from '$lib/components/form/Currency.svelte';
+	import Comments from '$lib/components/form/Comments.svelte';
 	import Arrow from '$lib/icons/Arrow.svg';
 	import Info from '$lib/components/app/Commercial/Info/Info.svelte';
 	import Products from '$lib/components/app/Commercial/Products/Products.svelte';
 	import { capitalizeFirstLetter } from '$lib/helpers';
 	import { commercialFormsValidation } from '$lib/validation';
+	import { getCommercialValueCalculation } from '$lib/utils/calculations';
 
 	export let data;
 	export let values;
@@ -17,7 +19,10 @@
 	export let submitCallback;
 	export let waitingCallback;
 	export let isSubmitting;
+	export let commentSubmitCallback;
 
+	let focusedRfqProductQty;
+	let reviewValues;
 	let errors;
 
 	function goBack() {
@@ -36,19 +41,31 @@
 
 		switch (form?.type) {
 			case 'purchasing':
-			case 'labor':
+			case 'labor': {
+				const results = validationObj?.safeParse(values);
+				errors = results?.error?.flatten()?.fieldErrors;
 				validationObj = commercialFormsValidation[form.type]();
+				break;
+			}
+			case 'final_pricing': {
+				validationObj = commercialFormsValidation[form.type]();
+				const results = validationObj?.safeParse(values);
+				errors = results?.error?.issues;
+				break;
+			}
 			default:
 				break;
 		}
-
-		const results = validationObj?.safeParse(values);
-		errors = results?.error?.flatten()?.fieldErrors;
 
 		if (!errors) {
 			submitCallback();
 		}
 	}
+
+	$: reviewValues = getCommercialValueCalculation(
+		focusedRfqProductQty,
+		data.rfq?.rfqs_products?.filter((p) => p?.id === focusedRfqProductQty?.rfqs_product)[0]
+	);
 </script>
 
 {#if values}
@@ -63,17 +80,25 @@
 				</button>
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				{#if !form.type}
-					<Info {data} />
+				{#if form.type === 'final_pricing'}
+					<Info data={data.rfq} {reviewValues} />
 
 					<div>
 						<Products
-							bind:products={values.rfqs_products}
-							showRemove={form === null}
+							bind:rfqs_products={values.rfqs_products}
+							showRemove={form?.type === null}
 							showPurchasing={['purchasing', 'final_pricing', null].includes(form?.type)}
 							showPricing={['final_pricing', null].includes(form?.type)}
+							{errors}
+							bind:focusedRfqProductQty
 						/>
 					</div>
+					{#if data.rfq}
+						<div>
+							<p class="text-lg mt-5 mb-2 font-semibold">Comments</p>
+							<Comments comments={data.rfq.rfqs_comments} {commentSubmitCallback} />
+						</div>
+					{/if}
 				{/if}
 				{#if ['labor', 'purchasing'].includes(form?.type)}
 					<div>
@@ -114,7 +139,7 @@
 							</label>
 						{/if}
 					</div>
-				{:else}
+				{:else if form.type === 'purchasing'}
 					{#each ['5', '25', '50', '100', '250'] as i}
 						<p class="font-medium">Quantity: {i}</p>
 						<div class="mb-2">
@@ -167,7 +192,7 @@
 		top: 0;
 		left: 0;
 		bottom: 0;
-		width: 50%;
+		width: 60%;
 		display: flex;
 		flex-direction: column;
 		/* background: #333; */
@@ -175,9 +200,9 @@
 	.two {
 		position: absolute;
 		top: 0;
-		left: 50%;
+		left: 60%;
 		bottom: 0;
-		width: 50%;
+		width: 40%;
 		overflow-y: auto;
 		/* background: #999; */
 		/* height: 120%; */

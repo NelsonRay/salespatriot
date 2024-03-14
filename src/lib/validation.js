@@ -14,6 +14,36 @@ export const commercialFormsValidation = {
 			lead_time_50: z.number().positive(),
 			lead_time_100: z.number().positive(),
 			lead_time_250: z.number().positive()
+		}),
+	final_pricing: () =>
+		z.object({
+			rfqs_products: z
+				.object({
+					product: z.object({
+						number: z.string().min(1),
+						nsn: z.number().nullable().optional()
+					}),
+					rfqs_products_quantities: z
+						.object({
+							quantity: z.number().positive(),
+							product_final_pricing: z.object({ final_pricing: z.number().positive() }),
+							material_cost: z.number().positive(),
+							lead_time: z.number().positive()
+						})
+						.array()
+				})
+				.array()
+				.superRefine((fields, ctx) => {
+					for (let i = 0; i < fields.length; i++) {
+						if (fields[i].product.nsn != null && fields[i].product.nsn?.toString().length !== 13) {
+							ctx.addIssue({
+								code: 'custom',
+								message: 'Not 13 digits',
+								path: [i, 'product', 'nsn']
+							});
+						}
+					}
+				})
 		})
 };
 

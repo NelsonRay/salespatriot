@@ -4,14 +4,15 @@
 	import Currency from '$lib/components/form/Currency.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import { hasErrors } from '$lib/utils/errors.js';
+	import { formatMonthDayYearDate, formatCurrency } from '$lib/helpers';
 
 	export let rfqs_products;
 	export let supabase;
-	export let showPurchasing = false;
 	export let showPricing = false;
 	export let showRemove = false;
 	export let errors;
 	export let createdProductsIndexes = [];
+	export let focusedRfqProductQty;
 
 	function addProduct() {
 		rfqs_products.push({
@@ -55,7 +56,6 @@
 	}
 
 	function handleCreateNew(event, index) {
-		console.log(index);
 		createdProductsIndexes.push(index);
 		createdProductsIndexes = createdProductsIndexes;
 	}
@@ -65,6 +65,7 @@
 	}
 
 	async function getQuery(searchValue) {
+		if (!supabase) return [];
 		const { data: queryData, error } = await supabase
 			.from('products')
 			.select('*')
@@ -73,15 +74,21 @@
 		return queryData;
 	}
 
-	const appInput = 'border border-blue-400 rounded-md text-sm py-1 px-2';
+	function focusProductQty(rfqs_products_quantity) {
+		focusedRfqProductQty = rfqs_products_quantity;
+	}
+
+	function blurProductQty() {
+		focusedRfqProductQty = null;
+	}
 </script>
 
-<div class="flex flex-col">
-	<p class="text-xl font-semibold mb-4">Parts</p>
-	<div class="flex flex-col space-y-7">
-		{#each rfqs_products as rfqs_product, index}
+<div class="flex flex-col space-y-7">
+	<p class="text-xl font-semibold">Parts</p>
+	{#each rfqs_products as rfqs_product, index}
+		<div class="flex flex-col">
 			<div class="flex flew-row items-center">
-				<div class="flex flex-col p-2 pr-4 bg-neutral-100 rounded-md shadow-sm">
+				<div class="flex flex-col p-2 pr-4 bg-neutral-50 rounded-md shadow-sm">
 					<div class="flex flex-row space-x-3 items-start">
 						<div class="w-8">
 							<p class="text-lg font-semibold text-center mt-4">#{index + 1}</p>
@@ -130,7 +137,11 @@
 									<div class="flex flex-row space-x-3">
 										<div class="flex flex-col">
 											<label class="text-xs text-gray-500 font-medium" for="qty">Quantity</label>
-											<Currency bind:value={rfqs_products_quantity.quantity} width={'w-20'} />
+											<Currency
+												bind:value={rfqs_products_quantity.quantity}
+												width={'w-20'}
+												disabled={showPricing}
+											/>
 											{#if hasErrors( errors, ['rfqs_products', index, 'rfqs_products_quantities', i, 'quantity'] )}
 												<label for="trim" class="label">
 													<span class="label-text-alt text-error">Required</span>
@@ -138,7 +149,17 @@
 											{/if}
 										</div>
 
-										{#if showPurchasing}
+										{#if showPricing}
+											<div class="flex flex-col">
+												<label class="text-xs text-gray-500 font-medium" for="qty"
+													>Labor Minutes
+												</label>
+												<Currency
+													value={rfqs_product?.product_labor_minutes?.labor_minutes}
+													width={'w-20'}
+													disabled
+												/>
+											</div>
 											<div class="flex flex-col">
 												<label class="text-xs text-gray-500 font-medium" for="qty"
 													>Material Cost</label
@@ -146,23 +167,45 @@
 												<Currency
 													bind:value={rfqs_products_quantity.material_cost}
 													width={'w-20'}
+													focusCallback={() => focusProductQty(rfqs_products_quantity)}
+													blurCallback={blurProductQty}
 												/>
+												{#if hasErrors( errors, ['rfqs_products', index, 'rfqs_products_quantities', i, 'material_cost'] )}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">Required</span>
+													</label>
+												{/if}
 											</div>
 											<div class="flex flex-col">
 												<label class="text-xs text-gray-500 font-medium" for="qty">Lead Time</label>
-												<Currency bind:value={rfqs_products_quantity.lead_time} width={'w-20'} />
+												<Currency
+													bind:value={rfqs_products_quantity.lead_time}
+													width={'w-20'}
+													focusCallback={() => focusProductQty(rfqs_products_quantity)}
+													blurCallback={blurProductQty}
+												/>
+												{#if hasErrors( errors, ['rfqs_products', index, 'rfqs_products_quantities', i, 'lead_time'] )}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">Required</span>
+													</label>
+												{/if}
 											</div>
-										{/if}
 
-										{#if showPricing}
 											<div class="flex flex-col">
 												<label class="text-xs text-gray-500 font-medium" for="qty"
 													>Final Pricing</label
 												>
 												<Currency
-													bind:value={rfqs_products_quantity.final_pricing}
+													bind:value={rfqs_products_quantity.product_final_pricing.final_pricing}
 													width={'w-20'}
+													focusCallback={() => focusProductQty(rfqs_products_quantity)}
+													blurCallback={blurProductQty}
 												/>
+												{#if hasErrors( errors, ['rfqs_products', index, 'rfqs_products_quantities', i, 'product_final_pricing', 'final_pricing'] )}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">Required</span>
+													</label>
+												{/if}
 											</div>
 										{/if}
 
@@ -196,9 +239,46 @@
 					{/if}
 				</div>
 			</div>
-		{/each}
-	</div>
+			{#if rfqs_product?.product?.product_purchasing}
+				<div>
+					<div class="flex flex-row">
+						<div class="flex flex-col bg-neutral-50 rounded-md p-3 mr-8 mt-2 text-xs">
+							<p class="mb-1 font-medium text-sm">Purchasing:</p>
+							<div class="flex flex-row space-x-5">
+								<div class="flex flex-col">
+									<p class="text-gray-400">Quantity:</p>
+									{#each rfqs_product?.product?.product_purchasing as purchasing}
+										<p>{purchasing.quantity}</p>
+									{/each}
+								</div>
 
+								<div class="flex flex-col">
+									<p class="text-gray-400">Mat Cost:</p>
+									{#each rfqs_product?.product?.product_purchasing as purchasing}
+										<p>{formatCurrency(purchasing.material_cost)}</p>
+									{/each}
+								</div>
+
+								<div class="flex flex-col">
+									<p class="text-gray-400">Lead Time:</p>
+									{#each rfqs_product?.product?.product_purchasing as purchasing}
+										<p>{purchasing.lead_time}</p>
+									{/each}
+								</div>
+
+								<div class="flex flex-col">
+									<p class="text-gray-400">Date:</p>
+									{#each rfqs_product?.product?.product_purchasing as purchasing}
+										<p>{formatMonthDayYearDate(purchasing.created_at)}</p>
+									{/each}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			{/if}
+		</div>
+	{/each}
 	{#if showRemove}
 		<div>
 			<button
