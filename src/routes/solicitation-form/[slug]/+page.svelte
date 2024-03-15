@@ -84,24 +84,38 @@
 
 	async function removeModalSubmitCallback(removedValues) {
 		let status = solicitation_matched.status ?? [];
+		let updateStatus = false;
 
 		if (removeValues?.removed_option === 'c714e8d7-277e-4f39-8e9e-b92352b1c26e') {
 			status = status.filter((s) => !s.includes('opportunity'));
 			status = [...(status ?? []), 'opportunity:not_pursue'];
+			updateStatus = true;
 		} else if (removeValues?.removed_option === '45c9d55c-dd2b-4bd9-b53d-be65bd70863f') {
 			status = status.filter((s) => !s.includes('engineering'));
 			status = [...(status ?? []), 'engineering:cannot_build'];
+			updateStatus = true;
 		}
 
-		await supabase
-			.from('solicitations_matched')
-			.update({
-				removed_option: removedValues.removed ? removedValues.removed_option : null,
-				removed: removedValues.removed,
-				flagged: removedValues.flagged,
-				status
-			})
-			.eq('id', solicitation_matched.id);
+		if (updateStatus) {
+			await supabase
+				.from('solicitations_matched')
+				.update({
+					removed_option: removedValues.removed ? removedValues.removed_option : null,
+					removed: removedValues.removed,
+					flagged: removedValues.flagged || false,
+					status
+				})
+				.eq('id', solicitation_matched.id);
+		} else {
+			await supabase
+				.from('solicitations_matched')
+				.update({
+					removed_option: removedValues.removed ? removedValues.removed_option : null,
+					removed: removedValues.removed,
+					flagged: removedValues.flagged || false
+				})
+				.eq('id', solicitation_matched.id);
+		}
 
 		if (removedValues.removed && removedValues.removed_notes)
 			await supabase.from('solicitations_matched_comments').insert({
