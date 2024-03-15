@@ -35,7 +35,7 @@ export async function POST({ request, cookies }) {
 		if (!customerId) {
 			const { data, error } = await supabase
 				.from('customers')
-				.insert(customer)
+				.insert({ ...customer, firm: '6b289746-2b01-47af-a7d4-26a3920f75ca' })
 				.select('id')
 				.limit(1)
 				.single();
