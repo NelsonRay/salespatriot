@@ -62,7 +62,7 @@ export async function POST({ request, cookies }) {
 					}
 
 					if (purchasingCompleted) {
-						await updateStatusInProgress(rfq.status, ['purchasing:assigned'], supabase, rfq.id);
+						await updateStatusInProgress(rfq.status, ['purchasing:complete'], supabase, rfq.id);
 					}
 				}
 				break;
@@ -105,7 +105,7 @@ export async function POST({ request, cookies }) {
 					}
 
 					if (laborCompleted) {
-						await updateStatusInProgress(rfq.status, ['labor:assigned'], supabase, rfq.id);
+						await updateStatusInProgress(rfq.status, ['labor:complete'], supabase, rfq.id);
 					}
 				}
 
@@ -140,7 +140,7 @@ export async function POST({ request, cookies }) {
 					}
 				}
 
-				updateStatusInProgress(rfq.status, ['final_pricing:assigned'], supabase, rfq.id);
+				updateStatusInProgress(rfq.status, ['final_pricing:complete'], supabase, rfq.id);
 				break;
 			}
 			default:

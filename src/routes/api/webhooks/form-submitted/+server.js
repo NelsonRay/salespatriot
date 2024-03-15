@@ -136,7 +136,7 @@ export async function POST({ request, cookies }) {
 
 			// final_pricing form
 			case '6bbf4342-1b50-4c1a-9dc5-ad40562c5626':
-				if (data.status.includes('final_pricing:assigned')) {
+				if (data.status.includes('final_pricing:complete')) {
 					await updateStatusInProgress(
 						data.status,
 						['enter_quote:in_progress', 'bid:in_progress'],

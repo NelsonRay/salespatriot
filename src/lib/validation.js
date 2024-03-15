@@ -93,7 +93,7 @@ export const masterFormValidation = (/** @type {Boolean} */ includeWaive) =>
 			first_article_waive_requested: z.boolean().nullable().optional()
 		})
 		.superRefine((fields, ctx) => {
-			const forceCheck = fields.status.includes('final_pricing:assigned');
+			const forceCheck = fields.status.includes('final_pricing:complete');
 
 			if (forceCheck || fields.status.includes('opportunity:pursue')) {
 				if (!fields.unit_price)
