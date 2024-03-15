@@ -111,7 +111,9 @@ export async function POST({ request, cookies }) {
 
 				break;
 			}
+			// final pricing form
 			case '6bbf4342-1b50-4c1a-9dc5-ad40562c5626': {
+				// loop thru each product and its quantities to update final_pricing
 				for (let rfqs_product of response?.rfqs_products ?? []) {
 					const { product } = rfqs_product;
 					for (let rfqs_products_quantity of rfqs_product.rfqs_products_quantities ?? []) {
@@ -140,7 +142,24 @@ export async function POST({ request, cookies }) {
 					}
 				}
 
-				updateStatusInProgress(rfq.status, ['final_pricing:complete'], supabase, rfq.id);
+				// update status with final pricing and next 2 forms sent together
+				await updateStatusInProgress(
+					response.status,
+					['final_pricing:complete', 'enter_quote:in_progress', 'send_quote:in_progress'],
+					supabase,
+					response.id
+				);
+
+				await supabase.from('forms').insert({
+					rfq: response.id,
+					form: 'a40a1d91-3295-4ca4-b343-ad58e2279fec',
+					commercial: true
+				});
+				await supabase.from('forms').insert({
+					rfq: response.id,
+					form: '6a0d1585-d572-4d8f-bdb4-498a89506e85',
+					commercial: true
+				});
 				break;
 			}
 			default:
