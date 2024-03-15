@@ -35,6 +35,36 @@ export async function POST({ request, cookies }) {
 
 					if (error) throw error;
 				}
+
+				// update purchasing_ready fpr rfqs_products
+				const { error } = await supabase
+					.from('rfqs_products')
+					.update({ purchasing_ready: true })
+					.eq('product', product)
+					.eq('purchasing_ready', false);
+
+				// then fetch rfqs_products and relating rfqs - weirdly needs to be separate query
+				const { data } = await supabase
+					.from('rfqs_products')
+					.select('*, rfq(*, rfqs_products(*))')
+					.eq('product', product);
+
+				// loop thru rfqs_products relating to quoted product
+				for (let d of data) {
+					// check if all of rfqs_products have purchasing data relating to rfq of the looped rfqs_product
+					let rfq = d.rfq;
+					let purchasingCompleted = true;
+					for (let rfqs_product of rfq.rfqs_products) {
+						// check if purchasing data available for rfqs_product
+						if (!rfqs_product?.purchasing_ready) {
+							purchasingCompleted = false;
+						}
+					}
+
+					if (purchasingCompleted) {
+						await updateStatusInProgress(rfq.status, ['purchasing:assigned'], supabase, rfq.id);
+					}
+				}
 				break;
 			}
 			// labor form
@@ -47,25 +77,36 @@ export async function POST({ request, cookies }) {
 					.single();
 
 				if (error) throw error;
-				console.log(data, error);
 
-				const { data: pData, error: pErr } = await supabase
+				const { error: err } = await supabase
 					.from('rfqs_products')
 					.update({ product_labor_minutes: data.id })
 					.eq('product', product)
-					.is('product_labor_minutes', null)
-					.eq('rfq.deleted', false)
-					.select('rfq(*)');
+					.is('product_labor_minutes', null);
 
-				if (pErr) throw pErr;
+				if (err) throw err;
 
-				for (let rfqs_product of pData) {
-					updateStatusInProgress(
-						rfqs_product.rfq.status,
-						['labor:assigned'],
-						supabase,
-						rfqs_product.rfq.id
-					);
+				// then fetch rfqs_products and relating rfqs - weirdly needs to be separate query
+				const { data: rData } = await supabase
+					.from('rfqs_products')
+					.select('*, rfq(*, rfqs_products(*))')
+					.eq('product_labor_minutes', data.id);
+
+				// loop thru rfqs_products relating to quoted product
+				for (let d of rData) {
+					// check if all of rfqs_products have purchasing data relating to rfq of the looped rfqs_product
+					let rfq = d.rfq;
+					let laborCompleted = true;
+					for (let rfqs_product of rfq.rfqs_products) {
+						// check if purchasing data available for rfqs_product
+						if (rfqs_product?.product_labor_minutes == null) {
+							laborCompleted = false;
+						}
+					}
+
+					if (laborCompleted) {
+						await updateStatusInProgress(rfq.status, ['labor:assigned'], supabase, rfq.id);
+					}
 				}
 
 				break;
