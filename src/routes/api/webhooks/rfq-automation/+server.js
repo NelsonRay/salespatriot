@@ -93,8 +93,8 @@ export async function POST({ request, cookies }) {
 			updateStatusInProgress(
 				data.status,
 				[
-					laborInProgress ? 'labor:in_progress' : 'labor:assigned',
-					purchasingInProgress ? 'purchasing:in_progress' : 'purchasing:assigned'
+					laborInProgress ? 'labor:in_progress' : 'labor:complete',
+					purchasingInProgress ? 'purchasing:in_progress' : 'purchasing:complete'
 				],
 				supabase,
 				data.id

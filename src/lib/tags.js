@@ -130,11 +130,11 @@ export const govTags = {
 		}
 	},
 	final_pricing: {
-		assigned: {
-			name: 'Assigned',
+		complete: {
+			name: 'Complete',
 			level: 1,
 			color: 'green',
-			key: 'final_pricing:assigned'
+			key: 'final_pricing:complete'
 		},
 		in_progress: {
 			name: 'In Progress',
@@ -213,11 +213,11 @@ export const govTags = {
 
 export const commercialTags = {
 	purchasing: {
-		assigned: {
-			name: 'Assigned',
+		complete: {
+			name: 'Complete',
 			level: 1,
 			color: 'green',
-			key: 'purchasing:assigned'
+			key: 'purchasing:complete'
 		},
 		waiting: {
 			name: 'Waiting',
@@ -233,11 +233,11 @@ export const commercialTags = {
 		}
 	},
 	labor: {
-		assigned: {
-			name: 'Assigned',
+		complete: {
+			name: 'Complete',
 			level: 1,
 			color: 'green',
-			key: 'labor:assigned'
+			key: 'labor:complete'
 		},
 		in_progress: {
 			name: 'In Progress',
@@ -247,11 +247,11 @@ export const commercialTags = {
 		}
 	},
 	final_pricing: {
-		assigned: {
-			name: 'Assigned',
+		complete: {
+			name: 'Complete',
 			level: 1,
 			color: 'green',
-			key: 'final_pricing:assigned'
+			key: 'final_pricing:complete'
 		},
 		in_progress: {
 			name: 'In Progress',
