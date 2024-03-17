@@ -40,7 +40,7 @@
 			.single();
 
 		form = fixRFQData(data);
-		if (form?.form?.type === 'final_pricing') {
+		if (['final_pricing', 'enter_quote', 'bid'].includes(form?.form?.type)) {
 			values = form.rfq;
 		} else {
 			values = {};

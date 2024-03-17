@@ -12,6 +12,7 @@
 	import { capitalizeFirstLetter } from '$lib/helpers';
 	import { commercialFormsValidation } from '$lib/validation';
 	import { getCommercialValueCalculation } from '$lib/utils/calculations';
+	import { hasErrors } from '$lib/utils/errors';
 
 	export let data;
 	export let values;
@@ -39,23 +40,9 @@
 	function handleSubmit() {
 		let validationObj;
 
-		switch (form?.type) {
-			case 'purchasing':
-			case 'labor': {
-				const results = validationObj?.safeParse(values);
-				errors = results?.error?.flatten()?.fieldErrors;
-				validationObj = commercialFormsValidation[form.type]();
-				break;
-			}
-			case 'final_pricing': {
-				validationObj = commercialFormsValidation[form.type]();
-				const results = validationObj?.safeParse(values);
-				errors = results?.error?.issues;
-				break;
-			}
-			default:
-				break;
-		}
+		validationObj = commercialFormsValidation[form.type]();
+		const results = validationObj?.safeParse(values);
+		errors = results?.error?.issues;
 
 		if (!errors) {
 			submitCallback();
@@ -80,8 +67,8 @@
 				</button>
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				{#if form.type === 'final_pricing'}
-					<Info data={data.rfq} {reviewValues} />
+				{#if ['final_pricing', 'enter_quote', 'bid'].includes(form.type)}
+					<Info data={data.rfq} {reviewValues} showValueCalc={form.type === 'final_pricing'} />
 
 					<div>
 						<Products
@@ -89,6 +76,7 @@
 							showRemove={form?.type === null}
 							showPurchasing={['purchasing', 'final_pricing', null].includes(form?.type)}
 							showPricing={['final_pricing', null].includes(form?.type)}
+							showAll={[null, 'enter_quote', 'bid'].includes(form?.type)}
 							{errors}
 							bind:focusedRfqProductQty
 						/>
@@ -129,40 +117,48 @@
 		<div class="two bg-neutral-50">
 			<div class="flex flex-col p-6 space-y-5">
 				<p class="text-gray-400 mb-2 font-medium">{getFormTitle(form?.type)}</p>
-				{#if form.type === 'labor'}
+				{#if form?.type === 'labor'}
 					<div class="mb-2">
 						<p class="mb-1 text-sm">Labor Minutes</p>
 						<Currency bind:value={values.labor_minutes} />
-						{#if errors?.labor_minutes}
+						{#if hasErrors(errors, ['labor_minutes'])}
 							<label for="trim" class="label">
-								<span class="label-text-alt text-error">{errors?.labor_minutes[0]}</span>
+								<span class="label-text-alt text-error">Required</span>
 							</label>
 						{/if}
 					</div>
-				{:else if form.type === 'purchasing'}
+				{:else if form?.type === 'purchasing'}
 					{#each ['5', '25', '50', '100', '250'] as i}
 						<p class="font-medium">Quantity: {i}</p>
 						<div class="mb-2">
 							<p class="mb-1 text-sm">Material Cost</p>
 							<Currency bind:value={values['material_cost_' + i]} />
-							{#if errors?.['material_cost_' + i]}
+							{#if hasErrors(errors, ['material_cost_' + i])}
 								<label for="trim" class="label">
-									<span class="label-text-alt text-error"
-										>{errors?.['material_cost_' + i]?.[0]}</span
-									>
+									<span class="label-text-alt text-error">Required</span>
 								</label>
 							{/if}
 						</div>
 						<div class="mb-2">
 							<p class="mb-1 text-sm">Lead Time</p>
 							<Currency bind:value={values['lead_time_' + i]} />
-							{#if errors?.['lead_time_' + i]}
+							{#if hasErrors(errors, ['lead_time_' + i])}
 								<label for="trim" class="label">
-									<span class="label-text-alt text-error">{errors?.['lead_time_' + i]?.[0]}</span>
+									<span class="label-text-alt text-error">Required</span>
 								</label>
 							{/if}
 						</div>
 					{/each}
+				{:else if form?.type === 'enter_quote'}
+					<div class="mb-2">
+						<p class="mb-1 text-sm">Quote Number</p>
+						<TextInput bind:value={values.quote_number} fullWidth={false} />
+						{#if hasErrors(errors, ['quote_number'])}
+							<label for="trim" class="label">
+								<span class="label-text-alt text-error">Required</span>
+							</label>
+						{/if}
+					</div>
 				{/if}
 				<div class="flex flex-row mt-5 items-center justify-center">
 					{#if !isSubmitting}

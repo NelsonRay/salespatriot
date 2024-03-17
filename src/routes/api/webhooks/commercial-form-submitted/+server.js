@@ -162,6 +162,15 @@ export async function POST({ request, cookies }) {
 				});
 				break;
 			}
+			case 'a40a1d91-3295-4ca4-b343-ad58e2279fec': {
+				await supabase.from('rfqs').update({ quote_number: response.quote_number }).eq('id', rfq);
+				await updateStatusInProgress(response.status, ['enter_quote:complete'], supabase, rfq);
+				break;
+			}
+			case '6a0d1585-d572-4d8f-bdb4-498a89506e85': {
+				await updateStatusInProgress(response.status, ['send_quote:complete'], supabase, rfq);
+				break;
+			}
 			default:
 				break;
 		}

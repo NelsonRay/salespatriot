@@ -10,6 +10,7 @@
 	export let supabase;
 	export let showPricing = false;
 	export let showRemove = false;
+	export let showAll = false;
 	export let errors;
 	export let createdProductsIndexes = [];
 	export let focusedRfqProductQty;
@@ -140,7 +141,7 @@
 											<Currency
 												bind:value={rfqs_products_quantity.quantity}
 												width={'w-20'}
-												disabled={showPricing}
+												disabled={showPricing || showAll}
 											/>
 											{#if hasErrors( errors, ['rfqs_products', index, 'rfqs_products_quantities', i, 'quantity'] )}
 												<label for="trim" class="label">
@@ -149,7 +150,7 @@
 											{/if}
 										</div>
 
-										{#if showPricing}
+										{#if showPricing || showAll}
 											<div class="flex flex-col">
 												<label class="text-xs text-gray-500 font-medium" for="qty"
 													>Labor Minutes
@@ -169,6 +170,7 @@
 													width={'w-20'}
 													focusCallback={() => focusProductQty(rfqs_products_quantity)}
 													blurCallback={blurProductQty}
+													disabled={showAll}
 												/>
 												{#if hasErrors( errors, ['rfqs_products', index, 'rfqs_products_quantities', i, 'material_cost'] )}
 													<label for="trim" class="label">
@@ -183,6 +185,7 @@
 													width={'w-20'}
 													focusCallback={() => focusProductQty(rfqs_products_quantity)}
 													blurCallback={blurProductQty}
+													disabled={showAll}
 												/>
 												{#if hasErrors( errors, ['rfqs_products', index, 'rfqs_products_quantities', i, 'lead_time'] )}
 													<label for="trim" class="label">
@@ -200,6 +203,7 @@
 													width={'w-20'}
 													focusCallback={() => focusProductQty(rfqs_products_quantity)}
 													blurCallback={blurProductQty}
+													disabled={showAll}
 												/>
 												{#if hasErrors( errors, ['rfqs_products', index, 'rfqs_products_quantities', i, 'product_final_pricing', 'final_pricing'] )}
 													<label for="trim" class="label">
