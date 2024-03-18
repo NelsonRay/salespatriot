@@ -44,7 +44,12 @@ export const commercialFormsValidation = {
 						}
 					}
 				})
-		})
+		}),
+	enter_quote: () =>
+		z.object({
+			quote_number: z.string().min(1)
+		}),
+	send_quote: () => z.object({})
 };
 
 export const addRFQFormValidation = () =>

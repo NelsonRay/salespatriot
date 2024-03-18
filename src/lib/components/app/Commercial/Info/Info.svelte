@@ -5,6 +5,7 @@
 
 	export let data;
 	export let reviewValues;
+	export let showValueCalc = true;
 
 	function getQty(rfq) {
 		let qty = 0;
@@ -86,7 +87,8 @@
 				</div>
 			</div>
 		</div>
-
-		<ValueCalculator show values={reviewValues} />
+		{#if showValueCalc}
+			<ValueCalculator show values={reviewValues} />
+		{/if}
 	</div>
 </div>

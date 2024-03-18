@@ -31,7 +31,7 @@
 	async function loadData() {
 		let { data, error } = await supabase
 			.from('rfqs')
-			.select('*, customer!inner(*), rfqs_products(*)')
+			.select('*, customer!inner(*), rfqs_products(*, rfqs_products_quantities(*))')
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
