@@ -83,7 +83,7 @@
 	}
 
 	async function removeModalSubmitCallback(removedValues) {
-		let status = solicitation_matched.status ?? [];
+		let status = form.solicitation_matched.status ?? [];
 		let updateStatus = false;
 
 		if (removeValues?.removed_option === 'c714e8d7-277e-4f39-8e9e-b92352b1c26e') {
@@ -105,7 +105,7 @@
 					flagged: removedValues.flagged || false,
 					status
 				})
-				.eq('id', solicitation_matched.id);
+				.eq('id', form.solicitation_matched.id);
 		} else {
 			await supabase
 				.from('solicitations_matched')
@@ -114,12 +114,12 @@
 					removed: removedValues.removed,
 					flagged: removedValues.flagged || false
 				})
-				.eq('id', solicitation_matched.id);
+				.eq('id', form.solicitation_matched.id);
 		}
 
 		if (removedValues.removed && removedValues.removed_notes)
 			await supabase.from('solicitations_matched_comments').insert({
-				solicitation_matched: solicitation_matched.id,
+				solicitation_matched: form.solicitation_matched.id,
 				user: session.user.id,
 				message: removedValues.removed_notes
 			});
