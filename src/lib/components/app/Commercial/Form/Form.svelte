@@ -31,6 +31,7 @@
 	}
 
 	function getFormTitle(type) {
+		if (type == null) return '';
 		return `${type
 			.split('_')
 			.map((e) => capitalizeFirstLetter(e))
@@ -67,13 +68,17 @@
 				</button>
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				{#if ['final_pricing', 'enter_quote', 'bid'].includes(form.type)}
-					<Info data={data.rfq} {reviewValues} showValueCalc={form.type === 'final_pricing'} />
+				{#if ['final_pricing', 'enter_quote', 'bid', null, undefined].includes(form?.type)}
+					<Info
+						data={form?.type == null ? data : data.rfq}
+						{reviewValues}
+						showValueCalc={['final_pricing', null, undefined].includes(form?.type)}
+					/>
 
 					<div>
 						<Products
 							bind:rfqs_products={values.rfqs_products}
-							showRemove={form?.type === null}
+							showRemove={form?.type == null}
 							showPurchasing={['purchasing', 'final_pricing', null].includes(form?.type)}
 							showPricing={['final_pricing', null].includes(form?.type)}
 							showAll={[null, 'enter_quote', 'bid'].includes(form?.type)}
