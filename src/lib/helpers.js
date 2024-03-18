@@ -118,6 +118,7 @@ export function addCommasToNumber(number) {
 
 export const removeOptions = [
 	{ id: '5df8b8f5-0351-41d3-85d4-f9761f3986cd', name: 'Chose Not to Review', color: 'orange' },
+	{ id: '9c03e775-63a9-4679-91f0-c395e8e5d35c', name: 'Low Value', color: 'blue' },
 	{ id: '6c197796-b1e1-41b0-ad97-f93565fec17e', name: 'No Tech Docs', color: 'blue' },
 	{ id: '9a449b49-a64e-4c90-9498-87bf7db2cde5', name: 'Cancelled', color: 'gray' },
 	{ id: '0d5b57e3-2a33-497e-9962-5b0a7a66a91d', name: 'Expired', color: 'gray' },
