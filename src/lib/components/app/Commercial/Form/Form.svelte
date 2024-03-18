@@ -17,6 +17,7 @@
 	export let data;
 	export let values;
 	export let form = null;
+	export let showRemove = false;
 	export let submitCallback;
 	export let waitingCallback;
 	export let isSubmitting;
@@ -52,7 +53,9 @@
 
 	$: reviewValues = getCommercialValueCalculation(
 		focusedRfqProductQty,
-		data.rfq?.rfqs_products?.filter((p) => p?.id === focusedRfqProductQty?.rfqs_product)[0]
+		(form?.type == null ? data : data.rfq)?.rfqs_products?.filter(
+			(p) => p?.id === focusedRfqProductQty?.rfqs_product
+		)[0]
 	);
 </script>
 
@@ -78,10 +81,10 @@
 					<div>
 						<Products
 							bind:rfqs_products={values.rfqs_products}
-							showRemove={form?.type == null}
-							showPurchasing={['purchasing', 'final_pricing', null].includes(form?.type)}
-							showPricing={['final_pricing', null].includes(form?.type)}
-							showAll={[null, 'enter_quote', 'bid'].includes(form?.type)}
+							{showRemove}
+							showPurchasing={['purchasing', 'final_pricing', null, undefined].includes(form?.type)}
+							showPricing={['final_pricing', null, undefined].includes(form?.type)}
+							showAll={['enter_quote', 'bid'].includes(form?.type)}
 							{errors}
 							bind:focusedRfqProductQty
 						/>

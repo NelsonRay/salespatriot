@@ -6,7 +6,8 @@
 		getFamiliarityClass,
 		calculateDaysDifference,
 		formatMonthDayYearDate,
-		formatDateWithTime
+		formatDateWithTime,
+		formatCurrency
 	} from '$lib/helpers.js';
 
 	export let data;
@@ -31,7 +32,7 @@
 		let formsQuery = supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), rfq(*, customer(name), rfqs_products(id, rfqs_products_quantities(id))), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on), familiarity_status, matching_rule(name)), created_at'
+				'*, form!inner(*), product(*), rfq(*, customer(name), rfqs_products(id, rfqs_products_quantities(id))), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
 			)
 			.eq('deleted', false)
 			.eq('submitted', false);
@@ -59,16 +60,25 @@
 		loadData();
 	}
 
-	function getForms(workflows, form) {
+	function getSortedForms(workflows, form) {
 		let forms = workflows.forms.filter((e) => e.form.id === form.id && !e.submitted);
 
-		return [
-			...forms.filter((e) => e?.commercial),
-			...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Prev Won'),
-			...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Prev Bid'),
-			...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Seen'),
-			...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'New')
-		];
+		switch (form.id) {
+			case '50e95568-180b-46d5-a341-f216bb2a3c17':
+				return forms.sort(
+					(a, b) =>
+						b?.solicitation_matched?.solicitation?.estimated_value -
+						a?.solicitation_matched?.solicitation?.estimated_value
+				);
+			default:
+				return [
+					...forms.filter((e) => e?.commercial),
+					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Prev Won'),
+					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Prev Bid'),
+					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Seen'),
+					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'New')
+				];
+		}
 	}
 
 	function getRFQDescription(rfq) {
@@ -121,7 +131,7 @@
 					</p>
 					<p class="font-medium text-base">{form.user.name}</p>
 				</div>
-				{#each getForms(workflows, form) as forms (forms.id)}
+				{#each getSortedForms(workflows, form) as forms (forms.id)}
 					{#if forms?.commercial}
 						<a href={window.location.origin + '/commercial-form/' + forms.id}>
 							<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
@@ -177,6 +187,9 @@
 								<p class="mt-2 font-medium">
 									{forms.solicitation_matched.solicitation.description}
 								</p>
+								{#if form?.id === '50e95568-180b-46d5-a341-f216bb2a3c17'}
+									<p>{formatCurrency(forms.solicitation_matched.solicitation.estimated_value)}</p>
+								{/if}
 								<p>
 									{`${forms.solicitation_matched.solicitation.quantity} ${forms.solicitation_matched.solicitation.quantity_units}`}
 								</p>
