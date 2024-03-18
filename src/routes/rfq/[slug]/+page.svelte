@@ -19,7 +19,7 @@
 		for (let index = 0; index < rfq?.rfqs_products?.length ?? 0; index++) {
 			for (let i = 0; i < rfq?.rfqs_products?.[index].rfqs_products_quantities?.length ?? 0; i++) {
 				if (!rfq?.rfqs_products?.[index].rfqs_products_quantities[i].product_final_pricing) {
-					fix.rfq.rfqs_products[index].rfqs_products_quantities[i].product_final_pricing = {};
+					fix.rfqs_products[index].rfqs_products_quantities[i].product_final_pricing = {};
 				}
 			}
 		}

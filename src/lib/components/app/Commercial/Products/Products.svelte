@@ -247,36 +247,43 @@
 				<div>
 					<div class="flex flex-row">
 						<div class="flex flex-col bg-neutral-50 rounded-md p-3 mr-8 mt-2 text-xs">
-							<p class="mb-1 font-medium text-sm">Purchasing:</p>
-							<div class="flex flex-row space-x-5">
-								<div class="flex flex-col">
-									<p class="text-gray-400">Quantity:</p>
-									{#each rfqs_product?.product?.product_purchasing as purchasing}
-										<p>{purchasing.quantity}</p>
-									{/each}
-								</div>
-
-								<div class="flex flex-col">
-									<p class="text-gray-400">Mat Cost:</p>
-									{#each rfqs_product?.product?.product_purchasing as purchasing}
-										<p>{formatCurrency(purchasing.material_cost)}</p>
-									{/each}
-								</div>
-
-								<div class="flex flex-col">
-									<p class="text-gray-400">Lead Time:</p>
-									{#each rfqs_product?.product?.product_purchasing as purchasing}
-										<p>{purchasing.lead_time}</p>
-									{/each}
-								</div>
-
-								<div class="flex flex-col">
-									<p class="text-gray-400">Date:</p>
-									{#each rfqs_product?.product?.product_purchasing as purchasing}
-										<p>{formatMonthDayYearDate(purchasing.created_at)}</p>
-									{/each}
+							<div class="flex flex-row justify-between items-center">
+								<p class="mb-1 font-medium text-sm">Purchasing:</p>
+								<div class="p-2 rounded-md inline-block bg-yellow-300 ml-10 text-xs">
+									In Progress
 								</div>
 							</div>
+							{#if rfqs_product?.product?.product_purchasing?.length > 0}
+								<div class="flex flex-row space-x-5 mt-3">
+									<div class="flex flex-col">
+										<p class="text-gray-400">Quantity:</p>
+										{#each rfqs_product?.product?.product_purchasing as purchasing}
+											<p>{purchasing.quantity}</p>
+										{/each}
+									</div>
+
+									<div class="flex flex-col">
+										<p class="text-gray-400">Mat Cost:</p>
+										{#each rfqs_product?.product?.product_purchasing as purchasing}
+											<p>{formatCurrency(purchasing.material_cost)}</p>
+										{/each}
+									</div>
+
+									<div class="flex flex-col">
+										<p class="text-gray-400">Lead Time:</p>
+										{#each rfqs_product?.product?.product_purchasing as purchasing}
+											<p>{purchasing.lead_time}</p>
+										{/each}
+									</div>
+
+									<div class="flex flex-col">
+										<p class="text-gray-400">Date:</p>
+										{#each rfqs_product?.product?.product_purchasing as purchasing}
+											<p>{formatMonthDayYearDate(purchasing.created_at)}</p>
+										{/each}
+									</div>
+								</div>
+							{/if}
 						</div>
 					</div>
 				</div>

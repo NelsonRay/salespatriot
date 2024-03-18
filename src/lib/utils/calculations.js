@@ -4,7 +4,7 @@ import { formatMonthDayYearDate, formatCurrency } from '$lib/helpers';
 export function getCommercialValueCalculation(qty, product) {
 	if (!qty || !product) return null;
 
-	const estimated_labor_minutes = product.product_labor_minutes.labor_minutes;
+	const estimated_labor_minutes = product?.product_labor_minutes?.labor_minutes;
 	const unit_price = qty?.product_final_pricing.final_pricing;
 	const estimated_material_cost = qty.material_cost;
 	const quantity = qty.quantity;
@@ -24,7 +24,9 @@ export function getCommercialValueCalculation(qty, product) {
 	};
 
 	// @ts-ignore
-	calculation.estimated_labor_cost = parseFloat((estimated_labor_minutes / 60) * 20).toFixed(2);
+	calculation.estimated_labor_cost = estimated_labor_minutes
+		? parseFloat((estimated_labor_minutes / 60) * 20).toFixed(2)
+		: null;
 	// @ts-ignore
 	// calculation.estimated_labor_cost_date = formatMonthDayYearDate(
 	// 	values.
