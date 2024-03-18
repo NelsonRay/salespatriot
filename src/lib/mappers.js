@@ -1,5 +1,10 @@
 // @ts-nocheck
-import { addCommasToNumber, capitalizeFirstLetter, formatMonthDayYearDate } from '$lib/helpers';
+import {
+	addCommasToNumber,
+	capitalizeFirstLetter,
+	formatMonthDayYearDate,
+	calculateDaysDifference
+} from '$lib/helpers';
 
 export function govMapper(field) {
 	const map = {
@@ -141,6 +146,15 @@ export function tableFieldMapper(obj, column) {
 				header: 'Tech Docs URL',
 				value: 'https://pcf1x.bsm.dla.mil/cfolders/fol_de.htm?p_sol_no=' + obj?.solicitation?.id
 			};
+		} else if (column.type === 'expires_on') {
+			let value;
+
+			if (obj)
+				value =
+					formatMonthDayYearDate(obj?.solicitation.expires_on) +
+					` (${calculateDaysDifference(obj?.solicitation.expires_on)}d)`;
+
+			return { header: 'Expires On', value };
 		} else if (column.type === 'formula') {
 			if (column.field === 'market_value') {
 				let value;

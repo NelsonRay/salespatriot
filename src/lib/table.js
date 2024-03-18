@@ -6,7 +6,7 @@ export function getColumns(pathname) {
 				{ type: 'position' },
 				{ type: 'field', field: 'solicitation.id' },
 				{ type: 'field', field: 'solicitation.description' },
-				{ type: 'field', field: 'solicitation.expires_on' },
+				{ type: 'expires_on' },
 				{ type: 'status', status: 'award' },
 				{ type: 'bid_partners' },
 				{ type: 'formula', field: 'market_value' },
@@ -46,7 +46,7 @@ export function getColumns(pathname) {
 				{ type: 'position' },
 				{ type: 'field', field: 'solicitation.id' },
 				{ type: 'field', field: 'solicitation.description' },
-				{ type: 'field', field: 'solicitation.expires_on' },
+				{ type: 'expires_on' },
 				{ type: 'formula', field: 'market_value' },
 				{ type: 'field', field: 'solicitation.estimated_value' },
 				{ type: 'status', status: 'opportunity' },
@@ -83,7 +83,7 @@ export function getColumns(pathname) {
 }
 export const nsnColumns = [
 	{ type: 'position' },
-	{ type: 'field', field: 'solicitation.expires_on' },
+	{ type: 'expires_on' },
 	{ type: 'field', field: 'solicitation.id' },
 	{ type: 'field', field: 'solicitation.quantity' },
 	{ type: 'field', field: 'unit_price' },
