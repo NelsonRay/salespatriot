@@ -167,7 +167,7 @@
 	$: if (form?.submitted || form?.deleted) {
 		setTimeout(() => {
 			window.location.href = `${window.location.origin}/workflows`;
-		}, 1500);
+		}, 750);
 	}
 </script>
 
@@ -180,24 +180,26 @@
 </svelte:head>
 
 {#if form}
-	{#if !form?.deleted}
-		{#if !form?.submitted}
-			<SolicitationForm
-				solicitation_matched={form?.solicitation_matched}
-				bind:values
-				form={form?.form}
-				bind:nsn_matches
-				{submitCallback}
-				bind:isSubmitting
-				{isAdmin}
-				{commentSubmitCallback}
-				bind:removeModalOpen
-			/>
-		{:else}
+	{#if form?.submitted}
+		<div class="grid place-content-center">
 			<p class="mt-12 ml-12">Thank you for submitting form!</p>
-		{/if}
+		</div>
+	{:else if form?.deleted}
+		<div class="grid place-content-center">
+			<p class="mt-12 ml-12">Form is no longer active.</p>
+		</div>
 	{:else}
-		<p class="mt-12 ml-12">Form is no longer active.</p>
+		<SolicitationForm
+			solicitation_matched={form?.solicitation_matched}
+			bind:values
+			form={form?.form}
+			bind:nsn_matches
+			{submitCallback}
+			bind:isSubmitting
+			{isAdmin}
+			{commentSubmitCallback}
+			bind:removeModalOpen
+		/>
 	{/if}
 {/if}
 
