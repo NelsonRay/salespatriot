@@ -32,8 +32,8 @@
 
 	function getFieldClass(obj, column) {
 		if (
-			column?.field === 'solicitation.expires_on' &&
-			calculateDaysDifference(obj?.solicitation?.expires_on ?? 10) <= 2 &&
+			column?.type === 'expires_on' &&
+			calculateDaysDifference(obj?.solicitation?.expires_on) <= 2 &&
 			$page.url.pathname.includes('bidding-funnel')
 		) {
 			return 'text-red-400';
