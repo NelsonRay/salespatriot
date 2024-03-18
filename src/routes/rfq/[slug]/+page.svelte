@@ -13,6 +13,20 @@
 
 	let isSubmitting = false;
 
+	function fixRFQData(rfq) {
+		let fix = rfq;
+
+		for (let index = 0; index < rfq?.rfqs_products?.length ?? 0; index++) {
+			for (let i = 0; i < rfq?.rfqs_products?.[index].rfqs_products_quantities?.length ?? 0; i++) {
+				if (!rfq?.rfqs_products?.[index].rfqs_products_quantities[i].product_final_pricing) {
+					fix.rfq.rfqs_products[index].rfqs_products_quantities[i].product_final_pricing = {};
+				}
+			}
+		}
+
+		return fix;
+	}
+
 	async function handleSubmit() {
 		isSubmitting = true; // show loading spinner
 		const res = await fetch('/api/solicitations/update', {
@@ -31,14 +45,16 @@
 	async function loadData() {
 		let { data, error } = await supabase
 			.from('rfqs')
-			.select('*, customer!inner(*), rfqs_products(*, rfqs_products_quantities(*))')
+			.select(
+				'*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*, product_final_pricing(*)))'
+			)
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
 
 		rfq = data;
 
-		values = data;
+		values = fixRFQData(data);
 	}
 
 	onMount(() => {
