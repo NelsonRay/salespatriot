@@ -136,6 +136,11 @@ export function tableFieldMapper(obj, column) {
 			return { header, value };
 		} else if (column.type === 'matching_rule') {
 			return { header: 'Matching Rule', value: obj?.matching_rule?.name };
+		} else if (column.type === 'tech_docs') {
+			return {
+				header: 'Tech Docs URL',
+				value: 'https://pcf1x.bsm.dla.mil/cfolders/fol_de.htm?p_sol_no=' + obj?.solicitation?.id
+			};
 		} else if (column.type === 'formula') {
 			if (column.field === 'market_value') {
 				let value;

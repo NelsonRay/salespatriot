@@ -2,7 +2,7 @@ import { govTags } from './tags';
 
 // @ts-ignore
 export const solColumns =
-	'id, created_at, description, estimated_value, issued_on, expires_on, contract_status, days_to_deliver, quantity, solicitation_url, tech_docs, first_article, contact_name, contact_phone, contact_email, line_number, quantity_units, amsc, company_awarded, price_won_at, date_awarded, higher_quality, fob, inspection_location';
+	'id, created_at, description, estimated_value, issued_on, expires_on, contract_status, days_to_deliver, quantity, solicitation_url, first_article, contact_name, contact_phone, contact_email, line_number, quantity_units, amsc, company_awarded, price_won_at, date_awarded, higher_quality, fob, inspection_location';
 
 // @ts-ignore
 export function formatDate(date) {

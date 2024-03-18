@@ -287,19 +287,14 @@
 					</a>
 
 					<a
-						class="w-full mr-2 p-2 {solicitation_matched.solicitation.tech_docs
-							? 'bg-neutral-100 rounded-md shadow-md'
-							: ''}"
-						href={solicitation_matched.solicitation.tech_docs || null}
+						class="w-full mr-2 p-2 bg-neutral-100 rounded-md shadow-md"
+						href={'https://pcf1x.bsm.dla.mil/cfolders/fol_de.htm?p_sol_no=' +
+							solicitation_matched.solicitation.id}
 						target="_blank"
 					>
 						<div class="flex flex-row justify-center items-center space-x-1">
-							<p class={solicitation_matched.solicitation.tech_docs ? '' : 'text-gray-400'}>
-								{solicitation_matched.solicitation.tech_docs ? 'Tech Docs' : 'No Tech Docs'}
-							</p>
-							{#if solicitation_matched.solicitation.tech_docs}
-								<img src={Download} alt="download" class="w-4 h-4" />
-							{/if}
+							<p>Tech Docs</p>
+							<img src={Download} alt="download" class="w-4 h-4" />
 						</div>
 					</a>
 				</div>
