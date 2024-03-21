@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const commercialFormsValidation = {
+	confirm: () => addRFQFormValidation(),
 	labor: () => z.object({ labor_minutes: z.number().positive() }),
 	purchasing: () =>
 		z.object({
@@ -51,6 +52,35 @@ export const commercialFormsValidation = {
 		}),
 	send_quote: () => z.object({})
 };
+
+export const publicRFQFormValidation = () =>
+	z.object({
+		received_at: z.string().min(1),
+		customer: z.object({
+			name: z.string().min(1),
+			email_address: z.string().email().min(1)
+		}),
+		rfqs_products: z
+			.object({
+				product: z.object({
+					number: z.string().min(1),
+					nsn: z.number().nullable().optional()
+				}),
+				rfqs_products_quantities: z.object({ quantity: z.number().positive() }).array()
+			})
+			.array()
+			.superRefine((fields, ctx) => {
+				for (let i = 0; i < fields.length; i++) {
+					if (fields[i].product.nsn != null && fields[i].product.nsn?.toString().length !== 13) {
+						ctx.addIssue({
+							code: 'custom',
+							message: 'Not 13 digits',
+							path: [i, 'product', 'nsn']
+						});
+					}
+				}
+			})
+	});
 
 export const addRFQFormValidation = () =>
 	z.object({

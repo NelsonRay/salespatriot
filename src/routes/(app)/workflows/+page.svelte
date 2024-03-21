@@ -32,7 +32,7 @@
 		let formsQuery = supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), rfq(*, customer(name), rfqs_products(id, rfqs_products_quantities(id))), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
+				'*, form!inner(*), product(*), rfq(*, customer(name), rfqs_products(id, rfqs_products_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
 			)
 			.eq('deleted', false)
 			.eq('submitted', false);
@@ -91,6 +91,14 @@
 
 		return `Parts: ${parts}, Quantities: ${qty}`;
 	}
+
+	function getCommercialFormTitle(forms, form) {
+		if (form.id === '5a91b7a7-513f-4067-8776-1cb01f334c96') {
+			return forms.rfq_public.values.customer.name + ' / ' + forms.rfq_public.values.received_at;
+		} else {
+			return forms?.product?.number ?? forms.rfq?.customer?.name + ' / ' + forms.rfq.received_at;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -137,8 +145,7 @@
 							<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
 								<div class="flex flex-row justify-between items-center">
 									<p class="font-semibold text-sm">
-										{forms?.product?.number ??
-											forms.rfq?.customer?.name + ' / ' + forms.rfq.received_at}
+										{getCommercialFormTitle(forms, form)}
 									</p>
 									<div class="flex flex-row items-center space-x-1">
 										{#if forms.waiting}
@@ -150,6 +157,9 @@
 								</div>
 								{#if forms?.rfq}
 									<p class="mt-1 font-medium">{getRFQDescription(forms?.rfq)}</p>
+								{/if}
+								{#if forms?.rfq_public}
+									<p class="mt-1 font-medium">{getRFQDescription(forms?.rfq_public?.values)}</p>
 								{/if}
 								<div class="flex flex-row justify-end">
 									<p class="text-gray-500">{formatDateWithTime(forms.created_at)}</p>

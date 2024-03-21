@@ -33,15 +33,29 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), rfq(*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*, product_final_pricing(*))))'
+				'*, form!inner(*), product(*), rfq_public(*), rfq(*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*, product_final_pricing(*))))'
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
 			.single();
 
 		form = fixRFQData(data);
+
 		if (['final_pricing', 'enter_quote', 'bid'].includes(form?.form?.type)) {
 			values = form.rfq;
+		} else if (form?.form?.type === 'confirm') {
+			values = {
+				customer: {},
+				received_at: data.rfq_public.values.received_at,
+				requested_return_date: data.rfq_public.values.requested_return_date,
+				rfqs_products: [
+					{
+						product: {},
+						rfqs_products_quantities: [{ quantity: null }]
+					}
+				],
+				notes: data.rfq_public.notes
+			};
 		} else {
 			values = {};
 		}
@@ -71,8 +85,6 @@
 				.select('*, form(form(name)), user(name)')
 				.limit(1)
 				.single();
-
-			console.log(data, error);
 
 			if (data) {
 				form.rfq.rfqs_comments = [...(form?.rfq?.rfqs_comments ?? []), data];
@@ -112,6 +124,7 @@
 			bind:isSubmitting
 			{waitingCallback}
 			{commentSubmitCallback}
+			{supabase}
 		/>
 	{/if}
 {:else}

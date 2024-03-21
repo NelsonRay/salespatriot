@@ -14,6 +14,7 @@
 	export let errors;
 	export let createdProductsIndexes = [];
 	export let focusedRfqProductQty;
+	export let isPublicForm;
 
 	function addProduct() {
 		rfqs_products.push({
@@ -96,14 +97,18 @@
 						</div>
 						<div class="flex flex-col">
 							<label class="text-xs text-gray-500 font-medium" for="part_number">Part Number</label>
-							<Autocomplete
-								query={getQuery}
-								bind:value={rfqs_product.product.number}
-								disabled={rfqs_product.product.id}
-								extractItemName={extractPN}
-								on:selection={(event) => handleSelection(event, index)}
-								on:create={(event) => handleCreateNew(event, index)}
-							/>
+							{#if !isPublicForm}
+								<Autocomplete
+									query={getQuery}
+									bind:value={rfqs_product.product.number}
+									disabled={rfqs_product.product.id}
+									extractItemName={extractPN}
+									on:selection={(event) => handleSelection(event, index)}
+									on:create={(event) => handleCreateNew(event, index)}
+								/>
+							{:else}
+								<TextInput bind:value={rfqs_product.product.number} />
+							{/if}
 							{#if hasErrors(errors, ['rfqs_products', index, 'product', 'number'])}
 								<label for="trim" class="label">
 									<span class="label-text-alt text-error">Required</span>
@@ -114,7 +119,7 @@
 							<label class="text-xs text-gray-500 font-medium" for="nsn">NSN</label>
 							<Currency
 								bind:value={rfqs_product.product.nsn}
-								disabled={!createdProductsIndexes.includes(index)}
+								disabled={!isPublicForm && !createdProductsIndexes.includes(index)}
 							/>
 
 							{#if hasErrors(errors, ['rfqs_products', index, 'product', 'nsn'])}
@@ -124,9 +129,11 @@
 							{/if}
 						</div>
 						<div class="flex flex-col">
-							<label class="text-xs text-gray-500 font-medium" for="cross_ref">Cross Ref</label>
+							<label class="text-xs text-gray-500 font-medium" for="cross_ref"
+								>Cross Reference</label
+							>
 							<TextInput
-								disabled={!createdProductsIndexes.includes(index)}
+								disabled={!isPublicForm && !createdProductsIndexes.includes(index)}
 								bind:value={rfqs_product.product.cross_reference}
 							/>
 						</div>

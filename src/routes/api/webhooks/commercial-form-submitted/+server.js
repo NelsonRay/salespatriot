@@ -21,6 +21,11 @@ export async function POST({ request, cookies }) {
 		});
 
 		switch (form) {
+			// confirm form
+			case '5a91b7a7-513f-4067-8776-1cb01f334c96': {
+				await supabase.from('rfqs_uploaded').insert({ values: response });
+				break;
+			}
 			// purchasing form
 			case '18055704-d9b9-42d7-958b-f5d1d5b1ba4d': {
 				const spread = ['5', '25', '50', '100', '250'];
