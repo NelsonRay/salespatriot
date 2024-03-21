@@ -162,6 +162,11 @@
 		}
 	}
 
+	async function waitingCallback() {
+		await supabase.from('forms').update({ waiting: true }).eq('id', form.id);
+		window.location.href = `${window.location.origin}/workflows`;
+	}
+
 	$: if (form?.submitted || form?.deleted) {
 		setTimeout(() => {
 			window.location.href = `${window.location.origin}/workflows`;
@@ -190,12 +195,13 @@
 		<SolicitationForm
 			solicitation_matched={form?.solicitation_matched}
 			bind:values
-			form={form?.form}
+			{form}
 			bind:nsn_matches
 			{submitCallback}
 			bind:isSubmitting
 			{isAdmin}
 			{commentSubmitCallback}
+			{waitingCallback}
 			bind:removeModalOpen
 		/>
 	{/if}
