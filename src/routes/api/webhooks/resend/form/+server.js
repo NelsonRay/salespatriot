@@ -49,7 +49,7 @@ export async function POST({ request, cookies }) {
 
 		const { data, error } = await supabase
 			.from('forms')
-			.select('form(name, user), product(number), rfq(received_at, customer(name))')
+			.select('form(name, user), product(number), rfq(received_at, customer(name)), rfq_public(*)')
 			.eq('id', record.id)
 			.limit(1)
 			.single();
@@ -58,7 +58,7 @@ export async function POST({ request, cookies }) {
 
 		userId = data.form.user;
 		btnText = `Open ${data.form.name}`;
-		subject = `${data.form.name}: ${data.product?.number ?? data.rfq.customer.name + ' / ' + data.rfq.received_at}`;
+		subject = `${data.form.name}: ${data.product?.number ?? (!data.rfq_public ? data.rfq.customer.name + ' / ' + data.rfq.received_at : data.rfq_public.values.customer.name + ' / ' + data.rfq_public.values.received_at)}`;
 		formLink = `https://salespatriot.com/commercial-form/${record.id}`;
 	}
 

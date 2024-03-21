@@ -1,9 +1,8 @@
 <script>
 	// @ts-nocheck
-	import StatusSelect from '$lib/components/form/StatusSelect.svelte';
-	import Textarea from '$lib/components/form/Textarea.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
-	import Boolean from '$lib/components/form/Boolean.svelte';
+	import Autocomplete from '$lib/components/form/Autocomplete.svelte';
+	import DateInput from '$lib/components/form/DateInput.svelte';
 	import Currency from '$lib/components/form/Currency.svelte';
 	import Comments from '$lib/components/form/Comments.svelte';
 	import Arrow from '$lib/icons/Arrow.svg';
@@ -13,6 +12,7 @@
 	import { commercialFormsValidation } from '$lib/validation';
 	import { getCommercialValueCalculation } from '$lib/utils/calculations';
 	import { hasErrors } from '$lib/utils/errors';
+	import PublicPartsTable from '../PublicPartsTable/PublicPartsTable.svelte';
 
 	export let data;
 	export let values;
@@ -22,6 +22,7 @@
 	export let waitingCallback;
 	export let isSubmitting;
 	export let commentSubmitCallback;
+	export let supabase;
 
 	let focusedRfqProductQty;
 	let reviewValues;
@@ -39,12 +40,51 @@
 			.join(' ')} Form`;
 	}
 
+	let customerSelected = true;
+	let createdProductsIndexes = [];
+
+	function handleCompanySelection(event) {
+		customerSelected = true;
+		values.customer = event.detail;
+	}
+
+	function handleCreateNewCustomer(event) {
+		customerSelected = false;
+	}
+
+	function extractCompanyName(item) {
+		return item?.name;
+	}
+
+	async function getCustomersQuery(searchValue) {
+		const { data: queryData, error } = await supabase
+			.from('customers')
+			.select('*')
+			.like('name', `%${searchValue}%`);
+
+		return queryData;
+	}
+
+	const appInput = 'border border-blue-400 rounded-md text-sm py-1 px-2';
+
 	function handleSubmit() {
 		let validationObj;
 
 		validationObj = commercialFormsValidation[form.type]();
 		const results = validationObj?.safeParse(values);
 		errors = results?.error?.issues;
+
+		if (form?.type === 'confirm') {
+			if (!values.customer.id && customerSelected) {
+				errors = [...(errors ?? []), { path: ['customer', 'name'] }];
+			}
+
+			for (let i = 0; i < values.rfqs_products.length; i++) {
+				if (!values.rfqs_products[i].product?.id && !createdProductsIndexes.includes(i)) {
+					errors = [...(errors ?? []), { path: ['rfqs_products', i, 'product', 'number'] }];
+				}
+			}
+		}
 
 		if (!errors) {
 			submitCallback();
@@ -119,6 +159,75 @@
 							>
 						</div>
 					{/if}
+				{/if}
+				{#if form?.type === 'confirm'}
+					<div class="flex flex-col space-y-5">
+						<div>
+							<p>Contact Info:</p>
+							<p>
+								{'Company: ' +
+									data.rfq_public.values.customer.name +
+									', Email: ' +
+									data.rfq_public.values.customer.email_address}
+							</p>
+						</div>
+						<div class="flex flex-row space-x-5">
+							<div class="flex flex-col">
+								<label for="customer_name">Customer Name</label>
+								<Autocomplete
+									query={getCustomersQuery}
+									bind:value={values.customer.name}
+									extractItemName={extractCompanyName}
+									on:selection={handleCompanySelection}
+									on:create={handleCreateNewCustomer}
+								/>
+								{#if hasErrors(errors, ['customer', 'name'])}
+									<label for="trim" class="label">
+										<span class="label-text-alt text-error">Required</span>
+									</label>
+								{/if}
+							</div>
+							<div class="flex flex-col">
+								<label for="customer_email">Customer Email</label>
+								<TextInput disabled={customerSelected} bind:value={values.customer.email_address} />
+							</div>
+							<div class="flex flex-col">
+								<label for="customer_number">Customer Number</label>
+								<TextInput
+									disabled={customerSelected}
+									bind:value={values.customer.customer_number}
+								/>
+							</div>
+						</div>
+						<div class="flex flex-row space-x-5">
+							<div class="flex flex-col">
+								<label for="received_at">Date Received</label>
+								<DateInput bind:value={values.received_at} />
+								{#if hasErrors(errors, ['received_at'])}
+									<label for="trim" class="label">
+										<span class="label-text-alt text-error">Required</span>
+									</label>
+								{/if}
+							</div>
+							<div class="flex flex-col">
+								<label for="return_date">Return Date</label>
+								<DateInput bind:value={values.requested_return_date} />
+							</div>
+						</div>
+					</div>
+
+					<PublicPartsTable data={data.rfq_public.values} />
+
+					<Products
+						bind:rfqs_products={values.rfqs_products}
+						showRemove
+						{supabase}
+						{errors}
+						bind:createdProductsIndexes
+					/>
+
+					<p class="text-lg mt-10 font-medium">Notes</p>
+					<textarea class="flex min-h-16 overflow-y-auto {appInput}" bind:value={values.notes} />
 				{/if}
 			</div>
 		</div>
