@@ -163,9 +163,9 @@
 	function showForm(form, type) {
 		switch (type) {
 			case 'first_article':
-				return form === null && solicitation_matched.solicitation.first_article;
+				return form == null && solicitation_matched.solicitation.first_article;
 			default:
-				return form === null || form.type === 'final_pricing' || form.type === type;
+				return form == null || form?.type === 'final_pricing' || form?.type === type;
 		}
 	}
 </script>
@@ -377,7 +377,7 @@
 					</div>
 				{/if}
 
-				{#if form?.form === null || form?.form?.type === 'opportunity' || form?.form?.type === 'final_pricing'}
+				{#if form?.form == null || form?.form?.type === 'opportunity' || form?.form?.type === 'final_pricing'}
 					<div>
 						<p class="text-lg mt-5 mb-2 font-semibold">Forms</p>
 						<Forms data={solicitation_matched?.forms ?? []} />
@@ -412,7 +412,7 @@
 		</div>
 		<div class="two bg-neutral-50">
 			<div class="flex flex-col pl-6 py-6">
-				{#if form?.form === null || form?.form?.type === 'final_pricing'}
+				{#if form?.form == null || form?.form?.type === 'final_pricing'}
 					<div class="flex flex-row overflow-x-auto mb-2">
 						{#each statuses as status}
 							<div class="flex flex-col items-center">
@@ -431,12 +431,12 @@
 				{#each forms as type}
 					{#if showForm(form?.form, type)}
 						<div>
-							{#if !(form?.form === null || form?.form?.type === 'final_pricing')}
+							{#if !(form?.form == null || form?.form?.type === 'final_pricing')}
 								<p class="text-gray-400 mb-2 font-medium">{getFormTitle(type)}</p>
 							{/if}
 							{#each fieldsForForms[type] as field}
 								<div>
-									{#if field.type === 'status' && !(form?.form === null || form?.form?.type === 'final_pricing')}
+									{#if field.type === 'status' && !(form?.form == null || form?.form?.type === 'final_pricing')}
 										<div class="mb-2">
 											<p class="mb-1 text-sm">{getStatusTitle(field.status)}</p>
 											<StatusSelect

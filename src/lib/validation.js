@@ -140,7 +140,7 @@ export const masterFormValidation = (/** @type {Boolean} */ includeWaive) =>
 			}
 
 			if (forceCheck || fields.status.includes('bom:created')) {
-				if (!fields.bom_url)
+				if (!fields.bom_url && !fields.status.includes('bom:in_house_part'))
 					ctx.addIssue({
 						code: 'custom',
 						message: 'BOM URL is required.',
