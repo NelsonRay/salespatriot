@@ -27,7 +27,7 @@
 	export let removeModalOpen;
 
 	// get updated review values
-	$: ({ values: reviewValues, award_details } = nsn_matches
+	$: ({ values: reviewValues, awardDetails } = nsn_matches
 		? getReviewValues([{ ...solicitation_matched, ...(values || {}) }, ...(nsn_matches ?? [])])
 		: {});
 </script>
@@ -372,7 +372,7 @@
 									{getStatusName(reviewValues.previous_bid_outcome) ?? ''}
 								</div>
 							</div>
-							{#if award_details}
+							{#if awardDetails}
 								<div class="flex flex-row space-x-5 mt-2">
 									<div class="flex flex-col space-y-2">
 										<p class="text-gray-400">Price Won At:</p>
@@ -382,15 +382,15 @@
 										{/if}
 									</div>
 									<div class="flex flex-col space-y-2">
-										<p class={award_details.unit_price_won_at ? '' : 'text-gray-300'}>
-											{award_details.unit_price_won_at ?? 'N/A'}
+										<p class={awardDetails.unit_price_won_at ? '' : 'text-gray-300'}>
+											{awardDetails.unit_price_won_at ?? 'N/A'}
 										</p>
 										{#if reviewValues.previous_bid_outcome === 'award:lost'}
-											<p class={award_details.company_awarded ? '' : 'text-gray-300'}>
-												{award_details.company_awarded ?? 'N/A'}
+											<p class={awardDetails.company_awarded ? '' : 'text-gray-300'}>
+												{awardDetails.company_awarded ?? 'N/A'}
 											</p>
-											<p class={award_details.date_awarded ? '' : 'text-gray-300'}>
-												{award_details.date_awarded ?? 'N/A'}
+											<p class={awardDetails.date_awarded ? '' : 'text-gray-300'}>
+												{awardDetails.date_awarded ?? 'N/A'}
 											</p>
 										{/if}
 									</div>
