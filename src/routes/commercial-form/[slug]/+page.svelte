@@ -10,6 +10,7 @@
 	let form = null;
 	let values = {};
 	let isSubmitting = false;
+	let rfqsForPurchasingForm;
 
 	function fixRFQData(form) {
 		let fix = form;
@@ -38,6 +39,16 @@
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
 			.single();
+
+		if (data?.form?.type === 'purchasing') {
+			const { data: d, error: e } = await supabase
+				.from('rfqs_products')
+				.select('id, rfq!inner(id, status, customer(*), received_at)')
+				.eq('product', data.product.id)
+				.filter('rfq.status', 'cs', `{"purchasing:in_progress"}`);
+
+			rfqsForPurchasingForm = d?.map((r) => r?.rfq);
+		}
 
 		form = fixRFQData(data);
 
@@ -139,6 +150,7 @@
 			{waitingCallback}
 			{commentSubmitCallback}
 			{supabase}
+			{rfqsForPurchasingForm}
 		/>
 	{/if}
 {/if}
