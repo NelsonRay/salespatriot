@@ -187,8 +187,8 @@ export function tableFieldMapper(obj, column) {
 			let value = '';
 
 			let skipComma = true;
-			for (let match of obj?.solicitation.nsn?.matching_nsns ?? []) {
-				value += match.product.number;
+			for (let match of obj?.solicitation.nsn?.products ?? []) {
+				value += match.number;
 				if (!skipComma) value += ', ';
 				skipComma = false;
 			}

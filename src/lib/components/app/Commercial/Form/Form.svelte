@@ -153,7 +153,7 @@
 						<div>
 							<p class="mb-1">Waiting on Vendors?</p>
 							<button
-								class="btn px-6 py-2 rounded-3xl text-xs bg-orange-400 shadow-md"
+								class="btn px-6 py-2 rounded-3xl text-xs bg-yellow-400 shadow-md"
 								disabled={data.waiting}
 								on:click={waitingCallback}>Waiting</button
 							>

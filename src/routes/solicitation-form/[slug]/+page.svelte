@@ -22,7 +22,7 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				`*, form!inner(*), solicitation_matched!inner(*, solicitations_matched_comments(*, user(name), form(form(name))), solicitation!inner(*, nsn(id, matching_nsns(*, product(number)))), forms(*, form(*), submitted_by(*)), matching_rule(*))`
+				`*, form!inner(*), solicitation_matched!inner(*, solicitations_matched_comments(*, user(name), form(form(name))), solicitation!inner(*, nsn(id, products(*))), forms(*, form(*), submitted_by(*)), matching_rule(*))`
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
@@ -31,9 +31,7 @@
 		if (['opportunity', 'final_pricing', 'bid'].includes(data.form.type)) {
 			const { data: n_data, error: n_error } = await supabase
 				.from('solicitations_matched')
-				.select(
-					'*, solicitation!inner(*, nsn(id, matching_nsns(*, product(number))), expires_on), matching_rule(*)'
-				)
+				.select('*, solicitation!inner(*, nsn(id, products(*)), expires_on), matching_rule(*)')
 				.eq('solicitation.nsn', data.solicitation_matched.solicitation.nsn.id)
 				.lt('solicitation.issued_on', data.solicitation_matched.solicitation.issued_on);
 
@@ -164,6 +162,11 @@
 		}
 	}
 
+	async function waitingCallback() {
+		await supabase.from('forms').update({ waiting: true }).eq('id', form.id);
+		window.location.href = `${window.location.origin}/workflows`;
+	}
+
 	$: if (form?.submitted || form?.deleted) {
 		setTimeout(() => {
 			window.location.href = `${window.location.origin}/workflows`;
@@ -192,12 +195,13 @@
 		<SolicitationForm
 			solicitation_matched={form?.solicitation_matched}
 			bind:values
-			form={form?.form}
+			{form}
 			bind:nsn_matches
 			{submitCallback}
 			bind:isSubmitting
 			{isAdmin}
 			{commentSubmitCallback}
+			{waitingCallback}
 			bind:removeModalOpen
 		/>
 	{/if}

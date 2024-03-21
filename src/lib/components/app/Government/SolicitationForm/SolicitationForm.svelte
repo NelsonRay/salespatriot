@@ -30,6 +30,7 @@
 	export let commentSubmitCallback;
 	export let awardModalOpen = false;
 	export let removeModalOpen = false;
+	export let waitingCallback;
 
 	let errors;
 
@@ -40,12 +41,12 @@
 	// 	];
 	// }
 
-	if (form?.type === 'bid') {
+	if (form?.form?.type === 'bid') {
 		values.status = [...(values.status.filter((s) => !s.includes('bid')) ?? []), 'bid:bid'];
 	}
 
 	function goBack() {
-		if (form) {
+		if (form?.form) {
 			window.location.href = `${window.location.origin}/workflows`;
 		} else {
 			window.location.href = `${window.location.origin}`;
@@ -78,9 +79,9 @@
 	function handleSubmit() {
 		let validationObj;
 
-		switch (form?.type) {
+		switch (form?.form?.type) {
 			case 'bid':
-				validationObj = formsValidation[form.type](
+				validationObj = formsValidation[form?.form.type](
 					solicitation_matched?.solicitation?.first_article
 				);
 				break;
@@ -90,7 +91,7 @@
 				validationObj = masterFormValidation(solicitation_matched?.solicitation?.first_article);
 				break;
 			default:
-				validationObj = formsValidation[form.type]();
+				validationObj = formsValidation[form?.form.type]();
 				break;
 		}
 
@@ -148,8 +149,8 @@
 		let text = '';
 
 		let skipComma = true;
-		for (let match of solicitation_matched?.solicitation.nsn?.matching_nsns ?? []) {
-			text += match.product.number;
+		for (let match of solicitation_matched?.solicitation.nsn?.products ?? []) {
+			text += match.number;
 			if (!skipComma) text += ', ';
 			skipComma = false;
 		}
@@ -162,9 +163,9 @@
 	function showForm(form, type) {
 		switch (type) {
 			case 'first_article':
-				return form === null && solicitation_matched.solicitation.first_article;
+				return form == null && solicitation_matched.solicitation.first_article;
 			default:
-				return form === null || form.type === 'final_pricing' || form.type === type;
+				return form == null || form?.type === 'final_pricing' || form?.type === type;
 		}
 	}
 </script>
@@ -197,7 +198,7 @@
 					{solicitation_matched}
 					{nsn_matches}
 					{values}
-					{form}
+					form={form?.form}
 					bind:awardModalOpen
 					bind:removeModalOpen
 				/>
@@ -210,13 +211,13 @@
 					/>
 				</div>
 
-				{#if form?.type === 'bom' || (form?.type === 'labor' && solicitation_matched?.engineering_notes)}
+				{#if form?.form?.type === 'bom' || (form?.form?.type === 'labor' && solicitation_matched?.engineering_notes)}
 					<div>
 						<p class="mb-1">Engineering Notes</p>
 						<Textarea value={solicitation_matched?.engineering_notes} disabled />
 					</div>
 				{/if}
-				{#if form?.type === 'purchasing'}
+				{#if form?.form?.type === 'purchasing'}
 					<div class="space-y-3">
 						<div>
 							<p class="mb-1">Max Purchasing Budget for Total Contract</p>
@@ -245,9 +246,17 @@
 								disabled
 							/>
 						</div>
+						<div>
+							<p class="mb-1">Waiting on Vendors?</p>
+							<button
+								class="btn px-6 py-2 rounded-3xl text-xs bg-yellow-400 shadow-md"
+								disabled={form?.waiting}
+								on:click={waitingCallback}>Waiting</button
+							>
+						</div>
 					</div>
 				{/if}
-				{#if form?.type === 'labor'}
+				{#if form?.form?.type === 'labor'}
 					<div>
 						<p class="mb-1">Max Labor Minutes</p>
 						<Currency
@@ -256,7 +265,7 @@
 						/>
 					</div>
 				{/if}
-				{#if form?.type === 'enter_quote'}
+				{#if form?.form?.type === 'enter_quote'}
 					<div class="space-y-3">
 						<div>
 							<p class="mb-1">Total Value</p>
@@ -294,7 +303,7 @@
 						</div>
 					</div>
 				{/if}
-				{#if form?.type === 'bid'}
+				{#if form?.form?.type === 'bid'}
 					<div class="space-y-3">
 						<div>
 							<a
@@ -357,7 +366,7 @@
 						{/if}
 					</div>
 				{/if}
-				{#if form?.type === 'bom'}
+				{#if form?.form?.type === 'bom'}
 					<div>
 						<p class="mb-1">BOM Template</p>
 						<a
@@ -368,7 +377,7 @@
 					</div>
 				{/if}
 
-				{#if form === null || form?.type === 'opportunity' || form?.type === 'final_pricing'}
+				{#if form?.form == null || form?.form?.type === 'opportunity' || form?.form?.type === 'final_pricing'}
 					<div>
 						<p class="text-lg mt-5 mb-2 font-semibold">Forms</p>
 						<Forms data={solicitation_matched?.forms ?? []} />
@@ -386,7 +395,7 @@
 						<p class="text-lg mt-5 mb-2 font-semibold">Award History</p>
 						<AwardHistory data={solicitation_matched.solicitation.award_history} />
 					</div>
-				{:else if form?.type === 'bid'}
+				{:else if form?.form?.type === 'bid'}
 					<div>
 						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
 						{#if nsn_matches?.length > 0}
@@ -403,7 +412,7 @@
 		</div>
 		<div class="two bg-neutral-50">
 			<div class="flex flex-col pl-6 py-6">
-				{#if form === null || form.type === 'final_pricing'}
+				{#if form?.form == null || form?.form?.type === 'final_pricing'}
 					<div class="flex flex-row overflow-x-auto mb-2">
 						{#each statuses as status}
 							<div class="flex flex-col items-center">
@@ -420,21 +429,21 @@
 					</div>
 				{/if}
 				{#each forms as type}
-					{#if showForm(form, type)}
+					{#if showForm(form?.form, type)}
 						<div>
-							{#if !(form === null || form.type === 'final_pricing')}
+							{#if !(form?.form == null || form?.form?.type === 'final_pricing')}
 								<p class="text-gray-400 mb-2 font-medium">{getFormTitle(type)}</p>
 							{/if}
 							{#each fieldsForForms[type] as field}
 								<div>
-									{#if field.type === 'status' && !(form === null || form.type === 'final_pricing')}
+									{#if field.type === 'status' && !(form?.form == null || form?.form?.type === 'final_pricing')}
 										<div class="mb-2">
 											<p class="mb-1 text-sm">{getStatusTitle(field.status)}</p>
 											<StatusSelect
 												status={field.status}
 												bind:value={values.status}
 												tags={govTags}
-												skipInProgress={form !== null}
+												skipInProgress={form?.form !== null}
 											/>
 											{#if errors?.status}
 												<label for="trim" class="label">
@@ -509,7 +518,7 @@
 						</div>
 					{/if}
 				{/each}
-				{#if (values.status ?? []).includes('opportunity:pursue') && form?.type === 'opportunity'}
+				{#if (values.status ?? []).includes('opportunity:pursue') && form?.form?.type === 'opportunity'}
 					<div class="space-y-2">
 						<div>
 							<p class="mb-1 text-sm">Skip Engineering Feasibility Form</p>

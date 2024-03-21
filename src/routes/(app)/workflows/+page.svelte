@@ -41,7 +41,7 @@
 
 		const { data, error } = await formsQuery;
 
-		let formQuery = supabase.from('form').select('id, name, user!inner(*), step');
+		let formQuery = supabase.from('form').select('id, name, user!inner(*), step, type');
 
 		if (isUser) formQuery = formQuery.eq('user.id', session.user.id);
 
@@ -63,13 +63,16 @@
 	function getSortedForms(workflows, form) {
 		let forms = workflows.forms.filter((e) => e.form.id === form.id && !e.submitted);
 
-		switch (form.id) {
-			case '50e95568-180b-46d5-a341-f216bb2a3c17':
+		switch (form.type) {
+			case 'opportunity':
+				console.log(1);
 				return forms.sort(
 					(a, b) =>
 						b?.solicitation_matched?.solicitation?.estimated_value -
 						a?.solicitation_matched?.solicitation?.estimated_value
 				);
+			case 'purchasing':
+				return forms.sort((a, b) => a?.waiting - b?.waiting);
 			default:
 				return [
 					...forms.filter((e) => e?.commercial),
@@ -149,7 +152,7 @@
 									</p>
 									<div class="flex flex-row items-center space-x-1">
 										{#if forms.waiting}
-											<div class="px-2 py-1 rounded-md bg-orange-400">
+											<div class="px-2 py-1 rounded-md bg-yellow-400 mb-1">
 												<p>Waiting</p>
 											</div>
 										{/if}
@@ -194,30 +197,43 @@
 										</div>
 									</div>
 								</div>
-								<p class="mt-2 font-medium">
-									{forms.solicitation_matched.solicitation.description}
-								</p>
-								{#if form?.id === '50e95568-180b-46d5-a341-f216bb2a3c17'}
-									<p>{formatCurrency(forms.solicitation_matched.solicitation.estimated_value)}</p>
-								{/if}
-								<p>
-									{`${forms.solicitation_matched.solicitation.quantity} ${forms.solicitation_matched.solicitation.quantity_units}`}
-								</p>
-								<p
-									class={calculateDaysDifference(
-										forms.solicitation_matched.solicitation.expires_on
-									) <= 2
-										? 'text-red-400'
-										: ''}
-								>
-									Expires {([1, -1, 0].includes(
-										calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)
-									)
-										? ''
-										: ' on ') +
-										formatDateWithTime(forms.solicitation_matched.solicitation.expires_on) +
-										` (${calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)}d)`}
-								</p>
+								<div class="flex flex-row justify-between">
+									<div class="flex flex-col">
+										<p class="mt-2 font-medium">
+											{forms.solicitation_matched.solicitation.description}
+										</p>
+										{#if form?.id === '50e95568-180b-46d5-a341-f216bb2a3c17'}
+											<p>
+												{formatCurrency(forms.solicitation_matched.solicitation.estimated_value)}
+											</p>
+										{/if}
+										<p>
+											{`${forms.solicitation_matched.solicitation.quantity} ${forms.solicitation_matched.solicitation.quantity_units}`}
+										</p>
+										<p
+											class={calculateDaysDifference(
+												forms.solicitation_matched.solicitation.expires_on
+											) <= 2
+												? 'text-red-400'
+												: ''}
+										>
+											Expires {([1, -1, 0].includes(
+												calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)
+											)
+												? ''
+												: ' on ') +
+												formatDateWithTime(forms.solicitation_matched.solicitation.expires_on) +
+												` (${calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)}d)`}
+										</p>
+									</div>
+									<div>
+										{#if forms.waiting}
+											<div class="px-2 py-1 rounded-md bg-yellow-400 mt-1">
+												<p>Waiting</p>
+											</div>
+										{/if}
+									</div>
+								</div>
 								<div class="flex flex-row justify-end">
 									<p class="text-gray-500">{formatDateWithTime(forms.created_at)}</p>
 								</div>
