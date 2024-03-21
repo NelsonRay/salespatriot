@@ -50,7 +50,7 @@ export const commercialFormsValidation = {
 		z.object({
 			quote_number: z.string().min(1)
 		}),
-	send_quote: () => z.object({})
+	bid: () => z.object({})
 };
 
 export const publicRFQFormValidation = () =>
