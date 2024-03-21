@@ -46,11 +46,7 @@
 	}
 
 	function goBack() {
-		if (form?.form) {
-			window.location.href = `${window.location.origin}/workflows`;
-		} else {
-			window.location.href = `${window.location.origin}`;
-		}
+		history.back();
 	}
 
 	const forms = [

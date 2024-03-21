@@ -29,7 +29,7 @@
 	let errors;
 
 	function goBack() {
-		window.location.href = `${window.location.origin}`;
+		history.back();
 	}
 
 	function getFormTitle(type) {
