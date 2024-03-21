@@ -148,8 +148,8 @@
 		let text = '';
 
 		let skipComma = true;
-		for (let match of solicitation_matched?.solicitation.nsn?.matching_nsns ?? []) {
-			text += match.product.number;
+		for (let match of solicitation_matched?.solicitation.nsn?.products ?? []) {
+			text += match.number;
 			if (!skipComma) text += ', ';
 			skipComma = false;
 		}
