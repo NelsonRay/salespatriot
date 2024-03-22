@@ -130,6 +130,62 @@ export const masterFormValidation = (/** @type {Boolean} */ includeWaive) =>
 		.superRefine((fields, ctx) => {
 			const forceCheck = fields.status.includes('final_pricing:complete');
 
+			/* If final pricing is complete, check other statuses */
+
+			if (forceCheck) {
+				if (
+					!['opportunity:pursue', 'opportunity:maybe_pursue'].some((o) =>
+						fields.status.some((s) => s === o)
+					)
+				) {
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Required that Opportunity is marked as Pursue or Maybe Pursue',
+						path: ['status']
+					});
+				} else if (
+					!['engineering:can_build', 'engineering:maybe_can_build'].some((o) =>
+						fields.status.some((s) => s === o)
+					)
+				) {
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Required that Engineering is marked as Can Build or Maybe Can Build',
+						path: ['status']
+					});
+				} else if (
+					!['bom:created', 'bom:in_house_part'].some((o) => fields.status.some((s) => s === o))
+				) {
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Required that Bom is marked as Created or In House Part',
+						path: ['status']
+					});
+				} else if (
+					![
+						'purchasing:within_budget',
+						'purchasing:slightly_outside_budget',
+						'purchasing:out_of_budget'
+					].some((o) => fields.status.some((s) => s === o))
+				) {
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Purchasing Status is required',
+						path: ['status']
+					});
+				} else if (
+					!['labor:within_time', 'labor:slightly_outside_time', 'labor:not_within_time'].some((o) =>
+						fields.status.some((s) => s === o)
+					)
+				) {
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Labor Status is required',
+						path: ['status']
+					});
+				}
+			}
+
 			if (forceCheck || fields.status.includes('opportunity:pursue')) {
 				if (!fields.unit_price)
 					ctx.addIssue({

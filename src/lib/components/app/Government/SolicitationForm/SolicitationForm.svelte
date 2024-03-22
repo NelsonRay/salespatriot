@@ -423,6 +423,11 @@
 							</div>
 						{/each}
 					</div>
+					{#if errors?.status}
+					<label for="trim" class="label">
+						<span class="label-text-alt text-error">{errors?.status[0]}</span>
+					</label>
+				{/if}
 				{/if}
 				{#each forms as type}
 					{#if showForm(form?.form, type)}
