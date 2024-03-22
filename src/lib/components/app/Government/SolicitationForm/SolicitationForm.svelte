@@ -14,7 +14,7 @@
 	import { govTags } from '$lib/tags';
 	import { capitalizeFirstLetter, formatCurrency } from '$lib/helpers';
 	import { fieldsForForms } from '$lib/forms';
-	import { nsnColumns } from '$lib/table';
+	import { getNSNColumns } from '$lib/table';
 	import PartnerSelect from '$lib/components/form/PartnerSelect.svelte';
 	import { formsValidation, masterFormValidation } from '$lib/validation';
 	import Forms from '$lib/components/app/Government/Forms/Forms.svelte';
@@ -380,7 +380,7 @@
 
 						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
 						{#if nsn_matches?.length > 0}
-							<Table data={nsn_matches} columns={nsnColumns} openNewTab={true} />
+							<Table data={nsn_matches} columns={getNSNColumns(form?.form?.type === 'opportunity')} openNewTab={true} />
 						{:else}
 							<p class="text-gray-400">NSN not seen before</p>
 						{/if}
@@ -395,7 +395,7 @@
 					<div>
 						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
 						{#if nsn_matches?.length > 0}
-							<Table data={nsn_matches} columns={nsnColumns} openNewTab={true} blockEditing />
+							<Table data={nsn_matches} columns={getNSNColumns(false)} openNewTab={true} blockEditing />
 						{:else}
 							<p class="text-gray-400">NSN not seen before</p>
 						{/if}
