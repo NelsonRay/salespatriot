@@ -60,7 +60,7 @@
 			<p class="text-lg font-semibold">{solicitation_matched.solicitation.id}</p>
 			<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 		</div>
-		{#if form === null || form?.type == 'opportunity'}
+		{#if form == null || form?.type == 'opportunity'}
 			<div class="flex flex-row items-center space-x-3">
 				{#if solicitation_matched.removed_option}
 					<div>
@@ -91,7 +91,7 @@
 						</button>
 					</div>
 				{/if}
-				{#if form === null && solicitation_matched.status?.filter( (s) => s.includes('award') )?.length > 0}
+				{#if form == null && solicitation_matched.status?.filter( (s) => s.includes('award') )?.length > 0}
 					<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-3">
 						<div class="flex flex-col">
 							<div class="flex flex-row items-center space-x-2">
