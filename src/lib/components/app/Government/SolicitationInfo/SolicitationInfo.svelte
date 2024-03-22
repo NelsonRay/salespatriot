@@ -27,7 +27,7 @@
 	export let removeModalOpen;
 
 	// get updated review values
-	$: ({ values: reviewValues, award_details } = nsn_matches
+	$: ({ values: reviewValues, awardDetails } = nsn_matches
 		? getReviewValues([{ ...solicitation_matched, ...(values || {}) }, ...(nsn_matches ?? [])])
 		: {});
 </script>
@@ -60,7 +60,7 @@
 			<p class="text-lg font-semibold">{solicitation_matched.solicitation.id}</p>
 			<p class="text-sm mt-1">{solicitation_matched.solicitation.description}</p>
 		</div>
-		{#if form === null || form?.type == 'opportunity'}
+		{#if form == null || form?.type == 'opportunity'}
 			<div class="flex flex-row items-center space-x-3">
 				{#if solicitation_matched.removed_option}
 					<div>
@@ -91,7 +91,7 @@
 						</button>
 					</div>
 				{/if}
-				{#if form === null && solicitation_matched.status?.filter( (s) => s.includes('award') )?.length > 0}
+				{#if form == null && solicitation_matched.status?.filter( (s) => s.includes('award') )?.length > 0}
 					<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-3">
 						<div class="flex flex-col">
 							<div class="flex flex-row items-center space-x-2">
@@ -372,7 +372,7 @@
 									{getStatusName(reviewValues.previous_bid_outcome) ?? ''}
 								</div>
 							</div>
-							{#if award_details}
+							{#if awardDetails}
 								<div class="flex flex-row space-x-5 mt-2">
 									<div class="flex flex-col space-y-2">
 										<p class="text-gray-400">Price Won At:</p>
@@ -382,15 +382,15 @@
 										{/if}
 									</div>
 									<div class="flex flex-col space-y-2">
-										<p class={award_details.unit_price_won_at ? '' : 'text-gray-300'}>
-											{award_details.unit_price_won_at ?? 'N/A'}
+										<p class={awardDetails.unit_price_won_at ? '' : 'text-gray-300'}>
+											{awardDetails.unit_price_won_at ?? 'N/A'}
 										</p>
 										{#if reviewValues.previous_bid_outcome === 'award:lost'}
-											<p class={award_details.company_awarded ? '' : 'text-gray-300'}>
-												{award_details.company_awarded ?? 'N/A'}
+											<p class={awardDetails.company_awarded ? '' : 'text-gray-300'}>
+												{awardDetails.company_awarded ?? 'N/A'}
 											</p>
-											<p class={award_details.date_awarded ? '' : 'text-gray-300'}>
-												{award_details.date_awarded ?? 'N/A'}
+											<p class={awardDetails.date_awarded ? '' : 'text-gray-300'}>
+												{awardDetails.date_awarded ?? 'N/A'}
 											</p>
 										{/if}
 									</div>

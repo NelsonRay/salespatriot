@@ -10,6 +10,7 @@
 	let form = null;
 	let values = {};
 	let isSubmitting = false;
+	let rfqsForPurchasingForm;
 
 	function fixRFQData(form) {
 		let fix = form;
@@ -38,6 +39,16 @@
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
 			.single();
+
+		if (data?.form?.type === 'purchasing') {
+			const { data: d, error: e } = await supabase
+				.from('rfqs_products')
+				.select('id, rfq!inner(id, status, customer(*), received_at)')
+				.eq('product', data.product.id)
+				.filter('rfq.status', 'cs', `{"purchasing:in_progress"}`);
+
+			rfqsForPurchasingForm = d?.map((r) => r?.rfq);
+		}
 
 		form = fixRFQData(data);
 
@@ -69,7 +80,7 @@
 
 	async function waitingCallback() {
 		await supabase.from('forms').update({ waiting: true }).eq('id', form.id);
-		window.location.href = `${window.location.origin}/workflows`;
+		history.back();
 	}
 
 	async function commentSubmitCallback(message) {
@@ -106,6 +117,12 @@
 			isSubmitting = false; // hide loading spinner
 		}
 	}
+
+	$: if (form?.submitted || form?.deleted) {
+		setTimeout(() => {
+			history.back();
+		}, 750);
+	}
 </script>
 
 <svelte:head>
@@ -114,8 +131,16 @@
 	</title>
 </svelte:head>
 
-{#if !form?.submitted}
-	{#if form}
+{#if form}
+	{#if form?.submitted}
+		<div class="grid place-content-center">
+			<p class="mt-12 ml-12">Thank you for submitting form!</p>
+		</div>
+	{:else if form?.deleted}
+		<div class="grid place-content-center">
+			<p class="mt-12 ml-12">Form is no longer active.</p>
+		</div>
+	{:else}
 		<Form
 			data={form}
 			bind:values
@@ -125,8 +150,7 @@
 			{waitingCallback}
 			{commentSubmitCallback}
 			{supabase}
+			{rfqsForPurchasingForm}
 		/>
 	{/if}
-{:else}
-	<p class="mt-12">Thank you for submitting form!</p>
 {/if}

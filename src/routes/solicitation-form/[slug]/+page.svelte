@@ -125,7 +125,7 @@
 		removeModalOpen = false;
 
 		if (removeValues.removed) {
-			window.location.href = `${window.location.origin}/workflows`;
+			history.back();
 		} else {
 			window.location.reload();
 		}
@@ -164,12 +164,12 @@
 
 	async function waitingCallback() {
 		await supabase.from('forms').update({ waiting: true }).eq('id', form.id);
-		window.location.href = `${window.location.origin}/workflows`;
+		history.back();
 	}
 
 	$: if (form?.submitted || form?.deleted) {
 		setTimeout(() => {
-			window.location.href = `${window.location.origin}/workflows`;
+			history.back();
 		}, 750);
 	}
 </script>

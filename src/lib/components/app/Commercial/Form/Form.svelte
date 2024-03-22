@@ -12,7 +12,8 @@
 	import { commercialFormsValidation } from '$lib/validation';
 	import { getCommercialValueCalculation } from '$lib/utils/calculations';
 	import { hasErrors } from '$lib/utils/errors';
-	import PublicPartsTable from '../PublicPartsTable/PublicPartsTable.svelte';
+	import PublicPartsTable from '$lib/components/app/Commercial/PublicPartsTable/PublicPartsTable.svelte';
+	import RFQsTable from '$lib/components/app/Commercial/RFQsTable/RFQsTable.svelte';
 
 	export let data;
 	export let values;
@@ -23,13 +24,14 @@
 	export let isSubmitting;
 	export let commentSubmitCallback;
 	export let supabase;
+	export let rfqsForPurchasingForm;
 
 	let focusedRfqProductQty;
 	let reviewValues;
 	let errors;
 
 	function goBack() {
-		window.location.href = `${window.location.origin}`;
+		history.back();
 	}
 
 	function getFormTitle(type) {
@@ -150,6 +152,9 @@
 						<TextInput value={data?.product?.cross_reference} disabled fullWidth={false} />
 					</div>
 					{#if form?.type === 'purchasing'}
+						<div>
+							<RFQsTable data={rfqsForPurchasingForm ?? []} />
+						</div>
 						<div>
 							<p class="mb-1">Waiting on Vendors?</p>
 							<button
