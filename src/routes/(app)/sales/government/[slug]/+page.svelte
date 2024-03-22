@@ -146,7 +146,7 @@
 		</div>
 		<div class="flex flex-row items-center">
 			<a
-				href="/sales/commercial/rfqs"
+				href="/sales/commercial/active-rfqs"
 				class="rounded-r-none text-xs bg-neutral-200 p-2 rounded-l-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {$page.url.pathname.includes(
 					'commercial'
 				)

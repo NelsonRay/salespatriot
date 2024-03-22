@@ -17,8 +17,9 @@
 		{ type: 'status', status: 'enter_quote' },
 		{ type: 'status', status: 'send_quote' },
 		{ type: 'status', status: 'response' },
-		{ type: 'field', field: 'received_at' },
-		{ type: 'field', field: 'requested_return_date' },
+		{ type: 'date', field: 'received_at' },
+		{ type: 'date', field: 'requested_return_date' },
+		{ type: 'date', field: 'sent_quote_timestamp' },
 		{ type: 'field', field: 'quote_number' },
 		{ type: 'field', field: 'customer.name' },
 		{ type: 'field', field: 'customer.email_addresses' }
