@@ -13,7 +13,7 @@
 	<AppRail>
 		<AppRailAnchor
 			title="Government"
-			href="/sales/commercial/rfqs"
+			href="/sales/commercial/active-rfqs"
 			selected={$page.url.pathname.toString().includes('/sales')}
 		>
 			<svelte:fragment slot="lead"

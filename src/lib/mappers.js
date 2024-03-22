@@ -55,6 +55,7 @@ export function commercialFieldsMapper(field) {
 	const map = {
 		received_at: 'Date Received',
 		requested_return_date: 'Requested Return Date',
+		sent_quote_timestamp: 'Sent Quote',
 		quote_number: 'Quote Number',
 		'customer.name': 'Customer',
 		'customer.email_addresses': 'Email',
@@ -109,6 +110,16 @@ export function commercialTableFieldMapper(obj, column) {
 		};
 	} else if (column.type === 'value') {
 		return { header: 'Est. Value', value: '' };
+	} else if (column.type === 'date') {
+		const header = commercialFieldsMapper(column.field);
+
+		let value;
+
+		if (obj?.[column.field]) {
+			value = formatMonthDayYearDate(obj?.[column.field]);
+		}
+
+		return { header, value };
 	} else {
 		const header = commercialFieldsMapper(column.field);
 
@@ -119,6 +130,7 @@ export function commercialTableFieldMapper(obj, column) {
 				value = value[key];
 			}
 		}
+
 		return { header, value };
 	}
 }
