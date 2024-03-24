@@ -5,7 +5,6 @@
 	import { formatDate } from '$lib/helpers.js';
 	import { hasErrors } from '$lib/utils/errors.js';
 	import TextInput from '$lib/components/form/TextInput.svelte';
-	import DateInput from '$lib/components/form/DateInput.svelte';
 	import ADGLogo from '$lib/images/logo.png';
 	import { page } from '$app/stores';
 
@@ -33,30 +32,27 @@
 	async function handleSubmit() {
 		const results = publicRFQFormValidation()?.safeParse(rfq);
 		errors = results?.error?.issues;
-		console.log(errors);
-
+		
 		if (!errors) {
-			const res = await fetch('/api/rfq-public', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ values: rfq, firm: $page.params.slug })
-			});
+			// const res = await fetch('/api/rfq-public', {
+			// 	method: 'POST',
+			// 	headers: { 'Content-Type': 'application/json' },
+			// 	body: JSON.stringify({ values: rfq, firm: $page.params.slug })
+			// });
 
-			if (res.status === 200) {
-				submitted = true;
-			}
+			// if (res.status === 200) {
+			// 	submitted = true;
+			// }
 		}
 	}
 
 	async function reloadPage() {
 		window.location.reload();
 	}
-
-	const appInput = 'border border-blue-400 rounded-md text-sm py-1 px-2';
 </script>
 
 <svelte:head>
-	<title>Add RFQ</title>
+	<title>Request for Quote - Aurora Defense Group</title>
 </svelte:head>
 
 <div class="flex h-screen w-screen justify-center overflow-y-auto">
@@ -67,7 +63,7 @@
 			</div>
 			<h1 class="text-3xl mt-8">Request for Quote</h1>
 			<p class="text-sm mt-4 mb-8">
-				If you have any questions about a product/quote feel free to call us at 630-851-1616 or <br
+				If you have any questions about a product/quote, feel free to call us at 630-851-1616 or <br
 				/>
 				email sales@auroradefensegroup.com. We aim to return all quotes in 5 days or less.
 			</p>
@@ -92,8 +88,13 @@
 					{/if}
 				</div>
 				<div class="flex flex-col">
-					<label for="return_date">Return Date</label>
-					<DateInput bind:value={rfq.requested_return_date} />
+					<label for="return_date">Phone Number</label>
+					<TextInput bind:value={rfq.customer.phone_number} />
+					{#if hasErrors(errors, ['customer', 'phone_number'])}
+						<label for="trim" class="label">
+							<span class="label-text-alt text-error">Required</span>
+						</label>
+					{/if}
 				</div>
 			</div>
 
@@ -106,8 +107,8 @@
 				bind:createdProductsIndexes
 			/>
 
-			<p class="text-lg mt-10 font-medium">Notes</p>
-			<textarea class="flex min-h-16 overflow-y-auto {appInput}" bind:value={rfq.notes} />
+			<p class="text-lg mt-10 font-medium">Any comments about the RFQ or the parts (colors, voltages, material, etc). </p>
+			<textarea class="flex min-h-16 overflow-y-auto border rounded-md text-sm py-1 px-2" bind:value={rfq.notes} />
 
 			<div class="flex flex-row mt-5 items-center justify-center pb-32">
 				{#if !isSubmitting}
@@ -120,10 +121,13 @@
 				{/if}
 			</div>
 		{:else}
-			<p class="mt-12">Thank you for submitting form!</p>
+			<p class="mt-12">Thank you for submitted a quote with Aurora Defense Group - we will be in touch shortly.</p>
 			<button class="mt-3 p-2 bg-blue-300 rounded-md" on:click|once={reloadPage}>
 				Submit another form
 			</button>
+			<a class="mt-3 p-2 bg-blue-300 rounded-md text-center" href="http://auroradefensegroup.com/">
+				Return to homepage (auroradefensegroup.com)
+			</a>
 		{/if}
 	</div>
 </div>

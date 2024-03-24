@@ -2,7 +2,7 @@
 
 export function hasErrors(issues, path) {
 	for (let issue of issues ?? []) {
-		if (arraysAreEqual(issue?.path, path)) return true;
+		if (arraysAreEqual(issue?.path, path)) return issue?.message || true;
 	}
 
 	return false;

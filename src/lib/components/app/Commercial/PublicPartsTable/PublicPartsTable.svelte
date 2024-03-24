@@ -1,4 +1,5 @@
 <script>
+	// @ts-nocheck
 	export let data;
 
 	function getQty(product) {
@@ -14,7 +15,7 @@
 	>
 		<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll">
 			<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
-				{#each ['Part Number', 'NSN', 'Cross Reference', 'Quantity'] as header}
+				{#each ['Part Number', 'NSN', 'Customer PN', 'Quantity'] as header}
 					<th>{header}</th>
 				{/each}
 			</thead>
