@@ -172,7 +172,7 @@
 									<p class="mt-1 font-medium">{getRFQDescription(forms?.rfq_public?.values)}</p>
 								{/if}
 								<div class="flex flex-row justify-end">
-									<p class="text-gray-500">{formatDateWithTime(forms.created_at)}</p>
+									<p class="{Math.abs(calculateDaysDifference(forms.created_at)) > 4 ? "text-red-400" : "text-gray-500"}">{formatDateWithTime(forms.created_at) + ' (' + Math.abs(calculateDaysDifference(forms.created_at)) + 'd old)'}</p>
 								</div>
 							</div>
 						</a>
@@ -242,7 +242,7 @@
 									</div>
 								</div>
 								<div class="flex flex-row justify-end">
-									<p class="text-gray-500">{formatDateWithTime(forms.created_at)}</p>
+									<p class="{Math.abs(calculateDaysDifference(forms.created_at)) > 4 ? "text-red-400" : "text-gray-500"}">{formatDateWithTime(forms.created_at) + ' (' + Math.abs(calculateDaysDifference(forms.created_at)) + 'd old)'}</p>
 								</div>
 							</div>
 						</a>
