@@ -14,6 +14,7 @@
 	import { hasErrors } from '$lib/utils/errors';
 	import PublicPartsTable from '$lib/components/app/Commercial/PublicPartsTable/PublicPartsTable.svelte';
 	import RFQsTable from '$lib/components/app/Commercial/RFQsTable/RFQsTable.svelte';
+	import Textarea from '$lib/components/form/Textarea.svelte';
 
 	export let data;
 	export let values;
@@ -47,7 +48,8 @@
 
 	function handleCompanySelection(event) {
 		customerSelected = true;
-		values.customer = event.detail;
+		const {email_address, phone_number, ...rest} = event.detail;
+		values.customer = {...rest, email_address: values?.customer?.email_address, phone_number: values?.customer?.phone_number};
 	}
 
 	function handleCreateNewCustomer(event) {
@@ -120,6 +122,15 @@
 						showValueCalc={['final_pricing', null, undefined].includes(form?.type)}
 					/>
 
+					<div class="mr-5">
+						<p class="text-lg mt-5 font-semibold">Notes</p>
+						{#if (form?.type == null ? data : data.rfq)?.notes}
+							<Textarea value={(form?.type == null ? data : data.rfq)?.notes} disabled/>
+						{:else}
+							<p>None</p>
+						{/if}
+					</div>
+
 					<div>
 						<Products
 							bind:rfqs_products={values.rfqs_products}
@@ -168,12 +179,9 @@
 				{#if form?.type === 'confirm'}
 					<div class="flex flex-col space-y-5">
 						<div>
-							<p>Contact Info:</p>
-							<p>
+							<p class="font-medium">
 								{'Company: ' +
-									data.rfq_public.values.customer.name +
-									', Email: ' +
-									data.rfq_public.values.customer.email_address}
+									data.rfq_public.values.customer.name}
 							</p>
 						</div>
 						<div class="flex flex-row space-x-5">
@@ -194,7 +202,11 @@
 							</div>
 							<div class="flex flex-col">
 								<label for="customer_email">Customer Email</label>
-								<TextInput disabled={customerSelected} bind:value={values.customer.email_address} />
+								<TextInput bind:value={values.customer.email_address} />
+							</div>
+							<div class="flex flex-col">
+								<label for="customer_email">Phone Number</label>
+								<TextInput bind:value={values.customer.phone_number} />
 							</div>
 							<div class="flex flex-col">
 								<label for="customer_number">Customer Number</label>
@@ -214,10 +226,6 @@
 									</label>
 								{/if}
 							</div>
-							<div class="flex flex-col">
-								<label for="return_date">Return Date</label>
-								<DateInput bind:value={values.requested_return_date} />
-							</div>
 						</div>
 					</div>
 
@@ -231,8 +239,10 @@
 						bind:createdProductsIndexes
 					/>
 
-					<p class="text-lg mt-10 font-medium">Notes</p>
-					<textarea class="flex min-h-16 overflow-y-auto {appInput}" bind:value={values.notes} />
+					<div class="mr-5">
+						<p class="text-lg mt-10 font-medium">Notes</p>
+						<Textarea bind:value={values.notes}/>
+					</div>
 				{/if}
 			</div>
 		</div>

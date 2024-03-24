@@ -47,7 +47,13 @@ export async function POST({ request, cookies }) {
 
 		const { data, error } = await supabase
 			.from('rfqs')
-			.insert({ customer: customerId, firm: '6b289746-2b01-47af-a7d4-26a3920f75ca', ...rest })
+			.insert({
+				customer: customerId,
+				email_address: customer?.email_address,
+				phone_number: customer?.phone_number,
+				firm: '6b289746-2b01-47af-a7d4-26a3920f75ca',
+				...rest
+			})
 			.select('id')
 			.limit(1)
 			.single();

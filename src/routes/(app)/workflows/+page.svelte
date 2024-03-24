@@ -99,7 +99,7 @@
 			qty += p.rfqs_products_quantities?.length ?? 0;
 		}
 
-		return `Parts: ${parts}, Quantities: ${qty}`;
+		return `# of Parts: ${parts}, # of Quantities: ${qty}`;
 	}
 
 	function getCommercialFormTitle(forms, form) {

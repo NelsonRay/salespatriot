@@ -34,15 +34,15 @@
 		errors = results?.error?.issues;
 		
 		if (!errors) {
-			// const res = await fetch('/api/rfq-public', {
-			// 	method: 'POST',
-			// 	headers: { 'Content-Type': 'application/json' },
-			// 	body: JSON.stringify({ values: rfq, firm: $page.params.slug })
-			// });
+			const res = await fetch('/api/rfq-public', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ values: rfq, firm: $page.params.slug })
+			});
 
-			// if (res.status === 200) {
-			// 	submitted = true;
-			// }
+			if (res.status === 200) {
+				submitted = true;
+			}
 		}
 	}
 

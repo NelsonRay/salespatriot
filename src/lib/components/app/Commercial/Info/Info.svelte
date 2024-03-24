@@ -37,16 +37,23 @@
 					</div>
 
 					<div class="flex flex-row space-x-1">
-						<p class="text-gray-400">Customer Email:</p>
+						<p class="text-gray-400">Customer #:</p>
 						<p>
-							{data?.customer?.email_address}
+							{data?.customer?.customer_number ?? 'N/A'}
 						</p>
 					</div>
 
 					<div class="flex flex-row space-x-1">
-						<p class="text-gray-400">Customer #:</p>
+						<p class="text-gray-400">Customer Email:</p>
 						<p>
-							{data?.customer?.customer_number ?? 'N/A'}
+							{data?.email_address ?? 'N/A'}
+						</p>
+					</div>
+
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">Phone Number:</p>
+						<p>
+							{data?.phone_number ?? 'N/A'}
 						</p>
 					</div>
 				</div>
@@ -58,32 +65,22 @@
 							{data?.received_at}
 						</p>
 					</div>
-
-					<div class="flex flex-row space-x-1">
-						<p class="text-gray-400">Requested Return Date:</p>
-						<p>
-							{data?.requested_return_date ?? 'N/A'}
-						</p>
-					</div>
 				</div>
 
 				<div>
 					<div class="flex flex-row space-x-1">
-						<p class="text-gray-400">Parts:</p>
+						<p class="text-gray-400"># of Parts:</p>
 						<p>{data?.rfqs_products?.length}</p>
 					</div>
 
 					<div class="flex flex-row space-x-1">
-						<p class="text-gray-400">Quantities:</p>
+						<p class="text-gray-400"># of Quantities:</p>
 						<p>{getQty(data)}</p>
 					</div>
 				</div>
 
-				<div>
-					<div class="flex flex-row space-x-1">
-						<p class="text-gray-400">Notes:</p>
-						<p>{data?.notes ?? 'N/A'}</p>
-					</div>
+				<div class="h-8">
+					
 				</div>
 			</div>
 		</div>

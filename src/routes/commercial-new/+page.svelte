@@ -5,6 +5,7 @@
 	import { addRFQFormValidation } from '$lib/validation.js';
 	import { hasErrors } from '$lib/utils/errors.js';
 	import TextInput from '$lib/components/form/TextInput.svelte';
+	import Textarea from '$lib/components/form/Textarea.svelte';
 	import DateInput from '$lib/components/form/DateInput.svelte';
 
 	export let data;
@@ -81,8 +82,6 @@
 
 		return queryData;
 	}
-
-	const appInput = 'border border-blue-400 rounded-md text-sm py-1 px-2';
 </script>
 
 <svelte:head>
@@ -93,7 +92,7 @@
 	<div class="flex flex-col">
 		{#if !submitted}
 			<h1 class="text-3xl mb-8 mt-8">Add RFQ</h1>
-			<div class="grid grid-cols-3 gap-5 mb-5">
+			<div class="grid grid-cols-4 gap-5 mb-5">
 				<div class="flex flex-col">
 					<label for="customer_name">Customer Name</label>
 					<Autocomplete
@@ -111,7 +110,16 @@
 				</div>
 				<div class="flex flex-col">
 					<label for="customer_email">Customer Email</label>
-					<TextInput disabled={customerSelected} bind:value={rfq.customer.email_address} />
+					<TextInput bind:value={rfq.customer.email_address} />
+					{#if hasErrors(errors, ['customer', 'email_address'])}
+						<label for="trim" class="label">
+							<span class="label-text-alt text-error">Required</span>
+						</label>
+					{/if}
+				</div>
+				<div class="flex flex-col">
+					<label for="return_date">Phone Number</label>
+					<TextInput bind:value={rfq.customer.phone_number} />
 				</div>
 				<div class="flex flex-col">
 					<label for="customer_number">Customer Number</label>
@@ -126,10 +134,6 @@
 						</label>
 					{/if}
 				</div>
-				<div class="flex flex-col">
-					<label for="return_date">Return Date</label>
-					<DateInput bind:value={rfq.requested_return_date} />
-				</div>
 			</div>
 
 			<Products
@@ -141,7 +145,7 @@
 			/>
 
 			<p class="text-lg mt-10 font-medium">Notes</p>
-			<textarea class="flex min-h-16 overflow-y-auto {appInput}" bind:value={rfq.notes} />
+			<Textarea bind:value={rfq.notes}/>
 
 			<div class="flex flex-row mt-5 items-center justify-center pb-32">
 				{#if !isSubmitting}

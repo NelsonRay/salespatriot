@@ -56,7 +56,7 @@
 			values = form.rfq;
 		} else if (form?.form?.type === 'confirm') {
 			values = {
-				customer: {},
+				customer: {email_address: data.rfq_public?.values?.customer?.email_address, phone_number: data.rfq_public?.values?.customer?.phone_number},
 				received_at: data.rfq_public.values.received_at,
 				requested_return_date: data.rfq_public.values.requested_return_date,
 				rfqs_products: [
@@ -65,7 +65,7 @@
 						rfqs_products_quantities: [{ quantity: null }]
 					}
 				],
-				notes: data.rfq_public.notes
+				notes: data.rfq_public?.values?.notes
 			};
 		} else {
 			values = {};

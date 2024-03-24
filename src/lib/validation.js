@@ -95,7 +95,8 @@ export const addRFQFormValidation = () =>
 	z.object({
 		received_at: z.string().min(1),
 		customer: z.object({
-			name: z.string().min(1)
+			name: z.string().min(1),
+			email_address: z.string().email().min(1)
 		}),
 		rfqs_products: z
 			.object({
