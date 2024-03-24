@@ -14,7 +14,7 @@
 	export let errors;
 	export let createdProductsIndexes = [];
 	export let focusedRfqProductQty;
-	export let isPublicForm;
+	export let isPublicForm = false;
 
 	function addProduct() {
 		rfqs_products.push({
@@ -96,7 +96,7 @@
 							<p class="text-lg font-semibold text-center mt-4">#{index + 1}</p>
 						</div>
 						<div class="flex flex-col">
-							<label class="text-xs text-gray-500 font-medium" for="part_number">Part Number</label>
+							<label class="text-xs text-gray-500 font-medium" for="part_number">{isPublicForm ? 'Aurora Defense Part Number' : 'Part Number'}</label>
 							{#if !isPublicForm}
 								<Autocomplete
 									query={getQuery}
@@ -111,7 +111,7 @@
 							{/if}
 							{#if hasErrors(errors, ['rfqs_products', index, 'product', 'number'])}
 								<label for="trim" class="label">
-									<span class="label-text-alt text-error">Required</span>
+									<span class="label-text-alt text-error">{hasErrors(errors, ['rfqs_products', index, 'product', 'number'])}</span>
 								</label>
 							{/if}
 						</div>
@@ -130,7 +130,7 @@
 						</div>
 						<div class="flex flex-col">
 							<label class="text-xs text-gray-500 font-medium" for="cross_ref"
-								>Cross Reference</label
+								>{isPublicForm ? 'Your Cross Reference Part Number (if needed)' : 'Customer PN'}</label
 							>
 							<TextInput
 								disabled={!isPublicForm && !createdProductsIndexes.includes(index)}
@@ -144,7 +144,7 @@
 								{#each rfqs_product.rfqs_products_quantities as rfqs_products_quantity, i}
 									<div class="flex flex-row space-x-3">
 										<div class="flex flex-col">
-											<label class="text-xs text-gray-500 font-medium" for="qty">Quantity</label>
+											<label class="text-xs text-gray-500 font-medium" for="qty">Quantity - #{i+1}</label>
 											<Currency
 												bind:value={rfqs_products_quantity.quantity}
 												width={'w-20'}
@@ -233,8 +233,8 @@
 
 								{#if showRemove}
 									<div>
-										<button class="text-sm text-gray-700 font-medium" on:click={() => addQty(index)}
-											>+ Quantity</button
+										<button class="text-sm text-gray-700 bg-white p-1 border rounded-md font-medium" on:click={() => addQty(index)}
+											>{isPublicForm ? 'Request another quantity break' : '+ Quantity'}</button
 										>
 									</div>
 								{/if}
@@ -301,7 +301,7 @@
 		<div>
 			<button
 				on:click={addProduct}
-				class="bg-neutral-50 p-2 mt-6 rounded-md text-base font-medium mr-10">Add Part</button
+				class="bg-neutral-50 p-2 rounded-md text-base font-medium mr-10">{isPublicForm ? 'Request another part to be quoted' : 'Add Part'}</button
 			>
 		</div>
 	{/if}

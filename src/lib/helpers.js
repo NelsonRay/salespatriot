@@ -328,6 +328,9 @@ export function getReviewValues(nsnMatches) {
 		profit_margin: null
 	};
 
+	/**
+	 * @type {number}
+	 */
 	let estimated_labor_minutes;
 	let awardDetails;
 
@@ -341,46 +344,54 @@ export function getReviewValues(nsnMatches) {
 		'previous_bid_outcome'
 	]) {
 		switch (key) {
-			case 'unit_price':
-				for (let match of nsnMatches) {
-					if (match.unit_price) {
-						// @ts-ignore
-						values.unit_price = match.unit_price;
+			case 'unit_price': {
+				values.unit_price = nsnMatches[0]?.unit_price;
 
-						// @ts-ignore
-						values.unit_price_date = formatMonthDayYearDate(match.solicitation.expires_on);
-						break;
-					}
+				const matchesWithSameValue = nsnMatches.filter((m) => m?.unit_price === values.unit_price);
+
+				if (values.unit_price && matchesWithSameValue?.length > 0) {
+					const oldestMatch = matchesWithSameValue[matchesWithSameValue.length - 1];
+					values.unit_price_date = formatMonthDayYearDate(oldestMatch.solicitation.expires_on);
 				}
 				break;
-			case 'estimated_labor_minutes':
-				for (let match of nsnMatches) {
-					if (match.estimated_labor_minutes) {
-						estimated_labor_minutes = match.estimated_labor_minutes;
-						// @ts-ignore
-						values.estimated_labor_cost = parseFloat((estimated_labor_minutes / 60) * 20).toFixed(
-							2
-						);
-						// @ts-ignore
-						values.estimated_labor_cost_date = formatMonthDayYearDate(
-							match.solicitation.expires_on
-						);
-						break;
-					}
+			}
+			case 'estimated_labor_minutes': {
+				estimated_labor_minutes = nsnMatches[0]?.estimated_labor_minutes;
+				if (estimated_labor_minutes)
+					// @ts-ignore
+					values.estimated_labor_cost = parseFloat((estimated_labor_minutes / 60) * 20).toFixed(2);
+
+				const matchesWithSameValue = nsnMatches.filter(
+					(m) => m?.estimated_labor_minutes === estimated_labor_minutes
+				);
+
+				if (estimated_labor_minutes && matchesWithSameValue?.length > 0) {
+					const oldestMatch = matchesWithSameValue[matchesWithSameValue.length - 1];
+
+					// @ts-ignore
+					values.estimated_labor_cost_date = formatMonthDayYearDate(
+						oldestMatch.solicitation.expires_on
+					);
 				}
 				break;
-			case 'estimated_material_cost':
-				for (let match of nsnMatches) {
-					if (match.estimated_material_cost) {
-						values.estimated_material_cost = match.estimated_material_cost;
-						// @ts-ignore
-						values.estimated_material_cost_date = formatMonthDayYearDate(
-							match.solicitation.expires_on
-						);
-						break;
-					}
+			}
+			case 'estimated_material_cost': {
+				values.estimated_material_cost = nsnMatches[0]?.estimated_material_cost;
+
+				const matchesWithSameValue = nsnMatches.filter(
+					(m) => m?.estimated_material_cost === values.estimated_material_cost
+				);
+
+				if (values.estimated_material_cost && matchesWithSameValue?.length > 0) {
+					const oldestMatch = matchesWithSameValue[matchesWithSameValue.length - 1];
+					// @ts-ignore
+					values.estimated_material_cost_date = formatMonthDayYearDate(
+						oldestMatch.solicitation.expires_on
+					);
 				}
 				break;
+			}
+
 			case 'estimated_cost':
 				// @ts-ignore
 				if (values.estimated_material_cost && values.estimated_labor_cost && values.unit_price) {
@@ -472,7 +483,7 @@ export function getReviewValues(nsnMatches) {
 	// @ts-ignore
 	if (estimated_labor_minutes) {
 		// @ts-ignore
-		values.estimated_labor_cost = `${values.estimated_labor_cost} / ${estimated_labor_minutes} mins`;
+		values.estimated_labor_cost = `${values.estimated_labor_cost} / ${estimated_labor_minutes}m`;
 	}
 
 	return { values, awardDetails };

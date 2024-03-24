@@ -58,12 +58,13 @@ export const publicRFQFormValidation = () =>
 		received_at: z.string().min(1),
 		customer: z.object({
 			name: z.string().min(1),
-			email_address: z.string().email().min(1)
+			email_address: z.string().email().min(1),
+			phone_number: z.string().min(1)
 		}),
 		rfqs_products: z
 			.object({
 				product: z.object({
-					number: z.string().min(1),
+					number: z.string().nullable().optional(),
 					nsn: z.number().nullable().optional()
 				}),
 				rfqs_products_quantities: z.object({ quantity: z.number().positive() }).array()
@@ -71,6 +72,14 @@ export const publicRFQFormValidation = () =>
 			.array()
 			.superRefine((fields, ctx) => {
 				for (let i = 0; i < fields.length; i++) {
+					if (fields[i].product.number == null && fields[i].product.nsn == null) {
+						ctx.addIssue({
+							code: 'custom',
+							message: 'Number or NSN is required',
+							path: [i, 'product', 'number']
+						});
+					}
+
 					if (fields[i].product.nsn != null && fields[i].product.nsn?.toString().length !== 13) {
 						ctx.addIssue({
 							code: 'custom',
@@ -86,7 +95,8 @@ export const addRFQFormValidation = () =>
 	z.object({
 		received_at: z.string().min(1),
 		customer: z.object({
-			name: z.string().min(1)
+			name: z.string().min(1),
+			email_address: z.string().email().min(1)
 		}),
 		rfqs_products: z
 			.object({
