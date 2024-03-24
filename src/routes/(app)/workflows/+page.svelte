@@ -65,12 +65,19 @@
 
 		switch (form.type) {
 			case 'opportunity':
-				console.log(1);
-				return forms.sort(
+				forms =  forms.sort(
 					(a, b) =>
 						b?.solicitation_matched?.solicitation?.estimated_value -
 						a?.solicitation_matched?.solicitation?.estimated_value
 				);
+
+				forms = [
+					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Prev Won'),
+					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Prev Bid'),
+					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Seen'),
+					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'New')
+				];
+				return forms;
 			case 'purchasing':
 				return forms.sort((a, b) => a?.waiting - b?.waiting);
 			default:
