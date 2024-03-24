@@ -345,11 +345,11 @@
 									{reviewValues.unit_price_date ?? 'N/A'}
 								</p>
 								<div class="h-6"></div>
-								<p class={reviewValues.estimated_labor_cost_date ? '' : 'text-gray-300'}>
-									{reviewValues.estimated_labor_cost_date ?? 'N/A'}
-								</p>
 								<p class={reviewValues.estimated_material_cost_date ? '' : 'text-gray-300'}>
 									{reviewValues.estimated_material_cost_date ?? 'N/A'}
+								</p>
+								<p class={reviewValues.estimated_labor_cost_date ? '' : 'text-gray-300'}>
+									{reviewValues.estimated_labor_cost_date ?? 'N/A'}
 								</p>
 								<p class={reviewValues.profit_margin ? '' : 'text-gray-300'}>
 									{reviewValues.profit_margin ?? ''}

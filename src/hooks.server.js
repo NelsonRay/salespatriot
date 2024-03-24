@@ -25,7 +25,7 @@ export const handle = async ({ event, resolve }) => {
 	// if trying to access paths other than accepted api routes, redirect to auth
 	if (
 		event.url.pathname !== '/' &&
-		event.url.pathname.includes('rfq-public') &&
+		!event.url.pathname.includes('rfq-public') &&
 		![
 			'/api/webhooks/form-submitted',
 			'/api/webhooks/commercial-form-submitted',
