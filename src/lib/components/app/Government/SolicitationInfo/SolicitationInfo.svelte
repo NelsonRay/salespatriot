@@ -342,14 +342,14 @@
 							</div>
 							<div class="flex flex-col space-y-2">
 								<p class={reviewValues.unit_price_date ? '' : 'text-gray-300'}>
-									{reviewValues.unit_price_date ?? 'N/A'}
+									{reviewValues.unit_price_date ? formatMonthDayYearDate(reviewValues.unit_price_date) : 'N/A'}
 								</p>
 								<div class="h-6"></div>
-								<p class={reviewValues.estimated_material_cost_date ? '' : 'text-gray-300'}>
-									{reviewValues.estimated_material_cost_date ?? 'N/A'}
+								<p class={reviewValues.estimated_material_cost_date ? Math.abs(calculateDaysDifference(reviewValues.estimated_material_cost_date)) > 120 ? 'text-red-600' : 'text-green-600' : 'text-gray-300'}>
+									{reviewValues.estimated_material_cost_date ? formatMonthDayYearDate(reviewValues.estimated_material_cost_date) + ' (' +  (new Date(reviewValues.estimated_material_cost_date) > new Date() ? 0 : Math.abs(calculateDaysDifference(reviewValues.estimated_material_cost_date)))  + 'd)': 'N/A'}
 								</p>
-								<p class={reviewValues.estimated_labor_cost_date ? '' : 'text-gray-300'}>
-									{reviewValues.estimated_labor_cost_date ?? 'N/A'}
+								<p class={reviewValues.estimated_labor_cost_date ? Math.abs(calculateDaysDifference(reviewValues.estimated_labor_cost_date)) > 240 ? 'text-red-600' : 'text-green-600' : 'text-gray-300'}>
+									{reviewValues.estimated_labor_cost_date ? formatMonthDayYearDate(reviewValues.estimated_labor_cost_date) + ' (' +  (new Date(reviewValues.estimated_labor_cost_date) > new Date() ? 0 : Math.abs(calculateDaysDifference(reviewValues.estimated_labor_cost_date)))  + 'd)': 'N/A'}
 								</p>
 								<p class={reviewValues.profit_margin ? '' : 'text-gray-300'}>
 									{reviewValues.profit_margin ?? ''}
@@ -390,7 +390,7 @@
 												{awardDetails.company_awarded ?? 'N/A'}
 											</p>
 											<p class={awardDetails.date_awarded ? '' : 'text-gray-300'}>
-												{awardDetails.date_awarded ?? 'N/A'}
+												{awardDetails.date_awarded ? formatMonthDayYearDate(awardDetails.date_awarded) : 'N/A'}
 											</p>
 										{/if}
 									</div>

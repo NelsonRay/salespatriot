@@ -351,7 +351,7 @@ export function getReviewValues(nsnMatches) {
 
 				if (values.unit_price && matchesWithSameValue?.length > 0) {
 					const oldestMatch = matchesWithSameValue[matchesWithSameValue.length - 1];
-					values.unit_price_date = formatMonthDayYearDate(oldestMatch.solicitation.expires_on);
+					values.unit_price_date = oldestMatch.solicitation.expires_on;
 				}
 				break;
 			}
@@ -369,9 +369,7 @@ export function getReviewValues(nsnMatches) {
 					const oldestMatch = matchesWithSameValue[matchesWithSameValue.length - 1];
 
 					// @ts-ignore
-					values.estimated_labor_cost_date = formatMonthDayYearDate(
-						oldestMatch.solicitation.expires_on
-					);
+					values.estimated_labor_cost_date = oldestMatch.solicitation.expires_on;
 				}
 				break;
 			}
@@ -385,9 +383,7 @@ export function getReviewValues(nsnMatches) {
 				if (values.estimated_material_cost && matchesWithSameValue?.length > 0) {
 					const oldestMatch = matchesWithSameValue[matchesWithSameValue.length - 1];
 					// @ts-ignore
-					values.estimated_material_cost_date = formatMonthDayYearDate(
-						oldestMatch.solicitation.expires_on
-					);
+					values.estimated_material_cost_date = oldestMatch.solicitation.expires_on;
 				}
 				break;
 			}
@@ -412,9 +408,7 @@ export function getReviewValues(nsnMatches) {
 						// @ts-ignore
 						values.previous_bid_outcome = match.status.filter((s) => s.includes('award'))[0];
 						// @ts-ignore
-						values.previous_bid_outcome_date = formatMonthDayYearDate(
-							match.solicitation.expires_on
-						);
+						values.previous_bid_outcome_date = match.solicitation.expires_on;
 
 						if (values.previous_bid_outcome === 'award:lost') {
 							awardDetails = {};
@@ -429,7 +423,7 @@ export function getReviewValues(nsnMatches) {
 							// @ts-ignore
 							awardDetails.company_awarded = match.solicitation.company_awarded;
 							// @ts-ignore
-							awardDetails.date_awarded = formatMonthDayYearDate(match.solicitation.date_awarded);
+							awardDetails.date_awarded = match.solicitation.date_awarded;
 						} else if (values.previous_bid_outcome === 'award:won') {
 							awardDetails = {};
 							if (match?.unit_price) {
