@@ -65,6 +65,12 @@
 							{data?.received_at}
 						</p>
 					</div>
+					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">Quote Number:</p>
+						<p>
+							{data?.quote_number ? `#${data?.quote_number}` : 'N/A'}
+						</p>
+					</div>
 				</div>
 
 				<div>
