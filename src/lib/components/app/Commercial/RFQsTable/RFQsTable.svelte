@@ -15,12 +15,12 @@
 				{/each}
 			</thead>
 			<tbody>
+				{#each data as rfq}
 				<tr class="hover:bg-neutral-100">
-					{#each data as rfq}
 						<td>{rfq.customer.name ?? ''}</td>
 						<td>{rfq.received_at ?? ''}</td>
+					</tr>
 					{/each}
-				</tr>
 			</tbody>
 		</table>
 	</article>
