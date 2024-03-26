@@ -6,66 +6,40 @@ export const solColumns =
 
 // @ts-ignore
 export function formatDate(date) {
-	const year = date.getFullYear();
-	const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
-	const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+	const year = date.getUTCFullYear();
+	const month = date.getUTCMonth() + 1 < 10 ? `0${date.getUTCMonth() + 1}` : date.getUTCMonth() + 1;
+	const day = date.getUTCDate() < 10 ? `0${date.getUTCDate()}` : date.getUTCDate();
 
 	return `${year}-${month}-${day}`;
 }
 
 // @ts-ignore
-export function formatDateWithTime(created_at, withOutTime) {
+export function formatMonthDayYearDate(date) {
+	// Create a new Date object
+
+	date = new Date(date);
+
+	// Extract the components of the date
+	var month = date.getUTCMonth() + 1; // Adding 1 because getMonth() returns zero-based index
+	var day = date.getUTCDate();
+	var year = date.getUTCFullYear() % 100; // Extracting last two digits of the year
+
+	// Concatenate the formatted components to get the desired format
+	var formattedDate = month + '/' + day + '/' + year;
+
+	return formattedDate;
+}
+
+// @ts-ignore
+export function formatDateWithTime(created_at) {
 	let dateWithTime = new Date(new Date(created_at).toISOString());
-	let date = new Date(formatDate(dateWithTime));
-	const today = new Date(formatDate(new Date()));
 
-	// @ts-ignore
-	const diffInDays = (today - date) / (1000 * 60 * 60 * 24);
-
-	if (diffInDays === 0) {
-		let dateString = 'Today';
-
-		if (!withOutTime) {
-			dateString +=
-				' ' +
-				dateWithTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
-		}
-
-		return dateString;
-	} else if (diffInDays === 1) {
-		let dateString = 'Yesterday';
-
-		if (!withOutTime) {
-			dateString +=
-				' ' +
-				dateWithTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
-		}
-
-		return dateString;
-	} else if (diffInDays === -1) {
-		let dateString = 'Tomorrow';
-
-		if (!withOutTime) {
-			dateString +=
-				' ' +
-				dateWithTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
-		}
-
-		return dateString;
-	} else if (diffInDays >= 6 || diffInDays <= 6) {
-		if (withOutTime) return formatMonthDayYearDate(dateWithTime);
-		return dateWithTime
-			.toLocaleDateString('en-US', { weekday: 'long', hour: 'numeric', minute: '2-digit' })
-			.replace(',', '');
-	} else {
-		if (withOutTime) return formatMonthDayYearDate(dateWithTime);
-		return dateWithTime.toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric',
+	return dateWithTime
+		.toLocaleDateString('en-US', {
 			hour: 'numeric',
 			minute: '2-digit'
-		});
-	}
+		})
+		.replace(',', '');
 }
 
 // @ts-ignore
@@ -481,20 +455,4 @@ export function getReviewValues(nsnMatches) {
 	}
 
 	return { values, awardDetails };
-}
-
-// @ts-ignore
-export function formatMonthDayYearDate(date) {
-	// Create a new Date object
-	date = new Date(date);
-
-	// Extract the components of the date
-	var month = date.getMonth() + 1; // Adding 1 because getMonth() returns zero-based index
-	var day = date.getDate();
-	var year = date.getFullYear() % 100; // Extracting last two digits of the year
-
-	// Concatenate the formatted components to get the desired format
-	var formattedDate = month + '/' + day + '/' + year;
-
-	return formattedDate;
 }
