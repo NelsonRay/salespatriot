@@ -229,7 +229,7 @@
 											)
 												? ''
 												: ' on ') +
-												formatDateWithTime(forms.solicitation_matched.solicitation.expires_on) +
+												formatMonthDayYearDate(forms.solicitation_matched.solicitation.expires_on) +
 												` (${calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)}d)`}
 										</p>
 									</div>
