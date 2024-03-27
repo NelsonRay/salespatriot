@@ -199,6 +199,7 @@
 									extractItemName={extractCompanyName}
 									on:selection={handleCompanySelection}
 									on:create={handleCreateNewCustomer}
+									forceCaps
 								/>
 								{#if hasErrors(errors, ['customer', 'name'])}
 									<label for="trim" class="label">
