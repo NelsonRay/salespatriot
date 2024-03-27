@@ -12,29 +12,11 @@
 	let isSubmitting = false;
 	let rfqsForPurchasingForm;
 
-	function fixRFQData(form) {
-		let fix = form;
-
-		for (let index = 0; index < form?.rfq?.rfqs_products?.length ?? 0; index++) {
-			for (
-				let i = 0;
-				i < form?.rfq?.rfqs_products?.[index].rfqs_products_quantities?.length ?? 0;
-				i++
-			) {
-				if (!form?.rfq?.rfqs_products?.[index].rfqs_products_quantities[i].product_final_pricing) {
-					fix.rfq.rfqs_products[index].rfqs_products_quantities[i].product_final_pricing = {};
-				}
-			}
-		}
-
-		return fix;
-	}
-
 	async function loadData() {
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), rfq_public(*), rfq(*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*, product_final_pricing(*))))'
+				'*, form!inner(*), product(*), rfq_public(*), rfq(*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*)))'
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
@@ -50,7 +32,7 @@
 			rfqsForPurchasingForm = d?.map((r) => r?.rfq);
 		}
 
-		form = fixRFQData(data);
+		form = data;
 
 		if (['final_pricing', 'enter_quote', 'bid'].includes(form?.form?.type)) {
 			values = form.rfq;

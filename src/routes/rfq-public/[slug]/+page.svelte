@@ -34,7 +34,7 @@
 		errors = results?.error?.issues;
 		
 		if (!errors) {
-			const res = await fetch('/api/rfq-public', {
+			const res = await fetch('/api/rfq/public', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ values: rfq, firm: $page.params.slug })

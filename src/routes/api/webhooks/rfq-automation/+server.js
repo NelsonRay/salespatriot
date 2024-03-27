@@ -41,12 +41,14 @@ export async function POST({ request, cookies }) {
 		for (let product of data.rfqs_products) {
 			let purchasing_ready = false;
 			let product_labor_minutes = null;
+			let labor_minutes = null;
 
 			let laborInProgress = true;
 			let purchasingInProgress = true;
 
 			if (product?.product?.product_labor_minutes?.length > 0) {
 				product_labor_minutes = product?.product?.product_labor_minutes[0]?.id;
+				labor_minutes = product?.product?.product_labor_minutes[0]?.labor_minutes;
 				laborInProgress = false;
 			}
 			if (product?.product?.product_purchasing?.length > 0) {
@@ -56,7 +58,7 @@ export async function POST({ request, cookies }) {
 
 			const { data: d, error } = await supabase
 				.from('rfqs_products')
-				.update({ purchasing_ready, product_labor_minutes })
+				.update({ purchasing_ready, product_labor_minutes, labor_minutes })
 				.eq('id', product?.id);
 
 			if (!purchasing_ready) {

@@ -4,8 +4,8 @@ import { formatMonthDayYearDate, formatCurrency } from '$lib/helpers';
 export function getCommercialValueCalculation(qty, product) {
 	if (!qty || !product) return null;
 
-	const estimated_labor_minutes = product?.product_labor_minutes?.labor_minutes;
-	const unit_price = qty?.product_final_pricing.final_pricing;
+	const estimated_labor_minutes = product?.labor_minutes;
+	const unit_price = qty?.final_pricing;
 	const estimated_material_cost = qty.material_cost;
 	const quantity = qty.quantity;
 

@@ -96,7 +96,9 @@
 							<p class="text-lg font-semibold text-center mt-4">#{index + 1}</p>
 						</div>
 						<div class="flex flex-col">
-							<label class="text-xs text-gray-500 font-medium" for="part_number">{isPublicForm ? 'Aurora Defense Part Number' : 'Part Number'}</label>
+							<label class="text-xs text-gray-500 font-medium" for="part_number"
+								>{isPublicForm ? 'Aurora Defense Part Number' : 'Part Number'}</label
+							>
 							{#if !isPublicForm}
 								<Autocomplete
 									query={getQuery}
@@ -111,7 +113,9 @@
 							{/if}
 							{#if hasErrors(errors, ['rfqs_products', index, 'product', 'number'])}
 								<label for="trim" class="label">
-									<span class="label-text-alt text-error">{hasErrors(errors, ['rfqs_products', index, 'product', 'number'])}</span>
+									<span class="label-text-alt text-error"
+										>{hasErrors(errors, ['rfqs_products', index, 'product', 'number'])}</span
+									>
 								</label>
 							{/if}
 						</div>
@@ -130,7 +134,9 @@
 						</div>
 						<div class="flex flex-col">
 							<label class="text-xs text-gray-500 font-medium" for="cross_ref"
-								>{isPublicForm ? 'Your Cross Reference Part Number (if needed)' : 'Customer PN'}</label
+								>{isPublicForm
+									? 'Your Cross Reference Part Number (if needed)'
+									: 'Customer PN'}</label
 							>
 							<TextInput
 								disabled={!isPublicForm && !createdProductsIndexes.includes(index)}
@@ -144,7 +150,9 @@
 								{#each rfqs_product.rfqs_products_quantities as rfqs_products_quantity, i}
 									<div class="flex flex-row space-x-3">
 										<div class="flex flex-col">
-											<label class="text-xs text-gray-500 font-medium" for="qty">Quantity - #{i+1}</label>
+											<label class="text-xs text-gray-500 font-medium" for="qty"
+												>Quantity - #{i + 1}</label
+											>
 											<Currency
 												bind:value={rfqs_products_quantity.quantity}
 												width={'w-20'}
@@ -163,10 +171,17 @@
 													>Labor Minutes
 												</label>
 												<Currency
-													value={rfqs_product?.product_labor_minutes?.labor_minutes}
+													bind:value={rfqs_product.labor_minutes}
 													width={'w-20'}
-													disabled
+													focusCallback={() => focusProductQty(rfqs_products_quantity)}
+													blurCallback={blurProductQty}
+													disabled={!showPricing}
 												/>
+												{#if hasErrors(errors, ['rfqs_products', index, 'labor_minutes'])}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">Required</span>
+													</label>
+												{/if}
 											</div>
 											<div class="flex flex-col">
 												<label class="text-xs text-gray-500 font-medium" for="qty"
@@ -206,13 +221,13 @@
 													>Final Pricing</label
 												>
 												<Currency
-													bind:value={rfqs_products_quantity.product_final_pricing.final_pricing}
+													bind:value={rfqs_products_quantity.final_pricing}
 													width={'w-20'}
 													focusCallback={() => focusProductQty(rfqs_products_quantity)}
 													blurCallback={blurProductQty}
 													disabled={showAll}
 												/>
-												{#if hasErrors( errors, ['rfqs_products', index, 'rfqs_products_quantities', i, 'product_final_pricing', 'final_pricing'] )}
+												{#if hasErrors( errors, ['rfqs_products', index, 'rfqs_products_quantities', i, 'final_pricing'] )}
 													<label for="trim" class="label">
 														<span class="label-text-alt text-error">Required</span>
 													</label>
@@ -233,7 +248,9 @@
 
 								{#if showRemove}
 									<div>
-										<button class="text-sm text-gray-700 bg-white p-1 border rounded-md font-medium" on:click={() => addQty(index)}
+										<button
+											class="text-sm text-gray-700 bg-white p-1 border rounded-md font-medium"
+											on:click={() => addQty(index)}
 											>{isPublicForm ? 'Request another quantity break' : '+ Quantity'}</button
 										>
 									</div>
@@ -250,58 +267,84 @@
 					{/if}
 				</div>
 			</div>
-			{#if rfqs_product?.product?.product_purchasing}
-				<div>
-					<div class="flex flex-row">
-						<div class="flex flex-col bg-neutral-50 rounded-md p-3 mr-8 mt-2 text-xs">
-							<div class="flex flex-row justify-between items-center">
-								<p class="mb-1 font-medium text-sm">Purchasing:</p>
-								<div class="p-2 rounded-md inline-block bg-yellow-300 ml-10 text-xs">
-									In Progress
+			<div class="flex flex-row">
+				{#if showPricing}
+					<div>
+						<div class="flex flex-row">
+							<div class="flex flex-col bg-neutral-50 rounded-md p-3 mr-8 mt-2 text-xs">
+								<div class="flex flex-row justify-between items-center">
+									<p class="mb-1 font-medium text-sm">Purchasing:</p>
+									{#if rfqs_product?.product?.product_purchasing?.length > 0}
+										<div class="p-2 rounded-md inline-block bg-green-300 ml-10 text-xs">
+											Complete
+										</div>
+									{:else}
+										<div class="p-2 rounded-md inline-block bg-yellow-300 ml-10 text-xs">
+											In Progress
+										</div>
+									{/if}
 								</div>
+								{#if rfqs_product?.product?.product_purchasing?.length > 0}
+									<div class="flex flex-row space-x-5 mt-3">
+										<div class="flex flex-col">
+											<p class="text-gray-400">Quantity:</p>
+											{#each rfqs_product?.product?.product_purchasing as purchasing}
+												<p>{purchasing.quantity}</p>
+											{/each}
+										</div>
+
+										<div class="flex flex-col">
+											<p class="text-gray-400">Mat Cost:</p>
+											{#each rfqs_product?.product?.product_purchasing as purchasing}
+												<p>{formatCurrency(purchasing.material_cost)}</p>
+											{/each}
+										</div>
+
+										<div class="flex flex-col">
+											<p class="text-gray-400">Lead Time:</p>
+											{#each rfqs_product?.product?.product_purchasing as purchasing}
+												<p>{purchasing.lead_time}</p>
+											{/each}
+										</div>
+
+										<div class="flex flex-col">
+											<p class="text-gray-400">Date:</p>
+											{#each rfqs_product?.product?.product_purchasing as purchasing}
+												<p>{formatMonthDayYearDate(purchasing.created_at)}</p>
+											{/each}
+										</div>
+									</div>
+								{/if}
 							</div>
-							{#if rfqs_product?.product?.product_purchasing?.length > 0}
-								<div class="flex flex-row space-x-5 mt-3">
-									<div class="flex flex-col">
-										<p class="text-gray-400">Quantity:</p>
-										{#each rfqs_product?.product?.product_purchasing as purchasing}
-											<p>{purchasing.quantity}</p>
-										{/each}
-									</div>
-
-									<div class="flex flex-col">
-										<p class="text-gray-400">Mat Cost:</p>
-										{#each rfqs_product?.product?.product_purchasing as purchasing}
-											<p>{formatCurrency(purchasing.material_cost)}</p>
-										{/each}
-									</div>
-
-									<div class="flex flex-col">
-										<p class="text-gray-400">Lead Time:</p>
-										{#each rfqs_product?.product?.product_purchasing as purchasing}
-											<p>{purchasing.lead_time}</p>
-										{/each}
-									</div>
-
-									<div class="flex flex-col">
-										<p class="text-gray-400">Date:</p>
-										{#each rfqs_product?.product?.product_purchasing as purchasing}
-											<p>{formatMonthDayYearDate(purchasing.created_at)}</p>
-										{/each}
-									</div>
-								</div>
-							{/if}
 						</div>
 					</div>
-				</div>
-			{/if}
+
+					<div>
+						<div class="flex flex-row">
+							<div class="flex flex-col bg-neutral-50 rounded-md p-3 mr-8 mt-2 text-xs">
+								<div class="flex flex-row justify-between items-center">
+									<p class="mb-1 font-medium text-sm">Labor:</p>
+									{#if rfqs_product?.product?.product_purchasing?.length > 0}
+										<div class="p-2 rounded-md inline-block bg-green-300 ml-10 text-xs">
+											Complete
+										</div>
+									{:else}
+										<div class="p-2 rounded-md inline-block bg-yellow-300 ml-10 text-xs">
+											In Progress
+										</div>
+									{/if}
+								</div>
+							</div>
+						</div>
+					</div>
+				{/if}
+			</div>
 		</div>
 	{/each}
 	{#if showRemove}
 		<div>
-			<button
-				on:click={addProduct}
-				class="bg-neutral-50 p-2 rounded-md text-base font-medium mr-10">{isPublicForm ? 'Request another part to be quoted' : 'Add Part'}</button
+			<button on:click={addProduct} class="bg-neutral-50 p-2 rounded-md text-base font-medium mr-10"
+				>{isPublicForm ? 'Request another part to be quoted' : 'Add Part'}</button
 			>
 		</div>
 	{/if}
