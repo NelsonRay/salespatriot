@@ -13,26 +13,12 @@
 
 	let isSubmitting = false;
 
-	function fixRFQData(rfq) {
-		let fix = rfq;
-
-		for (let index = 0; index < rfq?.rfqs_products?.length ?? 0; index++) {
-			for (let i = 0; i < rfq?.rfqs_products?.[index].rfqs_products_quantities?.length ?? 0; i++) {
-				if (!rfq?.rfqs_products?.[index].rfqs_products_quantities[i].product_final_pricing) {
-					fix.rfqs_products[index].rfqs_products_quantities[i].product_final_pricing = {};
-				}
-			}
-		}
-
-		return fix;
-	}
-
-	async function handleSubmit() {
+	async function submitCallback() {
 		isSubmitting = true; // show loading spinner
-		const res = await fetch('/api/solicitations/update', {
+		const res = await fetch('/api/rfq/update', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ values, id: solicitation_matched.id })
+			body: JSON.stringify({ values })
 		});
 
 		if (res.status === 200) {
@@ -46,7 +32,7 @@
 		let { data, error } = await supabase
 			.from('rfqs')
 			.select(
-				'*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*, product_final_pricing(*)))'
+				'*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -54,7 +40,7 @@
 
 		rfq = data;
 
-		values = fixRFQData(data);
+		values = data;
 	}
 
 	onMount(() => {
@@ -73,5 +59,5 @@
 </svelte:head>
 
 {#if values}
-	<Form data={rfq} {values} {handleSubmit} {isSubmitting} />
+	<Form data={rfq} {values} {submitCallback} {isSubmitting} />
 {/if}

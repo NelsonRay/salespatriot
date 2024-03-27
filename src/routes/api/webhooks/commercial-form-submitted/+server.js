@@ -85,9 +85,9 @@ export async function POST({ request, cookies }) {
 
 				const { error: err } = await supabase
 					.from('rfqs_products')
-					.update({ product_labor_minutes: data.id })
+					.update({ product_labor_minutes: data.id, labor_minutes: response.labor_minutes })
 					.eq('product', product)
-					.is('product_labor_minutes', null);
+					.is('labor_minutes', null);
 
 				if (err) throw err;
 
@@ -120,27 +120,12 @@ export async function POST({ request, cookies }) {
 			case '6bbf4342-1b50-4c1a-9dc5-ad40562c5626': {
 				// loop thru each product and its quantities to update final_pricing
 				for (let rfqs_product of response?.rfqs_products ?? []) {
-					const { product } = rfqs_product;
 					for (let rfqs_products_quantity of rfqs_product.rfqs_products_quantities ?? []) {
-						const {
-							material_cost,
-							lead_time,
-							product_final_pricing: { final_pricing },
-							quantity
-						} = rfqs_products_quantity;
-
-						const { data, error } = await supabase
-							.from('product_final_pricing')
-							.insert({ product: product.id, final_pricing, quantity })
-							.select('id')
-							.limit(1)
-							.single();
-
-						if (error) throw error;
+						const { material_cost, lead_time, final_pricing } = rfqs_products_quantity;
 
 						const { error: e } = await supabase
 							.from('rfqs_products_quantities')
-							.update({ material_cost, lead_time, product_final_pricing: data.id })
+							.update({ material_cost, lead_time, final_pricing })
 							.eq('id', rfqs_products_quantity.id);
 
 						if (e) throw e;

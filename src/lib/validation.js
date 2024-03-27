@@ -1,5 +1,22 @@
 import { z } from 'zod';
 
+export const masterCommercialValidation = () =>
+	z.object({
+		rfqs_products: z
+			.object({
+				labor_minutes: z.number().positive(),
+				rfqs_products_quantities: z
+					.object({
+						quantity: z.number().positive(),
+						final_pricing: z.number().positive(),
+						material_cost: z.number().positive(),
+						lead_time: z.number().positive()
+					})
+					.array()
+			})
+			.array()
+	});
+
 export const commercialFormsValidation = {
 	confirm: () => addRFQFormValidation(),
 	labor: () => z.object({ labor_minutes: z.number().positive() }),
@@ -27,7 +44,7 @@ export const commercialFormsValidation = {
 					rfqs_products_quantities: z
 						.object({
 							quantity: z.number().positive(),
-							product_final_pricing: z.object({ final_pricing: z.number().positive() }),
+							final_pricing: z.number().positive(),
 							material_cost: z.number().positive(),
 							lead_time: z.number().positive()
 						})

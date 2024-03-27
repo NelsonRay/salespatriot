@@ -9,7 +9,7 @@
 	import Info from '$lib/components/app/Commercial/Info/Info.svelte';
 	import Products from '$lib/components/app/Commercial/Products/Products.svelte';
 	import { capitalizeFirstLetter } from '$lib/helpers';
-	import { commercialFormsValidation } from '$lib/validation';
+	import { commercialFormsValidation, masterCommercialValidation } from '$lib/validation';
 	import { getCommercialValueCalculation } from '$lib/utils/calculations';
 	import { hasErrors } from '$lib/utils/errors';
 	import PublicPartsTable from '$lib/components/app/Commercial/PublicPartsTable/PublicPartsTable.svelte';
@@ -48,8 +48,12 @@
 
 	function handleCompanySelection(event) {
 		customerSelected = true;
-		const {email_address, phone_number, ...rest} = event.detail;
-		values.customer = {...rest, email_address: values?.customer?.email_address, phone_number: values?.customer?.phone_number};
+		const { email_address, phone_number, ...rest } = event.detail;
+		values.customer = {
+			...rest,
+			email_address: values?.customer?.email_address,
+			phone_number: values?.customer?.phone_number
+		};
 	}
 
 	function handleCreateNewCustomer(event) {
@@ -74,9 +78,12 @@
 	function handleSubmit() {
 		let validationObj;
 
-		validationObj = commercialFormsValidation[form.type]();
+		validationObj =
+			form != null ? commercialFormsValidation[form.type]() : masterCommercialValidation();
 		const results = validationObj?.safeParse(values);
 		errors = results?.error?.issues;
+
+		console.log(errors);
 
 		if (form?.type === 'confirm') {
 			if (!values.customer.id && customerSelected) {
@@ -97,7 +104,7 @@
 
 	$: reviewValues = getCommercialValueCalculation(
 		focusedRfqProductQty,
-		(form?.type == null ? data : data.rfq)?.rfqs_products?.filter(
+		(form?.type == null ? values : values.rfq)?.rfqs_products?.filter(
 			(p) => p?.id === focusedRfqProductQty?.rfqs_product
 		)[0]
 	);
@@ -125,7 +132,7 @@
 					<div class="mr-5">
 						<p class="text-lg mt-5 font-semibold">Notes</p>
 						{#if (form?.type == null ? data : data.rfq)?.notes}
-							<Textarea value={(form?.type == null ? data : data.rfq)?.notes} disabled/>
+							<Textarea value={(form?.type == null ? data : data.rfq)?.notes} disabled />
 						{:else}
 							<p>None</p>
 						{/if}
@@ -180,8 +187,7 @@
 					<div class="flex flex-col space-y-5">
 						<div>
 							<p class="font-medium">
-								{'Company: ' +
-									data.rfq_public.values.customer.name}
+								{'Company: ' + data.rfq_public.values.customer.name}
 							</p>
 						</div>
 						<div class="flex flex-row space-x-5">
@@ -241,7 +247,7 @@
 
 					<div class="mr-5">
 						<p class="text-lg mt-10 font-medium">Notes</p>
-						<Textarea bind:value={values.notes}/>
+						<Textarea bind:value={values.notes} />
 					</div>
 				{/if}
 			</div>
