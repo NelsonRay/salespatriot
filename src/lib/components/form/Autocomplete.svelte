@@ -9,6 +9,7 @@
 	export let query;
 	export let extractItemName;
 	export let disabled;
+	export let forceCaps = false;
 
 	let dispatch = createEventDispatcher();
 
@@ -52,7 +53,7 @@
 </script>
 
 <div class="dropdown">
-	<TextInput {disabled} bind:value />
+	<TextInput {disabled} bind:value {forceCaps} />
 	{#if !creating}
 		<ul
 			tabIndex={0}

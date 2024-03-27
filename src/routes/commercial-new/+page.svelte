@@ -101,6 +101,7 @@
 						extractItemName={extractCompanyName}
 						on:selection={handleCompanySelection}
 						on:create={handleCreateNewCustomer}
+						forceCaps
 					/>
 					{#if hasErrors(errors, ['customer', 'name'])}
 						<label for="trim" class="label">
@@ -145,7 +146,7 @@
 			/>
 
 			<p class="text-lg mt-10 font-medium">Notes</p>
-			<Textarea bind:value={rfq.notes}/>
+			<Textarea bind:value={rfq.notes} />
 
 			<div class="flex flex-row mt-5 items-center justify-center pb-32">
 				{#if !isSubmitting}
