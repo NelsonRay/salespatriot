@@ -32,7 +32,7 @@
 		let formsQuery = supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), rfq(*, customer(name), rfqs_products(id, rfqs_products_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
+				'*, form!inner(*), product(*), rfq(*, customer(name), rfqs_products(id, product(number), rfqs_products_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
 			)
 			.eq('deleted', false)
 			.eq('submitted', false);
@@ -65,7 +65,7 @@
 
 		switch (form.type) {
 			case 'opportunity':
-				forms =  forms.sort(
+				forms = forms.sort(
 					(a, b) =>
 						b?.solicitation_matched?.solicitation?.estimated_value -
 						a?.solicitation_matched?.solicitation?.estimated_value
@@ -168,11 +168,25 @@
 								{#if forms?.rfq}
 									<p class="mt-1 font-medium">{getRFQDescription(forms?.rfq)}</p>
 								{/if}
+								{#if form?.type === 'enter_quote'}
+									{#each forms?.rfq?.rfqs_products ?? [] as rfqs_product}
+										<p class="mt-1 font-medium">{rfqs_product.product.number}</p>
+									{/each}
+								{/if}
 								{#if forms?.rfq_public}
 									<p class="mt-1 font-medium">{getRFQDescription(forms?.rfq_public?.values)}</p>
 								{/if}
 								<div class="flex flex-row justify-end">
-									<p class="{Math.abs(calculateDaysDifference(forms.created_at)) > 4 ? "text-red-400" : "text-gray-500"}">{formatDateWithTime(forms.created_at) + ' (' + Math.abs(calculateDaysDifference(forms.created_at)) + 'd old)'}</p>
+									<p
+										class={Math.abs(calculateDaysDifference(forms.created_at)) > 4
+											? 'text-red-400'
+											: 'text-gray-500'}
+									>
+										{formatDateWithTime(forms.created_at) +
+											' (' +
+											Math.abs(calculateDaysDifference(forms.created_at)) +
+											'd old)'}
+									</p>
 								</div>
 							</div>
 						</a>
@@ -242,7 +256,16 @@
 									</div>
 								</div>
 								<div class="flex flex-row justify-end">
-									<p class="{Math.abs(calculateDaysDifference(forms.created_at)) > 4 ? "text-red-400" : "text-gray-500"}">{formatDateWithTime(forms.created_at) + ' (' + Math.abs(calculateDaysDifference(forms.created_at)) + 'd old)'}</p>
+									<p
+										class={Math.abs(calculateDaysDifference(forms.created_at)) > 4
+											? 'text-red-400'
+											: 'text-gray-500'}
+									>
+										{formatDateWithTime(forms.created_at) +
+											' (' +
+											Math.abs(calculateDaysDifference(forms.created_at)) +
+											'd old)'}
+									</p>
 								</div>
 							</div>
 						</a>
