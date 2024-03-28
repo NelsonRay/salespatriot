@@ -24,8 +24,8 @@
 	export let waitingCallback;
 	export let isSubmitting;
 	export let commentSubmitCallback;
-	export let supabase;
-	export let rfqsForPurchasingForm;
+	export let supabase = undefined;
+	export let rfqsForPurchasingForm = undefined;
 
 	let focusedRfqProductQty;
 	let reviewValues;
@@ -73,8 +73,6 @@
 		return queryData;
 	}
 
-	const appInput = 'border border-blue-400 rounded-md text-sm py-1 px-2';
-
 	function handleSubmit() {
 		let validationObj;
 
@@ -82,8 +80,6 @@
 			form != null ? commercialFormsValidation[form.type]() : masterCommercialValidation();
 		const results = validationObj?.safeParse(values);
 		errors = results?.error?.issues;
-
-		console.log(errors);
 
 		if (form?.type === 'confirm') {
 			if (!values.customer.id && customerSelected) {

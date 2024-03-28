@@ -4,7 +4,7 @@
 	import Currency from '$lib/components/form/Currency.svelte';
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import { hasErrors } from '$lib/utils/errors.js';
-	import { formatMonthDayYearDate, formatCurrency } from '$lib/helpers';
+	import { formatMonthDayYearDate, formatCurrency, calculateDaysDifference } from '$lib/helpers';
 
 	export let rfqs_products;
 	export let supabase;
@@ -82,6 +82,15 @@
 
 	function blurProductQty() {
 		focusedRfqProductQty = null;
+	}
+
+	function isStatusComplete(data, isPurchasing) {
+		return (
+			data?.filter(
+				(d) =>
+					Math.abs(calculateDaysDifference(new Date(d.created_at))) < (isPurchasing ? 180 : 300)
+			)?.length > 0
+		);
 	}
 </script>
 
@@ -274,7 +283,7 @@
 							<div class="flex flex-col bg-neutral-50 rounded-md p-3 mr-8 mt-2 text-xs">
 								<div class="flex flex-row justify-between items-center">
 									<p class="mb-1 font-medium text-sm">Purchasing:</p>
-									{#if rfqs_product?.product?.product_purchasing?.length > 0}
+									{#if isStatusComplete(rfqs_product?.product?.product_purchasing, true)}
 										<div class="p-2 rounded-md inline-block bg-green-300 ml-10 text-xs">
 											Complete
 										</div>
@@ -324,7 +333,7 @@
 							<div class="flex flex-col bg-neutral-50 rounded-md p-3 mr-8 mt-2 text-xs">
 								<div class="flex flex-row justify-between items-center">
 									<p class="mb-1 font-medium text-sm">Labor:</p>
-									{#if rfqs_product?.product?.product_purchasing?.length > 0}
+									{#if isStatusComplete(rfqs_product?.product?.product_labor_minutes, false)}
 										<div class="p-2 rounded-md inline-block bg-green-300 ml-10 text-xs">
 											Complete
 										</div>
@@ -334,6 +343,30 @@
 										</div>
 									{/if}
 								</div>
+								{#if rfqs_product?.product?.product_labor_minutes?.length > 0}
+									<div class="flex flex-row space-x-5 mt-3">
+										<div class="flex flex-col">
+											<p class="text-gray-400">Quantity:</p>
+											{#each rfqs_product?.product?.product_labor_minutes as labor}
+												<p>1</p>
+											{/each}
+										</div>
+
+										<div class="flex flex-col">
+											<p class="text-gray-400">Labor Minutes:</p>
+											{#each rfqs_product?.product?.product_labor_minutes as labor}
+												<p>{labor.labor_minutes}</p>
+											{/each}
+										</div>
+
+										<div class="flex flex-col">
+											<p class="text-gray-400">Date:</p>
+											{#each rfqs_product?.product?.product_labor_minutes as labor}
+												<p>{formatMonthDayYearDate(labor.created_at)}</p>
+											{/each}
+										</div>
+									</div>
+								{/if}
 							</div>
 						</div>
 					</div>

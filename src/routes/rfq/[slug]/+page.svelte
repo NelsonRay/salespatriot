@@ -32,7 +32,7 @@
 		let { data, error } = await supabase
 			.from('rfqs')
 			.select(
-				'*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*))'
+				'*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*), product_labor_minutes(*)), product_labor_minutes(*), rfqs_products_quantities(*))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
