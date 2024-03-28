@@ -3,6 +3,7 @@
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
 import { json } from '@sveltejs/kit';
+import { calculateDaysDifference } from '$lib/helpers.js';
 import { createServerClient } from '@supabase/ssr';
 
 // 50e95568-180b-46d5-a341-f216bb2a3c17 Opp
@@ -46,12 +47,21 @@ export async function POST({ request, cookies }) {
 			let laborInProgress = true;
 			let purchasingInProgress = true;
 
-			if (product?.product?.product_labor_minutes?.length > 0) {
+			if (
+				product?.product?.product_labor_minutes?.filter(
+					(d) => Math.abs(calculateDaysDifference(new Date(d.created_at))) < 300
+				)?.length > 0
+			) {
 				product_labor_minutes = product?.product?.product_labor_minutes[0]?.id;
 				labor_minutes = product?.product?.product_labor_minutes[0]?.labor_minutes;
 				laborInProgress = false;
 			}
-			if (product?.product?.product_purchasing?.length > 0) {
+
+			if (
+				product?.product?.product_purchasing?.filter(
+					(d) => Math.abs(calculateDaysDifference(new Date(d.created_at))) < 180
+				)?.length > 0
+			) {
 				purchasing_ready = true;
 				purchasingInProgress = false;
 			}
