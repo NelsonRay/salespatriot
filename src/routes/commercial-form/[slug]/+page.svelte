@@ -25,11 +25,12 @@
 		if (data?.form?.type === 'purchasing') {
 			const { data: d, error: e } = await supabase
 				.from('rfqs_products')
-				.select('id, rfq!inner(id, status, customer(*), received_at)')
-				.eq('product', data.product.id)
-				.filter('rfq.status', 'cs', `{"purchasing:in_progress"}`);
+				.select(
+					'id, rfq!inner(id, status, customer(*), received_at, rfqs_products(id, rfqs_products_quantities(*)))'
+				)
+				.eq('product', data.product.id);
 
-			rfqsForPurchasingForm = d?.map((r) => r?.rfq);
+			rfqsForPurchasingForm = d;
 		}
 
 		form = data;
@@ -38,7 +39,10 @@
 			values = form.rfq;
 		} else if (form?.form?.type === 'confirm') {
 			values = {
-				customer: {email_address: data.rfq_public?.values?.customer?.email_address, phone_number: data.rfq_public?.values?.customer?.phone_number},
+				customer: {
+					email_address: data.rfq_public?.values?.customer?.email_address,
+					phone_number: data.rfq_public?.values?.customer?.phone_number
+				},
 				received_at: data.rfq_public.values.received_at,
 				requested_return_date: data.rfq_public.values.requested_return_date,
 				rfqs_products: [
