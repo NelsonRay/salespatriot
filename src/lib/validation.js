@@ -577,7 +577,7 @@ export const formsValidation = {
 					});
 				}
 
-				if (fields.status.includes('enter_quote:entered')) {
+				if (fields.status.includes('enter_quote:entered') && !fields.quote_number) {
 					ctx.addIssue({
 						code: 'custom',
 						message: 'Quote Number is required.',
