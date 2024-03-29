@@ -91,7 +91,7 @@
 
 	async function submitCallback() {
 		isSubmitting = true; // show loading spinner
-		const res = await fetch('/api/commercial/form-submission', {
+		const res = await fetch('/api/rfq/form-submission', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ values, id: form.id })

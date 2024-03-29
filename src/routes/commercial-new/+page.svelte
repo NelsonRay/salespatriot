@@ -45,7 +45,7 @@
 		}
 
 		if (!errors) {
-			const res = await fetch('/api/commercial/new', {
+			const res = await fetch('/api/rfq/new', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ rfq })

@@ -10,8 +10,7 @@ export const config = {
 export async function POST({ request, locals: { supabase } }) {
 	const { values } = await request.json();
 
-	console.log(JSON.stringify(values, null, 4));
-
+	// forcefully push rfq thru to enter quote and send quote stages
 	for (let rfqs_product of values.rfqs_products) {
 		await supabase
 			.from('rfqs_products')
@@ -27,6 +26,26 @@ export async function POST({ request, locals: { supabase } }) {
 					final_pricing: rfqs_products_quantity.final_pricing
 				})
 				.eq('id', rfqs_products_quantity.id);
+		}
+	}
+
+	// determine if should delete purchasing forms
+	for (let rfqs_product of values.rfqs_products) {
+		const { data } = await supabase
+			.from('rfqs_products')
+			.select('id, rfq!inner(id, status)')
+			.filter('rfq.status', 'cs', `{"purchasing:in_progress"}`)
+			.eq('removed', false);
+
+		// see if another live rfq awaiting same product purchasing form - if so, don't delete form
+		const deleteForm = data?.filter((d) => d?.rfq?.id !== values.id)?.length === 0;
+
+		if (deleteForm) {
+			await supabase
+				.from('forms')
+				.update({ deleted: true })
+				.eq('product', rfqs_product.id)
+				.eq('submitted', false);
 		}
 	}
 
