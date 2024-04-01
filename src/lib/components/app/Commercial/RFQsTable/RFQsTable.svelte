@@ -1,5 +1,18 @@
 <script>
+	// @ts-nocheck
+
 	export let data;
+
+	function getQuantities(rfqs_product) {
+		return rfqs_product?.rfq?.rfqs_products
+			?.filter((p) => p?.id === rfqs_product?.id)[0]
+			?.rfqs_products_quantities?.map((q) => q?.quantity)
+			?.join(', ');
+	}
+
+	function isStatusComplete(rfqs_product) {
+		return rfqs_product.rfq.status?.includes('purchasing:complete');
+	}
 </script>
 
 <div class="flex flex-col">
@@ -10,17 +23,25 @@
 	>
 		<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll">
 			<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
-				{#each ['Customer', 'Receive At'] as header}
+				{#each ['Customer', 'Received At', 'Quantities', 'Purchasing Status'] as header}
 					<th>{header}</th>
 				{/each}
 			</thead>
 			<tbody>
-				{#each data as rfq}
-				<tr class="hover:bg-neutral-100">
-						<td>{rfq.customer.name ?? ''}</td>
-						<td>{rfq.received_at ?? ''}</td>
+				{#each data as rfqs_product}
+					<tr class="hover:bg-neutral-100">
+						<td>{rfqs_product.rfq.customer.name ?? ''}</td>
+						<td>{rfqs_product.rfq.received_at ?? ''}</td>
+						<td>{getQuantities(rfqs_product) ?? ''}</td>
+						<td>
+							{#if isStatusComplete(rfqs_product)}
+								<div class="p-2 rounded-md inline-block bg-green-300 text-xs">Complete</div>
+							{:else}
+								<div class="p-2 rounded-md inline-block bg-yellow-300 text-xs">In Progress</div>
+							{/if}
+						</td>
 					</tr>
-					{/each}
+				{/each}
 			</tbody>
 		</table>
 	</article>
