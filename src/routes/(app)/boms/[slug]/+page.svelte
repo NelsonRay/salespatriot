@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import Table from '$lib/components/app/BOMs/LineItemsTable/Table.svelte';
+	import VendorEmailModal from '$lib/components/app/BOMs/VendorEmailModal/VendorEmailModal.svelte';
 
 	export let data;
 	export let isAdmin = false;
@@ -11,6 +12,7 @@
 
 	let bom = null;
 	let isMounted = false;
+	let selectedVendor;
 
 	page.subscribe((p) => {
 		if (isMounted) {
@@ -30,6 +32,15 @@
 		let { data, error } = await query;
 
 		bom = data;
+	}
+
+	async function updateVendorEmail(email) {
+		const vendorId = selectedVendor?.id;
+		selectedVendor = null;
+
+		await supabase.from('vendors').update({ email }).eq('id', vendorId);
+
+		window.location.reload();
 	}
 
 	onMount(() => {
@@ -56,6 +67,7 @@
 	<Table
 		data={bom?.boms_parts?.sort((a, b) => a.line_number - b.line_number)}
 		blockEditing={!isAdmin}
+		bind:selectedVendor
 	/>
 {:else}
 	<div class="flex flex-col gap-4 p-5">
@@ -69,3 +81,5 @@
 		<div class="skeleton h-4 w-full"></div>
 	</div>
 {/if}
+
+<VendorEmailModal open={!!selectedVendor} {selectedVendor} submitCallback={updateVendorEmail} />
