@@ -2,6 +2,7 @@
 	import { AppRail, AppRailAnchor } from '@skeletonlabs/skeleton';
 	import Sales from '$lib/icons/Sales.svg';
 	import Workflows from '$lib/icons/Workflows.svg';
+	import BOMs from '$lib/icons/boms.svg';
 	import Reports from '$lib/icons/Reports.svg';
 	import { page } from '$app/stores';
 </script>
@@ -46,6 +47,18 @@
 				</div></svelte:fragment
 			>
 			<span>Reports</span>
+		</AppRailAnchor>
+		<AppRailAnchor
+			title="BOMs"
+			href="/boms"
+			selected={$page.url.pathname.toString().includes('/boms')}
+		>
+			<svelte:fragment slot="lead"
+				><div class="flex items-center justify-center">
+					<img src={BOMs} class="h-7 w-7" alt="BOMs" />
+				</div>
+			</svelte:fragment>
+			<span>BOMs</span>
 		</AppRailAnchor>
 		<!-- --- -->
 		<svelte:fragment slot="trail">
