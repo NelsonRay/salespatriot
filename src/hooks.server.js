@@ -32,7 +32,8 @@ export const handle = async ({ event, resolve }) => {
 			'/api/webhooks/rfq-upload',
 			'/api/webhooks/resend/form',
 			'/api/pb-upload',
-			'/rfq-public/6b289746-2b01-47af-a7d4-26a3920f75ca'
+			'/rfq-public/6b289746-2b01-47af-a7d4-26a3920f75ca',
+			'/api/smtp/send-mail'
 		].includes(event.url.pathname) &&
 		!event.locals.session
 	) {

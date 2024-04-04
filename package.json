@@ -47,6 +47,7 @@
 		"@supabase/ssr": "^0.1.0",
 		"@sveltejs/adapter-vercel": "^4.0.5",
 		"airtable": "^0.12.2",
+		"nodemailer": "^6.9.13",
 		"papaparse": "^5.4.1",
 		"qs": "^6.12.0",
 		"xlsx": "^0.18.5",
