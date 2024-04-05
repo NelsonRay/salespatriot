@@ -55,7 +55,7 @@ function sendMail(transporter, emailData, supabase) {
 							.eq('id', p.id)
 					)
 				);
-				console.log('Message sent: %s', JSON.stringify(info, null, 4));
+
 				resolve(info);
 			}
 		});
@@ -63,7 +63,6 @@ function sendMail(transporter, emailData, supabase) {
 }
 
 function getMailOptions(emailData) {
-	console.log(emailData);
 	const options = {
 		from: '"Nelson Ray" <nelson.ray@auroradefensegroup.com>',
 		to: 'nelsonray27@gmail.com',

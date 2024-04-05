@@ -1,9 +1,10 @@
+// @ts-nocheck
 import { json } from '@sveltejs/kit';
 
 export async function POST({ locals: { supabase, session }, request }) {
 	const { id } = await request.json();
 
-	const { data, error } = await supabase
+	const { data } = await supabase
 		.from('boms')
 		.select('id, boms_parts(*)')
 		.eq('id', id)
@@ -22,8 +23,11 @@ export async function POST({ locals: { supabase, session }, request }) {
 		.limit(1)
 		.single();
 
+	let partsRequestedByVendor = {};
+
 	for (let boms_part of data.boms_parts) {
 		if (!boms_part.vendor) continue; // skip if no vendor
+		if (partsRequestedByVendor[boms_part.vendor]?.includes(boms_part.part)) continue; // skip if already requested by vendor
 
 		const {
 			data: { id: parts_quote_id }
@@ -41,6 +45,11 @@ export async function POST({ locals: { supabase, session }, request }) {
 					.insert({ parts_quote: parts_quote_id, quantity: q })
 			)
 		);
+
+		partsRequestedByVendor[boms_part.vendor] = [
+			boms_part.part,
+			...(partsRequestedByVendor[boms_part.vendor] ?? [])
+		];
 	}
 
 	await supabase.from('boms_quotes').update({ email_vendors: true }).eq('id', bom_quote_id);
