@@ -1,5 +1,6 @@
 <script>
 	// @ts-nocheck
+	import { formatMonthDayYearDate } from '$lib/helpers';
 	import Edit from '$lib/icons/Edit.svg';
 	import Open from '$lib/icons/Open.svg';
 
@@ -17,7 +18,9 @@
 		{ type: 'part', field: 'source', header: 'Source' },
 		{ type: 'part', field: 'uom', header: 'UOM' },
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
-		{ type: 'vendor', field: 'email', header: 'Email' }
+		{ type: 'vendor', field: 'email', header: 'Email' },
+		{ type: 'status', header: 'Status' },
+		{ type: 'email_sent', header: 'Email Sent' }
 	];
 
 	export function tableFieldMapper(obj, column) {
@@ -36,6 +39,16 @@
 			value = obj?.vendor?.[column?.field];
 		} else if (column.type === 'field') {
 			value = obj?.[column?.field];
+		} else if (column.type === 'status') {
+			value = obj?.part?.parts_quotes[0]?.complete;
+		} else if (column.type === 'email_sent') {
+			value = obj?.part?.parts_quotes[0]?.created_at;
+
+			if (value != null) {
+				value = formatMonthDayYearDate(value);
+			} else {
+				value = null;
+			}
 		}
 
 		return { header: column.header, value };
@@ -87,6 +100,13 @@
 										<img src={Edit} alt="open" class="h-3 w-3" />
 									</button>
 								</div>
+							</td>
+						{:else if column.type === 'status'}
+							<td>
+								{#if tableFieldMapper(obj, column).value}
+									<div class="p-1 rounded-md inline-block bg-green-300 text-xs">Complete</div>
+								{:else if tableFieldMapper(obj, column).value != null}
+									<div class="p-1 rounded-md inline-block bg-yellow-300 text-xs">Waiting</div>{/if}
 							</td>
 						{:else}
 							<td>

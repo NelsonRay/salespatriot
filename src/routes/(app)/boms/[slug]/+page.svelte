@@ -25,7 +25,7 @@
 	async function loadData() {
 		let query = supabase
 			.from('boms')
-			.select('id, products(*), boms_parts(*, part(*), vendor(*)), boms_quotes(*)')
+			.select('id, products(*), boms_parts(*, part(*, parts_quotes(*)), vendor(*)), boms_quotes(*)')
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();

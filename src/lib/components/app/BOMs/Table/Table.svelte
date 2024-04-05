@@ -1,5 +1,6 @@
 <script>
 	// @ts-nocheck
+	import { formatMonthDayYearDate } from '$lib/helpers';
 	import Open from '$lib/icons/Open.svg';
 
 	export let data;
@@ -9,15 +10,27 @@
 	const columns = [
 		{ type: 'position', header: '#' },
 		{ type: 'product', field: 'number', header: 'Product Number' },
-		{ type: 'product', field: 'description', header: 'Description' }
+		{ type: 'product', field: 'description', header: 'Description' },
+		{ type: 'status', header: 'Status' },
+		{ type: 'bom_started', header: 'BOM Started' }
 	];
 
 	export function tableFieldMapper(obj, column) {
 		let value;
 
 		if (column.type === 'position') {
-		} else {
+		} else if (column.type === 'product') {
 			value = obj?.products?.[column?.field];
+		} else if (column.type === 'status') {
+			value = obj?.boms_quotes[0]?.complete;
+		} else if (column.type === 'bom_started') {
+			value = obj?.boms_quotes[0]?.created_at;
+
+			if (value != null) {
+				value = formatMonthDayYearDate(value);
+			} else {
+				value = '';
+			}
 		}
 
 		return { header: column.header, value };
@@ -54,6 +67,13 @@
 								{:else}
 									{tableFieldMapper(obj, column).value ?? ''}
 								{/if}
+							</td>
+						{:else if column.type === 'status'}
+							<td>
+								{#if tableFieldMapper(obj, column).value}
+									<div class="p-1 rounded-md inline-block bg-green-300 text-xs">Complete</div>
+								{:else if tableFieldMapper(obj, column).value != null}
+									<div class="p-1 rounded-md inline-block bg-yellow-300 text-xs">Waiting</div>{/if}
 							</td>
 						{:else}
 							<td>

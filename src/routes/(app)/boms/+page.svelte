@@ -20,7 +20,7 @@
 	});
 
 	async function loadData() {
-		let query = supabase.from('boms').select('id, products(*)');
+		let query = supabase.from('boms').select('id, products(*), boms_quotes(*)');
 
 		let { data, error } = await query;
 
