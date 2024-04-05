@@ -12,6 +12,7 @@
 
 	let bom = null;
 	let isMounted = false;
+	let isLoading = false;
 	let selectedVendor;
 
 	page.subscribe((p) => {
@@ -24,7 +25,7 @@
 	async function loadData() {
 		let query = supabase
 			.from('boms')
-			.select('id, products(*), boms_parts(*, part(*), vendor(*))')
+			.select('id, products(*), boms_parts(*, part(*), vendor(*)), boms_quotes(*)')
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
@@ -34,6 +35,14 @@
 		bom = data;
 	}
 
+	async function emailVendors() {
+		if (!isLoading && isBomQuoteReady(bom)) {
+			isLoading = true;
+			await fetch('/api/bom/automation', { method: 'POST', body: JSON.stringify({ id: bom.id }) });
+			window.location.reload();
+		}
+	}
+
 	async function updateVendorEmail(email) {
 		const vendorId = selectedVendor?.id;
 		selectedVendor = null;
@@ -41,6 +50,19 @@
 		await supabase.from('vendors').update({ email }).eq('id', vendorId);
 
 		window.location.reload();
+	}
+
+	function isBomQuoteReady(b) {
+		if (!b) return false;
+		if (b?.boms_quotes?.length > 0) return false;
+
+		for (let part of b?.boms_parts ?? []) {
+			if (part.vendor && !part.vendor?.email) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	onMount(() => {
@@ -59,6 +81,17 @@
 	<div class="flex flex-row h-14 items-center justify-between mx-2">
 		<div class="flex flex-row items-center">
 			<p class="font-semibold ml-4 text-sm">{(bom?.products?.number ?? '') + ' '}BOM</p>
+		</div>
+		<div>
+			{#if !isLoading}
+				<button
+					on:click={emailVendors}
+					class="text-xs p-3 rounded-3xl font-medium mr-2 {isBomQuoteReady(bom)
+						? 'bg-green-400 hover:bg-green-300'
+						: 'bg-gray-100 text-gray-400'}">Email Vendors</button
+				>{:else}
+				<span class="loading loading-spinner loading-md"></span>
+			{/if}
 		</div>
 	</div>
 </div>
