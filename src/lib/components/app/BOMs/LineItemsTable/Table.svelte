@@ -1,16 +1,19 @@
 <script>
 	// @ts-nocheck
+	import Edit from '$lib/icons/Edit.svg';
 	import Open from '$lib/icons/Open.svg';
 
 	export let data;
 	export let blockEditing = false;
 	export let openNewTab = false;
+	export let selectedVendor;
 
 	const columns = [
 		{ type: 'position', header: '#' },
 		{ type: 'level', header: 'Level' },
 		{ type: 'part', field: 'number', header: 'Part Number' },
 		{ type: 'part', field: 'description', header: 'Description' },
+		{ type: 'field', field: 'quantity', header: 'Quantity' },
 		{ type: 'part', field: 'source', header: 'Source' },
 		{ type: 'part', field: 'uom', header: 'UOM' },
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
@@ -31,6 +34,8 @@
 			value = obj?.part?.[column?.field];
 		} else if (column.type === 'vendor') {
 			value = obj?.vendor?.[column?.field];
+		} else if (column.type === 'field') {
+			value = obj?.[column?.field];
 		}
 
 		return { header: column.header, value };
@@ -67,6 +72,21 @@
 								{:else}
 									{tableFieldMapper(obj, column).value ?? ''}
 								{/if}
+							</td>
+						{:else if column.type === 'vendor' && !obj?.vendor}
+							<td>
+								<p class="text-gray-400">---</p>
+							</td>
+						{:else if column.field === 'email'}
+							<td>
+								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+									{#if tableFieldMapper(obj, column).value}
+										{tableFieldMapper(obj, column).value ?? ''}
+									{/if}
+									<button on:click={() => (selectedVendor = obj?.vendor)}>
+										<img src={Edit} alt="open" class="h-3 w-3" />
+									</button>
+								</div>
 							</td>
 						{:else}
 							<td>
