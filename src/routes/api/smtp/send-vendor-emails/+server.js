@@ -125,7 +125,7 @@ function getMailOptions(emailData) {
             Diana Cepeda
           </p>
 
-		  <img src="https://www.auroradefensegroup.com/wp-content/themes/aurora-defense-group/assets/media/logo.png" alt="Image description" width="185" height="100">
+		  <img src="https://byhpfvdicvtmwnuwrbtp.supabase.co/storage/v1/object/public/logos/ADG%20Logo%20Transparent.png" alt="Image description" width="154" height="162">
 		</body>
 </html>`
 	};
