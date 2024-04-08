@@ -74,6 +74,7 @@
 	}
 
 	function getClass(obj, selectedPartsById, selecting) {
+		if (!obj?.vendor) return 'bg-gray-300';
 		if (isPartDisabled(obj)) return 'bg-gray-200';
 
 		return selecting
@@ -135,9 +136,20 @@
 							</td>
 						{:else if column.type === 'vendor' && column.field === 'email'}
 							<td>
-								<p class={tableFieldMapper(obj, column).value ? '' : 'text-gray-400'}>
-									{tableFieldMapper(obj, column).value ?? '---'}
-								</p>
+								{#if obj?.vendor}
+									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+										{#if tableFieldMapper(obj, column).value}
+											{tableFieldMapper(obj, column).value ?? ''}
+										{/if}
+										<button on:click={() => (selectedVendor = obj?.vendor)}>
+											<img src={Edit} alt="open" class="h-3 w-3" />
+										</button>
+									</div>
+								{:else}
+									<p class={tableFieldMapper(obj, column).value ? '' : 'text-gray-400'}>
+										{tableFieldMapper(obj, column).value ?? '---'}
+									</p>
+								{/if}
 							</td>
 						{:else if column.field === 'description'}
 							<td>

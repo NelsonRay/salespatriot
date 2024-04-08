@@ -9,7 +9,9 @@ export async function POST({ locals: { supabase }, request, fetch }) {
 
 	const { data } = await supabase
 		.from('boms_quotes')
-		.select('id, parts_quotes(*, vendor(*), part(number, uom), parts_quotes_quantities(*))')
+		.select(
+			'id, parts_quotes(*, vendor(*), part(number, description, uom), parts_quotes_quantities(*))'
+		)
 		.eq('id', id)
 		.limit(1)
 		.single();
