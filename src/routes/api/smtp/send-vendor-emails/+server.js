@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // @ts-nocheck
-import { SMTP_HOST, SMTP_USER, SMTP_PASS } from '$env/static/private';
+import { SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_FROM } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import nodemailer from 'nodemailer';
 
@@ -64,7 +64,7 @@ function sendMail(transporter, emailData, supabase) {
 
 function getMailOptions(emailData) {
 	const options = {
-		from: '"Nelson Ray" <nelson.ray@auroradefensegroup.com>',
+		from: SMTP_FROM,
 		to: 'nelsonray27@gmail.com',
 		subject: `QUOTES AND LEAD TIMES NEEDED`,
 		html: `<html lang="en">
