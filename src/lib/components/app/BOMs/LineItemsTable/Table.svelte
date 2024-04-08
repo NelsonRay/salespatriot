@@ -5,6 +5,7 @@
 
 	export let data;
 	export let selectedVendor;
+	export let selectedPart;
 	export let isSelectingParts;
 	export let selectedParts;
 
@@ -126,9 +127,28 @@
 							<td>
 								{tableFieldMapper(obj, column).value ?? ''}
 							</td>
-						{:else if column.type === 'vendor' && !obj?.vendor}
+						{:else if column.type === 'vendor' && column.field === 'name'}
 							<td>
-								<p class="text-gray-400">---</p>
+								<p>
+									{tableFieldMapper(obj, column).value ?? 'LABOR & OVERHEAD'}
+								</p>
+							</td>
+						{:else if column.type === 'vendor' && column.field === 'email'}
+							<td>
+								<p class={tableFieldMapper(obj, column).value ? '' : 'text-gray-400'}>
+									{tableFieldMapper(obj, column).value ?? '---'}
+								</p>
+							</td>
+						{:else if column.field === 'description'}
+							<td>
+								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+									{#if tableFieldMapper(obj, column).value}
+										{tableFieldMapper(obj, column).value ?? ''}
+									{/if}
+									<button on:click={() => (selectedPart = obj?.part)}>
+										<img src={Edit} alt="open" class="h-3 w-3" />
+									</button>
+								</div>
 							</td>
 						{:else if column.field === 'email'}
 							<td>

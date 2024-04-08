@@ -101,8 +101,9 @@ function getMailOptions(emailData) {
 			<table>
 				<thead>
 					<tr>
-						<th>Part Number</th>
-						<th>Quantity</th>
+						<th>Part Number:</th>
+						<th>Description:</th>
+						<th>Quantity:</th>
                       <th>Lead Times:</th>
 					</tr>
 				</thead>
@@ -113,6 +114,7 @@ function getMailOptions(emailData) {
 						(p) => `<tr>
 								<td>${p.data[0]}</td>
 								<td>${p.data[1]}</td>
+								<td>${p.data[2]}</td>
 								<td></td>
 							</tr>`
 					)

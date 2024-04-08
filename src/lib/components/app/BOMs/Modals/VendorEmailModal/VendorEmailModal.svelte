@@ -9,9 +9,7 @@
 	let isLoading = false;
 
 	async function handleSubmit() {
-		if (selectedVendor.email) {
-			await submitCallback(selectedVendor.email);
-		}
+		await submitCallback(selectedVendor.email || null);
 	}
 </script>
 
@@ -38,12 +36,12 @@
 						</span>
 					</button>
 				</div>
-				<div class="flex flex-col items-center space-y-3">
-					<div>
-						<p class="mb-1 text-sm">Email:</p>
-						<TextInput bind:value={selectedVendor.email} />
-					</div>
+
+				<div class="mx-4">
+					<p class="mb-1 text-sm">Email:</p>
+					<TextInput bind:value={selectedVendor.email} fullWidth />
 				</div>
+
 				<div class="flex items-center justify-center p-6">
 					{#if !isLoading}
 						<button

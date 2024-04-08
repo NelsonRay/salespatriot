@@ -26,6 +26,7 @@ export async function POST({ locals: { supabase }, request, fetch }) {
 		parts: partsByVendor[v].map((p) => ({
 			data: [
 				p.part.number,
+				p.part.description,
 				p.parts_quotes_quantities
 					.map((q) => q.quantity)
 					.sort((a, b) => a - b)
