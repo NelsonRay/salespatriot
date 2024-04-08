@@ -65,7 +65,7 @@ function sendMail(transporter, emailData, supabase) {
 function getMailOptions(emailData) {
 	const options = {
 		from: SMTP_FROM,
-		to: 'nelsonray27@gmail.com',
+		to: emailData.email,
 		subject: `QUOTES AND LEAD TIMES NEEDED`,
 		html: `<html lang="en">
 		<head>
