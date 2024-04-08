@@ -6,6 +6,7 @@
 	export let data;
 	export let selectedVendor;
 	export let selectedPart;
+	export let selectedPartForInstructions;
 	export let isSelectingParts;
 	export let selectedParts;
 
@@ -14,7 +15,8 @@
 		{ type: 'position', header: '#' },
 		{ type: 'level', header: 'Level' },
 		{ type: 'part', field: 'number', header: 'Part Number' },
-		{ type: 'part', field: 'description', header: 'Description' },
+		{ type: 'part', field: 'description', header: 'Part Description' },
+		{ type: 'part', field: 'vendor_instructions', header: 'Vendor Instructions' },
 		{ type: 'field', field: 'quantity', header: 'Quantity' },
 		{ type: 'part', field: 'source', header: 'Source' },
 		{ type: 'part', field: 'uom', header: 'UOM' },
@@ -151,13 +153,21 @@
 									</p>
 								{/if}
 							</td>
-						{:else if column.field === 'description'}
+						{:else if column.field === 'description' || column.field === 'vendor_instructions'}
 							<td>
-								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+								<div class="flex flex-row justify-between pr-1 items-center">
 									{#if tableFieldMapper(obj, column).value}
-										{tableFieldMapper(obj, column).value ?? ''}
+										<p class="mr-2 text-wrap max-w-44">
+											{tableFieldMapper(obj, column).value}
+										</p>
 									{/if}
-									<button on:click={() => (selectedPart = obj?.part)}>
+									<button
+										class="h-3 w-3"
+										on:click={() =>
+											column.field === 'description'
+												? (selectedPart = obj?.part)
+												: (selectedPartForInstructions = obj?.part)}
+									>
 										<img src={Edit} alt="open" class="h-3 w-3" />
 									</button>
 								</div>

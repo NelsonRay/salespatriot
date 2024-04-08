@@ -5,6 +5,7 @@
 	import Table from '$lib/components/app/BOMs/LineItemsTable/Table.svelte';
 	import VendorEmailModal from '$lib/components/app/BOMs/Modals/VendorEmailModal/VendorEmailModal.svelte';
 	import DescriptionModal from '$lib/components/app/BOMs/Modals/DescriptionModal/DescriptionModal.svelte';
+	import InstructionsModal from '$lib/components/app/BOMs/Modals/InstructionsModal/InstructionsModal.svelte';
 
 	export let data;
 
@@ -15,6 +16,7 @@
 	let isLoading = false;
 	let selectedVendor;
 	let selectedPart;
+	let selectedPartForInstructions;
 	let isSelectingParts = false;
 	let selectedParts = [];
 
@@ -63,6 +65,15 @@
 		selectedPart = null;
 
 		await supabase.from('parts').update({ description }).eq('id', partId);
+
+		window.location.reload();
+	}
+
+	async function updatePartInstructions(vendor_instructions) {
+		const partId = selectedPartForInstructions?.id;
+		selectedPartForInstructions = null;
+
+		await supabase.from('parts').update({ vendor_instructions }).eq('id', partId);
 
 		window.location.reload();
 	}
@@ -132,6 +143,7 @@
 		data={bom?.boms_parts?.sort((a, b) => a.line_number - b.line_number)}
 		bind:selectedVendor
 		bind:selectedPart
+		bind:selectedPartForInstructions
 		{isSelectingParts}
 		bind:selectedParts
 	/>
@@ -150,3 +162,8 @@
 
 <VendorEmailModal open={!!selectedVendor} {selectedVendor} submitCallback={updateVendorEmail} />
 <DescriptionModal open={!!selectedPart} {selectedPart} submitCallback={updatePartDescription} />
+<InstructionsModal
+	open={!!selectedPartForInstructions}
+	selectedPart={selectedPartForInstructions}
+	submitCallback={updatePartInstructions}
+/>

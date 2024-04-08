@@ -10,7 +10,7 @@ export async function POST({ locals: { supabase }, request, fetch }) {
 	const { data } = await supabase
 		.from('boms_quotes')
 		.select(
-			'id, parts_quotes(*, vendor(*), part(number, description, uom), parts_quotes_quantities(*))'
+			'id, parts_quotes(*, vendor(*), part(number, description, uom, vendor_instructions), parts_quotes_quantities(*))'
 		)
 		.eq('id', id)
 		.limit(1)
@@ -29,10 +29,13 @@ export async function POST({ locals: { supabase }, request, fetch }) {
 			data: [
 				p.part.number,
 				p.part.description,
+				p.part.vendor_instructions || 'N/A',
 				p.parts_quotes_quantities
 					.map((q) => q.quantity)
 					.sort((a, b) => a - b)
-					.join(', ')
+					.join(', ') +
+					' ' +
+					p.part.uom
 			],
 			id: p.id
 		}))
