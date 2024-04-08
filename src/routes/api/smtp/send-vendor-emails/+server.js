@@ -124,6 +124,9 @@ function getMailOptions(emailData) {
           <p>
             Diana Cepeda
           </p>
+		  <p>
+            630 851-1616 (Ext. 242)
+          </p>
 
 		  <img src="https://byhpfvdicvtmwnuwrbtp.supabase.co/storage/v1/object/public/logos/ADG%20Logo%20Transparent.png" alt="Image description" width="154" height="162">
 		</body>
