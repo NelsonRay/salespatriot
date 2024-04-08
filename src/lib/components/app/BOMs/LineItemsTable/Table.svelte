@@ -1,14 +1,15 @@
 <script>
 	// @ts-nocheck
+	import { formatMonthDayYearDate } from '$lib/helpers';
 	import Edit from '$lib/icons/Edit.svg';
-	import Open from '$lib/icons/Open.svg';
 
 	export let data;
-	export let blockEditing = false;
-	export let openNewTab = false;
 	export let selectedVendor;
+	export let isSelectingParts;
+	export let selectedParts;
 
 	const columns = [
+		{ type: 'checkbox' },
 		{ type: 'position', header: '#' },
 		{ type: 'level', header: 'Level' },
 		{ type: 'part', field: 'number', header: 'Part Number' },
@@ -17,7 +18,9 @@
 		{ type: 'part', field: 'source', header: 'Source' },
 		{ type: 'part', field: 'uom', header: 'UOM' },
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
-		{ type: 'vendor', field: 'email', header: 'Email' }
+		{ type: 'vendor', field: 'email', header: 'Email' },
+		{ type: 'status', header: 'Status' },
+		{ type: 'email_sent', header: 'Email Sent' }
 	];
 
 	export function tableFieldMapper(obj, column) {
@@ -36,9 +39,47 @@
 			value = obj?.vendor?.[column?.field];
 		} else if (column.type === 'field') {
 			value = obj?.[column?.field];
+		} else if (column.type === 'status') {
+			value = obj?.part?.parts_quotes[0]?.complete;
+		} else if (column.type === 'email_sent') {
+			value = obj?.part?.parts_quotes[0]?.created_at;
+
+			if (value != null) {
+				value = formatMonthDayYearDate(value);
+			} else {
+				value = null;
+			}
 		}
 
 		return { header: column.header, value };
+	}
+
+	function toggleSelectingPart(part) {
+		if (isPartDisabled(part)) return;
+
+		if (!selectedParts.includes(part?.id)) {
+			selectedParts = [...selectedParts, part?.id];
+		} else {
+			selectedParts = selectedParts.filter((p) => p != part?.id);
+		}
+	}
+
+	function isPartSelected(partId, selectedPartsById) {
+		return selectedPartsById.includes(partId);
+	}
+
+	function isPartDisabled(obj) {
+		return !obj?.vendor?.email;
+	}
+
+	function getClass(obj, selectedPartsById, selecting) {
+		if (isPartDisabled(obj)) return 'bg-gray-200';
+
+		return selecting
+			? isPartSelected(obj?.id, selectedPartsById)
+				? 'bg-blue-50'
+				: 'hover:bg-neutral-100'
+			: '';
 	}
 </script>
 
@@ -49,29 +90,41 @@
 	<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll text-xs">
 		<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
 			{#each columns as column}
-				<th class={column.type === 'position' ? 'text-center' : ''}
-					>{tableFieldMapper(undefined, column).header}</th
-				>
+				{#if column.type === 'checkbox'}
+					{#if isSelectingParts}
+						<th>
+							<input type="checkbox" disabled />
+						</th>
+					{/if}
+				{:else}
+					<th class={column.type === 'position' ? 'text-center' : ''}
+						>{tableFieldMapper(undefined, column).header}</th
+					>
+				{/if}
 			{/each}
 		</thead>
 		<tbody>
 			{#each data as obj, index (obj.id)}
-				<tr class={!blockEditing ? 'hover:bg-neutral-100' : ''}>
+				<tr
+					class={getClass(obj, selectedParts, isSelectingParts)}
+					on:click={() => toggleSelectingPart(obj)}
+				>
 					{#each columns as column}
-						{#if column.type === 'position'}
+						{#if column.type === 'checkbox'}
+							{#if isSelectingParts}
+								<td>
+									<input
+										type="checkbox"
+										checked={selectedParts.includes(obj.id)}
+										disabled={!obj?.vendor?.email}
+									/>
+								</td>
+							{/if}
+						{:else if column.type === 'position'}
 							<td class="text-center">{index + 1}</td>
 						{:else if column.field === 'number'}
 							<td>
-								{#if !blockEditing}
-									<a href={`/boms/${obj?.id}`} target={openNewTab ? '_blank' : '_self'}>
-										<div class="flex flex-row justify-between pr-1 items-center">
-											{tableFieldMapper(obj, column).value ?? ''}
-											<img src={Open} alt="open" class="h-3 w-3" />
-										</div>
-									</a>
-								{:else}
-									{tableFieldMapper(obj, column).value ?? ''}
-								{/if}
+								{tableFieldMapper(obj, column).value ?? ''}
 							</td>
 						{:else if column.type === 'vendor' && !obj?.vendor}
 							<td>
@@ -87,6 +140,13 @@
 										<img src={Edit} alt="open" class="h-3 w-3" />
 									</button>
 								</div>
+							</td>
+						{:else if column.type === 'status'}
+							<td>
+								{#if tableFieldMapper(obj, column).value}
+									<div class="p-1 rounded-md inline-block bg-green-300 text-xs">Complete</div>
+								{:else if tableFieldMapper(obj, column).value != null}
+									<div class="p-1 rounded-md inline-block bg-yellow-300 text-xs">Waiting</div>{/if}
 							</td>
 						{:else}
 							<td>
