@@ -286,6 +286,14 @@
 							<Currency value={solicitation_matched?.solicitation.quantity} disabled />
 						</div>
 						<div>
+							<p class="mb-1">Estimated Mat. Cost</p>
+							<TextInput
+								value={formatCurrency(solicitation_matched?.estimated_material_cost)}
+								disabled
+								fullWidth={false}
+							/>
+						</div>
+						<div>
 							<p class="mb-1">Estimated Purchasing Days</p>
 							<Currency value={solicitation_matched?.estimated_purchasing_days} disabled />
 						</div>
@@ -380,7 +388,11 @@
 
 						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
 						{#if nsn_matches?.length > 0}
-							<Table data={nsn_matches} columns={getNSNColumns(form?.form?.type === 'opportunity')} openNewTab={true} />
+							<Table
+								data={nsn_matches}
+								columns={getNSNColumns(form?.form?.type === 'opportunity')}
+								openNewTab={true}
+							/>
 						{:else}
 							<p class="text-gray-400">NSN not seen before</p>
 						{/if}
@@ -395,7 +407,12 @@
 					<div>
 						<p class="text-lg mt-5 mb-2 font-semibold">Previous NSN Matches</p>
 						{#if nsn_matches?.length > 0}
-							<Table data={nsn_matches} columns={getNSNColumns(false)} openNewTab={true} blockEditing />
+							<Table
+								data={nsn_matches}
+								columns={getNSNColumns(false)}
+								openNewTab={true}
+								blockEditing
+							/>
 						{:else}
 							<p class="text-gray-400">NSN not seen before</p>
 						{/if}
@@ -424,10 +441,10 @@
 						{/each}
 					</div>
 					{#if errors?.status}
-					<label for="trim" class="label">
-						<span class="label-text-alt text-error">{errors?.status[0]}</span>
-					</label>
-				{/if}
+						<label for="trim" class="label">
+							<span class="label-text-alt text-error">{errors?.status[0]}</span>
+						</label>
+					{/if}
 				{/if}
 				{#each forms as type}
 					{#if showForm(form?.form, type)}
