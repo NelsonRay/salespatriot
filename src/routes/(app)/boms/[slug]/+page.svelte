@@ -6,7 +6,6 @@
 	import VendorEmailModal from '$lib/components/app/BOMs/VendorEmailModal/VendorEmailModal.svelte';
 
 	export let data;
-	export let isAdmin = false;
 
 	$: ({ supabase, session } = data);
 
@@ -14,6 +13,8 @@
 	let isMounted = false;
 	let isLoading = false;
 	let selectedVendor;
+	let isSelectingParts = false;
+	let selectedParts = [];
 
 	page.subscribe((p) => {
 		if (isMounted) {
@@ -38,7 +39,10 @@
 	async function emailVendors() {
 		if (!isLoading && isBomQuoteReady(bom)) {
 			isLoading = true;
-			await fetch('/api/bom/automation', { method: 'POST', body: JSON.stringify({ id: bom.id }) });
+			await fetch('/api/bom/automation', {
+				method: 'POST',
+				body: JSON.stringify({ id: bom.id, selectedParts })
+			});
 			window.location.reload();
 		}
 	}
@@ -56,12 +60,6 @@
 		if (!b) return false;
 		if (b?.boms_quotes?.length > 0) return false;
 
-		for (let part of b?.boms_parts ?? []) {
-			if (part.vendor && !part.vendor?.email) {
-				return false;
-			}
-		}
-
 		return true;
 	}
 
@@ -71,6 +69,12 @@
 		}
 		isMounted = true;
 	});
+
+	function toggleSelectingParts() {
+		isSelectingParts = true;
+
+		selectedParts = bom.boms_parts.filter((p) => p.vendor?.email).map((p) => p.id);
+	}
 </script>
 
 <svelte:head>
@@ -83,14 +87,30 @@
 			<p class="font-semibold ml-4 text-sm">{(bom?.products?.number ?? '') + ' '}BOM</p>
 		</div>
 		<div>
-			{#if !isLoading}
+			{#if isSelectingParts}
 				<button
-					on:click={emailVendors}
-					class="text-xs p-3 rounded-3xl font-medium mr-2 {isBomQuoteReady(bom)
-						? 'bg-green-400 hover:bg-green-300'
-						: 'bg-gray-100 text-gray-400'}">Email Vendors</button
-				>{:else}
-				<span class="loading loading-spinner loading-md"></span>
+					on:click={() => {
+						isSelectingParts = false;
+						selectedParts = [];
+					}}
+					class="text-xs p-3 rounded-3xl font-medium mr-1 bg-gray-200 hover:bg-gray-100"
+					>Cancel</button
+				>
+				{#if !isLoading}
+					<button
+						on:click={emailVendors}
+						class="text-xs p-3 rounded-3xl font-medium mr-2 bg-blue-300 hover:bg-blue-200"
+						>Email Vendors</button
+					>
+				{:else}
+					<span class="loading loading-spinner loading-md"></span>
+				{/if}
+			{:else}
+				<button
+					on:click={toggleSelectingParts}
+					class="text-xs p-3 rounded-3xl font-medium mr-2 bg-blue-300 hover:bg-blue-200"
+					>Select Parts</button
+				>
 			{/if}
 		</div>
 	</div>
@@ -99,8 +119,9 @@
 {#if bom}
 	<Table
 		data={bom?.boms_parts?.sort((a, b) => a.line_number - b.line_number)}
-		blockEditing={!isAdmin}
 		bind:selectedVendor
+		{isSelectingParts}
+		bind:selectedParts
 	/>
 {:else}
 	<div class="flex flex-col gap-4 p-5">

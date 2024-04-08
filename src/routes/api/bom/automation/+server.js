@@ -2,7 +2,7 @@
 import { json } from '@sveltejs/kit';
 
 export async function POST({ locals: { supabase, session }, request }) {
-	const { id } = await request.json();
+	const { id, selectedParts } = await request.json();
 
 	const { data } = await supabase
 		.from('boms')
@@ -28,6 +28,7 @@ export async function POST({ locals: { supabase, session }, request }) {
 	for (let boms_part of data.boms_parts) {
 		if (!boms_part.vendor) continue; // skip if no vendor
 		if (partsRequestedByVendor[boms_part.vendor]?.includes(boms_part.part)) continue; // skip if already requested by vendor
+		if (!selectedParts?.includes(boms_part.id)) continue; // skip if selectedParts does not include id
 
 		const {
 			data: { id: parts_quote_id }
