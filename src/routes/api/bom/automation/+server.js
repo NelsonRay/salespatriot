@@ -40,7 +40,7 @@ export async function POST({ locals: { supabase, session }, request }) {
 			.single();
 
 		await Promise.all(
-			[5, 50, 250, 500, 100].map((q) =>
+			[5, 50, 250, 500, 1000].map((q) =>
 				supabase
 					.from('parts_quotes_quantities')
 					.insert({ parts_quote: parts_quote_id, quantity: q })
