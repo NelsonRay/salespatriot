@@ -39,6 +39,7 @@
 			values = form.rfq;
 		} else if (form?.form?.type === 'confirm') {
 			values = {
+				person_name: data.rfq_public?.values?.person_name,
 				customer: {
 					email_address: data.rfq_public?.values?.customer?.email_address,
 					phone_number: data.rfq_public?.values?.customer?.phone_number

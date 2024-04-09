@@ -44,6 +44,13 @@
 					</div>
 
 					<div class="flex flex-row space-x-1">
+						<p class="text-gray-400">Person Name:</p>
+						<p>
+							{data?.person_name ?? 'N/A'}
+						</p>
+					</div>
+
+					<div class="flex flex-row space-x-1">
 						<p class="text-gray-400">Customer Email:</p>
 						<p>
 							{data?.email_address ?? 'N/A'}
@@ -85,9 +92,7 @@
 					</div>
 				</div>
 
-				<div class="h-8">
-					
-				</div>
+				<div class="h-8"></div>
 			</div>
 		</div>
 		{#if showValueCalc}

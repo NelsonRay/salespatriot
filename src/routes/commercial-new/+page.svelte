@@ -9,9 +9,10 @@
 	import DateInput from '$lib/components/form/DateInput.svelte';
 
 	export let data;
-	$: ({ supabase, session } = data);
+	$: ({ supabase } = data);
 
 	let rfq = {
+		person_name: null,
 		customer: {},
 		received_at: null,
 		requested_return_date: null,
@@ -45,6 +46,7 @@
 		}
 
 		if (!errors) {
+			isSubmitting = true;
 			const res = await fetch('/api/rfq/new', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
@@ -92,7 +94,7 @@
 	<div class="flex flex-col">
 		{#if !submitted}
 			<h1 class="text-3xl mb-8 mt-8">Add RFQ</h1>
-			<div class="grid grid-cols-4 gap-5 mb-5">
+			<div class="flex flex-row space-x-5 mb-5">
 				<div class="flex flex-col">
 					<label for="customer_name">Customer Name</label>
 					<Autocomplete
@@ -109,19 +111,7 @@
 						</label>
 					{/if}
 				</div>
-				<div class="flex flex-col">
-					<label for="customer_email">Customer Email</label>
-					<TextInput bind:value={rfq.customer.email_address} />
-					{#if hasErrors(errors, ['customer', 'email_address'])}
-						<label for="trim" class="label">
-							<span class="label-text-alt text-error">Required</span>
-						</label>
-					{/if}
-				</div>
-				<div class="flex flex-col">
-					<label for="return_date">Phone Number</label>
-					<TextInput bind:value={rfq.customer.phone_number} />
-				</div>
+
 				<div class="flex flex-col">
 					<label for="customer_number">Customer Number</label>
 					<TextInput disabled={customerSelected} bind:value={rfq.customer.customer_number} />
@@ -134,6 +124,25 @@
 							<span class="label-text-alt text-error">Required</span>
 						</label>
 					{/if}
+				</div>
+			</div>
+			<div class="flex flex-row space-x-5 mb-5">
+				<div class="flex flex-col">
+					<label for="return_date">Person Name</label>
+					<TextInput bind:value={rfq.person_name} />
+				</div>
+				<div class="flex flex-col">
+					<label for="customer_email">Customer Email</label>
+					<TextInput bind:value={rfq.customer.email_address} />
+					{#if hasErrors(errors, ['customer', 'email_address'])}
+						<label for="trim" class="label">
+							<span class="label-text-alt text-error">Required</span>
+						</label>
+					{/if}
+				</div>
+				<div class="flex flex-col">
+					<label for="return_date">Phone Number</label>
+					<TextInput bind:value={rfq.customer.phone_number} />
 				</div>
 			</div>
 
