@@ -51,8 +51,8 @@
 		const { email_address, phone_number, ...rest } = event.detail;
 		values.customer = {
 			...rest,
-			email_address: values?.customer?.email_address,
-			phone_number: values?.customer?.phone_number
+			email_address: values?.customer?.email_address || email_address,
+			phone_number: values?.customer?.phone_number || phone_number
 		};
 	}
 
@@ -203,6 +203,20 @@
 									</label>
 								{/if}
 							</div>
+
+							<div class="flex flex-col">
+								<label for="customer_number">Customer Number</label>
+								<TextInput
+									disabled={customerSelected}
+									bind:value={values.customer.customer_number}
+								/>
+							</div>
+						</div>
+						<div class="flex flex-row space-x-5">
+							<div class="flex flex-col">
+								<label for="customer_email">Person Name</label>
+								<TextInput bind:value={values.person_name} />
+							</div>
 							<div class="flex flex-col">
 								<label for="customer_email">Customer Email</label>
 								<TextInput bind:value={values.customer.email_address} />
@@ -210,13 +224,6 @@
 							<div class="flex flex-col">
 								<label for="customer_email">Phone Number</label>
 								<TextInput bind:value={values.customer.phone_number} />
-							</div>
-							<div class="flex flex-col">
-								<label for="customer_number">Customer Number</label>
-								<TextInput
-									disabled={customerSelected}
-									bind:value={values.customer.customer_number}
-								/>
 							</div>
 						</div>
 						<div class="flex flex-row space-x-5">

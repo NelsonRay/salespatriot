@@ -99,7 +99,7 @@
 	{#each rfqs_products as rfqs_product, index}
 		<div class="flex flex-col">
 			<div class="flex flew-row items-center">
-				<div class="flex flex-col p-2 pr-4 bg-neutral-50 rounded-md shadow-sm">
+				<div class="flex flex-col p-2 pr-4 bg-neutral-100 rounded-md shadow-sm">
 					<div class="flex flex-row space-x-3 items-start">
 						<div class="w-8">
 							<p class="text-lg font-semibold text-center mt-4">#{index + 1}</p>
@@ -376,7 +376,9 @@
 	{/each}
 	{#if showRemove}
 		<div>
-			<button on:click={addProduct} class="bg-neutral-50 p-2 rounded-md text-base font-medium mr-10"
+			<button
+				on:click={addProduct}
+				class="bg-neutral-100 p-2 rounded-md text-base font-medium mr-10"
 				>{isPublicForm ? 'Request another part to be quoted' : 'Add Part'}</button
 			>
 		</div>
