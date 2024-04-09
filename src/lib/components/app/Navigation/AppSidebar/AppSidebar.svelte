@@ -4,6 +4,7 @@
 	import Workflows from '$lib/icons/Workflows.svg';
 	import BOMs from '$lib/icons/boms.svg';
 	import Reports from '$lib/icons/Reports.svg';
+	import Quotes from '$lib/icons/Quotes.svg';
 	import { page } from '$app/stores';
 </script>
 
@@ -59,6 +60,18 @@
 				</div>
 			</svelte:fragment>
 			<span>BOMs</span>
+		</AppRailAnchor>
+		<AppRailAnchor
+			title="Quotes"
+			href="/quotes"
+			selected={$page.url.pathname.toString().includes('/quotes')}
+		>
+			<svelte:fragment slot="lead"
+				><div class="flex items-center justify-center">
+					<img src={Quotes} class="h-8 w-8" alt="BOMs" />
+				</div>
+			</svelte:fragment>
+			<span>Quotes</span>
 		</AppRailAnchor>
 		<!-- --- -->
 		<svelte:fragment slot="trail">

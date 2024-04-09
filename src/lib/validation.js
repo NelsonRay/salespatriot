@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+export const quoteForm = () =>
+	z.object({
+		parts_quotes_quantities: z.object({ unit_price: z.number() }).array()
+	});
+
 export const masterCommercialValidation = () =>
 	z.object({
 		rfqs_products: z
