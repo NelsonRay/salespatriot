@@ -16,7 +16,7 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), rfq_public(*), rfq(*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*)), product_labor_minutes(*), rfqs_products_quantities(*)))'
+				'*, form!inner(*), product(*), rfq_public(*), rfq(*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*), product_labor_minutes(*)), rfqs_products_quantities(*)))'
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
