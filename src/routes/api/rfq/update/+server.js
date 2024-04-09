@@ -68,6 +68,13 @@ export async function POST({ request, locals: { supabase } }) {
 				]
 			})
 			.eq('id', values.id);
+
+		// delete final_pricing form if needed
+		await supabase
+			.from('forms')
+			.update({ deleted: true, submitted: true })
+			.eq('rfq', values.id)
+			.eq('form', '6bbf4342-1b50-4c1a-9dc5-ad40562c5626');
 	}
 
 	return json({}, { status: 200 });
