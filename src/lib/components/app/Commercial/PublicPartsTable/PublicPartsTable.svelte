@@ -21,13 +21,13 @@
 			</thead>
 			<tbody>
 				{#each data.rfqs_products as rfqs_product}
-				<tr class="hover:bg-neutral-100">
+					<tr class="hover:bg-neutral-100">
 						<td>{rfqs_product.product.number ?? ''}</td>
 						<td>{rfqs_product.product.nsn ?? ''}</td>
-						<td>{rfqs_product.product.cross_reference ?? ''}</td>
+						<td>{rfqs_product.cross_reference ?? ''}</td>
 						<td>{getQty(rfqs_product)}</td>
 					</tr>
-					{/each}
+				{/each}
 			</tbody>
 		</table>
 	</article>
