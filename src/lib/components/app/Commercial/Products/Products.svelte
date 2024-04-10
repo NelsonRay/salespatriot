@@ -7,7 +7,7 @@
 	import { formatMonthDayYearDate, formatCurrency, calculateDaysDifference } from '$lib/helpers';
 
 	export let rfqs_products;
-	export let supabase;
+	export let supabase = undefined;
 	export let showPricing = false;
 	export let showRemove = false;
 	export let showAll = false;
@@ -134,7 +134,7 @@
 						</div>
 						<div class="flex flex-col">
 							<label class="text-xs text-gray-500 font-medium" for="nsn">NSN</label>
-							<Currency bind:value={rfqs_product.product.nsn} />
+							<Currency bind:value={rfqs_product.product.nsn} disabled={!supabase} />
 
 							{#if hasErrors(errors, ['rfqs_products', index, 'product', 'nsn'])}
 								<label for="trim" class="label">
@@ -148,7 +148,7 @@
 									? 'Your Cross Reference Part Number (if needed)'
 									: 'Customer PN'}</label
 							>
-							<TextInput bind:value={rfqs_product.cross_reference} />
+							<TextInput bind:value={rfqs_product.cross_reference} disabled={!supabase} />
 						</div>
 					</div>
 					<div class="flex flex-col mt-2 ml-11">
