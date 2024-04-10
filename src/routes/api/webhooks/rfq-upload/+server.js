@@ -66,10 +66,10 @@ export async function POST({ request, cookies }) {
 			const { rfqs_products_quantities, product } = rfqs_product;
 
 			let productId = product?.id;
+			// if product nsn is assigned, ensure it exists
+			if (product.nsn) await supabase.from('nsns').upsert({ id: product.nsn });
 
 			if (!productId) {
-				if (product.nsn) await supabase.from('nsns').upsert({ id: product.nsn });
-
 				const { data: pData, error: pErr } = await supabase
 					.from('products')
 					.insert({
@@ -84,6 +84,8 @@ export async function POST({ request, cookies }) {
 
 				if (pErr) throw { type: 'Products Error', ...pErr };
 				productId = pData?.id;
+			} else if (product.nsn) {
+				await supabase.from('products').update({ nsn: product.nsn }).eq('id', productId);
 			}
 
 			const { data: rData, error: rErr } = await supabase

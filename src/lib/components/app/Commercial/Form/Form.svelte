@@ -163,7 +163,7 @@
 					</div>
 					<div>
 						<p class="mb-1">Cross Ref</p>
-						<TextInput value={data?.product?.cross_reference} disabled fullWidth={false} />
+						<TextInput value={data?.cross_reference} disabled fullWidth={false} />
 					</div>
 					{#if form?.type === 'purchasing'}
 						<div>
