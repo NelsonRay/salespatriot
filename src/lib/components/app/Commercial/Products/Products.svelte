@@ -54,7 +54,11 @@
 	}
 
 	function handleSelection(event, index) {
-		rfqs_products[index] = { ...(rfqs_products[index] || {}), product: event.detail };
+		rfqs_products[index] = {
+			...(rfqs_products[index] || {}),
+			product: event.detail,
+			cross_reference: rfqs_products[index]?.cross_reference || event?.detail?.cross_reference
+		};
 	}
 
 	function handleCreateNew(event, index) {
@@ -130,10 +134,7 @@
 						</div>
 						<div class="flex flex-col">
 							<label class="text-xs text-gray-500 font-medium" for="nsn">NSN</label>
-							<Currency
-								bind:value={rfqs_product.product.nsn}
-								disabled={!isPublicForm && !createdProductsIndexes.includes(index)}
-							/>
+							<Currency bind:value={rfqs_product.product.nsn} />
 
 							{#if hasErrors(errors, ['rfqs_products', index, 'product', 'nsn'])}
 								<label for="trim" class="label">
@@ -147,10 +148,7 @@
 									? 'Your Cross Reference Part Number (if needed)'
 									: 'Customer PN'}</label
 							>
-							<TextInput
-								disabled={!isPublicForm && !createdProductsIndexes.includes(index)}
-								bind:value={rfqs_product.product.cross_reference}
-							/>
+							<TextInput bind:value={rfqs_product.cross_reference} />
 						</div>
 					</div>
 					<div class="flex flex-col mt-2 ml-11">
