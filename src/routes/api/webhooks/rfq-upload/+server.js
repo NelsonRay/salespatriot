@@ -90,7 +90,11 @@ export async function POST({ request, cookies }) {
 
 			const { data: rData, error: rErr } = await supabase
 				.from('rfqs_products')
-				.insert({ rfq: rfqId, product: productId })
+				.insert({
+					rfq: rfqId,
+					product: productId,
+					cross_reference: rfqs_product.cross_reference || null
+				})
 				.select('id')
 				.limit(1)
 				.single();
