@@ -2,7 +2,10 @@ import { z } from 'zod';
 
 export const quoteForm = () =>
 	z.object({
-		parts_quotes_quantities: z.object({ unit_price: z.number() }).array()
+		parts_quotes_quantities: z
+			.object({ unit_price: z.number(), quantity: z.number(), lead_time: z.number() })
+			.array(),
+		date_received: z.string().min(1)
 	});
 
 export const masterCommercialValidation = () =>

@@ -6,6 +6,7 @@
 	import VendorEmailModal from '$lib/components/app/BOMs/Modals/VendorEmailModal/VendorEmailModal.svelte';
 	import DescriptionModal from '$lib/components/app/BOMs/Modals/DescriptionModal/DescriptionModal.svelte';
 	import InstructionsModal from '$lib/components/app/BOMs/Modals/InstructionsModal/InstructionsModal.svelte';
+	import QuoteModal from '$lib/components/app/BOMs/Modals/QuoteModal/QuoteModal.svelte';
 
 	export let data;
 
@@ -17,6 +18,7 @@
 	let selectedVendor;
 	let selectedPart;
 	let selectedPartForInstructions;
+	let selectedBomPartForQuote;
 	let isSelectingParts = false;
 	let selectedParts = [];
 
@@ -30,7 +32,9 @@
 	async function loadData() {
 		let query = supabase
 			.from('boms')
-			.select('id, products(*), boms_parts(*, part(*, parts_quotes(*)), vendor(*)), boms_quotes(*)')
+			.select(
+				'id, products(*), boms_parts(*, part(*, parts_quotes(*, parts_quotes_quantities(*))), vendor(*)), boms_quotes(*)'
+			)
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
@@ -41,8 +45,9 @@
 	}
 
 	async function emailVendors() {
-		if (!isLoading && isBomQuoteReady(bom)) {
+		if (!isLoading && isBomQuoteReady(bom) && selectedParts?.length > 0) {
 			isLoading = true;
+
 			await fetch('/api/bom/automation', {
 				method: 'POST',
 				body: JSON.stringify({ id: bom.id, selectedParts })
@@ -78,6 +83,42 @@
 		window.location.reload();
 	}
 
+	async function insertPartQuote(quote) {
+		const partId = selectedBomPartForQuote?.part?.id;
+		const vendorId = selectedBomPartForQuote?.vendor?.id;
+		selectedBomPartForQuote = null;
+
+		// insert part quote
+		const { data, error } = await supabase
+			.from('parts_quotes')
+			.insert({
+				part: partId,
+				vendor: vendorId,
+				moq: quote.moq || null,
+				moc: quote.moc || null,
+				date_received: quote.date_received || null,
+				expiration_date: quote.expiration_date || null,
+				notes: quote.notes || null,
+				complete: true,
+				completed_by: session?.user?.id
+			})
+			.select('id')
+			.limit(1)
+			.single();
+
+		// update unit price for each quote qty
+		for (let qty of quote?.parts_quotes_quantities ?? []) {
+			await supabase.from('parts_quotes_quantities').insert({
+				parts_quote: data.id,
+				quantity: qty.quantity,
+				unit_price: qty.unit_price,
+				lead_time: qty.lead_time
+			});
+		}
+
+		window.location.reload();
+	}
+
 	function isBomQuoteReady(b) {
 		if (!b) return false;
 		if (b?.boms_quotes?.length > 0) return false;
@@ -95,7 +136,7 @@
 	function toggleSelectingParts() {
 		isSelectingParts = true;
 
-		selectedParts = bom.boms_parts.filter((p) => p.vendor?.email).map((p) => p.id);
+		selectedParts = [];
 	}
 </script>
 
@@ -144,6 +185,7 @@
 		bind:selectedVendor
 		bind:selectedPart
 		bind:selectedPartForInstructions
+		bind:selectedBomPartForQuote
 		{isSelectingParts}
 		bind:selectedParts
 	/>
@@ -166,4 +208,9 @@
 	open={!!selectedPartForInstructions}
 	selectedPart={selectedPartForInstructions}
 	submitCallback={updatePartInstructions}
+/>
+<QuoteModal
+	open={!!selectedBomPartForQuote}
+	{selectedBomPartForQuote}
+	submitCallback={insertPartQuote}
 />
