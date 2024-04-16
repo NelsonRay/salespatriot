@@ -24,6 +24,8 @@
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
 		{ type: 'vendor', field: 'email', header: 'Email' },
 		{ type: 'status', header: 'Status' },
+		{ type: 'field', field: 'on_hand', header: 'On Hand' },
+		{ type: 'field', field: 'bom_net', header: 'BOM Net' },
 		{ type: 'date_received', header: 'Date Recorded' },
 		{ type: 'parts_quotes', field: 'moq', header: 'MOQ' },
 		{ type: 'parts_quotes', field: 'moc', header: 'MOC' },
