@@ -51,7 +51,11 @@ function sendMail(transporter, emailData, supabase) {
 					emailData.parts.map((p) =>
 						supabase
 							.from('parts_quotes')
-							.update({ email_sent: true, email_info: info })
+							.update({
+								email_sent: true,
+								email_info: info,
+								email_sent_at: new Date().toISOString()
+							})
 							.eq('id', p.id)
 					)
 				);

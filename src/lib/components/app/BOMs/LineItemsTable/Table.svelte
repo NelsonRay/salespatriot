@@ -1,12 +1,13 @@
 <script>
 	// @ts-nocheck
-	import { formatMonthDayYearDate } from '$lib/helpers';
+	import { formatCurrency, formatMonthDayYearDate } from '$lib/helpers';
 	import Edit from '$lib/icons/Edit.svg';
 
 	export let data;
 	export let selectedVendor;
 	export let selectedPart;
 	export let selectedPartForInstructions;
+	export let selectedBomPartForQuote;
 	export let isSelectingParts;
 	export let selectedParts;
 
@@ -23,6 +24,10 @@
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
 		{ type: 'vendor', field: 'email', header: 'Email' },
 		{ type: 'status', header: 'Status' },
+		{ type: 'date_received', header: 'Date Recorded' },
+		{ type: 'parts_quotes', field: 'moq', header: 'MOQ' },
+		{ type: 'parts_quotes', field: 'moc', header: 'MOC' },
+		{ type: 'email_status', header: 'Email Status' },
 		{ type: 'email_sent', header: 'Email Sent' }
 	];
 
@@ -43,14 +48,34 @@
 		} else if (column.type === 'field') {
 			value = obj?.[column?.field];
 		} else if (column.type === 'status') {
-			value = obj?.part?.parts_quotes[0]?.complete;
-		} else if (column.type === 'email_sent') {
-			value = obj?.part?.parts_quotes[0]?.created_at;
+			if (obj?.vendor) {
+				value = obj?.part?.parts_quotes[0]?.parts_quotes_quantities?.length > 0;
+			} else {
+				value = null;
+			}
+		} else if (column.type === 'date_received') {
+			value = obj?.part?.parts_quotes[0]?.date_received;
 
 			if (value != null) {
 				value = formatMonthDayYearDate(value);
 			} else {
 				value = null;
+			}
+		} else if (column.type === 'email_status') {
+			value = obj?.part?.parts_quotes[0]?.complete;
+		} else if (column.type === 'email_sent') {
+			value = obj?.part?.parts_quotes[0]?.email_sent_at;
+
+			if (value != null) {
+				value = formatMonthDayYearDate(value);
+			} else {
+				value = null;
+			}
+		} else if (column.type === 'parts_quotes') {
+			value = obj?.part?.parts_quotes[0]?.[column.field];
+
+			if (column.field === 'moc' && !!value) {
+				value = formatCurrency(value);
 			}
 		}
 
@@ -183,12 +208,25 @@
 									</button>
 								</div>
 							</td>
-						{:else if column.type === 'status'}
+						{:else if column.type === 'email_status'}
 							<td>
 								{#if tableFieldMapper(obj, column).value}
 									<div class="p-1 rounded-md inline-block bg-green-300 text-xs">Complete</div>
 								{:else if tableFieldMapper(obj, column).value != null}
 									<div class="p-1 rounded-md inline-block bg-yellow-300 text-xs">Waiting</div>{/if}
+							</td>
+						{:else if column.type === 'status'}
+							<td>
+								{#if tableFieldMapper(obj, column).value}
+									<div class="p-1 rounded-md inline-block bg-green-300 text-xs">Complete</div>
+								{:else if tableFieldMapper(obj, column).value != null}
+									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+										<div class="p-1 rounded-md inline-block bg-yellow-300 text-xs">Waiting</div>
+										<button on:click={() => (selectedBomPartForQuote = obj)}>
+											<img src={Edit} alt="open" class="h-3 w-3" />
+										</button>
+									</div>
+								{/if}
 							</td>
 						{:else}
 							<td>
