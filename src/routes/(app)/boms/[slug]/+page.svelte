@@ -7,6 +7,7 @@
 	import DescriptionModal from '$lib/components/app/BOMs/Modals/DescriptionModal/DescriptionModal.svelte';
 	import InstructionsModal from '$lib/components/app/BOMs/Modals/InstructionsModal/InstructionsModal.svelte';
 	import QuoteModal from '$lib/components/app/BOMs/Modals/QuoteModal/QuoteModal.svelte';
+	import { formatCurrency } from '$lib/helpers.js';
 
 	export let data;
 
@@ -119,6 +120,28 @@
 		window.location.reload();
 	}
 
+	function calcMatCost(q) {
+		if (!q) return '';
+		let completedCount = 0;
+		let matCost = 0;
+
+		const totalCount = q.bom.boms_parts.length;
+
+		for (let bom_part of q.bom.boms_parts) {
+			if (bom_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.length > 0) {
+				completedCount++;
+				const extCost =
+					bom_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
+						(a, b) => a.quantity - b.quantity
+					)?.[0]?.unit_price * bom_part?.quantity;
+
+				matCost += extCost;
+			}
+		}
+
+		return `${formatCurrency(matCost)} (${completedCount}/${totalCount} parts)`;
+	}
+
 	onMount(() => {
 		if (session) {
 			loadData($page.url.pathname);
@@ -142,32 +165,35 @@
 		<div class="flex flex-row items-center">
 			<p class="font-semibold ml-4 text-sm">{(boms_quote?.bom?.products?.number ?? '') + ' '}BOM</p>
 		</div>
-		<div>
-			{#if isSelectingParts}
-				<button
-					on:click={() => {
-						isSelectingParts = false;
-						selectedParts = [];
-					}}
-					class="text-xs p-3 rounded-3xl font-medium mr-1 bg-gray-200 hover:bg-gray-100"
-					>Cancel</button
-				>
-				{#if !isLoading}
+		<div class="flex flex-row items-center space-x-5">
+			<p>{calcMatCost(boms_quote)}</p>
+			<div>
+				{#if isSelectingParts}
 					<button
-						on:click={emailVendors}
-						class="text-xs p-3 rounded-3xl font-medium mr-2 bg-blue-300 hover:bg-blue-200"
-						>Email Vendors</button
+						on:click={() => {
+							isSelectingParts = false;
+							selectedParts = [];
+						}}
+						class="text-xs p-3 rounded-3xl font-medium mr-1 bg-gray-200 hover:bg-gray-100"
+						>Cancel</button
 					>
+					{#if !isLoading}
+						<button
+							on:click={emailVendors}
+							class="text-xs p-3 rounded-3xl font-medium mr-2 bg-blue-300 hover:bg-blue-200"
+							>Email Vendors</button
+						>
+					{:else}
+						<span class="loading loading-spinner loading-md"></span>
+					{/if}
 				{:else}
-					<span class="loading loading-spinner loading-md"></span>
+					<button
+						on:click={toggleSelectingParts}
+						class="text-xs p-3 rounded-3xl font-medium mr-2 bg-blue-300 hover:bg-blue-200"
+						>Select Parts</button
+					>
 				{/if}
-			{:else}
-				<button
-					on:click={toggleSelectingParts}
-					class="text-xs p-3 rounded-3xl font-medium mr-2 bg-blue-300 hover:bg-blue-200"
-					>Select Parts</button
-				>
-			{/if}
+			</div>
 		</div>
 	</div>
 </div>
