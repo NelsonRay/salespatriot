@@ -11,20 +11,20 @@
 		{ type: 'position', header: '#' },
 		{ type: 'product', field: 'number', header: 'Product Number' },
 		{ type: 'product', field: 'description', header: 'Description' },
-		{ type: 'status', header: 'Status' },
+		{ type: 'field', field: 'quantity', header: 'Quantity' },
+		{ type: 'field', field: 'complete', header: 'Status' },
 		{ type: 'bom_started', header: 'BOM Started' }
 	];
 
 	export function tableFieldMapper(obj, column) {
 		let value;
 
-		if (column.type === 'position') {
-		} else if (column.type === 'product') {
-			value = obj?.products?.[column?.field];
-		} else if (column.type === 'status') {
-			value = obj?.boms_quotes[0]?.complete;
+		if (column.type === 'product') {
+			value = obj?.bom?.products?.[column?.field];
+		} else if (column.type === 'field') {
+			value = obj?.[column.field];
 		} else if (column.type === 'bom_started') {
-			value = obj?.boms_quotes[0]?.created_at;
+			value = obj?.created_at;
 
 			if (value != null) {
 				value = formatMonthDayYearDate(value);
@@ -68,7 +68,7 @@
 									{tableFieldMapper(obj, column).value ?? ''}
 								{/if}
 							</td>
-						{:else if column.type === 'status'}
+						{:else if column.field === 'complete'}
 							<td>
 								{#if tableFieldMapper(obj, column).value}
 									<div class="p-1 rounded-md inline-block bg-green-300 text-xs">Complete</div>
