@@ -64,7 +64,9 @@
 				value = null;
 			}
 		} else if (column.type === 'email_status') {
-			value = obj?.part?.parts_quotes[0]?.complete;
+			if (obj?.part?.parts_quotes[0]?.email_sent_at) {
+				value = obj?.part?.parts_quotes[0]?.complete;
+			}
 		} else if (column.type === 'email_sent') {
 			value = obj?.part?.parts_quotes[0]?.email_sent_at;
 
