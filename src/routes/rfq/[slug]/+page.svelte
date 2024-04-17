@@ -8,6 +8,7 @@
 	$: ({ supabase, session } = data);
 
 	let rfq = null;
+	let comments = [];
 
 	let values;
 
@@ -32,15 +33,47 @@
 		let { data, error } = await supabase
 			.from('rfqs')
 			.select(
-				'*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*), product_labor_minutes(*)), product_labor_minutes(*), rfqs_products_quantities(*))'
+				'*, comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)), customer(*), rfqs_products(*, product(*, product_purchasing(*), product_labor_minutes(*)), product_labor_minutes(*), rfqs_products_quantities(*))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
 
-		rfq = data;
+		let { data: productsComments } = await supabase
+			.from('comments')
+			.select('*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)')
+			.in(
+				'product',
+				data.rfqs_products.map((p) => p.product.id)
+			);
 
+		comments = [...(data?.comments ?? []), ...productsComments];
+		comments = comments.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+		rfq = data;
 		values = data;
+	}
+
+	async function commentSubmitCallback(message) {
+		if (message) {
+			const { data, error } = await supabase
+				.from('comments')
+				.insert({
+					message,
+					user: session.user.id,
+					rfq: rfq.id,
+					form: null
+				})
+				.select(
+					'*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)'
+				)
+				.limit(1)
+				.single();
+
+			if (data) {
+				comments = [...(comments ?? []), data];
+			}
+		}
 	}
 
 	onMount(() => {
@@ -59,5 +92,5 @@
 </svelte:head>
 
 {#if values}
-	<Form data={rfq} {values} {submitCallback} {isSubmitting} />
+	<Form data={rfq} {values} {submitCallback} {isSubmitting} {comments} {commentSubmitCallback} />
 {/if}

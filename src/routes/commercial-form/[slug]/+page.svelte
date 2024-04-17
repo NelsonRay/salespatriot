@@ -8,6 +8,7 @@
 	$: ({ supabase, session } = data);
 
 	let form = null;
+	let comments = [];
 	let values = {};
 	let isSubmitting = false;
 	let rfqsForPurchasingForm;
@@ -16,11 +17,40 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), rfq_public(*), rfq(*, rfqs_comments(*), customer(*), rfqs_products(*, product(*, product_purchasing(*), product_labor_minutes(*)), rfqs_products_quantities(*)))'
+				'*, form!inner(*), product(*, comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at))), rfq_public(*), rfq(*, comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)), customer(*), rfqs_products(*, product(*, product_purchasing(*), product_labor_minutes(*)), rfqs_products_quantities(*)))'
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
 			.single();
+
+		if (data?.rfq) {
+			let { data: productsComments } = await supabase
+				.from('comments')
+				.select(
+					'*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)'
+				)
+				.in(
+					'product',
+					data.rfq.rfqs_products.map((p) => p.product.id)
+				);
+
+			comments = [...(data?.rfq?.comments ?? []), ...productsComments];
+		} else {
+			let { data: rfqs_products } = await supabase
+				.from('rfqs_products')
+				.select(
+					'id, rfq(comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)))'
+				)
+				.eq('product', data.product.id);
+
+			let rfqComments = [];
+
+			for (let rfqs_product of rfqs_products) {
+				rfqComments = [...rfqComments, ...(rfqs_product?.rfq?.comments ?? [])];
+			}
+
+			comments = [...(data?.product?.comments ?? []), ...rfqComments];
+		}
 
 		if (data?.form?.type === 'purchasing') {
 			const { data: d, error: e } = await supabase
@@ -73,19 +103,22 @@
 	async function commentSubmitCallback(message) {
 		if (message) {
 			const { data, error } = await supabase
-				.from('rfqs_comments')
+				.from('comments')
 				.insert({
 					message,
 					user: session.user.id,
-					rfq: form.rfq.id,
-					form: form.id
+					form: form.id,
+					product: form?.product?.id,
+					rfq: form?.rfq?.id
 				})
-				.select('*, form(form(name)), user(name)')
+				.select(
+					'*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)'
+				)
 				.limit(1)
 				.single();
 
 			if (data) {
-				form.rfq.rfqs_comments = [...(form?.rfq?.rfqs_comments ?? []), data];
+				comments = [...(comments ?? []), data];
 			}
 		}
 	}
@@ -132,6 +165,7 @@
 			data={form}
 			bind:values
 			form={form?.form}
+			{comments}
 			{submitCallback}
 			bind:isSubmitting
 			{waitingCallback}

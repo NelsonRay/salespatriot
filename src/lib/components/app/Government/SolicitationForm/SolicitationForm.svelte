@@ -201,10 +201,7 @@
 
 				<div>
 					<p class="text-lg mt-5 mb-2 font-semibold">Comments</p>
-					<Comments
-						comments={solicitation_matched.solicitations_matched_comments}
-						{commentSubmitCallback}
-					/>
+					<Comments comments={solicitation_matched.comments} {commentSubmitCallback} />
 				</div>
 
 				{#if form?.form?.type === 'bom' || (form?.form?.type === 'labor' && solicitation_matched?.engineering_notes)}

@@ -1,4 +1,5 @@
 <script>
+	// @ts-nocheck
 	import { formatDateWithTime } from '$lib/helpers';
 	import Send from '$lib/icons/Send.svg';
 
@@ -39,7 +40,11 @@
 					<div class="flex flex-row">
 						<p class="text-xs mb-[2px] text-gray-300">
 							{formatDateWithTime(comment.created_at) +
-								(comment.form?.form?.name ? ' · ' + comment.form?.form?.name : '')}
+								(comment.form?.form?.name ? ' · ' + comment.form?.form?.name : '') +
+								(comment?.rfq
+									? ' · ' + comment.rfq?.customer?.name + ' / ' + comment.rfq?.received_at
+									: '') +
+								(comment?.product ? ' · ' + comment.product?.number : '')}
 						</p>
 					</div>
 				</div>
