@@ -39,7 +39,7 @@
 		let { data, error } = await supabase
 			.from('solicitations_matched')
 			.select(
-				`*, solicitation!inner(*, nsn(id, products(*))), matching_rule(*), forms(*, form(*), submitted_by(*)), solicitations_matched_comments(*, user(name), form(form(name)))`
+				`*, solicitation!inner(*, nsn(id, products(*))), matching_rule(*), forms(*, form(*), submitted_by(*)), comments(*, user(name), form(form(name)))`
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -56,7 +56,7 @@
 		);
 		solicitation_matched = data;
 
-		const { solicitation, matching_rule, forms, solicitations_matched_comments, ...rest } = data;
+		const { solicitation, matching_rule, forms, comments, ...rest } = data;
 		values = rest;
 
 		// Queue values for modals
@@ -77,7 +77,7 @@
 	async function commentSubmitCallback(message) {
 		if (message) {
 			const { data, error } = await supabase
-				.from('solicitations_matched_comments')
+				.from('comments')
 				.insert({
 					message,
 					user: session.user.id,
@@ -89,10 +89,7 @@
 				.single();
 
 			if (data) {
-				solicitation_matched.solicitations_matched_comments = [
-					...(solicitation_matched.solicitations_matched_comments ?? []),
-					data
-				];
+				solicitation_matched.comments = [...(solicitation_matched.comments ?? []), data];
 			}
 		}
 	}
@@ -179,7 +176,7 @@
 		}
 
 		if (removedValues.removed && removedValues.removed_notes)
-			await supabase.from('solicitations_matched_comments').insert({
+			await supabase.from('comments').insert({
 				solicitation_matched: solicitation_matched.id,
 				user: session.user.id,
 				message: removedValues.removed_notes

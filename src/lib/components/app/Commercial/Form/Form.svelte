@@ -17,6 +17,7 @@
 	import Textarea from '$lib/components/form/Textarea.svelte';
 
 	export let data;
+	export let comments;
 	export let values;
 	export let form = null;
 	export let showRemove = false;
@@ -135,6 +136,11 @@
 					</div>
 
 					<div>
+						<p class="text-lg mt-5 mb-2 font-semibold">Comments</p>
+						<Comments {comments} {commentSubmitCallback} />
+					</div>
+
+					<div>
 						<Products
 							bind:rfqs_products={values.rfqs_products}
 							{showRemove}
@@ -145,12 +151,6 @@
 							bind:focusedRfqProductQty
 						/>
 					</div>
-					{#if data.rfq}
-						<div>
-							<p class="text-lg mt-5 mb-2 font-semibold">Comments</p>
-							<Comments comments={data.rfq.rfqs_comments} {commentSubmitCallback} />
-						</div>
-					{/if}
 				{/if}
 				{#if ['labor', 'purchasing'].includes(form?.type)}
 					<div>
@@ -178,6 +178,10 @@
 							>
 						</div>
 					{/if}
+					<div>
+						<p class="text-lg mt-5 mb-2 font-semibold">Comments</p>
+						<Comments {comments} {commentSubmitCallback} />
+					</div>
 				{/if}
 				{#if form?.type === 'confirm'}
 					<div class="flex flex-col space-y-5">
