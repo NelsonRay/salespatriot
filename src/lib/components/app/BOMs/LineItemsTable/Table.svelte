@@ -18,19 +18,22 @@
 		{ type: 'part', field: 'number', header: 'Part Number' },
 		{ type: 'part', field: 'description', header: 'Part Description' },
 		{ type: 'part', field: 'vendor_instructions', header: 'Vendor Instructions' },
-		{ type: 'field', field: 'quantity', header: 'Quantity' },
 		{ type: 'part', field: 'source', header: 'Source' },
+		{ type: 'field', field: 'quantity', header: 'Quantity' },
 		{ type: 'part', field: 'uom', header: 'UOM' },
-		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
-		{ type: 'vendor', field: 'email', header: 'Email' },
-		{ type: 'status', header: 'Status' },
 		{ type: 'field', field: 'on_hand', header: 'On Hand' },
 		{ type: 'field', field: 'bom_net', header: 'BOM Net' },
+		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
+		{ type: 'vendor', field: 'email', header: 'Email' },
+		{ type: 'unit_price', header: 'Unit Price' },
+		{ type: 'ext_price', header: 'Ext. Price' },
 		{ type: 'date_received', header: 'Date Recorded' },
-		{ type: 'parts_quotes', field: 'moq', header: 'MOQ' },
-		{ type: 'parts_quotes', field: 'moc', header: 'MOC' },
+		{ type: 'lead_time', header: 'Lead Time' },
+		{ type: 'status', header: 'Status' },
 		{ type: 'email_status', header: 'Email Status' },
-		{ type: 'email_sent', header: 'Email Sent' }
+		{ type: 'email_sent', header: 'Email Sent' },
+		{ type: 'parts_quotes', field: 'moq', header: 'MOQ' },
+		{ type: 'parts_quotes', field: 'moc', header: 'MOC' }
 	];
 
 	export function tableFieldMapper(obj, column) {
@@ -80,6 +83,36 @@
 
 			if (column.field === 'moc' && !!value) {
 				value = formatCurrency(value);
+			}
+		} else if (column.type == 'unit_price') {
+			const qtys = obj?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
+				(a, b) => a?.quantity - b?.quantity
+			);
+
+			if (qtys?.length > 0) {
+				value = formatCurrency(qtys[0].unit_price);
+			} else {
+				value = '';
+			}
+		} else if (column.type == 'ext_price') {
+			const qtys = obj?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
+				(a, b) => a?.quantity - b?.quantity
+			);
+
+			if (qtys?.length > 0) {
+				value = formatCurrency(qtys[0].unit_price * obj?.quantity);
+			} else {
+				value = '';
+			}
+		} else if (column.type == 'lead_time') {
+			const qtys = obj?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
+				(a, b) => a?.quantity - b?.quantity
+			);
+
+			if (qtys?.length > 0) {
+				value = qtys[0].lead_time ?? '';
+			} else {
+				value = '';
 			}
 		}
 

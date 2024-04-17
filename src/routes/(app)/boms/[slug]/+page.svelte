@@ -12,7 +12,7 @@
 
 	$: ({ supabase, session } = data);
 
-	let bom = null;
+	let boms_quote = null;
 	let isMounted = false;
 	let isLoading = false;
 	let selectedVendor;
@@ -24,16 +24,16 @@
 
 	page.subscribe((p) => {
 		if (isMounted) {
-			bom = null;
+			boms_quote = null;
 			loadData();
 		}
 	});
 
 	async function loadData() {
 		let query = supabase
-			.from('boms')
+			.from('boms_quotes')
 			.select(
-				'id, products(*), boms_parts(*, part(*, parts_quotes(*, parts_quotes_quantities(*))), vendor(*)), boms_quotes(*)'
+				'*, bom(id, products(*), boms_parts(*, part(*, parts_quotes(*, parts_quotes_quantities(*))), vendor(*)))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -41,16 +41,16 @@
 
 		let { data, error } = await query;
 
-		bom = data;
+		boms_quote = data;
 	}
 
 	async function emailVendors() {
-		if (!isLoading && isBomQuoteReady(bom) && selectedParts?.length > 0) {
+		if (!isLoading && boms_quote != null && selectedParts?.length > 0) {
 			isLoading = true;
 
 			await fetch('/api/bom/automation', {
 				method: 'POST',
-				body: JSON.stringify({ id: bom.id, selectedParts })
+				body: JSON.stringify({ id: boms_quote.id, selectedParts })
 			});
 			window.location.reload();
 		}
@@ -119,13 +119,6 @@
 		window.location.reload();
 	}
 
-	function isBomQuoteReady(b) {
-		if (!b) return false;
-		if (b?.boms_quotes?.length > 0) return false;
-
-		return true;
-	}
-
 	onMount(() => {
 		if (session) {
 			loadData($page.url.pathname);
@@ -147,7 +140,7 @@
 <div class="relative top-0">
 	<div class="flex flex-row h-14 items-center justify-between mx-2">
 		<div class="flex flex-row items-center">
-			<p class="font-semibold ml-4 text-sm">{(bom?.products?.number ?? '') + ' '}BOM</p>
+			<p class="font-semibold ml-4 text-sm">{(boms_quote?.bom?.products?.number ?? '') + ' '}BOM</p>
 		</div>
 		<div>
 			{#if isSelectingParts}
@@ -179,9 +172,9 @@
 	</div>
 </div>
 
-{#if bom}
+{#if boms_quote}
 	<Table
-		data={bom?.boms_parts?.sort((a, b) => a.line_number - b.line_number)}
+		data={boms_quote?.bom?.boms_parts?.sort((a, b) => a.line_number - b.line_number)}
 		bind:selectedVendor
 		bind:selectedPart
 		bind:selectedPartForInstructions

@@ -1,31 +1,19 @@
 // @ts-nocheck
 import { json } from '@sveltejs/kit';
 
-export async function POST({ locals: { supabase, session }, request }) {
+export async function POST({ locals: { supabase }, request }) {
 	const { id, selectedParts } = await request.json();
 
 	const { data } = await supabase
-		.from('boms')
-		.select('id, boms_parts(*)')
-		.eq('id', id)
-		.limit(1)
-		.single();
-
-	const {
-		data: { id: bom_quote_id }
-	} = await supabase
 		.from('boms_quotes')
-		.insert({
-			bom: id,
-			created_by: session?.user?.id
-		})
-		.select('id')
+		.select('id, bom(id, boms_parts(*))')
+		.eq('id', id)
 		.limit(1)
 		.single();
 
 	let partsRequestedByVendor = {};
 
-	for (let boms_part of data.boms_parts) {
+	for (let boms_part of data.bom.boms_parts) {
 		if (!boms_part.vendor) continue; // skip if no vendor
 		if (partsRequestedByVendor[boms_part.vendor]?.includes(boms_part.part)) continue; // skip if already requested by vendor
 		if (!selectedParts?.includes(boms_part.id)) continue; // skip if selectedParts does not include id
@@ -34,7 +22,7 @@ export async function POST({ locals: { supabase, session }, request }) {
 			data: { id: parts_quote_id }
 		} = await supabase
 			.from('parts_quotes')
-			.insert({ part: boms_part.part, vendor: boms_part.vendor, boms_quote: bom_quote_id })
+			.insert({ part: boms_part.part, vendor: boms_part.vendor, boms_quote: id })
 			.select('id')
 			.limit(1)
 			.single();
@@ -53,7 +41,7 @@ export async function POST({ locals: { supabase, session }, request }) {
 		];
 	}
 
-	await supabase.from('boms_quotes').update({ email_vendors: true }).eq('id', bom_quote_id);
+	await supabase.from('boms_quotes').update({ email_vendors: true }).eq('id', id);
 
 	return json({}, { status: 200 });
 }
