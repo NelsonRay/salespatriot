@@ -22,7 +22,7 @@
 	async function loadData(pathname) {
 		let query = supabase
 			.from('rfqs')
-			.select('*, customer!inner(*), rfqs_products(rfqs_products_quantities(*))');
+			.select('*, customer!inner(*), rfqs_products(product(number), rfqs_products_quantities(*))');
 
 		switch (pathname) {
 			case '/sales/commercial/active-rfqs':

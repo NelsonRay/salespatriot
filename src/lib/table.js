@@ -113,6 +113,7 @@ export function getReportRfqColumns() {
 		{ type: 'value' },
 		{ type: 'status', status: 'send_quote' },
 		{ type: 'status', status: 'response' },
+		{ type: 'products' },
 		{ type: 'date', field: 'received_at' },
 		{ type: 'date', field: 'sent_quote_timestamp' },
 		{ type: 'field', field: 'quote_number' },
