@@ -32,7 +32,7 @@
 
 		const { data, error: err } = await supabase
 			.from('rfqs')
-			.select('*, customer!inner(*), rfqs_products(rfqs_products_quantities(*))')
+			.select('*, customer!inner(*), rfqs_products(product(number), rfqs_products_quantities(*))')
 			.gte('sent_quote_timestamp', new Date(startDate).toUTCString())
 			.lte('sent_quote_timestamp', new Date(endDate).toUTCString());
 

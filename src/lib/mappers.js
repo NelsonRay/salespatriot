@@ -106,6 +106,11 @@ export function commercialTableFieldMapper(obj, column) {
 		return { header, value };
 	} else if (column.type === 'email') {
 		return { header: 'Email', value: obj?.email_address };
+	} else if (column.type === 'products') {
+		return {
+			header: 'Products',
+			value: obj?.rfqs_products?.map((p) => p?.product?.number)?.join(', ')
+		};
 	} else if (column.type === 'name') {
 		return {
 			header: 'Name',
