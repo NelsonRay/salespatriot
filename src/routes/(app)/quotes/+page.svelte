@@ -1,7 +1,6 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
 	import Table from '$lib/components/app/Suppliers/Table/Table.svelte';
 
 	export let data;
@@ -10,25 +9,31 @@
 	$: ({ supabase, session } = data);
 
 	let quotes = null;
+	let showAll = false;
 	let isMounted = false;
 
 	async function loadData() {
 		let query = supabase
 			.from('parts_quotes')
-			.select('id, part(*), boms_quote(id, bom(id, products(number))), vendor(*), created_at')
-			.eq('complete', false);
+			.select('*, part(*), boms_quote(id, bom(id, products(number))), vendor(*)')
+			.filter('email_sent_at', 'not.is', null);
 
-		let { data, error } = await query;
+		if (!showAll) query = query.eq('complete', false);
 
-		quotes = data;
+		let { data } = await query;
+
+		quotes = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 	}
 
 	onMount(() => {
-		if (session) {
-			loadData($page.url.pathname);
-		}
 		isMounted = true;
 	});
+
+	$: if (isMounted && showAll != null) {
+		if (session) {
+			loadData();
+		}
+	}
 </script>
 
 <svelte:head>
@@ -39,6 +44,20 @@
 	<div class="flex flex-row h-14 items-center justify-between mx-2">
 		<div class="flex flex-row items-center">
 			<p class="font-semibold ml-4 text-sm">Quotes</p>
+		</div>
+		<div class="flex flex-row items-center">
+			<button
+				on:click={() => (showAll = false)}
+				class="rounded-r-none text-xs bg-neutral-200 p-2 rounded-l-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {!showAll
+					? 'bg-neutral-300'
+					: ''}">Pending</button
+			>
+			<button
+				on:click={() => (showAll = true)}
+				class="rounded-l-none text-xs bg-neutral-200 p-2 rounded-r-md border-r-[1px] border-gray-300 hover:bg-neutral-300 {showAll
+					? 'bg-neutral-300'
+					: ''}">Show All</button
+			>
 		</div>
 	</div>
 </div>

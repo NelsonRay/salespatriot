@@ -4,7 +4,7 @@
 	import Send from '$lib/icons/Send.svg';
 
 	export let comments;
-	comments = comments?.sort((b, a) => new Date(b.created_at) - new Date(a.created_at));
+	comments = comments?.sort((b, a) => new Date(a.created_at) - new Date(b.created_at));
 	export let commentSubmitCallback;
 
 	let message = '';

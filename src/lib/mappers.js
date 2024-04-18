@@ -28,6 +28,7 @@ export function govMapper(field) {
 
 		// solicitations_matched table
 		unit_price: 'Unit Price',
+		bid_timestamp: 'Quote Date',
 		bom_url: 'BOM URL',
 		estimated_material_cost: 'Estimated Material Cost (Per Unit)',
 		estimated_purchasing_days: 'Estimated Purchasing Days',
@@ -103,13 +104,39 @@ export function commercialTableFieldMapper(obj, column) {
 		}
 
 		return { header, value };
+	} else if (column.type === 'email') {
+		return { header: 'Email', value: obj?.email_address };
 	} else if (column.type === 'name') {
 		return {
 			header: 'Name',
 			value: `${obj?.customer?.name} - ${formatMonthDayYearDate(obj?.received_at)}`
 		};
 	} else if (column.type === 'value') {
-		return { header: 'Est. Value', value: '' };
+		let value = 0;
+		let avgProducts = [];
+
+		for (let product of obj?.rfqs_products ?? []) {
+			const qtyPrices = product.rfqs_products_quantities.map((q) => q.quantity * q.final_pricing);
+
+			let sumOfQtyPrices = 0;
+
+			for (let qtyPrice of qtyPrices) {
+				sumOfQtyPrices += qtyPrice;
+			}
+
+			let avgForProduct = sumOfQtyPrices / product.rfqs_products_quantities?.length;
+
+			avgProducts = [...avgProducts, avgForProduct];
+		}
+
+		let avgValueForRfq = 0;
+
+		for (let avgProduct of avgProducts) {
+			avgValueForRfq += avgProduct;
+		}
+
+		value += avgValueForRfq;
+		return { header: 'Est. Value', value: value ? formatCurrency(value) : '---' };
 	} else if (column.type === 'date') {
 		const header = commercialFieldsMapper(column.field);
 
@@ -235,7 +262,11 @@ export function tableFieldMapper(obj, column) {
 				value = formatCurrency(value);
 			}
 
-			if (['solicitation.expires_on', 'solicitation.issued_on'].includes(column?.field)) {
+			if (
+				['solicitation.expires_on', 'solicitation.issued_on', 'bid_timestamp'].includes(
+					column?.field
+				)
+			) {
 				value = formatMonthDayYearDate(value);
 			}
 

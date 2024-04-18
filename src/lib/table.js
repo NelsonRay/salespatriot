@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-nocheck
 export function getColumns(pathname) {
 	switch (pathname) {
 		case '/sales/government/contracts-bid':
@@ -80,6 +80,45 @@ export function getColumns(pathname) {
 				{ type: 'field', field: 'flagged' }
 			];
 	}
+}
+
+export function getReportColumns() {
+	return [
+		{ type: 'position' },
+		{ type: 'field', field: 'bid_timestamp' },
+		{ type: 'field', field: 'solicitation.id' },
+		{ type: 'field', field: 'solicitation.description' },
+		{ type: 'status', status: 'award' },
+		{ type: 'formula', field: 'market_value' },
+		{ type: 'field', field: 'unit_price' },
+		{ type: 'field', field: 'solicitation.price_won_at' },
+		{ type: 'formula', field: 'unit_price_won_at' },
+		{ type: 'formula', field: 'diff_unit_price' },
+		{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
+		{
+			type: 'products',
+			header: 'In-House PN'
+		},
+		{ type: 'field', field: 'solicitation.issued_on' },
+		{ type: 'field', field: 'solicitation.quantity' },
+		{ type: 'field', field: 'solicitation.quantity_units' },
+		{ type: 'link', field: 'solicitation.solicitation_url' }
+	];
+}
+
+export function getReportRfqColumns() {
+	return [
+		{ type: 'position' },
+		{ type: 'name' },
+		{ type: 'value' },
+		{ type: 'status', status: 'send_quote' },
+		{ type: 'status', status: 'response' },
+		{ type: 'date', field: 'received_at' },
+		{ type: 'date', field: 'sent_quote_timestamp' },
+		{ type: 'field', field: 'quote_number' },
+		{ type: 'field', field: 'customer.name' },
+		{ type: 'email' }
+	];
 }
 
 export function getNSNColumns(oppForm) {

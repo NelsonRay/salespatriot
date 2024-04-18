@@ -20,14 +20,16 @@
 	});
 
 	async function loadData(pathname) {
-		let query = supabase.from('rfqs').select('*, customer!inner(*)');
+		let query = supabase
+			.from('rfqs')
+			.select('*, customer!inner(*), rfqs_products(rfqs_products_quantities(*))');
 
 		switch (pathname) {
-			case "/sales/commercial/active-rfqs":
+			case '/sales/commercial/active-rfqs':
 				query = query.eq('removed', false);
 				break;
-			case "/sales/commercial/sent-rfqs":
-				query = query.filter('status', 'cs', `{"send_quote:complete"}`)
+			case '/sales/commercial/sent-rfqs':
+				query = query.filter('status', 'cs', `{"send_quote:complete"}`);
 				break;
 			default:
 				break;
@@ -55,11 +57,15 @@
 					});
 				}
 				break;
-			case "/sales/commercial/sent-rfqs":
-				data = data.sort((a,b) => new Date(b.sent_quote_timestamp) - new Date(a.sent_quote_timestamp))
+			case '/sales/commercial/sent-rfqs':
+				data = data.sort(
+					(a, b) => new Date(b.sent_quote_timestamp) - new Date(a.sent_quote_timestamp)
+				);
 				break;
-			case "/sales/commercial/all-rfqs":
-				data = data.sort((a,b) => new Date(a.sent_quote_timestamp) - new Date(b.sent_quote_timestamp))
+			case '/sales/commercial/all-rfqs':
+				data = data.sort(
+					(a, b) => new Date(a.sent_quote_timestamp) - new Date(b.sent_quote_timestamp)
+				);
 				break;
 		}
 		rfqs = data;
@@ -75,7 +81,7 @@
 	const views = {
 		'/sales/commercial/active-rfqs': 'Active RFQS',
 		'/sales/commercial/sent-rfqs': 'Sent RFQS',
-		'/sales/commercial/all-rfqs': 'All RFQS',
+		'/sales/commercial/all-rfqs': 'All RFQS'
 	};
 </script>
 

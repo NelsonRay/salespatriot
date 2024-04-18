@@ -10,7 +10,8 @@
 		{ type: 'product', field: 'number', header: 'Parent Number' },
 		{ type: 'vendor', field: 'name', header: 'Supplier Name' },
 		{ type: 'vendor', field: 'email', header: 'Email' },
-		{ type: 'sent', header: 'Email Sent' }
+		{ type: 'sent', header: 'Email Sent' },
+		{ type: 'status', header: 'Status' }
 	];
 
 	export function tableFieldMapper(obj, column) {
@@ -24,7 +25,7 @@
 		} else if (column.type === 'vendor') {
 			value = obj?.vendor?.[column?.field];
 		} else if (column.type === 'status') {
-			value = obj?.boms_quotes[0]?.complete;
+			value = obj?.complete;
 		} else if (column.type === 'sent') {
 			value = obj?.created_at;
 
