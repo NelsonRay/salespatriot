@@ -7,7 +7,7 @@
 
 	export let data;
 
-	const columns = [
+	export let columns = [
 		{ type: 'position' },
 		{ type: 'name' },
 		{ type: 'value' },
@@ -22,7 +22,7 @@
 		{ type: 'date', field: 'sent_quote_timestamp' },
 		{ type: 'field', field: 'quote_number' },
 		{ type: 'field', field: 'customer.name' },
-		{ type: 'field', field: 'customer.email_addresses' }
+		{ type: 'email' }
 	];
 
 	function getStatusColor(status) {

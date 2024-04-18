@@ -38,18 +38,6 @@
 			<span>Workflows</span>
 		</AppRailAnchor>
 		<AppRailAnchor
-			title="Reports"
-			href="/reports"
-			selected={$page.url.pathname.toString().includes('/reports')}
-		>
-			<svelte:fragment slot="lead"
-				><div class="flex items-center justify-center">
-					<img src={Reports} class="h-9 w-9" alt="reports" />
-				</div></svelte:fragment
-			>
-			<span>Reports</span>
-		</AppRailAnchor>
-		<AppRailAnchor
 			title="BOMs"
 			href="/boms"
 			selected={$page.url.pathname.toString().includes('/boms')}
@@ -72,6 +60,18 @@
 				</div>
 			</svelte:fragment>
 			<span>Quotes</span>
+		</AppRailAnchor>
+		<AppRailAnchor
+			title="Reports"
+			href="/reports"
+			selected={$page.url.pathname.toString().includes('/reports')}
+		>
+			<svelte:fragment slot="lead"
+				><div class="flex items-center justify-center">
+					<img src={Reports} class="h-9 w-9" alt="reports" />
+				</div></svelte:fragment
+			>
+			<span>Reports</span>
 		</AppRailAnchor>
 		<!-- --- -->
 		<svelte:fragment slot="trail">
