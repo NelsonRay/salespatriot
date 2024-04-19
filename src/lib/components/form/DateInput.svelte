@@ -1,5 +1,7 @@
 <script>
 	//  @ts-nocheck
+	import { formatDate } from '$lib/helpers';
+
 	export let value;
 	export let disabled = false;
 	export let fullWidth = true;
@@ -11,4 +13,5 @@
 	type="date"
 	bind:value
 	{disabled}
+	max={formatDate(new Date())}
 />
