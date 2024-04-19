@@ -33,8 +33,11 @@
 	async function loadData() {
 		let query = supabase
 			.from('boms_quotes')
+			// .select(
+			// 	'*, bom(id, products(*), boms_parts(*, part(*, parts_quotes(*, parts_quotes_quantities(*))), vendor(*)))'
+			// )
 			.select(
-				'*, bom(id, products(*), boms_parts(*, part(*, parts_quotes(*, parts_quotes_quantities(*))), vendor(*)))'
+				'*, bom(*, products(*)), boms_quotes_parts(*, boms_part(*, part(*), vendor(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*))))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -125,15 +128,14 @@
 		let completedCount = 0;
 		let matCost = 0;
 
-		const totalCount = q.bom.boms_parts.length;
+		const totalCount = q.boms_quotes_parts.length;
 
-		for (let bom_part of q.bom.boms_parts) {
-			if (bom_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.length > 0) {
+		for (let boms_quotes_part of q.boms_quotes_parts) {
+			if (boms_quotes_part?.parts_quotes_quantity) {
 				completedCount++;
 				const extCost =
-					bom_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
-						(a, b) => a.quantity - b.quantity
-					)?.[0]?.unit_price * bom_part?.quantity;
+					boms_quotes_part?.parts_quotes_quantity?.unit_price *
+					boms_quotes_part?.boms_part?.quantity;
 
 				matCost += extCost;
 			}
@@ -200,7 +202,9 @@
 
 {#if boms_quote}
 	<Table
-		data={boms_quote?.bom?.boms_parts?.sort((a, b) => a.line_number - b.line_number)}
+		data={boms_quote?.boms_quotes_parts?.sort(
+			(a, b) => a.boms_part.line_number - b.boms_part.line_number
+		)}
 		bind:selectedVendor
 		bind:selectedPart
 		bind:selectedPartForInstructions

@@ -2,6 +2,7 @@
 	// @ts-nocheck
 	import { formatCurrency, formatMonthDayYearDate } from '$lib/helpers';
 	import Edit from '$lib/icons/Edit.svg';
+	import QuoteUsed from './QuoteUsed.svelte';
 
 	export let data;
 	export let selectedVendor;
@@ -25,15 +26,11 @@
 		{ type: 'field', field: 'bom_net', header: 'BOM Net' },
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
 		{ type: 'vendor', field: 'email', header: 'Email' },
-		{ type: 'unit_price', header: 'Unit Price' },
-		{ type: 'ext_price', header: 'Ext. Price' },
-		{ type: 'date_received', header: 'Date Recorded' },
-		{ type: 'lead_time', header: 'Lead Time' },
-		{ type: 'status', header: 'Status' },
-		{ type: 'email_status', header: 'Email Status' },
-		{ type: 'email_sent', header: 'Email Sent' },
-		{ type: 'parts_quotes', field: 'moq', header: 'MOQ' },
-		{ type: 'parts_quotes', field: 'moc', header: 'MOC' }
+		{ type: 'parts_quotes_quantity', header: 'Quote Used' },
+		{ type: 'ext_price', header: 'Ext. Price' }
+
+		// { type: 'email_status', header: 'Email Status' },
+		// { type: 'email_sent', header: 'Email Sent' },
 	];
 
 	export function tableFieldMapper(obj, column) {
@@ -41,25 +38,25 @@
 
 		if (column.type === 'position') {
 		} else if (column.type === 'level') {
-			value = obj?.level;
+			value = obj?.boms_part?.level;
 
 			for (let i = 0; i < obj?.level - 1; i++) {
 				value = `-${value}`;
 			}
 		} else if (column.type === 'part') {
-			value = obj?.part?.[column?.field];
+			value = obj?.boms_part?.part?.[column?.field];
 		} else if (column.type === 'vendor') {
-			value = obj?.vendor?.[column?.field];
+			value = obj?.boms_part?.vendor?.[column?.field];
 		} else if (column.type === 'field') {
-			value = obj?.[column?.field];
+			value = obj?.boms_part?.[column?.field];
 		} else if (column.type === 'status') {
-			if (obj?.vendor) {
-				value = obj?.part?.parts_quotes[0]?.parts_quotes_quantities?.length > 0;
+			if (obj?.boms_part?.vendor) {
+				value = obj?.boms_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.length > 0;
 			} else {
 				value = null;
 			}
 		} else if (column.type === 'date_received') {
-			value = obj?.part?.parts_quotes[0]?.date_received;
+			value = obj?.boms_part?.part?.parts_quotes[0]?.date_received;
 
 			if (value != null) {
 				value = formatMonthDayYearDate(value);
@@ -67,11 +64,11 @@
 				value = null;
 			}
 		} else if (column.type === 'email_status') {
-			if (obj?.part?.parts_quotes[0]?.email_sent_at) {
-				value = obj?.part?.parts_quotes[0]?.complete;
+			if (obj?.boms_part?.part?.parts_quotes[0]?.email_sent_at) {
+				value = obj?.boms_part?.part?.parts_quotes[0]?.complete;
 			}
 		} else if (column.type === 'email_sent') {
-			value = obj?.part?.parts_quotes[0]?.email_sent_at;
+			value = obj?.boms_part?.part?.parts_quotes[0]?.email_sent_at;
 
 			if (value != null) {
 				value = formatMonthDayYearDate(value);
@@ -79,13 +76,13 @@
 				value = null;
 			}
 		} else if (column.type === 'parts_quotes') {
-			value = obj?.part?.parts_quotes[0]?.[column.field];
+			value = obj?.boms_part?.part?.parts_quotes[0]?.[column.field];
 
 			if (column.field === 'moc' && !!value) {
 				value = formatCurrency(value);
 			}
 		} else if (column.type == 'unit_price') {
-			const qtys = obj?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
+			const qtys = obj?.boms_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
 				(a, b) => a?.quantity - b?.quantity
 			);
 
@@ -95,17 +92,13 @@
 				value = '';
 			}
 		} else if (column.type == 'ext_price') {
-			const qtys = obj?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
-				(a, b) => a?.quantity - b?.quantity
-			);
-
-			if (qtys?.length > 0) {
-				value = formatCurrency(qtys[0].unit_price * obj?.quantity);
+			if (obj?.parts_quotes_quantity) {
+				value = formatCurrency(obj?.parts_quotes_quantity?.unit_price * obj?.boms_part?.quantity);
 			} else {
 				value = '';
 			}
 		} else if (column.type == 'lead_time') {
-			const qtys = obj?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
+			const qtys = obj?.boms_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
 				(a, b) => a?.quantity - b?.quantity
 			);
 
@@ -138,9 +131,6 @@
 	}
 
 	function getClass(obj, selectedPartsById, selecting) {
-		if (!obj?.vendor) return 'bg-gray-300';
-		if (isPartDisabled(obj)) return 'bg-gray-200';
-
 		return selecting
 			? isPartSelected(obj?.id, selectedPartsById)
 				? 'bg-blue-50'
@@ -199,7 +189,7 @@
 								</p>
 							</td>
 						{:else if column.type === 'vendor' && column.field === 'email'}
-							<td>
+							<td class={tableFieldMapper(obj, column).value ? '' : 'bg-gray-200'}>
 								{#if obj?.vendor}
 									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 										{#if tableFieldMapper(obj, column).value}
@@ -233,6 +223,10 @@
 										<img src={Edit} alt="open" class="h-3 w-3" />
 									</button>
 								</div>
+							</td>
+						{:else if column.type === 'parts_quotes_quantity'}
+							<td>
+								<QuoteUsed data={obj?.parts_quotes_quantity} />
 							</td>
 						{:else if column.field === 'email'}
 							<td>
