@@ -190,7 +190,7 @@
 							</td>
 						{:else if column.type === 'vendor' && column.field === 'email'}
 							<td class={tableFieldMapper(obj, column).value ? '' : 'bg-gray-200'}>
-								{#if obj?.vendor}
+								{#if obj?.boms_part?.vendor}
 									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 										{#if tableFieldMapper(obj, column).value}
 											{tableFieldMapper(obj, column).value ?? ''}
