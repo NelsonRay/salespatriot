@@ -9,6 +9,7 @@
 	export let selectedPart;
 	export let selectedPartForInstructions;
 	export let selectedBomPartForQuote;
+	export let selectedPartForComment;
 	export let isSelectingParts;
 	export let selectedParts;
 
@@ -27,7 +28,8 @@
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
 		{ type: 'vendor', field: 'email', header: 'Email' },
 		{ type: 'parts_quotes_quantity', header: 'Quote Used' },
-		{ type: 'ext_price', header: 'Ext. Price' }
+		{ type: 'ext_price', header: 'Ext. Price' },
+		{ type: 'comments', header: 'Comments' }
 
 		// { type: 'email_status', header: 'Email Status' },
 		// { type: 'email_sent', header: 'Email Sent' },
@@ -45,6 +47,8 @@
 			}
 		} else if (column.type === 'part') {
 			value = obj?.boms_part?.part?.[column?.field];
+		} else if (column.type === 'comments') {
+			value = obj?.comments;
 		} else if (column.type === 'vendor') {
 			value = obj?.boms_part?.vendor?.[column?.field];
 		} else if (column.type === 'field') {
@@ -258,6 +262,17 @@
 										</button>
 									</div>
 								{/if}
+							</td>
+						{:else if column.type === 'comments'}
+							<td>
+								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+									{#if tableFieldMapper(obj, column).value}
+										{tableFieldMapper(obj, column).value ?? ''}
+									{/if}
+									<button on:click={() => (selectedPartForComment = obj)}>
+										<img src={Edit} alt="open" class="h-3 w-3" />
+									</button>
+								</div>
 							</td>
 						{:else}
 							<td>

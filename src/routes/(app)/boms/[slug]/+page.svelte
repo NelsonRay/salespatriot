@@ -7,6 +7,7 @@
 	import DescriptionModal from '$lib/components/app/BOMs/Modals/DescriptionModal/DescriptionModal.svelte';
 	import InstructionsModal from '$lib/components/app/BOMs/Modals/InstructionsModal/InstructionsModal.svelte';
 	import QuoteModal from '$lib/components/app/BOMs/Modals/QuoteModal/QuoteModal.svelte';
+	import CommentModal from '$lib/components/app/BOMs/Modals/CommentModal/CommentModal.svelte';
 	import { formatCurrency } from '$lib/helpers.js';
 
 	export let data;
@@ -20,6 +21,7 @@
 	let selectedPart;
 	let selectedPartForInstructions;
 	let selectedBomPartForQuote;
+	let selectedPartForComment;
 	let isSelectingParts = false;
 	let selectedParts = [];
 
@@ -83,6 +85,15 @@
 		selectedPartForInstructions = null;
 
 		await supabase.from('parts').update({ vendor_instructions }).eq('id', partId);
+
+		window.location.reload();
+	}
+
+	async function updatePartComments(comments) {
+		const partId = selectedPartForComment?.id;
+		selectedPartForComment = null;
+
+		await supabase.from('boms_quotes_parts').update({ comments }).eq('id', partId);
 
 		window.location.reload();
 	}
@@ -209,6 +220,7 @@
 		bind:selectedPart
 		bind:selectedPartForInstructions
 		bind:selectedBomPartForQuote
+		bind:selectedPartForComment
 		{isSelectingParts}
 		bind:selectedParts
 	/>
@@ -236,4 +248,9 @@
 	open={!!selectedBomPartForQuote}
 	{selectedBomPartForQuote}
 	submitCallback={insertPartQuote}
+/>
+<CommentModal
+	open={!!selectedPartForComment}
+	{selectedPartForComment}
+	submitCallback={updatePartComments}
 />
