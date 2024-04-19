@@ -195,7 +195,7 @@
 										{#if tableFieldMapper(obj, column).value}
 											{tableFieldMapper(obj, column).value ?? ''}
 										{/if}
-										<button on:click={() => (selectedVendor = obj?.vendor)}>
+										<button on:click={() => (selectedVendor = obj?.boms_part?.vendor)}>
 											<img src={Edit} alt="open" class="h-3 w-3" />
 										</button>
 									</div>
@@ -217,8 +217,8 @@
 										class="h-3 w-3"
 										on:click={() =>
 											column.field === 'description'
-												? (selectedPart = obj?.part)
-												: (selectedPartForInstructions = obj?.part)}
+												? (selectedPart = obj?.boms_part?.part)
+												: (selectedPartForInstructions = obj?.boms_part?.part)}
 									>
 										<img src={Edit} alt="open" class="h-3 w-3" />
 									</button>
@@ -234,7 +234,7 @@
 									{#if tableFieldMapper(obj, column).value}
 										{tableFieldMapper(obj, column).value ?? ''}
 									{/if}
-									<button on:click={() => (selectedVendor = obj?.vendor)}>
+									<button on:click={() => (selectedVendor = obj?.boms_part?.vendor)}>
 										<img src={Edit} alt="open" class="h-3 w-3" />
 									</button>
 								</div>
@@ -253,7 +253,7 @@
 								{:else if tableFieldMapper(obj, column).value != null}
 									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 										<div class="p-1 rounded-md inline-block bg-yellow-300 text-xs">Waiting</div>
-										<button on:click={() => (selectedBomPartForQuote = obj)}>
+										<button on:click={() => (selectedBomPartForQuote = obj?.boms_part)}>
 											<img src={Edit} alt="open" class="h-3 w-3" />
 										</button>
 									</div>
