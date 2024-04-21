@@ -11,6 +11,8 @@
 	export let selectedBomPartForQuote;
 	export let selectedPartForComment;
 	export let isSelectingParts;
+	export let selectedPartForAllQuotes;
+	export let selectedQuoteForAllQuotes;
 	export let selectedParts;
 
 	const columns = [
@@ -30,7 +32,6 @@
 		{ type: 'parts_quotes_quantity', header: 'Quote Used' },
 		{ type: 'ext_price', header: 'Ext. Price' },
 		{ type: 'comments', header: 'Comments' }
-
 		// { type: 'email_status', header: 'Email Status' },
 		// { type: 'email_sent', header: 'Email Sent' },
 	];
@@ -230,7 +231,13 @@
 							</td>
 						{:else if column.type === 'parts_quotes_quantity'}
 							<td>
-								<QuoteUsed data={obj?.parts_quotes_quantity} />
+								<QuoteUsed
+									data={obj?.parts_quotes_quantity}
+									callback={() => {
+										selectedQuoteForAllQuotes = obj?.parts_quotes_quantity;
+										selectedPartForAllQuotes = obj;
+									}}
+								/>
 							</td>
 						{:else if column.field === 'email'}
 							<td>

@@ -8,6 +8,7 @@
 	import InstructionsModal from '$lib/components/app/BOMs/Modals/InstructionsModal/InstructionsModal.svelte';
 	import QuoteModal from '$lib/components/app/BOMs/Modals/QuoteModal/QuoteModal.svelte';
 	import CommentModal from '$lib/components/app/BOMs/Modals/CommentModal/CommentModal.svelte';
+	import AllQuotesModal from '$lib/components/app/BOMs/Modals/AllQuotesModal/AllQuotesModal.svelte';
 	import { formatCurrency } from '$lib/helpers.js';
 
 	export let data;
@@ -22,6 +23,8 @@
 	let selectedPartForInstructions;
 	let selectedBomPartForQuote;
 	let selectedPartForComment;
+	let selectedPartForAllQuotes;
+	let selectedQuoteForAllQuotes;
 	let isSelectingParts = false;
 	let selectedParts = [];
 
@@ -155,6 +158,19 @@
 		return `${formatCurrency(matCost)} (${completedCount}/${totalCount} parts)`;
 	}
 
+	async function updatePartsQuotesQty(qtyId) {
+		const partId = selectedPartForAllQuotes?.id;
+		selectedPartForAllQuotes = null;
+		selectedQuoteForAllQuotes = null;
+
+		await supabase
+			.from('boms_quotes_parts')
+			.update({ parts_quotes_quantity: qtyId })
+			.eq('id', partId);
+
+		window.location.reload();
+	}
+
 	onMount(() => {
 		if (session) {
 			loadData($page.url.pathname);
@@ -221,6 +237,8 @@
 		bind:selectedPartForInstructions
 		bind:selectedBomPartForQuote
 		bind:selectedPartForComment
+		bind:selectedPartForAllQuotes
+		bind:selectedQuoteForAllQuotes
 		{isSelectingParts}
 		bind:selectedParts
 	/>
@@ -253,4 +271,11 @@
 	open={!!selectedPartForComment}
 	{selectedPartForComment}
 	submitCallback={updatePartComments}
+/>
+<AllQuotesModal
+	open={!!selectedPartForAllQuotes}
+	{selectedPartForAllQuotes}
+	{supabase}
+	{selectedQuoteForAllQuotes}
+	submitCallback={updatePartsQuotesQty}
 />
