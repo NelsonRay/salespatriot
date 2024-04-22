@@ -235,23 +235,31 @@
 							</td>
 						{:else if column.type === 'parts_quotes_quantity'}
 							<td>
-								<LastQuote
-									data={obj?.parts_quotes_quantity}
-									callback={() => {
-										selectedPartForAllQuotes = obj;
-										selectedQuoteForAllQuotes = obj?.parts_quotes_quantity;
-									}}
-								/>
+								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+									<LastQuote data={obj?.parts_quotes_quantity} />
+									<button
+										on:click={() => {
+											selectedPartForAllQuotes = obj;
+											selectedQuoteForAllQuotes = obj?.parts_quotes_quantity;
+										}}
+									>
+										<img src={Edit} alt="open" class="h-3 w-3" />
+									</button>
+								</div>
 							</td>
 						{:else if column.type === 'parts_po_history'}
 							<td>
-								<LastPO
-									data={obj?.parts_po_history}
-									callback={() => {
-										selectedPartForAllPOs = obj;
-										selectedPOForAllPOs = obj?.parts_po_history;
-									}}
-								/>
+								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+									<LastPO data={obj?.parts_po_history} />
+									<button
+										on:click={() => {
+											selectedPartForAllPOs = obj;
+											selectedPOForAllPOs = obj?.parts_po_history;
+										}}
+									>
+										<img src={Edit} alt="open" class="h-3 w-3" />
+									</button>
+								</div>
 							</td>
 						{:else if column.field === 'email'}
 							<td>

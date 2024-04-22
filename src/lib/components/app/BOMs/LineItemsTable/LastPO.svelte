@@ -3,7 +3,7 @@
 	import { formatCurrency, calculateDaysDifference } from '$lib/helpers';
 
 	export let data;
-	export let callback;
+	export let callback = () => {};
 
 	function getClass() {
 		let color = '';
