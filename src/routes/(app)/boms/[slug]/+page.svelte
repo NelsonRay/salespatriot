@@ -145,11 +145,13 @@
 		const totalCount = q.boms_quotes_parts.length;
 
 		for (let boms_quotes_part of q.boms_quotes_parts) {
-			if (boms_quotes_part?.parts_quotes_quantity) {
+			if (boms_quotes_part?.use_quote != null) {
 				completedCount++;
 				const extCost =
-					boms_quotes_part?.parts_quotes_quantity?.unit_price *
-					boms_quotes_part?.boms_part?.quantity;
+					(boms_quotes_part.use_quote
+						? boms_quotes_part?.parts_quotes_quantity
+						: boms_quotes_part?.parts_po_history
+					)?.unit_price * boms_quotes_part?.boms_part?.quantity;
 
 				matCost += extCost;
 			}
