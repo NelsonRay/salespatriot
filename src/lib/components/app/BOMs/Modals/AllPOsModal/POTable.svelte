@@ -10,6 +10,7 @@
 		{ type: 'position', header: '#' },
 		{ type: 'field', field: 'unit_price', header: 'Unit Price' },
 		{ type: 'field', field: 'quantity', header: 'Quantity' },
+		{ type: 'field', field: 'uom', header: 'UOM' },
 		{ type: 'field', field: 'date_ordered', header: 'Date Ordered' },
 		{ type: 'field', field: 'order_number', header: 'PO #' },
 		{ type: 'field', field: 'date_due', header: 'Date Due' },
