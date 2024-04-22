@@ -32,7 +32,7 @@
 		let formsQuery = supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*), rfq(*, customer(name), rfqs_products(id, product(number), rfqs_products_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
+				'*, form!inner(*), product(*, rfqs_products(*, rfq(status, customer(name)), rfqs_products_quantities(*))), rfq(*, customer(name), rfqs_products(id, product(number), rfqs_products_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
 			)
 			.eq('deleted', false)
 			.eq('submitted', false);
@@ -95,7 +95,7 @@
 		let parts = rfq?.rfqs_products?.length ?? 0;
 		let qty = 0;
 
-		for (let p of rfq.rfqs_products) {
+		for (let p of rfq?.rfqs_products ?? []) {
 			qty += p.rfqs_products_quantities?.length ?? 0;
 		}
 
@@ -167,6 +167,18 @@
 								</div>
 								{#if forms?.rfq}
 									<p class="mt-1 font-medium">{getRFQDescription(forms?.rfq)}</p>
+								{/if}
+								{#if form?.type === 'purchasing'}
+									<div class="mb-2">
+										{#each forms?.product?.rfqs_products.filter((p) => !p.rfq.status.includes('purchasing:complete')) ?? [] as rfqs_product}
+											<p class="mt-1 font-medium">
+												{'QTY: ' +
+													rfqs_product.rfqs_products_quantities.map((p) => p.quantity).join(', ') +
+													' - ' +
+													rfqs_product.rfq.customer.name}
+											</p>
+										{/each}
+									</div>
 								{/if}
 								{#if form?.type === 'enter_quote'}
 									{#each forms?.rfq?.rfqs_products ?? [] as rfqs_product}
