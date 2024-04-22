@@ -9,6 +9,7 @@
 	import QuoteModal from '$lib/components/app/BOMs/Modals/QuoteModal/QuoteModal.svelte';
 	import CommentModal from '$lib/components/app/BOMs/Modals/CommentModal/CommentModal.svelte';
 	import AllQuotesModal from '$lib/components/app/BOMs/Modals/AllQuotesModal/AllQuotesModal.svelte';
+	import AllPOsModal from '$lib/components/app/BOMs/Modals/AllPOsModal/AllPOsModal.svelte';
 	import { formatCurrency } from '$lib/helpers.js';
 
 	export let data;
@@ -25,6 +26,8 @@
 	let selectedPartForComment;
 	let selectedPartForAllQuotes;
 	let selectedQuoteForAllQuotes;
+	let selectedPartForAllPOs;
+	let selectedPOForAllPOs;
 	let isSelectingParts = false;
 	let selectedParts = [];
 
@@ -38,11 +41,8 @@
 	async function loadData() {
 		let query = supabase
 			.from('boms_quotes')
-			// .select(
-			// 	'*, bom(id, products(*), boms_parts(*, part(*, parts_quotes(*, parts_quotes_quantities(*))), vendor(*)))'
-			// )
 			.select(
-				'*, bom(*, products(*)), boms_quotes_parts(*, boms_part(*, part(*), vendor(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*))))'
+				'*, bom(*, products(*)), boms_quotes_parts(*, boms_part(*, part(*), vendor(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*))), parts_po_history(*, vendor(name)))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -171,6 +171,16 @@
 		window.location.reload();
 	}
 
+	async function updatePO(poId) {
+		const partId = selectedPartForAllPOs?.id;
+		selectedPartForAllPOs = null;
+		selectedPOForAllPOs = null;
+
+		await supabase.from('boms_quotes_parts').update({ parts_po_history: poId }).eq('id', partId);
+
+		window.location.reload();
+	}
+
 	onMount(() => {
 		if (session) {
 			loadData($page.url.pathname);
@@ -239,6 +249,8 @@
 		bind:selectedPartForComment
 		bind:selectedPartForAllQuotes
 		bind:selectedQuoteForAllQuotes
+		bind:selectedPartForAllPOs
+		bind:selectedPOForAllPOs
 		{isSelectingParts}
 		bind:selectedParts
 	/>
@@ -278,4 +290,11 @@
 	{supabase}
 	{selectedQuoteForAllQuotes}
 	submitCallback={updatePartsQuotesQty}
+/>
+<AllPOsModal
+	open={!!selectedPartForAllPOs}
+	{selectedPartForAllPOs}
+	{supabase}
+	{selectedPOForAllPOs}
+	submitCallback={updatePO}
 />

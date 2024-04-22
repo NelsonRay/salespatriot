@@ -1,7 +1,7 @@
 <script>
 	// @ts-nocheck
 	import { onMount } from 'svelte';
-	import QuotesTable from './QuotesTable.svelte';
+	import QuotesTable from '$lib/components/app/BOMs/Modals/AllQuotesModal/QuotesTable.svelte';
 	import { formatMonthDayYearDate, calculateDaysDifference } from '$lib/helpers';
 
 	export let open;

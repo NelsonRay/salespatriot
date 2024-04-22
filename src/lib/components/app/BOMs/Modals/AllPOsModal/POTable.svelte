@@ -1,16 +1,16 @@
 <script>
 	// @ts-nocheck
-	import { formatCurrency } from '$lib/helpers';
+	import { formatCurrency, formatMonthDayYearDate } from '$lib/helpers';
 
-	export let data;
-	export let selectedQuoteForAllQuotes;
+	export let data = [];
+	export let selectedPOForAllPOs;
 	export let callback;
 
 	const columns = [
 		{ type: 'position', header: '#' },
 		{ type: 'field', field: 'unit_price', header: 'Unit Price' },
 		{ type: 'field', field: 'quantity', header: 'Quantity' },
-		{ type: 'field', field: 'lead_time', header: 'Lead Time' }
+		{ type: 'field', field: 'date_ordered', header: 'Date Ordered' }
 	];
 
 	export function tableFieldMapper(obj, column) {
@@ -21,6 +21,8 @@
 
 			if (column.field == 'unit_price') {
 				value = formatCurrency(value);
+			} else if (column.field == 'date_ordered') {
+				value = formatMonthDayYearDate(value);
 			}
 		}
 
@@ -44,9 +46,7 @@
 			{#each data as obj, index (obj.id)}
 				<tr
 					on:click={() => callback(obj.id)}
-					class={selectedQuoteForAllQuotes?.id == obj.id
-						? 'bg-neutral-100'
-						: 'hover:bg-neutral-100'}
+					class={selectedPOForAllPOs?.id == obj.id ? 'bg-neutral-100' : 'hover:bg-neutral-100'}
 				>
 					{#each columns as column}
 						{#if column.type === 'position'}

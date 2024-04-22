@@ -2,7 +2,8 @@
 	// @ts-nocheck
 	import { formatCurrency, formatMonthDayYearDate } from '$lib/helpers';
 	import Edit from '$lib/icons/Edit.svg';
-	import QuoteUsed from './QuoteUsed.svelte';
+	import LastQuote from '$lib/components/app/BOMs/LineItemsTable/LastQuote.svelte';
+	import LastPO from '$lib/components/app/BOMs/LineItemsTable/LastPO.svelte';
 
 	export let data;
 	export let selectedVendor;
@@ -13,6 +14,8 @@
 	export let isSelectingParts;
 	export let selectedPartForAllQuotes;
 	export let selectedQuoteForAllQuotes;
+	export let selectedPartForAllPOs;
+	export let selectedPOForAllPOs;
 	export let selectedParts;
 
 	const columns = [
@@ -29,7 +32,8 @@
 		{ type: 'field', field: 'bom_net', header: 'BOM Net' },
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
 		{ type: 'vendor', field: 'email', header: 'Email' },
-		{ type: 'parts_quotes_quantity', header: 'Quote Used' },
+		{ type: 'parts_quotes_quantity', header: 'Last Quote' },
+		{ type: 'parts_po_history', header: 'Last PO' },
 		{ type: 'ext_price', header: 'Ext. Price' },
 		{ type: 'comments', header: 'Comments' }
 		// { type: 'email_status', header: 'Email Status' },
@@ -231,11 +235,21 @@
 							</td>
 						{:else if column.type === 'parts_quotes_quantity'}
 							<td>
-								<QuoteUsed
+								<LastQuote
 									data={obj?.parts_quotes_quantity}
 									callback={() => {
-										selectedQuoteForAllQuotes = obj?.parts_quotes_quantity;
 										selectedPartForAllQuotes = obj;
+										selectedQuoteForAllQuotes = obj?.parts_quotes_quantity;
+									}}
+								/>
+							</td>
+						{:else if column.type === 'parts_po_history'}
+							<td>
+								<LastPO
+									data={obj?.parts_po_history}
+									callback={() => {
+										selectedPartForAllPOs = obj;
+										selectedPOForAllPOs = obj?.parts_po_history;
 									}}
 								/>
 							</td>
