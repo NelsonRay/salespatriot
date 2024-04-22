@@ -245,7 +245,7 @@
 								</div>
 							</td>
 						{:else if column.type === 'parts_quotes_quantity'}
-							<td class={obj.use_quote == true ? 'bg-green-300' : ''}>
+							<td class={obj.use_quote == true ? 'bg-green-200' : ''}>
 								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 									<LastQuote
 										data={obj?.parts_quotes_quantity}
@@ -262,7 +262,7 @@
 								</div>
 							</td>
 						{:else if column.type === 'parts_po_history'}
-							<td class={obj.use_quote == false ? 'bg-green-300' : ''}>
+							<td class={obj.use_quote == false ? 'bg-green-200' : ''}>
 								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 									<LastPO
 										data={obj?.parts_po_history}

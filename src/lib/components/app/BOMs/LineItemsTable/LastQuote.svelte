@@ -34,6 +34,13 @@
 			<p>
 				{data.parts_quote.vendor.name + ' - ' + data.parts_quote.date_received}
 			</p>
+			{#if data.parts_quote.notes}
+				<p class="text-[10px]">
+					{data.parts_quote.notes.toString().length > 50
+						? data.parts_quote.notes.substring(0, 50) + '...'
+						: data.parts_quote.notes}
+				</p>
+			{/if}
 		</div>
 	</button>
 {/if}
