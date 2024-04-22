@@ -7,6 +7,9 @@
 	import DescriptionModal from '$lib/components/app/BOMs/Modals/DescriptionModal/DescriptionModal.svelte';
 	import InstructionsModal from '$lib/components/app/BOMs/Modals/InstructionsModal/InstructionsModal.svelte';
 	import QuoteModal from '$lib/components/app/BOMs/Modals/QuoteModal/QuoteModal.svelte';
+	import CommentModal from '$lib/components/app/BOMs/Modals/CommentModal/CommentModal.svelte';
+	import AllQuotesModal from '$lib/components/app/BOMs/Modals/AllQuotesModal/AllQuotesModal.svelte';
+	import AllPOsModal from '$lib/components/app/BOMs/Modals/AllPOsModal/AllPOsModal.svelte';
 	import { formatCurrency } from '$lib/helpers.js';
 
 	export let data;
@@ -20,6 +23,11 @@
 	let selectedPart;
 	let selectedPartForInstructions;
 	let selectedBomPartForQuote;
+	let selectedPartForComment;
+	let selectedPartForAllQuotes;
+	let selectedQuoteForAllQuotes;
+	let selectedPartForAllPOs;
+	let selectedPOForAllPOs;
 	let isSelectingParts = false;
 	let selectedParts = [];
 
@@ -33,11 +41,8 @@
 	async function loadData() {
 		let query = supabase
 			.from('boms_quotes')
-			// .select(
-			// 	'*, bom(id, products(*), boms_parts(*, part(*, parts_quotes(*, parts_quotes_quantities(*))), vendor(*)))'
-			// )
 			.select(
-				'*, bom(*, products(*)), boms_quotes_parts(*, boms_part(*, part(*), vendor(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*))))'
+				'*, bom(*, products(*)), boms_quotes_parts(*, boms_part(*, part(*), vendor(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*))), parts_po_history(*, vendor(name)))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -83,6 +88,15 @@
 		selectedPartForInstructions = null;
 
 		await supabase.from('parts').update({ vendor_instructions }).eq('id', partId);
+
+		window.location.reload();
+	}
+
+	async function updatePartComments(comments) {
+		const partId = selectedPartForComment?.id;
+		selectedPartForComment = null;
+
+		await supabase.from('boms_quotes_parts').update({ comments }).eq('id', partId);
 
 		window.location.reload();
 	}
@@ -142,6 +156,35 @@
 		}
 
 		return `${formatCurrency(matCost)} (${completedCount}/${totalCount} parts)`;
+	}
+
+	async function updatePartsQuotesQty(qtyId) {
+		const partId = selectedPartForAllQuotes?.id;
+		selectedPartForAllQuotes = null;
+		selectedQuoteForAllQuotes = null;
+
+		await supabase
+			.from('boms_quotes_parts')
+			.update({ parts_quotes_quantity: qtyId })
+			.eq('id', partId);
+
+		window.location.reload();
+	}
+
+	async function updatePO(poId) {
+		const partId = selectedPartForAllPOs?.id;
+		selectedPartForAllPOs = null;
+		selectedPOForAllPOs = null;
+
+		await supabase.from('boms_quotes_parts').update({ parts_po_history: poId }).eq('id', partId);
+
+		window.location.reload();
+	}
+
+	async function updateUseQuote(id, use_quote) {
+		await supabase.from('boms_quotes_parts').update({ use_quote }).eq('id', id);
+
+		window.location.reload();
 	}
 
 	onMount(() => {
@@ -209,7 +252,13 @@
 		bind:selectedPart
 		bind:selectedPartForInstructions
 		bind:selectedBomPartForQuote
+		bind:selectedPartForComment
+		bind:selectedPartForAllQuotes
+		bind:selectedQuoteForAllQuotes
+		bind:selectedPartForAllPOs
+		bind:selectedPOForAllPOs
 		{isSelectingParts}
+		{updateUseQuote}
 		bind:selectedParts
 	/>
 {:else}
@@ -236,4 +285,23 @@
 	open={!!selectedBomPartForQuote}
 	{selectedBomPartForQuote}
 	submitCallback={insertPartQuote}
+/>
+<CommentModal
+	open={!!selectedPartForComment}
+	{selectedPartForComment}
+	submitCallback={updatePartComments}
+/>
+<AllQuotesModal
+	open={!!selectedPartForAllQuotes}
+	{selectedPartForAllQuotes}
+	{supabase}
+	{selectedQuoteForAllQuotes}
+	submitCallback={updatePartsQuotesQty}
+/>
+<AllPOsModal
+	open={!!selectedPartForAllPOs}
+	{selectedPartForAllPOs}
+	{supabase}
+	{selectedPOForAllPOs}
+	submitCallback={updatePO}
 />

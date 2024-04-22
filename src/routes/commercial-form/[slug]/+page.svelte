@@ -35,7 +35,7 @@
 				);
 
 			comments = [...(data?.rfq?.comments ?? []), ...productsComments];
-		} else {
+		} else if (data?.product) {
 			let { data: rfqs_products } = await supabase
 				.from('rfqs_products')
 				.select(

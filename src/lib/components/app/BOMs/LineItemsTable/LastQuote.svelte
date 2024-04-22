@@ -1,7 +1,9 @@
 <script>
+	// @ts-nocheck
 	import { formatCurrency, calculateDaysDifference } from '$lib/helpers';
 
 	export let data;
+	export let callback = () => {};
 
 	function getClass() {
 		let color = '';
@@ -21,8 +23,8 @@
 </script>
 
 {#if data}
-	<div class={getClass()}>
-		<div class="flex flex-col">
+	<button class={getClass()} on:click={callback}>
+		<div class="flex flex-col items-start">
 			<p>
 				{formatCurrency(data?.unit_price) + ' @ ' + data.quantity + ' QTY'}
 			</p>
@@ -33,5 +35,5 @@
 				{data.parts_quote.vendor.name + ' - ' + data.parts_quote.date_received}
 			</p>
 		</div>
-	</div>
+	</button>
 {/if}

@@ -2,14 +2,21 @@
 	// @ts-nocheck
 	import { formatCurrency, formatMonthDayYearDate } from '$lib/helpers';
 	import Edit from '$lib/icons/Edit.svg';
-	import QuoteUsed from './QuoteUsed.svelte';
+	import LastQuote from '$lib/components/app/BOMs/LineItemsTable/LastQuote.svelte';
+	import LastPO from '$lib/components/app/BOMs/LineItemsTable/LastPO.svelte';
 
 	export let data;
 	export let selectedVendor;
 	export let selectedPart;
 	export let selectedPartForInstructions;
 	export let selectedBomPartForQuote;
+	export let selectedPartForComment;
 	export let isSelectingParts;
+	export let selectedPartForAllQuotes;
+	export let selectedQuoteForAllQuotes;
+	export let selectedPartForAllPOs;
+	export let selectedPOForAllPOs;
+	export let updateUseQuote;
 	export let selectedParts;
 
 	const columns = [
@@ -26,9 +33,11 @@
 		{ type: 'field', field: 'bom_net', header: 'BOM Net' },
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
 		{ type: 'vendor', field: 'email', header: 'Email' },
-		{ type: 'parts_quotes_quantity', header: 'Quote Used' },
-		{ type: 'ext_price', header: 'Ext. Price' }
-
+		{ type: 'unit_price', header: 'Unit Price' },
+		{ type: 'ext_price', header: 'Ext. Price' },
+		{ type: 'parts_quotes_quantity', header: 'Last Quote' },
+		{ type: 'parts_po_history', header: 'Last PO' },
+		{ type: 'comments', header: 'Comments' }
 		// { type: 'email_status', header: 'Email Status' },
 		// { type: 'email_sent', header: 'Email Sent' },
 	];
@@ -45,6 +54,8 @@
 			}
 		} else if (column.type === 'part') {
 			value = obj?.boms_part?.part?.[column?.field];
+		} else if (column.type === 'comments') {
+			value = obj?.comments;
 		} else if (column.type === 'vendor') {
 			value = obj?.boms_part?.vendor?.[column?.field];
 		} else if (column.type === 'field') {
@@ -82,18 +93,19 @@
 				value = formatCurrency(value);
 			}
 		} else if (column.type == 'unit_price') {
-			const qtys = obj?.boms_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
-				(a, b) => a?.quantity - b?.quantity
-			);
-
-			if (qtys?.length > 0) {
-				value = formatCurrency(qtys[0].unit_price);
+			if (obj?.use_quote != null) {
+				value = formatCurrency(
+					(obj.use_quote ? obj?.parts_quotes_quantity : obj?.parts_po_history)?.unit_price
+				);
 			} else {
 				value = '';
 			}
 		} else if (column.type == 'ext_price') {
-			if (obj?.parts_quotes_quantity) {
-				value = formatCurrency(obj?.parts_quotes_quantity?.unit_price * obj?.boms_part?.quantity);
+			if (obj?.use_quote != null) {
+				value = formatCurrency(
+					(obj.use_quote ? obj?.parts_quotes_quantity : obj?.parts_po_history)?.unit_price *
+						obj?.boms_part?.quantity
+				);
 			} else {
 				value = '';
 			}
@@ -130,17 +142,25 @@
 		return !obj?.vendor?.email;
 	}
 
-	function getClass(obj, selectedPartsById, selecting) {
-		return selecting
-			? isPartSelected(obj?.id, selectedPartsById)
-				? 'bg-blue-50'
-				: 'hover:bg-neutral-100'
-			: '';
+	function getClass(obj, selectedPartsById) {
+		let trClass = '';
+
+		if (obj.use_quote != null) {
+			trClass = 'bg-green-100';
+		}
+
+		if (isPartSelected(obj?.id, selectedPartsById)) {
+			trClass = 'bg-blue-50';
+		}
+
+		return (trClass += ' hover:bg-neutral-100');
+
+		return trClass;
 	}
 </script>
 
 <article
-	class="bg-white w-[100%] overflow-scroll scrollbar-gutter-stable pb-10"
+	class="bg-white w-[100%] h-full overflow-scroll scrollbar-gutter-stable pb-20"
 	style="direction: ltr;"
 >
 	<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll text-xs">
@@ -225,8 +245,38 @@
 								</div>
 							</td>
 						{:else if column.type === 'parts_quotes_quantity'}
-							<td>
-								<QuoteUsed data={obj?.parts_quotes_quantity} />
+							<td class={obj.use_quote == true ? 'bg-green-300' : ''}>
+								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+									<LastQuote
+										data={obj?.parts_quotes_quantity}
+										callback={() => updateUseQuote(obj.id, true)}
+									/>
+									<button
+										on:click={() => {
+											selectedPartForAllQuotes = obj;
+											selectedQuoteForAllQuotes = obj?.parts_quotes_quantity;
+										}}
+									>
+										<img src={Edit} alt="open" class="h-3 w-3" />
+									</button>
+								</div>
+							</td>
+						{:else if column.type === 'parts_po_history'}
+							<td class={obj.use_quote == false ? 'bg-green-300' : ''}>
+								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+									<LastPO
+										data={obj?.parts_po_history}
+										callback={() => updateUseQuote(obj.id, false)}
+									/>
+									<button
+										on:click={() => {
+											selectedPartForAllPOs = obj;
+											selectedPOForAllPOs = obj?.parts_po_history;
+										}}
+									>
+										<img src={Edit} alt="open" class="h-3 w-3" />
+									</button>
+								</div>
 							</td>
 						{:else if column.field === 'email'}
 							<td>
@@ -258,6 +308,17 @@
 										</button>
 									</div>
 								{/if}
+							</td>
+						{:else if column.type === 'comments'}
+							<td>
+								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+									{#if tableFieldMapper(obj, column).value}
+										{tableFieldMapper(obj, column).value ?? ''}
+									{/if}
+									<button on:click={() => (selectedPartForComment = obj)}>
+										<img src={Edit} alt="open" class="h-3 w-3" />
+									</button>
+								</div>
 							</td>
 						{:else}
 							<td>
