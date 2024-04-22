@@ -10,7 +10,10 @@
 		{ type: 'position', header: '#' },
 		{ type: 'field', field: 'unit_price', header: 'Unit Price' },
 		{ type: 'field', field: 'quantity', header: 'Quantity' },
-		{ type: 'field', field: 'date_ordered', header: 'Date Ordered' }
+		{ type: 'field', field: 'date_ordered', header: 'Date Ordered' },
+		{ type: 'field', field: 'order_number', header: 'PO #' },
+		{ type: 'field', field: 'date_due', header: 'Date Due' },
+		{ type: 'vendor', field: 'name', header: 'Vendor' }
 	];
 
 	export function tableFieldMapper(obj, column) {
@@ -24,6 +27,8 @@
 			} else if (column.field == 'date_ordered') {
 				value = formatMonthDayYearDate(value);
 			}
+		} else if (column.type == 'vendor') {
+			value = obj?.vendor?.name;
 		}
 
 		return { header: column.header, value };
