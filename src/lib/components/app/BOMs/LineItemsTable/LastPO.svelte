@@ -26,7 +26,7 @@
 	<button class={getClass()} on:click={callback}>
 		<div class="flex flex-col items-start">
 			<p>
-				{formatCurrency(data?.unit_price) + ' @ ' + data.quantity + ' QTY'}
+				{formatCurrency(data?.unit_price) + ' @ ' + data.quantity + ' QTY' + ` (${data.uom})`}
 			</p>
 			<p>
 				{data.vendor.name + ' - ' + data.date_ordered}
