@@ -88,6 +88,9 @@
 									{formatMonthDayYearDate(parts_quote.date_received)}
 								</p>
 							</div>
+							{#if parts_quote.notes}
+								<p>{parts_quote.notes}</p>
+							{/if}
 							<QuotesTable
 								data={parts_quote.parts_quotes_quantities}
 								{selectedQuoteForAllQuotes}
