@@ -181,6 +181,12 @@
 		window.location.reload();
 	}
 
+	async function updateUseQuote(id, use_quote) {
+		await supabase.from('boms_quotes_parts').update({ use_quote }).eq('id', id);
+
+		window.location.reload();
+	}
+
 	onMount(() => {
 		if (session) {
 			loadData($page.url.pathname);
@@ -252,6 +258,7 @@
 		bind:selectedPartForAllPOs
 		bind:selectedPOForAllPOs
 		{isSelectingParts}
+		{updateUseQuote}
 		bind:selectedParts
 	/>
 {:else}

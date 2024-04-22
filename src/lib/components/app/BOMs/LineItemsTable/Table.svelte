@@ -16,6 +16,7 @@
 	export let selectedQuoteForAllQuotes;
 	export let selectedPartForAllPOs;
 	export let selectedPOForAllPOs;
+	export let updateUseQuote;
 	export let selectedParts;
 
 	const columns = [
@@ -32,9 +33,10 @@
 		{ type: 'field', field: 'bom_net', header: 'BOM Net' },
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
 		{ type: 'vendor', field: 'email', header: 'Email' },
+		{ type: 'unit_price', header: 'Unit Price' },
+		{ type: 'ext_price', header: 'Ext. Price' },
 		{ type: 'parts_quotes_quantity', header: 'Last Quote' },
 		{ type: 'parts_po_history', header: 'Last PO' },
-		{ type: 'ext_price', header: 'Ext. Price' },
 		{ type: 'comments', header: 'Comments' }
 		// { type: 'email_status', header: 'Email Status' },
 		// { type: 'email_sent', header: 'Email Sent' },
@@ -91,18 +93,19 @@
 				value = formatCurrency(value);
 			}
 		} else if (column.type == 'unit_price') {
-			const qtys = obj?.boms_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
-				(a, b) => a?.quantity - b?.quantity
-			);
-
-			if (qtys?.length > 0) {
-				value = formatCurrency(qtys[0].unit_price);
+			if (obj?.use_quote != null) {
+				value = formatCurrency(
+					(obj.use_quote ? obj?.parts_quotes_quantity : obj?.parts_po_history)?.unit_price
+				);
 			} else {
 				value = '';
 			}
 		} else if (column.type == 'ext_price') {
-			if (obj?.parts_quotes_quantity) {
-				value = formatCurrency(obj?.parts_quotes_quantity?.unit_price * obj?.boms_part?.quantity);
+			if (obj?.use_quote != null) {
+				value = formatCurrency(
+					(obj.use_quote ? obj?.parts_quotes_quantity : obj?.parts_po_history)?.unit_price *
+						obj?.boms_part?.quantity
+				);
 			} else {
 				value = '';
 			}
@@ -139,12 +142,20 @@
 		return !obj?.vendor?.email;
 	}
 
-	function getClass(obj, selectedPartsById, selecting) {
-		return selecting
-			? isPartSelected(obj?.id, selectedPartsById)
-				? 'bg-blue-50'
-				: 'hover:bg-neutral-100'
-			: '';
+	function getClass(obj, selectedPartsById) {
+		let trClass = '';
+
+		if (obj.use_quote != null) {
+			trClass = 'bg-green-100';
+		}
+
+		if (isPartSelected(obj?.id, selectedPartsById)) {
+			trClass = 'bg-blue-50';
+		}
+
+		return (trClass += ' hover:bg-neutral-100');
+
+		return trClass;
 	}
 </script>
 
@@ -234,9 +245,12 @@
 								</div>
 							</td>
 						{:else if column.type === 'parts_quotes_quantity'}
-							<td>
+							<td class={obj.use_quote == true ? 'bg-green-300' : ''}>
 								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
-									<LastQuote data={obj?.parts_quotes_quantity} />
+									<LastQuote
+										data={obj?.parts_quotes_quantity}
+										callback={() => updateUseQuote(obj.id, true)}
+									/>
 									<button
 										on:click={() => {
 											selectedPartForAllQuotes = obj;
@@ -248,9 +262,12 @@
 								</div>
 							</td>
 						{:else if column.type === 'parts_po_history'}
-							<td>
+							<td class={obj.use_quote == false ? 'bg-green-300' : ''}>
 								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
-									<LastPO data={obj?.parts_po_history} />
+									<LastPO
+										data={obj?.parts_po_history}
+										callback={() => updateUseQuote(obj.id, false)}
+									/>
 									<button
 										on:click={() => {
 											selectedPartForAllPOs = obj;
