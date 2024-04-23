@@ -141,10 +141,15 @@
 		if (!q) return '';
 		let completedCount = 0;
 		let matCost = 0;
+		let greatestLeadTime = null;
 
 		const totalCount = q.boms_quotes_parts.length;
 
 		for (let boms_quotes_part of q.boms_quotes_parts) {
+			if ((boms_quotes_part.lead_time ?? 0) > (greatestLeadTime ?? 0)) {
+				greatestLeadTime = boms_quotes_part.lead_time;
+			}
+
 			if (boms_quotes_part?.use_quote != null) {
 				completedCount++;
 				const extCost =
@@ -157,7 +162,7 @@
 			}
 		}
 
-		return `${formatCurrency(matCost)} (${completedCount}/${totalCount} parts)`;
+		return `Lead Time: ${greatestLeadTime ?? 'N/A'} - ${formatCurrency(matCost)} (${completedCount}/${totalCount} parts)`;
 	}
 
 	async function updatePartsQuotesQty(qtyId) {
@@ -183,8 +188,15 @@
 		window.location.reload();
 	}
 
-	async function updateUseQuote(id, use_quote) {
-		await supabase.from('boms_quotes_parts').update({ use_quote }).eq('id', id);
+	async function updateUseQuote(boms_quotes_part, use_quote) {
+		const lead_time = (
+			use_quote ? boms_quotes_part.parts_quotes_quantity : boms_quotes_part.parts_po_history
+		)?.lead_time;
+
+		await supabase
+			.from('boms_quotes_parts')
+			.update({ use_quote, lead_time })
+			.eq('id', boms_quotes_part.id);
 
 		window.location.reload();
 	}
