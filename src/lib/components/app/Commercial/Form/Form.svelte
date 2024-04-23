@@ -27,6 +27,7 @@
 	export let commentSubmitCallback;
 	export let supabase = undefined;
 	export let rfqsForPurchasingForm = undefined;
+	export let awardModalOpen;
 
 	let focusedRfqProductQty;
 	let reviewValues;
@@ -124,6 +125,7 @@
 						data={form?.type == null ? data : data.rfq}
 						{reviewValues}
 						showValueCalc={['final_pricing', null, undefined].includes(form?.type)}
+						bind:awardModalOpen
 					/>
 
 					<div class="mr-5">

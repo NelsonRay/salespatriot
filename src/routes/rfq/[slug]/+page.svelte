@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import Form from '$lib/components/app/Commercial/Form/Form.svelte';
+	import AwardModal from '$lib/components/app/Commercial/Modals/AwardModal/AwardModal.svelte';
 
 	export let data;
 	$: ({ supabase, session } = data);
@@ -11,6 +12,7 @@
 	let comments = [];
 
 	let values;
+	let awardModalOpen = false;
 
 	let isSubmitting = false;
 
@@ -76,6 +78,39 @@
 		}
 	}
 
+	async function awardCallback(values) {
+		if (values.status.includes('response:placed_order')) {
+			const { date_ordered, due_date, order_notes, rfqs_products, status } = values;
+			await supabase
+				.from('rfqs')
+				.update({
+					status,
+					date_ordered,
+					due_date,
+					order_notes
+				})
+				.eq('id', rfq.id);
+
+			for (let rfqs_product of rfqs_products) {
+				const { id, quantity_ordered, unit_price_ordered } = rfqs_product;
+				await supabase
+					.from('rfqs_products')
+					.update({ quantity_ordered, unit_price_ordered })
+					.eq('id', id);
+			}
+		} else {
+			const { status } = values;
+			await supabase
+				.from('rfqs')
+				.update({
+					status
+				})
+				.eq('id', rfq.id);
+		}
+
+		window.location.reload();
+	}
+
 	onMount(() => {
 		if (session) {
 			loadData();
@@ -92,5 +127,15 @@
 </svelte:head>
 
 {#if values}
-	<Form data={rfq} {values} {submitCallback} {isSubmitting} {comments} {commentSubmitCallback} />
+	<Form
+		data={rfq}
+		{values}
+		{submitCallback}
+		{isSubmitting}
+		{comments}
+		{commentSubmitCallback}
+		bind:awardModalOpen
+	/>
 {/if}
+
+<AwardModal bind:open={awardModalOpen} values={rfq} submitCallback={awardCallback} />

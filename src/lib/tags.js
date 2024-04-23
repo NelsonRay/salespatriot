@@ -318,12 +318,6 @@ export const commercialTags = {
 			level: 4,
 			color: 'red',
 			key: 'response:assumed_lost'
-		},
-		removed: {
-			name: 'Removed',
-			level: 5,
-			color: 'red',
-			key: 'response:removed'
 		}
 	}
 };

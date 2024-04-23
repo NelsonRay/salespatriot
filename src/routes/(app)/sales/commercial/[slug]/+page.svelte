@@ -31,6 +31,9 @@
 			case '/sales/commercial/sent-rfqs':
 				query = query.filter('status', 'cs', `{"send_quote:complete"}`);
 				break;
+			case '/sales/commercial/placed-orders':
+				query = query.filter('status', 'cs', `{"response:placed_order"}`);
+				break;
 			default:
 				break;
 		}
@@ -81,6 +84,7 @@
 	const views = {
 		'/sales/commercial/active-rfqs': 'Active RFQS',
 		'/sales/commercial/sent-rfqs': 'Sent RFQS',
+		'/sales/commercial/placed-orders': 'Placed Orders',
 		'/sales/commercial/all-rfqs': 'All RFQS'
 	};
 </script>
