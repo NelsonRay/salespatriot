@@ -209,17 +209,15 @@ export function tableFieldMapper(obj, column) {
 			} else if (column.field === 'unit_price_won_at') {
 				let value;
 
-				if (obj?.solicitation.price_won_at && obj?.solicitation?.quantity) {
-					value = formatCurrency(obj?.solicitation.price_won_at / obj?.solicitation?.quantity);
+				if (obj?.price_won_at && obj?.solicitation?.quantity) {
+					value = formatCurrency(obj?.price_won_at / obj?.solicitation?.quantity);
 				}
 				return { header: 'Unit Price Won At', value: value ?? '' };
 			} else if (column.field === 'diff_unit_price') {
 				let value;
 
-				if (obj?.solicitation.price_won_at && obj?.solicitation?.quantity && obj?.unit_price) {
-					value = formatCurrency(
-						obj?.solicitation.price_won_at / obj?.solicitation?.quantity - obj.unit_price
-					);
+				if (obj?.price_won_at && obj?.solicitation?.quantity && obj?.unit_price) {
+					value = formatCurrency(obj?.price_won_at / obj?.solicitation?.quantity - obj.unit_price);
 				}
 				return { header: 'Unit Price Difference', value: value ?? '' };
 			}
@@ -259,11 +257,7 @@ export function tableFieldMapper(obj, column) {
 				}
 			}
 
-			if (
-				['solicitation.estimated_value', 'solicitation.price_won_at', 'unit_price'].includes(
-					column.field
-				)
-			) {
+			if (['solicitation.estimated_value', 'price_won_at', 'unit_price'].includes(column.field)) {
 				value = formatCurrency(value);
 			}
 
