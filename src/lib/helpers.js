@@ -1,4 +1,4 @@
-import { govTags } from './tags';
+import { govTags, commercialTags } from './tags';
 
 // @ts-ignore
 export const solColumns =
@@ -245,6 +245,39 @@ export function getStatusName(status) {
 	if (!status) return '';
 	// @ts-ignore
 	return govTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
+}
+
+// @ts-ignore
+export function getCommercialStatusColor(status) {
+	if (!status) return '';
+	let color = '';
+
+	// @ts-ignore
+	switch (commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]].color) {
+		case 'green':
+			color = 'bg-green-400';
+			break;
+		case 'yellow':
+			color = 'bg-yellow-400';
+			break;
+		case 'red':
+			color = 'bg-red-400';
+			break;
+		case 'blue':
+			color = 'bg-blue-400';
+			break;
+		case 'gray':
+			color = 'bg-gray-300';
+			break;
+	}
+	return color;
+}
+
+// @ts-ignore
+export function getCommercialStatusName(status) {
+	if (!status) return '';
+	// @ts-ignore
+	return commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
 }
 
 export function getBidPartners() {

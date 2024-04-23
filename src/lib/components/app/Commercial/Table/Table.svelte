@@ -4,8 +4,11 @@
 	import { commercialTags } from '$lib/tags.js';
 	import { commercialTableFieldMapper } from '$lib/mappers';
 	import { getMatchingClass } from '$lib/helpers.js';
+	import Open from '$lib/icons/Open.svg';
 
 	export let data;
+	export let openNewTab = false;
+	export let blockEditing = false;
 
 	export let columns = [
 		{ type: 'position' },
@@ -107,6 +110,21 @@
 									target="_blank"
 									class="mb-5 text-blue-500">URL</a
 								>
+							</td>
+						{:else if column.type === 'name'}
+							<td>
+								{#if !blockEditing}
+									<a href={`/rfq/${obj?.id}`} target={openNewTab ? '_blank' : '_self'} class="">
+										<div class="flex flex-row justify-between items-center">
+											{commercialTableFieldMapper(obj, column).value ?? ''}
+											<div class="h-3 w-3 ml-2">
+												<img src={Open} alt="open" class="h-3 w-3" />
+											</div>
+										</div>
+									</a>
+								{:else}
+									{commercialTableFieldMapper(obj, column).value ?? ''}
+								{/if}
 							</td>
 						{:else}
 							<td>{commercialTableFieldMapper(obj, column).value ?? ''}</td>

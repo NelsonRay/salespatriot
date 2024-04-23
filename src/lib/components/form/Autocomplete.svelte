@@ -10,6 +10,7 @@
 	export let extractItemName;
 	export let disabled;
 	export let forceCaps = false;
+	export let preventCreate = false;
 
 	let dispatch = createEventDispatcher();
 
@@ -71,9 +72,11 @@
 				{:else if items?.length === 0}
 					<div class="flex flex-row justify-center items-center my-2 space-x-2">
 						<p class="text-gray-400">No results.</p>
-						<button on:click={handleCreate}>
-							<p class="text-blue-400">Create</p>
-						</button>
+						{#if !preventCreate}
+							<button on:click={handleCreate}>
+								<p class="text-blue-400">Create</p>
+							</button>
+						{/if}
 					</div>
 				{:else}
 					<div class="flex flex-col justify-center items-center my-2">

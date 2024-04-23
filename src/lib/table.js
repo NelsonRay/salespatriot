@@ -10,7 +10,7 @@ export function getColumns(pathname) {
 				{ type: 'status', status: 'award' },
 				{ type: 'bid_partners' },
 				{ type: 'formula', field: 'market_value' },
-				{ type: 'field', field: 'solicitation.price_won_at' },
+				{ type: 'field', field: 'price_won_at' },
 				{ type: 'formula', field: 'unit_price_won_at' },
 				{ type: 'formula', field: 'diff_unit_price' },
 				{ type: 'status', status: 'opportunity' },

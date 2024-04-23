@@ -35,6 +35,7 @@
 		{ type: 'vendor', field: 'email', header: 'Email' },
 		{ type: 'unit_price', header: 'Unit Price' },
 		{ type: 'ext_price', header: 'Ext. Price' },
+		{ type: 'lead_time', header: 'Lead Time' },
 		{ type: 'parts_quotes_quantity', header: 'Last Quote' },
 		{ type: 'parts_po_history', header: 'Last PO' },
 		{ type: 'comments', header: 'Comments' }
@@ -60,6 +61,8 @@
 			value = obj?.boms_part?.vendor?.[column?.field];
 		} else if (column.type === 'field') {
 			value = obj?.boms_part?.[column?.field];
+		} else if (column.type == 'lead_time') {
+			value = obj?.lead_time;
 		} else if (column.type === 'status') {
 			if (obj?.boms_part?.vendor) {
 				value = obj?.boms_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.length > 0;
@@ -154,8 +157,6 @@
 		}
 
 		return (trClass += ' hover:bg-neutral-100');
-
-		return trClass;
 	}
 </script>
 
@@ -249,7 +250,7 @@
 								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 									<LastQuote
 										data={obj?.parts_quotes_quantity}
-										callback={() => updateUseQuote(obj.id, true)}
+										callback={() => updateUseQuote(obj, true)}
 									/>
 									<button
 										on:click={() => {
@@ -266,7 +267,7 @@
 								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 									<LastPO
 										data={obj?.parts_po_history}
-										callback={() => updateUseQuote(obj.id, false)}
+										callback={() => updateUseQuote(obj, false)}
 									/>
 									<button
 										on:click={() => {
