@@ -7,7 +7,7 @@
 
 	function handleInput(event) {
 		if (!forceCaps) return;
-		value = event.target.value.toUpperCase();
+		value = event.target.value.replace(/^0+|^\s+/g, '').toUpperCase();
 	}
 </script>
 

@@ -118,6 +118,7 @@
 									bind:value={rfqs_product.product.number}
 									disabled={rfqs_product.product.id}
 									extractItemName={extractPN}
+									forceCaps
 									on:selection={(event) => handleSelection(event, index)}
 									on:create={(event) => handleCreateNew(event, index)}
 								/>
