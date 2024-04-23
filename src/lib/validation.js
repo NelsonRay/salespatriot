@@ -1,5 +1,19 @@
 import { z } from 'zod';
 
+export const createPO = () =>
+	z.object({
+		vendor: z.object({ id: z.number() }),
+		part: z.object({ id: z.number() }),
+		order_number: z.string().min(1),
+		lead_time: z.number().positive(),
+		quantity: z.number(),
+		unit_price: z.number(),
+		uom: z.string().min(1),
+		date_ordered: z.string().min(1)
+		// date_received: z.string().min(1),
+		// date_due: z.string().min(1)
+	});
+
 export const commercialAwardModal = () =>
 	z
 		.object({

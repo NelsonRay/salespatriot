@@ -5,6 +5,7 @@
 	export let value;
 	export let disabled = false;
 	export let fullWidth = true;
+	export let preventFutureDates = true;
 </script>
 
 <input
@@ -13,5 +14,5 @@
 	type="date"
 	bind:value
 	{disabled}
-	max={formatDate(new Date())}
+	max={preventFutureDates ? formatDate(new Date()) : null}
 />
