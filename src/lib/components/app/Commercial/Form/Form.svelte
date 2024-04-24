@@ -102,7 +102,7 @@
 
 	$: reviewValues = getCommercialValueCalculation(
 		focusedRfqProductQty,
-		(form?.type == null ? values : values.rfq)?.rfqs_products?.filter(
+		(values?.rfqs_products ?? values.rfq?.rfqs_products)?.filter(
 			(p) => p?.id === focusedRfqProductQty?.rfqs_product
 		)[0]
 	);
