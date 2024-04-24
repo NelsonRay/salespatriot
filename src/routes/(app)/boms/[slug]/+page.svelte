@@ -150,6 +150,9 @@
 				greatestLeadTime = boms_quotes_part.lead_time;
 			}
 
+			if (!boms_quotes_part?.boms_part?.vendor) {
+				completedCount++;
+			}
 			if (boms_quotes_part?.use_quote != null) {
 				completedCount++;
 				const extCost =

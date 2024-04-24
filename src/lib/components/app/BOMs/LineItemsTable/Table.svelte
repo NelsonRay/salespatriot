@@ -154,6 +154,10 @@
 			trClass = 'bg-green-100';
 		}
 
+		if (!obj?.boms_part?.vendor) {
+			trClass = 'bg-neutral-200';
+		}
+
 		if (isPartSelected(obj?.id, selectedPartsById)) {
 			trClass = 'bg-blue-50';
 		}
@@ -212,15 +216,18 @@
 								</p>
 							</td>
 						{:else if column.type === 'vendor' && column.field === 'email'}
-							<td class={tableFieldMapper(obj, column).value ? '' : 'bg-gray-200'}>
+							<td
+								class={tableFieldMapper(obj, column).value ? '' : 'bg-gray-200'}
+								on:click={() => (selectedVendor = obj?.boms_part?.vendor)}
+							>
 								{#if obj?.boms_part?.vendor}
 									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 										{#if tableFieldMapper(obj, column).value}
 											{tableFieldMapper(obj, column).value ?? ''}
 										{/if}
-										<button on:click={() => (selectedVendor = obj?.boms_part?.vendor)}>
+										<div class="h-3 w-3">
 											<img src={Edit} alt="open" class="h-3 w-3" />
-										</button>
+										</div>
 									</div>
 								{:else}
 									<p class={tableFieldMapper(obj, column).value ? '' : 'text-gray-400'}>
@@ -229,22 +236,21 @@
 								{/if}
 							</td>
 						{:else if column.field === 'description' || column.field === 'vendor_instructions'}
-							<td>
+							<td
+								on:click={() =>
+									column.field === 'description'
+										? (selectedPart = obj?.boms_part?.part)
+										: (selectedPartForInstructions = obj?.boms_part?.part)}
+							>
 								<div class="flex flex-row justify-between pr-1 items-center">
 									{#if tableFieldMapper(obj, column).value}
 										<p class="mr-2 text-wrap max-w-44">
 											{tableFieldMapper(obj, column).value}
 										</p>
 									{/if}
-									<button
-										class="h-3 w-3"
-										on:click={() =>
-											column.field === 'description'
-												? (selectedPart = obj?.boms_part?.part)
-												: (selectedPartForInstructions = obj?.boms_part?.part)}
-									>
+									<div class="h-3 w-3">
 										<img src={Edit} alt="open" class="h-3 w-3" />
-									</button>
+									</div>
 								</div>
 							</td>
 						{:else if column.type === 'parts_quotes_quantity'}
@@ -313,14 +319,14 @@
 								{/if}
 							</td>
 						{:else if column.type === 'comments'}
-							<td>
+							<td on:click={() => (selectedPartForComment = obj)}>
 								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 									{#if tableFieldMapper(obj, column).value}
 										{tableFieldMapper(obj, column).value ?? ''}
 									{/if}
-									<button on:click={() => (selectedPartForComment = obj)}>
+									<div class="h-3 w-3">
 										<img src={Edit} alt="open" class="h-3 w-3" />
-									</button>
+									</div>
 								</div>
 							</td>
 						{:else}
