@@ -255,37 +255,45 @@
 							</td>
 						{:else if column.type === 'parts_quotes_quantity'}
 							<td class={obj.use_quote == true ? 'bg-green-200' : ''}>
-								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
-									<LastQuote
-										data={obj?.parts_quotes_quantity}
-										callback={() => updateUseQuote(obj, true)}
-									/>
-									<button
-										on:click={() => {
-											selectedPartForAllQuotes = obj;
-											selectedQuoteForAllQuotes = obj?.parts_quotes_quantity;
-										}}
-									>
-										<img src={Edit} alt="open" class="h-3 w-3" />
-									</button>
-								</div>
+								{#if obj?.boms_part?.vendor}
+									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+										<LastQuote
+											data={obj?.parts_quotes_quantity}
+											callback={() => updateUseQuote(obj, true)}
+										/>
+										<button
+											on:click={() => {
+												selectedPartForAllQuotes = obj;
+												selectedQuoteForAllQuotes = obj?.parts_quotes_quantity;
+											}}
+										>
+											<img src={Edit} alt="open" class="h-3 w-3" />
+										</button>
+									</div>
+								{:else}
+									<p class="text-gray-400">---</p>
+								{/if}
 							</td>
 						{:else if column.type === 'parts_po_history'}
 							<td class={obj.use_quote == false ? 'bg-green-200' : ''}>
-								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
-									<LastPO
-										data={obj?.parts_po_history}
-										callback={() => updateUseQuote(obj, false)}
-									/>
-									<button
-										on:click={() => {
-											selectedPartForAllPOs = obj;
-											selectedPOForAllPOs = obj?.parts_po_history;
-										}}
-									>
-										<img src={Edit} alt="open" class="h-3 w-3" />
-									</button>
-								</div>
+								{#if obj?.boms_part?.vendor}
+									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+										<LastPO
+											data={obj?.parts_po_history}
+											callback={() => updateUseQuote(obj, false)}
+										/>
+										<button
+											on:click={() => {
+												selectedPartForAllPOs = obj;
+												selectedPOForAllPOs = obj?.parts_po_history;
+											}}
+										>
+											<img src={Edit} alt="open" class="h-3 w-3" />
+										</button>
+									</div>
+								{:else}
+									<p class="text-gray-400">---</p>
+								{/if}
 							</td>
 						{:else if column.field === 'email'}
 							<td>
