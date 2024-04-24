@@ -91,13 +91,17 @@
 				.limit(1)
 				.single();
 
+			if (error) {
+				console.error(error);
+			}
+
 			await supabase
 				.from('boms_quotes_parts')
 				.update({ parts_po_history: data.id })
 				.eq('id', selectedPartForAllPOs.id);
-		}
 
-		window.location.reload();
+			window.location.reload();
+		}
 	}
 
 	onMount(() => {
