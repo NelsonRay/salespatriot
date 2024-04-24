@@ -27,15 +27,17 @@
 		{ type: 'part', field: 'description', header: 'Part Description' },
 		{ type: 'part', field: 'vendor_instructions', header: 'Vendor Instructions' },
 		{ type: 'part', field: 'source', header: 'Source' },
-		{ type: 'field', field: 'quantity', header: 'Quantity' },
+		{ type: 'boms_part', field: 'quantity', header: 'Quantity' },
 		{ type: 'part', field: 'uom', header: 'UOM' },
 		{ type: 'field', field: 'on_hand', header: 'On Hand' },
+		{ type: 'field', field: 'on_order', header: 'On Order' },
+		{ type: 'field', field: 'required', header: 'Required' },
 		{ type: 'field', field: 'bom_net', header: 'BOM Net' },
 		{ type: 'vendor', field: 'name', header: 'Vendor Name' },
 		{ type: 'vendor', field: 'email', header: 'Email' },
 		{ type: 'unit_price', header: 'Unit Price' },
 		{ type: 'ext_price', header: 'Ext. Price' },
-		{ type: 'lead_time', header: 'Lead Time' },
+		{ type: 'field', field: 'lead_time', header: 'Lead Time' },
 		{ type: 'parts_quotes_quantity', header: 'Last Quote' },
 		{ type: 'parts_po_history', header: 'Last PO' },
 		{ type: 'comments', header: 'Comments' }
@@ -59,10 +61,10 @@
 			value = obj?.comments;
 		} else if (column.type === 'vendor') {
 			value = obj?.boms_part?.vendor?.[column?.field];
-		} else if (column.type === 'field') {
+		} else if (column.type === 'boms_part') {
 			value = obj?.boms_part?.[column?.field];
-		} else if (column.type == 'lead_time') {
-			value = obj?.lead_time;
+		} else if (column.type === 'field') {
+			value = obj?.[column?.field];
 		} else if (column.type === 'status') {
 			if (obj?.boms_part?.vendor) {
 				value = obj?.boms_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.length > 0;
