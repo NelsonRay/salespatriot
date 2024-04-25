@@ -52,7 +52,7 @@
 		} else if (column.type === 'level') {
 			value = obj?.boms_part?.level;
 
-			for (let i = 0; i < obj?.level - 1; i++) {
+			for (let i = 0; i < obj?.boms_part?.level - 1; i++) {
 				value = `-${value}`;
 			}
 		} else if (column.type === 'part') {
