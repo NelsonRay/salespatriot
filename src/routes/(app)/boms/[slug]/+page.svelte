@@ -42,7 +42,7 @@
 		let query = supabase
 			.from('boms_quotes')
 			.select(
-				'*, bom(*, products(*)), boms_quotes_parts(*, boms_part(*, part(*), vendor(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*))), parts_po_history(*, vendor(name)))'
+				'*, bom(*, products(*)), boms_quotes_parts(*, vendor(*), boms_part(*, part(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*))), parts_po_history(*, vendor(name)))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -150,7 +150,7 @@
 				greatestLeadTime = boms_quotes_part.lead_time;
 			}
 
-			if (!boms_quotes_part?.boms_part?.vendor) {
+			if (!boms_quotes_part?.vendor) {
 				completedCount++;
 			}
 			if (boms_quotes_part?.use_quote != null) {
