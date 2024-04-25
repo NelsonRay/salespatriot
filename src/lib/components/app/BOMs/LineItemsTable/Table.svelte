@@ -60,13 +60,13 @@
 		} else if (column.type === 'comments') {
 			value = obj?.comments;
 		} else if (column.type === 'vendor') {
-			value = obj?.boms_part?.vendor?.[column?.field];
+			value = obj?.vendor?.[column?.field];
 		} else if (column.type === 'boms_part') {
 			value = obj?.boms_part?.[column?.field];
 		} else if (column.type === 'field') {
 			value = obj?.[column?.field];
 		} else if (column.type === 'status') {
-			if (obj?.boms_part?.vendor) {
+			if (obj?.vendor) {
 				value = obj?.boms_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.length > 0;
 			} else {
 				value = null;
@@ -154,7 +154,7 @@
 			trClass = 'bg-green-100';
 		}
 
-		if (!obj?.boms_part?.vendor) {
+		if (!obj?.vendor) {
 			trClass = 'bg-neutral-200';
 		}
 
@@ -218,9 +218,9 @@
 						{:else if column.type === 'vendor' && column.field === 'email'}
 							<td
 								class={tableFieldMapper(obj, column).value ? '' : 'bg-gray-200'}
-								on:click={() => (selectedVendor = obj?.boms_part?.vendor)}
+								on:click={() => (selectedVendor = obj?.vendor)}
 							>
-								{#if obj?.boms_part?.vendor}
+								{#if obj?.vendor}
 									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 										{#if tableFieldMapper(obj, column).value}
 											{tableFieldMapper(obj, column).value ?? ''}
@@ -255,7 +255,7 @@
 							</td>
 						{:else if column.type === 'parts_quotes_quantity'}
 							<td class={obj.use_quote == true ? 'bg-green-200' : ''}>
-								{#if obj?.boms_part?.vendor}
+								{#if obj?.vendor}
 									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 										<LastQuote
 											data={obj?.parts_quotes_quantity}
@@ -276,7 +276,7 @@
 							</td>
 						{:else if column.type === 'parts_po_history'}
 							<td class={obj.use_quote == false ? 'bg-green-200' : ''}>
-								{#if obj?.boms_part?.vendor}
+								{#if obj?.vendor}
 									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 										<LastPO
 											data={obj?.parts_po_history}
@@ -301,7 +301,7 @@
 									{#if tableFieldMapper(obj, column).value}
 										{tableFieldMapper(obj, column).value ?? ''}
 									{/if}
-									<button on:click={() => (selectedVendor = obj?.boms_part?.vendor)}>
+									<button on:click={() => (selectedVendor = obj?.vendor)}>
 										<img src={Edit} alt="open" class="h-3 w-3" />
 									</button>
 								</div>
