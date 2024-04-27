@@ -1,6 +1,7 @@
 <script>
 	// @ts-nocheck
 	import { formatCurrency, formatMonthDayYearDate } from '$lib/helpers';
+	import { page } from '$app/stores';
 	import Edit from '$lib/icons/Edit.svg';
 	import LastQuote from '$lib/components/app/BOMs/LineItemsTable/LastQuote.svelte';
 	import LastPO from '$lib/components/app/BOMs/LineItemsTable/LastPO.svelte';
@@ -19,7 +20,7 @@
 	export let updateUseQuote;
 	export let selectedParts;
 
-	const columns = [
+	let columns = [
 		{ type: 'checkbox' },
 		{ type: 'position', header: '#' },
 		{ type: 'level', header: 'Level' },
@@ -44,6 +45,10 @@
 		// { type: 'email_status', header: 'Email Status' },
 		// { type: 'email_sent', header: 'Email Sent' },
 	];
+
+	if ($page.url.origin == 'http://localhost:5173') {
+		columns = [...columns, { type: 'field', field: 'id', header: 'ID' }];
+	}
 
 	export function tableFieldMapper(obj, column) {
 		let value;
@@ -139,30 +144,42 @@
 		}
 	}
 
-	function isPartSelected(partId, selectedPartsById) {
-		return selectedPartsById.includes(partId);
-	}
-
 	function isPartDisabled(obj) {
-		return !obj?.vendor?.email;
+		return !obj?.vendor?.email || obj?.use_quote != null;
 	}
 
-	function getClass(obj, selectedPartsById) {
+	function getClass(obj, selectedPartsById, isSelectingParts) {
 		let trClass = '';
 
-		if (obj.use_quote != null) {
-			trClass = 'bg-green-100';
-		}
+		if (!isSelectingParts) {
+			if (obj.use_quote != null) {
+				if (obj.use_quote && !obj?.parts_quotes_quantity?.parts_quote?.complete) {
+					trClass = 'bg-yellow-200';
+				} else {
+					trClass = 'bg-green-100';
+				}
+			}
 
-		if (!obj?.vendor) {
-			trClass = 'bg-neutral-200';
-		}
+			if (!obj?.vendor) {
+				trClass = 'bg-neutral-200';
+			}
 
-		if (isPartSelected(obj?.id, selectedPartsById)) {
-			trClass = 'bg-blue-50';
-		}
+			return (trClass += ' hover:bg-neutral-100');
+		} else {
+			if (selectedPartsById.includes(obj?.id)) {
+				trClass = 'bg-blue-50';
+			}
 
-		return (trClass += ' hover:bg-neutral-100');
+			if (isPartDisabled(obj)) {
+				trClass = 'bg-neutral-200';
+			}
+
+			return trClass;
+		}
+	}
+
+	function handleClick(callback) {
+		if (!isSelectingParts) callback();
 	}
 </script>
 
@@ -218,7 +235,7 @@
 						{:else if column.type === 'vendor' && column.field === 'email'}
 							<td
 								class={tableFieldMapper(obj, column).value ? '' : 'bg-gray-200'}
-								on:click={() => (selectedVendor = obj?.vendor)}
+								on:click={() => handleClick(() => (selectedVendor = obj?.vendor))}
 							>
 								{#if obj?.vendor}
 									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
@@ -238,9 +255,11 @@
 						{:else if column.field === 'description' || column.field === 'vendor_instructions'}
 							<td
 								on:click={() =>
-									column.field === 'description'
-										? (selectedPart = obj?.boms_part?.part)
-										: (selectedPartForInstructions = obj?.boms_part?.part)}
+									handleClick(() =>
+										column.field === 'description'
+											? (selectedPart = obj?.boms_part?.part)
+											: (selectedPartForInstructions = obj?.boms_part?.part)
+									)}
 							>
 								<div class="flex flex-row justify-between pr-1 items-center">
 									{#if tableFieldMapper(obj, column).value}
@@ -254,7 +273,13 @@
 								</div>
 							</td>
 						{:else if column.type === 'parts_quotes_quantity'}
-							<td class={obj.use_quote == true ? 'bg-green-200' : ''}>
+							<td
+								class={obj.use_quote == true
+									? obj?.parts_quotes_quantity?.parts_quote?.complete
+										? 'bg-green-200'
+										: 'bg-yellow-300'
+									: ''}
+							>
 								{#if obj?.vendor}
 									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 										<LastQuote
@@ -262,10 +287,11 @@
 											callback={() => updateUseQuote(obj, true)}
 										/>
 										<button
-											on:click={() => {
-												selectedPartForAllQuotes = obj;
-												selectedQuoteForAllQuotes = obj?.parts_quotes_quantity;
-											}}
+											on:click={() =>
+												handleClick(() => {
+													selectedPartForAllQuotes = obj;
+													selectedQuoteForAllQuotes = obj?.parts_quotes_quantity;
+												})}
 										>
 											<img src={Edit} alt="open" class="h-3 w-3" />
 										</button>
@@ -283,10 +309,11 @@
 											callback={() => updateUseQuote(obj, false)}
 										/>
 										<button
-											on:click={() => {
-												selectedPartForAllPOs = obj;
-												selectedPOForAllPOs = obj?.parts_po_history;
-											}}
+											on:click={() =>
+												handleClick(() => {
+													selectedPartForAllPOs = obj;
+													selectedPOForAllPOs = obj?.parts_po_history;
+												})}
 										>
 											<img src={Edit} alt="open" class="h-3 w-3" />
 										</button>
@@ -301,7 +328,7 @@
 									{#if tableFieldMapper(obj, column).value}
 										{tableFieldMapper(obj, column).value ?? ''}
 									{/if}
-									<button on:click={() => (selectedVendor = obj?.vendor)}>
+									<button on:click={() => handleClick(() => (selectedVendor = obj?.vendor))}>
 										<img src={Edit} alt="open" class="h-3 w-3" />
 									</button>
 								</div>
@@ -320,7 +347,9 @@
 								{:else if tableFieldMapper(obj, column).value != null}
 									<div class="flex flex-row justify-between pr-1 items-center space-x-5">
 										<div class="p-1 rounded-md inline-block bg-yellow-300 text-xs">Waiting</div>
-										<button on:click={() => (selectedBomPartForQuote = obj?.boms_part)}>
+										<button
+											on:click={() => handleClick(() => (selectedBomPartForQuote = obj?.boms_part))}
+										>
 											<img src={Edit} alt="open" class="h-3 w-3" />
 										</button>
 									</div>

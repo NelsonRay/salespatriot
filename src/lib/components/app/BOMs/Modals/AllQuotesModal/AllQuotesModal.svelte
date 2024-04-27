@@ -17,10 +17,10 @@
 		if (isMounted && selectedPartForAllQuotes) {
 			let query = supabase
 				.from('parts_quotes')
-				.select('*, vendor(name), parts_quotes_quantities(*)')
+				.select('*, vendor(name), parts_quotes_quantities(*), vendors_email(*)')
 				.eq('part', selectedPartForAllQuotes.boms_part.part.id);
 
-			let { data, error } = await query;
+			let { data } = await query;
 
 			parts_quotes = data?.sort((a, b) => new Date(b.date_received) - new Date(a.date_received));
 		} else {
@@ -84,15 +84,23 @@
 						<div>
 							<div class="flex flex-row justify-between">
 								<p>{parts_quote.vendor.name}</p>
-								<p class={getClass(parts_quote.date_received)}>
-									{formatMonthDayYearDate(parts_quote.date_received)}
-								</p>
+								{#if parts_quote.date_received}
+									<p class={getClass(parts_quote.date_received)}>
+										{formatMonthDayYearDate(parts_quote.date_received)}
+									</p>
+								{:else}
+									<p class="text-yellow-400">
+										Waiting - Sent on {formatMonthDayYearDate(
+											parts_quote.vendors_email.email_sent_at
+										)}
+									</p>
+								{/if}
 							</div>
 							{#if parts_quote.notes}
 								<p>{parts_quote.notes}</p>
 							{/if}
 							<QuotesTable
-								data={parts_quote.parts_quotes_quantities}
+								data={parts_quote.parts_quotes_quantities?.sort((a, b) => a.quantity - b.quantity)}
 								{selectedQuoteForAllQuotes}
 								callback={handleSubmit}
 							/>

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { json } from '@sveltejs/kit';
 
-export async function POST({ locals: { supabase, session }, request }) {
+export async function POST({ locals: { supabase }, request }) {
 	const { values } = await request.json();
 
 	// update unit price for each quote qty
@@ -22,7 +22,7 @@ export async function POST({ locals: { supabase, session }, request }) {
 			expiration_date: values.expiration_date || null,
 			notes: values.notes || null,
 			complete: true,
-			completed_by: session?.user?.id
+			completed_at: new Date().toISOString()
 		})
 		.eq('id', values.id);
 

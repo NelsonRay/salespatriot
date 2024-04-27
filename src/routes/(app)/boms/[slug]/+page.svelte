@@ -31,24 +31,17 @@
 	let isSelectingParts = false;
 	let selectedParts = [];
 
-	page.subscribe((p) => {
-		if (isMounted) {
-			boms_quote = null;
-			loadData();
-		}
-	});
-
 	async function loadData() {
 		let query = supabase
 			.from('boms_quotes')
 			.select(
-				'*, bom(*, products(*)), boms_quotes_parts(*, vendor(*), boms_part(*, part(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*))), parts_po_history(*, vendor(name)))'
+				'*, bom(*, products(*)), boms_quotes_parts(*, vendor(*), boms_part(*, part(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*), vendors_email(*))), parts_po_history(*, vendor(name)))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
 
-		let { data, error } = await query;
+		let { data } = await query;
 
 		boms_quote = data;
 	}
@@ -57,9 +50,9 @@
 		if (!isLoading && boms_quote != null && selectedParts?.length > 0) {
 			isLoading = true;
 
-			await fetch('/api/bom/automation', {
+			await fetch('/api/bom/prepare-vendors-emails', {
 				method: 'POST',
-				body: JSON.stringify({ id: boms_quote.id, selectedParts })
+				body: JSON.stringify({ selectedParts })
 			});
 			window.location.reload();
 		}
@@ -137,35 +130,43 @@
 		window.location.reload();
 	}
 
-	function calcMatCost(q) {
-		if (!q) return '';
-		let completedCount = 0;
-		let matCost = 0;
-		let greatestLeadTime = null;
+	function calcMatCost(q, isSelectingParts, selectedParts) {
+		if (!isSelectingParts) {
+			if (!q) return '';
+			let completedCount = 0;
+			let matCost = 0;
+			let greatestLeadTime = null;
 
-		const totalCount = q.boms_quotes_parts.length;
+			const totalCount = q.boms_quotes_parts.length;
 
-		for (let boms_quotes_part of q.boms_quotes_parts) {
-			if ((boms_quotes_part.lead_time ?? 0) > (greatestLeadTime ?? 0)) {
-				greatestLeadTime = boms_quotes_part.lead_time;
+			for (let boms_quotes_part of q.boms_quotes_parts) {
+				if ((boms_quotes_part.lead_time ?? 0) > (greatestLeadTime ?? 0)) {
+					greatestLeadTime = boms_quotes_part.lead_time;
+				}
+
+				if (!boms_quotes_part?.vendor) {
+					completedCount++;
+				}
+
+				if (
+					boms_quotes_part?.use_quote != null &&
+					boms_quotes_part?.parts_quotes_quantity?.parts_quote?.complete
+				) {
+					completedCount++;
+					const extCost =
+						(boms_quotes_part.use_quote
+							? boms_quotes_part?.parts_quotes_quantity
+							: boms_quotes_part?.parts_po_history
+						)?.unit_price * boms_quotes_part?.boms_part?.quantity;
+
+					matCost += extCost;
+				}
 			}
 
-			if (!boms_quotes_part?.vendor) {
-				completedCount++;
-			}
-			if (boms_quotes_part?.use_quote != null) {
-				completedCount++;
-				const extCost =
-					(boms_quotes_part.use_quote
-						? boms_quotes_part?.parts_quotes_quantity
-						: boms_quotes_part?.parts_po_history
-					)?.unit_price * boms_quotes_part?.boms_part?.quantity;
-
-				matCost += extCost;
-			}
+			return `Lead Time: ${greatestLeadTime ?? 'N/A'} - ${formatCurrency(matCost)} (${completedCount}/${totalCount} parts)`;
+		} else {
+			return `${selectedParts?.length} selected parts`;
 		}
-
-		return `Lead Time: ${greatestLeadTime ?? 'N/A'} - ${formatCurrency(matCost)} (${completedCount}/${totalCount} parts)`;
 	}
 
 	async function updatePartsQuotesQty(qtyId) {
@@ -206,7 +207,7 @@
 
 	onMount(() => {
 		if (session) {
-			loadData($page.url.pathname);
+			loadData();
 		}
 		isMounted = true;
 	});
@@ -228,7 +229,7 @@
 			<p class="font-semibold ml-4 text-sm">{(boms_quote?.bom?.products?.number ?? '') + ' '}BOM</p>
 		</div>
 		<div class="flex flex-row items-center space-x-5">
-			<p>{calcMatCost(boms_quote)}</p>
+			<p>{calcMatCost(boms_quote, isSelectingParts, selectedParts)}</p>
 			<div>
 				{#if isSelectingParts}
 					<button
@@ -242,8 +243,9 @@
 					{#if !isLoading}
 						<button
 							on:click={emailVendors}
-							class="text-xs p-3 rounded-3xl font-medium mr-2 bg-blue-300 hover:bg-blue-200"
-							>Email Vendors</button
+							class="text-xs p-3 rounded-3xl font-medium mr-2 {selectedParts?.length > 0
+								? 'bg-blue-300 hover:bg-blue-200'
+								: 'bg-gray-200'}">Email Vendors</button
 						>
 					{:else}
 						<span class="loading loading-spinner loading-md"></span>

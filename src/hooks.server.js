@@ -41,9 +41,9 @@ export const handle = sequence(Sentry.sentryHandle(), async ({ event, resolve })
 			'/api/webhooks/resend/form',
 			'/api/pb-upload',
 			'/rfq-public/6b289746-2b01-47af-a7d4-26a3920f75ca',
-			'/api/smtp/send-vendor-emails',
-			'/api/bom/automation',
-			'/api/bom/email-vendors'
+			'/api/smtp/send-vendor-email',
+			'/api/bom/prepare-vendors-emails',
+			'/api/bom/email-vendor'
 		].includes(event.url.pathname) &&
 		!event.locals.session
 	) {
