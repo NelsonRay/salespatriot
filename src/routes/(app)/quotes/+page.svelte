@@ -15,12 +15,17 @@
 	async function loadData() {
 		let query = supabase
 			.from('parts_quotes')
-			.select('*, part(*), boms_quote(id, bom(id, products(number))), vendor(*)')
-			.filter('email_sent_at', 'not.is', null);
+			.select('*, part(*), boms_quote(id, bom(id, products(number))), vendor(*)');
 
-		if (!showAll) query = query.eq('complete', false);
+		if (!showAll) {
+			query = query.eq('complete', false);
+		} else {
+			query = query.filter('vendors_email', 'not.is', null);
+		}
 
-		let { data } = await query;
+		let { data, error } = await query;
+
+		console.log(data, error);
 
 		quotes = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 	}

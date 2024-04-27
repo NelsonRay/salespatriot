@@ -1,8 +1,16 @@
+import { sequence } from '@sveltejs/kit/hooks';
+import * as Sentry from '@sentry/sveltekit';
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 import { createSupabaseServerClient } from '@supabase/auth-helpers-sveltekit';
 import { redirect } from '@sveltejs/kit';
 
-export const handle = async ({ event, resolve }) => {
+Sentry.init({
+	dsn: 'https://50b9f1f3ca9b0df58e50b2baef3bea6c@o4507150077722624.ingest.us.sentry.io/4507150079098880',
+	tracesSampleRate: 1,
+	environment: import.meta.env.MODE
+});
+
+export const handle = sequence(Sentry.sentryHandle(), async ({ event, resolve }) => {
 	event.locals.supabase = createSupabaseServerClient({
 		supabaseUrl: PUBLIC_SUPABASE_URL,
 		supabaseKey: PUBLIC_SUPABASE_ANON_KEY,
@@ -33,9 +41,9 @@ export const handle = async ({ event, resolve }) => {
 			'/api/webhooks/resend/form',
 			'/api/pb-upload',
 			'/rfq-public/6b289746-2b01-47af-a7d4-26a3920f75ca',
-			'/api/smtp/send-vendor-emails',
-			'/api/bom/automation',
-			'/api/bom/email-vendors'
+			'/api/smtp/send-vendor-email',
+			'/api/bom/prepare-vendors-emails',
+			'/api/bom/email-vendor'
 		].includes(event.url.pathname) &&
 		!event.locals.session
 	) {
@@ -47,4 +55,5 @@ export const handle = async ({ event, resolve }) => {
 			return name === 'content-range';
 		}
 	});
-};
+});
+export const handleError = Sentry.handleErrorWithSentry();

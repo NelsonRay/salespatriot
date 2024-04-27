@@ -6,7 +6,7 @@ import nodemailer from 'nodemailer';
 
 export async function POST({ request, locals: { supabase } }) {
 	try {
-		const { emailsData } = await request.json();
+		const { emailData } = await request.json();
 
 		// Create a transporter object using the default SMTP transport
 		let transporter = nodemailer.createTransport({
@@ -22,7 +22,7 @@ export async function POST({ request, locals: { supabase } }) {
 			}
 		});
 
-		await Promise.all(emailsData.map((emailData) => sendMail(transporter, emailData, supabase)));
+		await sendMail(transporter, emailData, supabase);
 
 		return json({}, { status: 200 });
 	} catch (e) {
@@ -37,28 +37,21 @@ function sendMail(transporter, emailData, supabase) {
 	return new Promise((resolve, reject) => {
 		transporter.sendMail(mailOptions, async (error, info) => {
 			if (error) {
-				await Promise.all(
-					emailData.parts.map((p) =>
-						supabase
-							.from('parts_quotes')
-							.update({ email_sent: false, email_info: info || error })
-							.eq('id', p.id)
-					)
-				);
+				await supabase
+					.from('vendors_emails')
+					.update({ email_sent: false, email_info: info || error })
+					.eq('id', emailData.id);
+
 				reject(error);
 			} else {
-				await Promise.all(
-					emailData.parts.map((p) =>
-						supabase
-							.from('parts_quotes')
-							.update({
-								email_sent: true,
-								email_info: info,
-								email_sent_at: new Date().toISOString()
-							})
-							.eq('id', p.id)
-					)
-				);
+				await supabase
+					.from('vendors_emails')
+					.update({
+						email_sent: true,
+						email_info: info,
+						email_sent_at: new Date().toISOString()
+					})
+					.eq('id', emailData.id);
 
 				resolve(info);
 			}
@@ -109,7 +102,7 @@ function getMailOptions(emailData) {
 						<th>Description:</th>
 						<th>Instructions:</th>
 						<th>Quantity:</th>
-                      <th>Lead Times:</th>
+                      	<th>Lead Times:</th>
 					</tr>
 				</thead>
 				<tbody>
