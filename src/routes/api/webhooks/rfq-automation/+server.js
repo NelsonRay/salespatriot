@@ -39,13 +39,13 @@ export async function POST({ request, cookies }) {
 			.limit(1)
 			.single();
 
+		let isRfqLaborComplete = true;
+		let isRfqPurchasingComplete = true;
+
 		for (let product of data.rfqs_products) {
 			let purchasing_ready = false;
 			let product_labor_minutes = null;
 			let labor_minutes = null;
-
-			let laborInProgress = true;
-			let purchasingInProgress = true;
 
 			if (
 				product?.product?.product_labor_minutes?.filter(
@@ -54,7 +54,8 @@ export async function POST({ request, cookies }) {
 			) {
 				product_labor_minutes = product?.product?.product_labor_minutes[0]?.id;
 				labor_minutes = product?.product?.product_labor_minutes[0]?.labor_minutes;
-				laborInProgress = false;
+			} else {
+				isRfqLaborComplete = false;
 			}
 
 			if (
@@ -63,16 +64,17 @@ export async function POST({ request, cookies }) {
 				)?.length > 0
 			) {
 				purchasing_ready = true;
-				purchasingInProgress = false;
+			} else {
+				isRfqPurchasingComplete = false;
 			}
 
-			const { data: d, error } = await supabase
+			await supabase
 				.from('rfqs_products')
 				.update({ purchasing_ready, product_labor_minutes, labor_minutes })
 				.eq('id', product?.id);
 
 			if (!purchasing_ready) {
-				const { data: forms, error } = await supabase
+				const { data: forms } = await supabase
 					.from('forms')
 					.select('id')
 					.eq('product', product?.product?.id)
@@ -104,16 +106,17 @@ export async function POST({ request, cookies }) {
 						product: product.product.id
 					});
 			}
-			updateStatusInProgress(
-				data.status,
-				[
-					laborInProgress ? 'labor:in_progress' : 'labor:complete',
-					purchasingInProgress ? 'purchasing:in_progress' : 'purchasing:complete'
-				],
-				supabase,
-				data.id
-			);
 		}
+
+		await updateStatusInProgress(
+			data.status,
+			[
+				!isRfqLaborComplete ? 'labor:in_progress' : 'labor:complete',
+				!isRfqPurchasingComplete ? 'purchasing:in_progress' : 'purchasing:complete'
+			],
+			supabase,
+			data.id
+		);
 
 		if (error) {
 			console.error(error);
