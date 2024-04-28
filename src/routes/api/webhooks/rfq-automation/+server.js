@@ -77,6 +77,7 @@ export async function POST({ request, cookies }) {
 					.select('id')
 					.eq('product', product?.product?.id)
 					.eq('submitted', false)
+					.eq('deleted', false)
 					.eq('form', '18055704-d9b9-42d7-958b-f5d1d5b1ba4d');
 
 				if (forms?.length === 0)
@@ -93,6 +94,7 @@ export async function POST({ request, cookies }) {
 					.select('id')
 					.eq('product', product?.product?.id)
 					.eq('submitted', false)
+					.eq('deleted', false)
 					.eq('form', '53cc6979-4406-47aa-97a0-1d83d0504c12');
 
 				if (forms?.length === 0)
