@@ -35,16 +35,18 @@ export async function POST({ request, locals: { supabase } }) {
 			.from('rfqs_products')
 			.select('id, rfq!inner(id, status)')
 			.filter('rfq.status', 'cs', `{"purchasing:in_progress"}`)
-			.eq('removed', false);
+			.eq('removed', false)
+			.eq('product', rfqs_product.product);
 
 		// see if another live rfq awaiting same product purchasing form - if so, don't delete form
 		const deleteForm = data?.filter((d) => d?.rfq?.id !== values.id)?.length === 0;
 
-		if (deleteForm) {
+		if (deleteForm && rfqs_product.product != null) {
 			await supabase
 				.from('forms')
 				.update({ deleted: true })
-				.eq('product', rfqs_product.id)
+				.eq('product', rfqs_product.product)
+				.eq('form', '18055704-d9b9-42d7-958b-f5d1d5b1ba4d')
 				.eq('submitted', false);
 		}
 	}
