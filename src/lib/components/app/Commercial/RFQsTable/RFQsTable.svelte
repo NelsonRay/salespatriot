@@ -30,7 +30,11 @@
 			<tbody>
 				{#each data as rfqs_product}
 					<tr class="hover:bg-neutral-100">
-						<td>{rfqs_product.rfq.customer.name ?? ''}</td>
+						<td>
+							<a href={window.location.origin + '/rfq/' + rfqs_product.rfq.id} target="_blank"
+								>{rfqs_product.rfq.customer.name ?? ''}</a
+							>
+						</td>
 						<td>{rfqs_product.rfq.received_at ?? ''}</td>
 						<td>{getQuantities(rfqs_product) ?? ''}</td>
 						<td>

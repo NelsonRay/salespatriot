@@ -15,6 +15,7 @@
 	import PublicPartsTable from '$lib/components/app/Commercial/PublicPartsTable/PublicPartsTable.svelte';
 	import RFQsTable from '$lib/components/app/Commercial/RFQsTable/RFQsTable.svelte';
 	import Textarea from '$lib/components/form/Textarea.svelte';
+	import Table from './Table.svelte';
 
 	export let data;
 	export let comments;
@@ -28,6 +29,7 @@
 	export let supabase = undefined;
 	export let rfqsForPurchasingForm = undefined;
 	export let awardModalOpen;
+	export let productLaborMinutes;
 
 	let focusedRfqProductQty;
 	let reviewValues;
@@ -184,6 +186,15 @@
 						<p class="text-lg mt-5 mb-2 font-semibold">Comments</p>
 						<Comments {comments} {commentSubmitCallback} />
 					</div>
+
+					{#if form?.type == 'labor'}
+						<p>Previously Recorded Labor Minutes:</p>
+						{#if productLaborMinutes?.length > 0}
+							<Table data={productLaborMinutes} />
+						{:else}
+							<p>None</p>
+						{/if}
+					{/if}
 				{/if}
 				{#if form?.type === 'confirm'}
 					<div class="flex flex-col space-y-5">

@@ -180,6 +180,18 @@
 										{/each}
 									</div>
 								{/if}
+								{#if form?.type === 'labor'}
+									<div class="mb-2">
+										{#each forms?.product?.rfqs_products.filter((p) => !p.rfq.status.includes('labor:complete')) ?? [] as rfqs_product}
+											<p class="mt-1 font-medium">
+												{'QTY: ' +
+													rfqs_product.rfqs_products_quantities.map((p) => p.quantity).join(', ') +
+													' - ' +
+													rfqs_product.rfq.customer.name}
+											</p>
+										{/each}
+									</div>
+								{/if}
 								{#if form?.type === 'enter_quote'}
 									{#each forms?.rfq?.rfqs_products ?? [] as rfqs_product}
 										<p class="mt-1 font-medium">{rfqs_product.product.number}</p>

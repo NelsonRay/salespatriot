@@ -17,7 +17,7 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*, comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at))), rfq_public(*), rfq(*, comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)), customer(*), rfqs_products(*, product(*, product_purchasing(*), product_labor_minutes(*)), rfqs_products_quantities(*)))'
+				'*, form!inner(*), product(*, product_labor_minutes(*), comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at))), rfq_public(*), rfq(*, comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)), customer(*), rfqs_products(*, product(*, product_purchasing(*), product_labor_minutes(*)), rfqs_products_quantities(*)))'
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
@@ -172,6 +172,7 @@
 			{commentSubmitCallback}
 			{supabase}
 			{rfqsForPurchasingForm}
+			productLaborMinutes={form?.product?.product_labor_minutes}
 		/>
 	{/if}
 {/if}

@@ -7,6 +7,7 @@
 	import TextInput from '$lib/components/form/TextInput.svelte';
 	import Textarea from '$lib/components/form/Textarea.svelte';
 	import DateInput from '$lib/components/form/DateInput.svelte';
+	import Table from './Table.svelte';
 
 	export let data;
 	$: ({ supabase } = data);
@@ -24,6 +25,8 @@
 		],
 		notes: ''
 	};
+
+	let customerRfqs = [];
 
 	let customerSelected = true;
 	let createdProductsIndexes = [];
@@ -59,6 +62,15 @@
 		}
 	}
 
+	async function loadCustomerRfqs() {
+		const { data } = await supabase
+			.from('rfqs')
+			.select('*, customer(*), rfqs_products(*, product(number), rfqs_products_quantities(*))')
+			.eq('customer', rfq.customer.id);
+
+		customerRfqs = data;
+	}
+
 	async function reloadPage() {
 		window.location.reload();
 	}
@@ -84,6 +96,8 @@
 
 		return queryData;
 	}
+
+	$: if (rfq.customer.id) loadCustomerRfqs();
 </script>
 
 <svelte:head>
@@ -157,7 +171,7 @@
 			<p class="text-lg mt-10 font-medium">Notes</p>
 			<Textarea bind:value={rfq.notes} />
 
-			<div class="flex flex-row mt-5 items-center justify-center pb-32">
+			<div class="flex flex-row mt-5 items-center justify-center">
 				{#if !isSubmitting}
 					<button
 						class="btn px-6 py-2 rounded-md text-xs bg-white shadow-md"
@@ -165,6 +179,17 @@
 					>
 				{:else}
 					<span class="loading loading-spinner loading-md"></span>
+				{/if}
+			</div>
+
+			<div class="pt-10 pb-16">
+				<p>Recent RFQS by Customer</p>
+				{#if customerRfqs?.length > 0}
+					<Table
+						data={customerRfqs?.sort((a, b) => new Date(b.received_at) - new Date(a.received_at))}
+					/>
+				{:else}
+					<p>No RFQs</p>
 				{/if}
 			</div>
 		{:else}
