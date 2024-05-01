@@ -269,15 +269,11 @@
 					class="w-full mr-2 p-2 {solicitation_matched.solicitation.solicitation_url
 						? 'bg-gray-100 rounded-md shadow-md'
 						: ''}"
-					href={solicitation_matched.solicitation.solicitation_url || null}
+					href={`https://dibbs2.bsm.dla.mil/Downloads/RFQ/${solicitation_matched.solicitation.id.substring(solicitation_matched.solicitation.id.length - 1)}/${solicitation_matched.solicitation.id}.PDF`}
 					target="_blank"
 				>
 					<div class="flex flex-row justify-center items-center space-x-1">
-						<p class={solicitation_matched.solicitation.solicitation_url ? '' : 'text-gray-400'}>
-							{solicitation_matched.solicitation.solicitation_url
-								? 'Solicitation URL'
-								: 'No Solicitation URL'}
-						</p>
+						<p>Solicitation URL</p>
 						{#if solicitation_matched.solicitation.solicitation_url}
 							<img src={Download} alt="download" class="w-4 h-4" />
 						{/if}
