@@ -17,6 +17,8 @@
 	export let selectedQuoteForAllQuotes;
 	export let selectedPartForAllPOs;
 	export let selectedPOForAllPOs;
+	export let selectedPartForUnitPrice;
+	export let selectedPartForLeadTime;
 	export let updateUseQuote;
 	export let selectedParts;
 
@@ -38,7 +40,7 @@
 		{ type: 'vendor', field: 'email', header: 'Email' },
 		{ type: 'unit_price', header: 'Unit Price' },
 		{ type: 'ext_price', header: 'Ext. Price' },
-		{ type: 'field', field: 'lead_time', header: 'Lead Time' },
+		{ type: 'lead_time', field: 'lead_time', header: 'Lead Time' },
 		{ type: 'parts_quotes_quantity', header: 'Last Quote' },
 		{ type: 'parts_po_history', header: 'Last PO' },
 		{ type: 'comments', header: 'Comments' }
@@ -103,12 +105,10 @@
 				value = formatCurrency(value);
 			}
 		} else if (column.type == 'unit_price') {
-			if (obj?.use_quote != null) {
-				value = formatCurrency(
-					(obj.use_quote ? obj?.parts_quotes_quantity : obj?.parts_po_history)?.unit_price
-				);
-			} else {
-				value = '';
+			value = obj?.unit_price;
+
+			if (value) {
+				value = formatCurrency(value);
 			}
 		} else if (column.type == 'ext_price') {
 			if (obj?.use_quote != null) {
@@ -120,15 +120,7 @@
 				value = '';
 			}
 		} else if (column.type == 'lead_time') {
-			const qtys = obj?.boms_part?.part?.parts_quotes[0]?.parts_quotes_quantities?.sort(
-				(a, b) => a?.quantity - b?.quantity
-			);
-
-			if (qtys?.length > 0) {
-				value = qtys[0].lead_time ?? '';
-			} else {
-				value = '';
-			}
+			value = obj?.lead_time;
 		}
 
 		return { header: column.header, value };
@@ -329,6 +321,28 @@
 										{tableFieldMapper(obj, column).value ?? ''}
 									{/if}
 									<button on:click={() => handleClick(() => (selectedVendor = obj?.vendor))}>
+										<img src={Edit} alt="open" class="h-3 w-3" />
+									</button>
+								</div>
+							</td>
+						{:else if column.type === 'unit_price'}
+							<td>
+								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+									{#if tableFieldMapper(obj, column).value}
+										{tableFieldMapper(obj, column).value ?? ''}
+									{/if}
+									<button on:click={() => handleClick(() => (selectedPartForUnitPrice = obj))}>
+										<img src={Edit} alt="open" class="h-3 w-3" />
+									</button>
+								</div>
+							</td>
+						{:else if column.type === 'lead_time'}
+							<td>
+								<div class="flex flex-row justify-between pr-1 items-center space-x-5">
+									{#if tableFieldMapper(obj, column).value}
+										{tableFieldMapper(obj, column).value ?? ''}
+									{/if}
+									<button on:click={() => handleClick(() => (selectedPartForLeadTime = obj))}>
 										<img src={Edit} alt="open" class="h-3 w-3" />
 									</button>
 								</div>

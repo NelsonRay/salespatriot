@@ -11,6 +11,7 @@
 	import AllQuotesModal from '$lib/components/app/BOMs/Modals/AllQuotesModal/AllQuotesModal.svelte';
 	import AllPOsModal from '$lib/components/app/BOMs/Modals/AllPOsModal/AllPOsModal.svelte';
 	import { formatCurrency } from '$lib/helpers.js';
+	import EditModal from '$lib/components/app/BOMs/Modals/EditModal/EditModal.svelte';
 
 	export let data;
 
@@ -28,6 +29,8 @@
 	let selectedQuoteForAllQuotes;
 	let selectedPartForAllPOs;
 	let selectedPOForAllPOs;
+	let selectedPartForUnitPrice;
+	let selectedPartForLeadTime;
 	let isSelectingParts = false;
 	let selectedParts = [];
 
@@ -81,6 +84,24 @@
 		selectedPartForInstructions = null;
 
 		await supabase.from('parts').update({ vendor_instructions }).eq('id', partId);
+
+		window.location.reload();
+	}
+
+	async function updatePartUnitPrice(unit_price) {
+		const partId = selectedPartForUnitPrice?.id;
+		selectedPartForUnitPrice = null;
+
+		await supabase.from('boms_quotes_parts').update({ unit_price }).eq('id', partId);
+
+		window.location.reload();
+	}
+
+	async function updatePartLeadTime(lead_time) {
+		const partId = selectedPartForLeadTime?.id;
+		selectedPartForLeadTime = null;
+
+		await supabase.from('boms_quotes_parts').update({ lead_time }).eq('id', partId);
 
 		window.location.reload();
 	}
@@ -144,22 +165,16 @@
 					greatestLeadTime = boms_quotes_part.lead_time;
 				}
 
-				if (!boms_quotes_part?.vendor) {
-					completedCount++;
-				}
-
 				if (
-					boms_quotes_part?.use_quote != null &&
+					boms_quotes_part?.unit_price != null &&
 					boms_quotes_part?.parts_quotes_quantity?.parts_quote?.complete
 				) {
 					completedCount++;
-					const extCost =
-						(boms_quotes_part.use_quote
-							? boms_quotes_part?.parts_quotes_quantity
-							: boms_quotes_part?.parts_po_history
-						)?.unit_price * boms_quotes_part?.boms_part?.quantity;
+					const extCost = boms_quotes_part?.unit_price * boms_quotes_part?.boms_part?.quantity;
 
 					matCost += extCost;
+				} else if (!boms_quotes_part?.vendor) {
+					completedCount++;
 				}
 			}
 
@@ -193,13 +208,13 @@
 	}
 
 	async function updateUseQuote(boms_quotes_part, use_quote) {
-		const lead_time = (
-			use_quote ? boms_quotes_part.parts_quotes_quantity : boms_quotes_part.parts_po_history
-		)?.lead_time;
+		const { lead_time, unit_price } = use_quote
+			? boms_quotes_part.parts_quotes_quantity
+			: boms_quotes_part.parts_po_history;
 
 		await supabase
 			.from('boms_quotes_parts')
-			.update({ use_quote, lead_time })
+			.update({ use_quote, lead_time, unit_price })
 			.eq('id', boms_quotes_part.id);
 
 		window.location.reload();
@@ -276,6 +291,8 @@
 		bind:selectedQuoteForAllQuotes
 		bind:selectedPartForAllPOs
 		bind:selectedPOForAllPOs
+		bind:selectedPartForUnitPrice
+		bind:selectedPartForLeadTime
 		{isSelectingParts}
 		{updateUseQuote}
 		bind:selectedParts
@@ -323,4 +340,17 @@
 	{supabase}
 	{selectedPOForAllPOs}
 	submitCallback={updatePO}
+/>
+<EditModal
+	open={!!selectedPartForUnitPrice}
+	value={selectedPartForUnitPrice?.unit_price}
+	header={selectedPartForUnitPrice?.boms_part?.part?.number + ' Unit Price'}
+	submitCallback={updatePartUnitPrice}
+/>
+
+<EditModal
+	open={!!selectedPartForLeadTime}
+	value={selectedPartForLeadTime?.lead_time}
+	header={selectedPartForLeadTime?.boms_part?.part?.number + ' Lead Time'}
+	submitCallback={updatePartLeadTime}
 />
