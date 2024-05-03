@@ -165,10 +165,13 @@
 					greatestLeadTime = boms_quotes_part.lead_time;
 				}
 
-				if (
-					boms_quotes_part?.unit_price != null &&
-					boms_quotes_part?.parts_quotes_quantity?.parts_quote?.complete
-				) {
+				if (boms_quotes_part?.unit_price != null) {
+					// if using quote and it's not complete, continue
+					if (
+						boms_quotes_part?.use_quote &&
+						!boms_quotes_part?.parts_quotes_quantity?.parts_quote?.complete
+					)
+						continue;
 					completedCount++;
 					const extCost = boms_quotes_part?.unit_price * boms_quotes_part?.boms_part?.quantity;
 
