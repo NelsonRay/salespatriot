@@ -35,21 +35,23 @@
 		let { data, error } = await supabase
 			.from('rfqs')
 			.select(
-				'*, comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)), customer(*), rfqs_products(*, product(*, product_purchasing(*), product_labor_minutes(*)), product_labor_minutes(*), rfqs_products_quantities(*))'
+				'*, comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)), customer(*), rfqs_parts(*, part(*, parts_purchasing(*), parts_labor_minutes(*)), rfqs_parts_quantities(*))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
 			.single();
 
-		let { data: productsComments } = await supabase
+		console.log(data, error);
+
+		let { data: partsComments } = await supabase
 			.from('comments')
-			.select('*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)')
+			.select('*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)')
 			.in(
-				'product',
-				data.rfqs_products.map((p) => p.product.id)
+				'part',
+				data.rfqs_parts.map((p) => p.part.id)
 			);
 
-		comments = [...(data?.comments ?? []), ...productsComments];
+		comments = [...(data?.comments ?? []), ...partsComments];
 		comments = comments.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
 		rfq = data;
@@ -66,9 +68,7 @@
 					rfq: rfq.id,
 					form: null
 				})
-				.select(
-					'*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)'
-				)
+				.select('*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)')
 				.limit(1)
 				.single();
 
@@ -80,7 +80,7 @@
 
 	async function awardCallback(values) {
 		if (values.status.includes('response:placed_order')) {
-			const { date_ordered, due_date, order_notes, rfqs_products, status } = values;
+			const { date_ordered, due_date, order_notes, rfqs_parts, status } = values;
 			await supabase
 				.from('rfqs')
 				.update({
@@ -91,10 +91,10 @@
 				})
 				.eq('id', rfq.id);
 
-			for (let rfqs_product of rfqs_products) {
-				const { id, quantity_ordered, unit_price_ordered } = rfqs_product;
+			for (let rfqs_part of rfqs_parts) {
+				const { id, quantity_ordered, unit_price_ordered } = rfqs_part;
 				await supabase
-					.from('rfqs_products')
+					.from('rfqs_parts')
 					.update({ quantity_ordered, unit_price_ordered })
 					.eq('id', id);
 			}

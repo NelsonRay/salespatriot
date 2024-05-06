@@ -12,8 +12,8 @@
 	function getQty(rfq) {
 		let qty = 0;
 
-		for (let p of rfq.rfqs_products) {
-			qty += p.rfqs_products_quantities?.length ?? 0;
+		for (let p of rfq.rfqs_parts) {
+			qty += p.rfqs_parts_quantities?.length ?? 0;
 		}
 
 		return qty;
@@ -137,7 +137,7 @@
 				<div>
 					<div class="flex flex-row space-x-1">
 						<p class="text-gray-400"># of Parts:</p>
-						<p>{data?.rfqs_products?.length}</p>
+						<p>{data?.rfqs_parts?.length}</p>
 					</div>
 
 					<div class="flex flex-row space-x-1">

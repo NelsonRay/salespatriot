@@ -9,8 +9,8 @@
 
 	const columns = [
 		{ type: 'position', header: '#' },
-		{ type: 'product', field: 'number', header: 'Product Number' },
-		{ type: 'product', field: 'description', header: 'Description' },
+		{ type: 'part', field: 'number', header: 'Part Number' },
+		{ type: 'part', field: 'description', header: 'Description' },
 		{ type: 'field', field: 'quantity', header: 'Quantity' },
 		{ type: 'field', field: 'complete', header: 'Status' },
 		{ type: 'bom_started', header: 'BOM Started' }
@@ -19,8 +19,8 @@
 	export function tableFieldMapper(obj, column) {
 		let value;
 
-		if (column.type === 'product') {
-			value = obj?.bom?.products?.[column?.field];
+		if (column.type === 'part') {
+			value = obj?.bom?.parts?.[column?.field];
 		} else if (column.type === 'field') {
 			value = obj?.[column.field];
 		} else if (column.type === 'bom_started') {

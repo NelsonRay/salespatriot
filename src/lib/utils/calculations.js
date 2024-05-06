@@ -1,10 +1,10 @@
-import { formatMonthDayYearDate, formatCurrency } from '$lib/helpers';
+import { formatCurrency } from '$lib/helpers';
 
 // @ts-ignore
-export function getCommercialValueCalculation(qty, product) {
-	if (!qty || !product) return null;
+export function getCommercialValueCalculation(qty, part) {
+	if (!qty || !part) return null;
 
-	const estimated_labor_minutes = product?.labor_minutes;
+	const estimated_labor_minutes = part?.labor_minutes;
 	const unit_price = qty?.final_pricing;
 	const estimated_material_cost = qty.material_cost;
 	const quantity = qty.quantity;

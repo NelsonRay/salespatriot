@@ -141,11 +141,11 @@
 		return true;
 	}
 
-	function getProducts(solicitation_matched) {
+	function getParts(solicitation_matched) {
 		let text = '';
 
 		let skipComma = true;
-		for (let match of solicitation_matched?.solicitation.nsn?.products ?? []) {
+		for (let match of solicitation_matched?.solicitation.nsn?.parts ?? []) {
 			text += match.number;
 			if (!skipComma) text += ', ';
 			skipComma = false;
@@ -300,7 +300,7 @@
 						</div>
 						<div>
 							<p class="mb-1">In-House Part Number</p>
-							<TextInput value={getProducts(solicitation_matched)} disabled fullWidth={false} />
+							<TextInput value={getParts(solicitation_matched)} disabled fullWidth={false} />
 						</div>
 					</div>
 				{/if}
@@ -315,7 +315,7 @@
 						</div>
 						<div>
 							<p class="mb-1">In-House Part Number</p>
-							<TextInput value={getProducts(solicitation_matched)} disabled fullWidth={false} />
+							<TextInput value={getParts(solicitation_matched)} disabled fullWidth={false} />
 						</div>
 						<div>
 							<p class="mb-1">Total Bid Value</p>

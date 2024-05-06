@@ -149,7 +149,7 @@
 								<p class="text-gray-400">In-House PN:</p>
 								<p>
 									{tableFieldMapper(solicitation_matched, {
-										type: 'products',
+										type: 'parts',
 										header: 'In-House PN'
 									}).value || 'N/A'}
 								</p>

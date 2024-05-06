@@ -8,7 +8,7 @@ import { createServerClient } from '@supabase/ssr';
 export async function POST({ request, cookies }) {
 	try {
 		const {
-			record: { id, product, rfq, response, form }
+			record: { id, part, rfq, response, form }
 		} = await request.json();
 
 		/** @type {import('@supabase/supabase-js').SupabaseClient<import('$lib/types/supabase.js').Database>} */
@@ -31,37 +31,37 @@ export async function POST({ request, cookies }) {
 				const spread = ['5', '25', '50', '100', '250'];
 
 				for (let value of spread) {
-					const { error } = await supabase.from('product_purchasing').insert({
+					const { error } = await supabase.from('parts_purchasing').insert({
 						lead_time: response['lead_time_' + value],
 						material_cost: response['material_cost_' + value],
-						product,
+						part,
 						quantity: parseInt(value)
 					});
 
 					if (error) throw error;
 				}
 
-				// update purchasing_ready fpr rfqs_products
+				// update purchasing_ready fpr rfqs_parts
 				const { error } = await supabase
-					.from('rfqs_products')
+					.from('rfqs_parts')
 					.update({ purchasing_ready: true })
-					.eq('product', product)
+					.eq('part', part)
 					.eq('purchasing_ready', false);
 
-				// then fetch rfqs_products and relating rfqs - weirdly needs to be separate query
+				// then fetch rfqs_parts and relating rfqs - weirdly needs to be separate query
 				const { data } = await supabase
-					.from('rfqs_products')
-					.select('*, rfq(*, rfqs_products(*))')
-					.eq('product', product);
+					.from('rfqs_parts')
+					.select('*, rfq(*, rfqs_parts(*))')
+					.eq('part', part);
 
-				// loop thru rfqs_products relating to quoted product
+				// loop thru rfqs_parts relating to quoted part
 				for (let d of data) {
-					// check if all of rfqs_products have purchasing data relating to rfq of the looped rfqs_product
+					// check if all of rfqs_parts have purchasing data relating to rfq of the looped rfqs_part
 					let rfq = d.rfq;
 					let purchasingCompleted = true;
-					for (let rfqs_product of rfq.rfqs_products) {
-						// check if purchasing data available for rfqs_product
-						if (!rfqs_product?.purchasing_ready) {
+					for (let rfqs_part of rfq.rfqs_parts) {
+						// check if purchasing data available for rfqs_part
+						if (!rfqs_part?.purchasing_ready) {
 							purchasingCompleted = false;
 						}
 					}
@@ -75,8 +75,8 @@ export async function POST({ request, cookies }) {
 			// labor form
 			case '53cc6979-4406-47aa-97a0-1d83d0504c12': {
 				const { data, error } = await supabase
-					.from('product_labor_minutes')
-					.insert({ labor_minutes: response.labor_minutes, product })
+					.from('parts_labor_minutes')
+					.insert({ labor_minutes: response.labor_minutes, part })
 					.select('id')
 					.limit(1)
 					.single();
@@ -84,27 +84,27 @@ export async function POST({ request, cookies }) {
 				if (error) throw error;
 
 				const { error: err } = await supabase
-					.from('rfqs_products')
-					.update({ product_labor_minutes: data.id, labor_minutes: response.labor_minutes })
-					.eq('product', product)
+					.from('rfqs_parts')
+					.update({ parts_labor_minutes: data.id, labor_minutes: response.labor_minutes })
+					.eq('part', part)
 					.is('labor_minutes', null);
 
 				if (err) throw err;
 
-				// then fetch rfqs_products and relating rfqs - weirdly needs to be separate query
+				// then fetch rfqs_parts and relating rfqs - weirdly needs to be separate query
 				const { data: rData } = await supabase
-					.from('rfqs_products')
-					.select('*, rfq(*, rfqs_products(*))')
-					.eq('product_labor_minutes', data.id);
+					.from('rfqs_parts')
+					.select('*, rfq(*, rfqs_parts(*))')
+					.eq('parts_labor_minutes', data.id);
 
-				// loop thru rfqs_products relating to quoted product
+				// loop thru rfqs_parts relating to quoted part
 				for (let d of rData) {
-					// check if all of rfqs_products have purchasing data relating to rfq of the looped rfqs_product
+					// check if all of rfqs_parts have purchasing data relating to rfq of the looped rfqs_part
 					let rfq = d.rfq;
 					let laborCompleted = true;
-					for (let rfqs_product of rfq.rfqs_products) {
-						// check if purchasing data available for rfqs_product
-						if (rfqs_product?.product_labor_minutes == null) {
+					for (let rfqs_part of rfq.rfqs_parts) {
+						// check if purchasing data available for rfqs_part
+						if (rfqs_part?.parts_labor_minutes == null) {
 							laborCompleted = false;
 						}
 					}
@@ -118,15 +118,15 @@ export async function POST({ request, cookies }) {
 			}
 			// final pricing form
 			case '6bbf4342-1b50-4c1a-9dc5-ad40562c5626': {
-				// loop thru each product and its quantities to update final_pricing
-				for (let rfqs_product of response?.rfqs_products ?? []) {
-					for (let rfqs_products_quantity of rfqs_product.rfqs_products_quantities ?? []) {
-						const { material_cost, lead_time, final_pricing } = rfqs_products_quantity;
+				// loop thru each part and its quantities to update final_pricing
+				for (let rfqs_part of response?.rfqs_parts ?? []) {
+					for (let rfqs_parts_quantity of rfqs_part.rfqs_parts_quantities ?? []) {
+						const { material_cost, lead_time, final_pricing } = rfqs_parts_quantity;
 
 						const { error: e } = await supabase
-							.from('rfqs_products_quantities')
+							.from('rfqs_parts_quantities')
 							.update({ material_cost, lead_time, final_pricing })
-							.eq('id', rfqs_products_quantity.id);
+							.eq('id', rfqs_parts_quantity.id);
 
 						if (e) throw e;
 					}

@@ -7,7 +7,7 @@
 	const columns = [
 		{ type: 'position', header: '#' },
 		{ type: 'part', field: 'number', header: 'Part Number' },
-		{ type: 'product', field: 'number', header: 'Parent Number' },
+		{ type: 'part', field: 'number', header: 'Parent Number' },
 		{ type: 'vendor', field: 'name', header: 'Supplier Name' },
 		{ type: 'vendor', field: 'email', header: 'Email' },
 		{ type: 'sent', header: 'Email Sent' },
@@ -18,8 +18,8 @@
 		let value;
 
 		if (column.type === 'position') {
-		} else if (column.type === 'product') {
-			value = obj?.boms_quote?.bom?.products?.[column?.field];
+		} else if (column.type === 'part') {
+			value = obj?.boms_quote?.bom?.parts?.[column?.field];
 		} else if (column.type === 'part') {
 			value = obj?.part?.[column?.field];
 		} else if (column.type === 'vendor') {

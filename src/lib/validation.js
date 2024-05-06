@@ -17,7 +17,7 @@ export const createPO = () =>
 export const commercialAwardModal = () =>
 	z
 		.object({
-			rfqs_products: z
+			rfqs_parts: z
 				.object({
 					unit_price_ordered: z.number().nullable().optional(),
 					quantity_ordered: z.number().nullable().optional()
@@ -45,20 +45,20 @@ export const commercialAwardModal = () =>
 					});
 				}
 
-				for (let i = 0; i < fields.rfqs_products.length; i++) {
-					if (fields.rfqs_products[i].quantity_ordered == null) {
+				for (let i = 0; i < fields.rfqs_parts.length; i++) {
+					if (fields.rfqs_parts[i].quantity_ordered == null) {
 						ctx.addIssue({
 							code: 'custom',
 							message: 'Required',
-							path: ['rfqs_products', i, 'quantity_ordered']
+							path: ['rfqs_parts', i, 'quantity_ordered']
 						});
 					}
 
-					if (!fields.rfqs_products[i].unit_price_ordered == null) {
+					if (!fields.rfqs_parts[i].unit_price_ordered == null) {
 						ctx.addIssue({
 							code: 'custom',
 							message: 'Required',
-							path: ['rfqs_products', i, 'unit_price_ordered']
+							path: ['rfqs_parts', i, 'unit_price_ordered']
 						});
 					}
 				}
@@ -75,10 +75,10 @@ export const quoteForm = () =>
 
 export const masterCommercialValidation = () =>
 	z.object({
-		rfqs_products: z
+		rfqs_parts: z
 			.object({
 				labor_minutes: z.number().positive(),
-				rfqs_products_quantities: z
+				rfqs_parts_quantities: z
 					.object({
 						quantity: z.number().positive(),
 						final_pricing: z.number().positive(),
@@ -108,13 +108,13 @@ export const commercialFormsValidation = {
 		}),
 	final_pricing: () =>
 		z.object({
-			rfqs_products: z
+			rfqs_parts: z
 				.object({
-					product: z.object({
+					part: z.object({
 						number: z.string().min(1),
 						nsn: z.number().nullable().optional()
 					}),
-					rfqs_products_quantities: z
+					rfqs_parts_quantities: z
 						.object({
 							quantity: z.number().positive(),
 							final_pricing: z.number().positive(),
@@ -126,11 +126,11 @@ export const commercialFormsValidation = {
 				.array()
 				.superRefine((fields, ctx) => {
 					for (let i = 0; i < fields.length; i++) {
-						if (fields[i].product.nsn != null && fields[i].product.nsn?.toString().length !== 13) {
+						if (fields[i].part.nsn != null && fields[i].part.nsn?.toString().length !== 13) {
 							ctx.addIssue({
 								code: 'custom',
 								message: 'Not 13 digits',
-								path: [i, 'product', 'nsn']
+								path: [i, 'part', 'nsn']
 							});
 						}
 					}
@@ -152,30 +152,30 @@ export const publicRFQFormValidation = () =>
 			email_address: z.string().email().min(1),
 			phone_number: z.string().min(1)
 		}),
-		rfqs_products: z
+		rfqs_parts: z
 			.object({
-				product: z.object({
+				part: z.object({
 					number: z.string().nullable().optional(),
 					nsn: z.number().nullable().optional()
 				}),
-				rfqs_products_quantities: z.object({ quantity: z.number().positive() }).array()
+				rfqs_parts_quantities: z.object({ quantity: z.number().positive() }).array()
 			})
 			.array()
 			.superRefine((fields, ctx) => {
 				for (let i = 0; i < fields.length; i++) {
-					if (fields[i].product.number == null && fields[i].product.nsn == null) {
+					if (fields[i].part.number == null && fields[i].part.nsn == null) {
 						ctx.addIssue({
 							code: 'custom',
 							message: 'Number or NSN is required',
-							path: [i, 'product', 'number']
+							path: [i, 'part', 'number']
 						});
 					}
 
-					if (fields[i].product.nsn != null && fields[i].product.nsn?.toString().length !== 13) {
+					if (fields[i].part.nsn != null && fields[i].part.nsn?.toString().length !== 13) {
 						ctx.addIssue({
 							code: 'custom',
 							message: 'Not 13 digits',
-							path: [i, 'product', 'nsn']
+							path: [i, 'part', 'nsn']
 						});
 					}
 				}
@@ -189,22 +189,22 @@ export const addRFQFormValidation = () =>
 			name: z.string().min(1),
 			email_address: z.string().email().min(1)
 		}),
-		rfqs_products: z
+		rfqs_parts: z
 			.object({
-				product: z.object({
+				part: z.object({
 					number: z.string().min(1),
 					nsn: z.number().nullable().optional()
 				}),
-				rfqs_products_quantities: z.object({ quantity: z.number().positive() }).array()
+				rfqs_parts_quantities: z.object({ quantity: z.number().positive() }).array()
 			})
 			.array()
 			.superRefine((fields, ctx) => {
 				for (let i = 0; i < fields.length; i++) {
-					if (fields[i].product.nsn != null && fields[i].product.nsn?.toString().length !== 13) {
+					if (fields[i].part.nsn != null && fields[i].part.nsn?.toString().length !== 13) {
 						ctx.addIssue({
 							code: 'custom',
 							message: 'Not 13 digits',
-							path: [i, 'product', 'nsn']
+							path: [i, 'part', 'nsn']
 						});
 					}
 				}

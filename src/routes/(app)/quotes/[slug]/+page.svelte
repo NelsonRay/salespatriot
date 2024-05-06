@@ -27,7 +27,7 @@
 		let query = supabase
 			.from('parts_quotes')
 			.select(
-				'id, part(*), parts_quotes_quantities(*), boms_quote(id, bom(id, products(number))), vendor(*), created_at'
+				'id, part(*), parts_quotes_quantities(*), boms_quote(id, bom(id, parts(number))), vendor(*), created_at'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -81,7 +81,7 @@
 			</button>
 			{#if quote}
 				<p>
-					{`${quote.part.number} (PN: ${quote.boms_quote?.bom?.products?.number}) - ${quote.vendor?.name} (${quote.vendor.email})`}
+					{`${quote.part.number} (PN: ${quote.boms_quote?.bom?.parts?.number}) - ${quote.vendor?.name} (${quote.vendor.email})`}
 				</p>
 			{/if}
 		</div>

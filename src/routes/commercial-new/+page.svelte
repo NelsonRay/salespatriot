@@ -17,10 +17,10 @@
 		customer: {},
 		received_at: null,
 		requested_return_date: null,
-		rfqs_products: [
+		rfqs_parts: [
 			{
-				product: {},
-				rfqs_products_quantities: [{ quantity: null }]
+				part: {},
+				rfqs_parts_quantities: [{ quantity: null }]
 			}
 		],
 		notes: ''
@@ -29,7 +29,7 @@
 	let customerRfqs = [];
 
 	let customerSelected = true;
-	let createdProductsIndexes = [];
+	let createdPartsIndexes = [];
 	let submitted = false;
 	let isSubmitting = false;
 	let errors;
@@ -42,9 +42,9 @@
 			errors = [...(errors ?? []), { path: ['customer', 'name'] }];
 		}
 
-		for (let i = 0; i < rfq.rfqs_products.length; i++) {
-			if (!rfq.rfqs_products[i].product?.id && !createdProductsIndexes.includes(i)) {
-				errors = [...(errors ?? []), { path: ['rfqs_products', i, 'product', 'number'] }];
+		for (let i = 0; i < rfq.rfqs_parts.length; i++) {
+			if (!rfq.rfqs_parts[i].part?.id && !createdPartsIndexes.includes(i)) {
+				errors = [...(errors ?? []), { path: ['rfqs_parts', i, 'part', 'number'] }];
 			}
 		}
 
@@ -65,7 +65,7 @@
 	async function loadCustomerRfqs() {
 		const { data } = await supabase
 			.from('rfqs')
-			.select('*, customer(*), rfqs_products(*, product(number), rfqs_products_quantities(*))')
+			.select('*, customer(*), rfqs_parts(*, part(number), rfqs_parts_quantities(*))')
 			.eq('customer', rfq.customer.id);
 
 		customerRfqs = data;
@@ -161,11 +161,11 @@
 			</div>
 
 			<Products
-				bind:rfqs_products={rfq.rfqs_products}
+				bind:rfqs_parts={rfq.rfqs_parts}
 				showRemove
 				{supabase}
 				{errors}
-				bind:createdProductsIndexes
+				bind:createdPartsIndexes
 			/>
 
 			<p class="text-lg mt-10 font-medium">Notes</p>
