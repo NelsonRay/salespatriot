@@ -33,7 +33,7 @@ export async function POST({ request, cookies }) {
 		const { data, error } = await supabase
 			.from('rfqs')
 			.select(
-				'*, rfqs_products(*, product(*, product_labor_minutes(*), product_purchasing(*)), rfqs_products_quantities(*))'
+				'*, rfqs_parts(*, part(*, parts_labor_minutes(*), parts_purchasing(*)), rfqs_parts_quantities(*))'
 			)
 			.eq('id', rfq)
 			.limit(1)
@@ -42,24 +42,24 @@ export async function POST({ request, cookies }) {
 		let isRfqLaborComplete = true;
 		let isRfqPurchasingComplete = true;
 
-		for (let product of data.rfqs_products) {
+		for (let rfqs_part of data.rfqs_parts) {
 			let purchasing_ready = false;
-			let product_labor_minutes = null;
+			let parts_labor_minutes = null;
 			let labor_minutes = null;
 
 			if (
-				product?.product?.product_labor_minutes?.filter(
+				rfqs_part?.part?.parts_labor_minutes?.filter(
 					(d) => Math.abs(calculateDaysDifference(new Date(d.created_at))) < 300
 				)?.length > 0
 			) {
-				product_labor_minutes = product?.product?.product_labor_minutes[0]?.id;
-				labor_minutes = product?.product?.product_labor_minutes[0]?.labor_minutes;
+				parts_labor_minutes = rfqs_part?.part?.parts_labor_minutes[0]?.id;
+				labor_minutes = rfqs_part?.parts?.parts_labor_minutes[0]?.labor_minutes;
 			} else {
 				isRfqLaborComplete = false;
 			}
 
 			if (
-				product?.product?.product_purchasing?.filter(
+				rfqs_part?.part?.parts_purchasing?.filter(
 					(d) => Math.abs(calculateDaysDifference(new Date(d.created_at))) < 180
 				)?.length > 0
 			) {
@@ -69,15 +69,15 @@ export async function POST({ request, cookies }) {
 			}
 
 			await supabase
-				.from('rfqs_products')
-				.update({ purchasing_ready, product_labor_minutes, labor_minutes })
-				.eq('id', product?.id);
+				.from('rfqs_parts')
+				.update({ purchasing_ready, parts_labor_minutes, labor_minutes })
+				.eq('id', rfqs_part?.id);
 
 			if (!purchasing_ready) {
 				const { data: forms } = await supabase
 					.from('forms')
 					.select('id')
-					.eq('product', product?.product?.id)
+					.eq('part', rfqs_part?.part?.id)
 					.eq('submitted', false)
 					.eq('deleted', false)
 					.eq('form', '18055704-d9b9-42d7-958b-f5d1d5b1ba4d');
@@ -86,15 +86,15 @@ export async function POST({ request, cookies }) {
 					await supabase.from('forms').insert({
 						commercial: true,
 						form: '18055704-d9b9-42d7-958b-f5d1d5b1ba4d',
-						product: product.product.id
+						part: rfqs_part.part.id
 					});
 			}
 
-			if (!product_labor_minutes) {
+			if (!parts_labor_minutes) {
 				const { data: forms } = await supabase
 					.from('forms')
 					.select('id')
-					.eq('product', product?.product?.id)
+					.eq('part', rfqs_part?.part?.id)
 					.eq('submitted', false)
 					.eq('deleted', false)
 					.eq('form', '53cc6979-4406-47aa-97a0-1d83d0504c12');
@@ -103,7 +103,7 @@ export async function POST({ request, cookies }) {
 					await supabase.from('forms').insert({
 						commercial: true,
 						form: '53cc6979-4406-47aa-97a0-1d83d0504c12',
-						product: product.product.id
+						part: rfqs_part.part.id
 					});
 			}
 		}

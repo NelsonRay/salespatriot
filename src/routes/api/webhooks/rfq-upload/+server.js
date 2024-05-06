@@ -28,7 +28,7 @@ export async function POST({ request, cookies }) {
 	let rfqId = null;
 
 	try {
-		const { customer, rfqs_products, ...rest } = rfq;
+		const { customer, rfqs_parts, ...rest } = rfq;
 
 		let customerId = customer.id;
 
@@ -62,56 +62,56 @@ export async function POST({ request, cookies }) {
 
 		rfqId = data?.id;
 
-		for (let rfqs_product of rfqs_products) {
-			const { rfqs_products_quantities, product } = rfqs_product;
+		for (let rfqs_part of rfqs_parts) {
+			const { rfqs_parts_quantities, part } = rfqs_part;
 
-			let productId = product?.id;
-			// if product nsn is assigned, ensure it exists
-			if (product.nsn) await supabase.from('nsns').upsert({ id: product.nsn });
+			let partId = part?.id;
+			// if part nsn is assigned, ensure it exists
+			if (part.nsn) await supabase.from('nsns').upsert({ id: part.nsn });
 
-			if (!productId) {
+			if (!partId) {
 				const { data: pData, error: pErr } = await supabase
-					.from('products')
+					.from('parts')
 					.insert({
-						number: product.number,
-						nsn: product.nsn || null,
-						cross_reference: product.cross_reference,
+						number: part.number,
+						nsn: part.nsn || null,
+						cross_reference: part.cross_reference,
 						firm: '6b289746-2b01-47af-a7d4-26a3920f75ca'
 					})
 					.select('id')
 					.limit(1)
 					.single();
 
-				if (pErr) throw { type: 'Products Error', ...pErr };
-				productId = pData?.id;
-			} else if (product.nsn) {
-				await supabase.from('products').update({ nsn: product.nsn }).eq('id', productId);
+				if (pErr) throw { type: 'Parts Error', ...pErr };
+				partId = pData?.id;
+			} else if (part.nsn) {
+				await supabase.from('parts').update({ nsn: part.nsn }).eq('id', partId);
 			}
 
 			const { data: rData, error: rErr } = await supabase
-				.from('rfqs_products')
+				.from('rfqs_parts')
 				.insert({
 					rfq: rfqId,
-					product: productId,
-					cross_reference: rfqs_product.cross_reference || null
+					part: partId,
+					cross_reference: rfqs_part.cross_reference || null
 				})
 				.select('id')
 				.limit(1)
 				.single();
 
-			if (rErr) throw { type: 'RFQs Products Error', ...rErr };
+			if (rErr) throw { type: 'RFQs Parts Error', ...rErr };
 
-			const rfqProductId = rData?.id;
+			const rfqPartId = rData?.id;
 
-			for (let rfqs_products_quantity of rfqs_products_quantities) {
+			for (let rfqs_parts_quantity of rfqs_parts_quantities) {
 				const { error: qErr } = await supabase
-					.from('rfqs_products_quantities')
-					.insert({ rfqs_product: rfqProductId, quantity: rfqs_products_quantity.quantity })
+					.from('rfqs_parts_quantities')
+					.insert({ rfqs_part: rfqPartId, quantity: rfqs_parts_quantity.quantity })
 					.select('id')
 					.limit(1)
 					.single();
 
-				if (qErr) throw { type: 'RFQs Products Qty Error', ...qErr };
+				if (qErr) throw { type: 'RFQs Parts Qty Error', ...qErr };
 			}
 		}
 

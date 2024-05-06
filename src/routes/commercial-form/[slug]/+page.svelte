@@ -17,48 +17,46 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*, product_labor_minutes(*), comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at))), rfq_public(*), rfq(*, comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)), customer(*), rfqs_products(*, product(*, product_purchasing(*), product_labor_minutes(*)), rfqs_products_quantities(*)))'
+				'*, form!inner(*), part(*, parts_labor_minutes(*), comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at))), rfq_public(*), rfq(*, comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)), customer(*), rfqs_parts(*, part(*, parts_purchasing(*), parts_labor_minutes(*)), rfqs_parts_quantities(*)))'
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
 			.single();
 
 		if (data?.rfq) {
-			let { data: productsComments } = await supabase
+			let { data: partsComments } = await supabase
 				.from('comments')
-				.select(
-					'*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)'
-				)
+				.select('*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)')
 				.in(
-					'product',
-					data.rfq.rfqs_products.map((p) => p.product.id)
+					'part',
+					data.rfq.rfqs_parts.map((p) => p.part.id)
 				);
 
-			comments = [...(data?.rfq?.comments ?? []), ...productsComments];
-		} else if (data?.product) {
-			let { data: rfqs_products } = await supabase
-				.from('rfqs_products')
+			comments = [...(data?.rfq?.comments ?? []), ...partsComments];
+		} else if (data?.part) {
+			let { data: rfqs_parts } = await supabase
+				.from('rfqs_parts')
 				.select(
-					'id, rfq(comments(*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)))'
+					'id, rfq(comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)))'
 				)
-				.eq('product', data.product.id);
+				.eq('part', data.part.id);
 
 			let rfqComments = [];
 
-			for (let rfqs_product of rfqs_products) {
-				rfqComments = [...rfqComments, ...(rfqs_product?.rfq?.comments ?? [])];
+			for (let rfqs_part of rfqs_parts) {
+				rfqComments = [...rfqComments, ...(rfqs_part?.rfq?.comments ?? [])];
 			}
 
-			comments = [...(data?.product?.comments ?? []), ...rfqComments];
+			comments = [...(data?.part?.comments ?? []), ...rfqComments];
 		}
 
 		if (data?.form?.type === 'purchasing') {
 			const { data: d, error: e } = await supabase
-				.from('rfqs_products')
+				.from('rfqs_parts')
 				.select(
-					'id, rfq!inner(id, status, customer(*), received_at, rfqs_products(id, rfqs_products_quantities(*)))'
+					'id, rfq!inner(id, status, customer(*), received_at, rfqs_parts(id, rfqs_parts_quantities(*)))'
 				)
-				.eq('product', data.product.id);
+				.eq('part', data.part.id);
 
 			rfqsForPurchasingForm = d;
 		}
@@ -76,10 +74,10 @@
 				},
 				received_at: data.rfq_public.values.received_at,
 				requested_return_date: data.rfq_public.values.requested_return_date,
-				rfqs_products: [
+				rfqs_parts: [
 					{
-						product: {},
-						rfqs_products_quantities: [{ quantity: null }]
+						part: {},
+						rfqs_parts_quantities: [{ quantity: null }]
 					}
 				],
 				notes: data.rfq_public?.values?.notes
@@ -108,12 +106,10 @@
 					message,
 					user: session.user.id,
 					form: form.id,
-					product: form?.product?.id,
+					part: form?.part?.id,
 					rfq: form?.rfq?.id
 				})
-				.select(
-					'*, form(form(name)), user(name), product(number), rfq(customer(name), received_at)'
-				)
+				.select('*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)')
 				.limit(1)
 				.single();
 
@@ -172,7 +168,7 @@
 			{commentSubmitCallback}
 			{supabase}
 			{rfqsForPurchasingForm}
-			productLaborMinutes={form?.product?.product_labor_minutes}
+			partLaborMinutes={form?.part?.parts_labor_minutes}
 		/>
 	{/if}
 {/if}

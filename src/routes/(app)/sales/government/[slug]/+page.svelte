@@ -26,7 +26,7 @@
 	async function loadData(pathname) {
 		let query = supabase
 			.from('solicitations_matched')
-			.select(`*, solicitation!inner(${solColumns}, nsn(id, products(*))), matching_rule(*)`);
+			.select(`*, solicitation!inner(${solColumns}, nsn(id, parts(*))), matching_rule(*)`);
 
 		switch (pathname) {
 			case '/sales/government/bidding-funnel':

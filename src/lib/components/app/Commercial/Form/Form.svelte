@@ -29,9 +29,9 @@
 	export let supabase = undefined;
 	export let rfqsForPurchasingForm = undefined;
 	export let awardModalOpen;
-	export let productLaborMinutes;
+	export let partLaborMinutes;
 
-	let focusedRfqProductQty;
+	let focusedRfqPartQty;
 	let reviewValues;
 	let errors;
 
@@ -48,7 +48,7 @@
 	}
 
 	let customerSelected = true;
-	let createdProductsIndexes = [];
+	let createdPartsIndexes = [];
 
 	function handleCompanySelection(event) {
 		customerSelected = true;
@@ -90,9 +90,9 @@
 				errors = [...(errors ?? []), { path: ['customer', 'name'] }];
 			}
 
-			for (let i = 0; i < values.rfqs_products.length; i++) {
-				if (!values.rfqs_products[i].product?.id && !createdProductsIndexes.includes(i)) {
-					errors = [...(errors ?? []), { path: ['rfqs_products', i, 'product', 'number'] }];
+			for (let i = 0; i < values.rfqs_parts.length; i++) {
+				if (!values.rfqs_parts[i].part?.id && !createdPartsIndexes.includes(i)) {
+					errors = [...(errors ?? []), { path: ['rfqs_parts', i, 'part', 'number'] }];
 				}
 			}
 		}
@@ -103,9 +103,9 @@
 	}
 
 	$: reviewValues = getCommercialValueCalculation(
-		focusedRfqProductQty,
-		(values?.rfqs_products ?? values.rfq?.rfqs_products)?.filter(
-			(p) => p?.id === focusedRfqProductQty?.rfqs_product
+		focusedRfqPartQty,
+		(values?.rfqs_parts ?? values.rfq?.rfqs_parts)?.filter(
+			(p) => p?.id === focusedRfqPartQty?.rfqs_part
 		)[0]
 	);
 </script>
@@ -146,24 +146,24 @@
 
 					<div>
 						<Products
-							bind:rfqs_products={values.rfqs_products}
+							bind:rfqs_parts={values.rfqs_parts}
 							{showRemove}
 							showPurchasing={['purchasing', 'final_pricing', null, undefined].includes(form?.type)}
 							showPricing={['final_pricing', null, undefined].includes(form?.type)}
 							showAll={['enter_quote', 'bid'].includes(form?.type)}
 							{errors}
-							bind:focusedRfqProductQty
+							bind:focusedRfqPartQty
 						/>
 					</div>
 				{/if}
 				{#if ['labor', 'purchasing'].includes(form?.type)}
 					<div>
-						<p class="mb-1">Product Number</p>
-						<TextInput value={data?.product?.number} disabled fullWidth={false} />
+						<p class="mb-1">Part Number</p>
+						<TextInput value={data?.part?.number} disabled fullWidth={false} />
 					</div>
 					<div>
-						<p class="mb-1">Product NSN</p>
-						<TextInput value={data?.product?.nsn} disabled fullWidth={false} />
+						<p class="mb-1">Part NSN</p>
+						<TextInput value={data?.part?.nsn} disabled fullWidth={false} />
 					</div>
 					<div>
 						<p class="mb-1">Cross Ref</p>
@@ -189,8 +189,8 @@
 
 					{#if form?.type == 'labor'}
 						<p>Previously Recorded Labor Minutes:</p>
-						{#if productLaborMinutes?.length > 0}
-							<Table data={productLaborMinutes} />
+						{#if partLaborMinutes?.length > 0}
+							<Table data={partLaborMinutes} />
 						{:else}
 							<p>None</p>
 						{/if}
@@ -259,11 +259,11 @@
 					<PublicPartsTable data={data.rfq_public.values} />
 
 					<Products
-						bind:rfqs_products={values.rfqs_products}
+						bind:rfqs_parts={values.rfqs_parts}
 						showRemove
 						{supabase}
 						{errors}
-						bind:createdProductsIndexes
+						bind:createdPartsIndexes
 					/>
 
 					<div class="mr-5">

@@ -15,7 +15,7 @@
 	async function loadData() {
 		let query = supabase
 			.from('parts_quotes')
-			.select('*, part(*), boms_quote(id, bom(id, products(number))), vendor(*)');
+			.select('*, part(*), boms_quote(id, bom(id, parts(number))), vendor(*)');
 
 		if (!showAll) {
 			query = query.eq('complete', false);

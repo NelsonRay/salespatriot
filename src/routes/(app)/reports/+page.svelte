@@ -24,7 +24,7 @@
 	async function loadData() {
 		const { data: sols, error } = await supabase
 			.from('solicitations_matched')
-			.select(`*, solicitation!inner(${solColumns}, nsn(id, products(*))), matching_rule(*)`)
+			.select(`*, solicitation!inner(${solColumns}, nsn(id, parts(*))), matching_rule(*)`)
 			.gte('bid_timestamp', new Date(startDate).toUTCString())
 			.lte('bid_timestamp', new Date(endDate).toUTCString());
 
@@ -32,7 +32,7 @@
 
 		const { data, error: err } = await supabase
 			.from('rfqs')
-			.select('*, customer!inner(*), rfqs_products(product(number), rfqs_products_quantities(*))')
+			.select('*, customer!inner(*), rfqs_parts(part(number), rfqs_parts_quantities(*))')
 			.gte('sent_quote_timestamp', new Date(startDate).toUTCString())
 			.lte('sent_quote_timestamp', new Date(endDate).toUTCString());
 
@@ -53,10 +53,10 @@
 		let value = 0;
 
 		for (let rfq of allRfqs) {
-			let avgProducts = [];
+			let avgParts = [];
 
-			for (let product of rfq.rfqs_products) {
-				const qtyPrices = product.rfqs_products_quantities.map((q) => q.quantity * q.final_pricing);
+			for (let rfqs_part of rfq.rfqs_parts) {
+				const qtyPrices = rfqs_part.rfqs_parts_quantities.map((q) => q.quantity * q.final_pricing);
 
 				let sumOfQtyPrices = 0;
 
@@ -64,15 +64,15 @@
 					sumOfQtyPrices += qtyPrice;
 				}
 
-				let avgForProduct = sumOfQtyPrices / product.rfqs_products_quantities?.length;
+				let avgForPart = sumOfQtyPrices / rfqs_part.rfqs_parts_quantities?.length;
 
-				avgProducts = [...avgProducts, avgForProduct];
+				avgParts = [...avgParts, avgForPart];
 			}
 
 			let avgValueForRfq = 0;
 
-			for (let avgProduct of avgProducts) {
-				avgValueForRfq += avgProduct;
+			for (let avgPart of avgParts) {
+				avgValueForRfq += avgPart;
 			}
 
 			value += avgValueForRfq;

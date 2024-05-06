@@ -6,15 +6,15 @@
 
 	const columns = [
 		{ type: 'position', header: '#' },
-		{ type: 'products', header: 'Products' },
+		{ type: 'parts', header: 'Parts' },
 		{ type: 'field', field: 'received_at', header: 'Date Received' }
 	];
 
 	export function tableFieldMapper(obj, column) {
 		let value;
 
-		if (column.type === 'products') {
-			value = obj?.rfqs_products?.map((p) => p.product.number).join(', ');
+		if (column.type === 'parts') {
+			value = obj?.rfqs_parts?.map((p) => p.part.number).join(', ');
 		} else if (column.type === 'field') {
 			value = formatMonthDayYearDate(obj?.[column.field]);
 		}

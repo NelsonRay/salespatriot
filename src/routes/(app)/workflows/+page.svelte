@@ -32,7 +32,7 @@
 		let formsQuery = supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), product(*, rfqs_products(*, rfq(status, customer(name)), rfqs_products_quantities(*))), rfq(*, customer(name), rfqs_products(id, product(number), rfqs_products_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
+				'*, form!inner(*), part(*, rfqs_parts(*, rfq(status, customer(name)), rfqs_parts_quantities(*))), rfq(*, customer(name), rfqs_parts(id, part(number), rfqs_parts_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
 			)
 			.eq('deleted', false)
 			.eq('submitted', false);
@@ -92,11 +92,11 @@
 	}
 
 	function getRFQDescription(rfq) {
-		let parts = rfq?.rfqs_products?.length ?? 0;
+		let parts = rfq?.rfqs_parts?.length ?? 0;
 		let qty = 0;
 
-		for (let p of rfq?.rfqs_products ?? []) {
-			qty += p.rfqs_products_quantities?.length ?? 0;
+		for (let p of rfq?.rfqs_parts ?? []) {
+			qty += p.rfqs_parts_quantities?.length ?? 0;
 		}
 
 		return `# of Parts: ${parts}, # of Quantities: ${qty}`;
@@ -106,7 +106,7 @@
 		if (form.id === '5a91b7a7-513f-4067-8776-1cb01f334c96') {
 			return forms.rfq_public.values.customer.name + ' / ' + forms.rfq_public.values.received_at;
 		} else {
-			return forms?.product?.number ?? forms.rfq?.customer?.name + ' / ' + forms.rfq.received_at;
+			return forms?.part?.number ?? forms.rfq?.customer?.name + ' / ' + forms.rfq.received_at;
 		}
 	}
 </script>
@@ -170,31 +170,31 @@
 								{/if}
 								{#if form?.type === 'purchasing'}
 									<div class="mb-2">
-										{#each forms?.product?.rfqs_products.filter((p) => !p.rfq.status.includes('purchasing:complete')) ?? [] as rfqs_product}
+										{#each forms?.part?.rfqs_parts.filter((p) => !p.rfq.status.includes('purchasing:complete')) ?? [] as rfqs_part}
 											<p class="mt-1 font-medium">
 												{'QTY: ' +
-													rfqs_product.rfqs_products_quantities.map((p) => p.quantity).join(', ') +
+													rfqs_part.rfqs_parts_quantities.map((p) => p.quantity).join(', ') +
 													' - ' +
-													rfqs_product.rfq.customer.name}
+													rfqs_part.rfq.customer.name}
 											</p>
 										{/each}
 									</div>
 								{/if}
 								{#if form?.type === 'labor'}
 									<div class="mb-2">
-										{#each forms?.product?.rfqs_products.filter((p) => !p.rfq.status.includes('labor:complete')) ?? [] as rfqs_product}
+										{#each forms?.part?.rfqs_parts.filter((p) => !p.rfq.status.includes('labor:complete')) ?? [] as rfqs_part}
 											<p class="mt-1 font-medium">
 												{'QTY: ' +
-													rfqs_product.rfqs_products_quantities.map((p) => p.quantity).join(', ') +
+													rfqs_part.rfqs_parts_quantities.map((p) => p.quantity).join(', ') +
 													' - ' +
-													rfqs_product.rfq.customer.name}
+													rfqs_part.rfq.customer.name}
 											</p>
 										{/each}
 									</div>
 								{/if}
 								{#if form?.type === 'enter_quote'}
-									{#each forms?.rfq?.rfqs_products ?? [] as rfqs_product}
-										<p class="mt-1 font-medium">{rfqs_product.product.number}</p>
+									{#each forms?.rfq?.rfqs_parts ?? [] as rfqs_part}
+										<p class="mt-1 font-medium">{rfqs_part.part.number}</p>
 									{/each}
 								{/if}
 								{#if forms?.rfq_public}

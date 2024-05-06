@@ -11,41 +11,41 @@ export async function POST({ request, locals: { supabase } }) {
 	const { values } = await request.json();
 
 	// forcefully push rfq thru to enter quote and send quote stages
-	for (let rfqs_product of values.rfqs_products) {
+	for (let rfqs_part of values.rfqs_parts) {
 		await supabase
-			.from('rfqs_products')
-			.update({ labor_minutes: rfqs_product.labor_minutes })
-			.eq('id', rfqs_product.id);
+			.from('rfqs_parts')
+			.update({ labor_minutes: rfqs_part.labor_minutes })
+			.eq('id', rfqs_part.id);
 
-		for (let rfqs_products_quantity of rfqs_product.rfqs_products_quantities) {
+		for (let rfqs_parts_quantity of rfqs_part.rfqs_parts_quantities) {
 			await supabase
-				.from('rfqs_products_quantities')
+				.from('rfqs_parts_quantities')
 				.update({
-					lead_time: rfqs_products_quantity.lead_time,
-					material_cost: rfqs_products_quantity.material_cost,
-					final_pricing: rfqs_products_quantity.final_pricing
+					lead_time: rfqs_parts_quantity.lead_time,
+					material_cost: rfqs_parts_quantity.material_cost,
+					final_pricing: rfqs_parts_quantity.final_pricing
 				})
-				.eq('id', rfqs_products_quantity.id);
+				.eq('id', rfqs_parts_quantity.id);
 		}
 	}
 
 	// determine if should delete purchasing forms
-	for (let rfqs_product of values.rfqs_products) {
+	for (let rfqs_part of values.rfqs_parts) {
 		const { data } = await supabase
-			.from('rfqs_products')
+			.from('rfqs_parts')
 			.select('id, rfq!inner(id, status)')
 			.filter('rfq.status', 'cs', `{"purchasing:in_progress"}`)
 			.eq('removed', false)
-			.eq('product', rfqs_product.product);
+			.eq('part', rfqs_part.part);
 
-		// see if another live rfq awaiting same product purchasing form - if so, don't delete form
+		// see if another live rfq awaiting same part purchasing form - if so, don't delete form
 		const deleteForm = data?.filter((d) => d?.rfq?.id !== values.id)?.length === 0;
 
-		if (deleteForm && rfqs_product.product != null) {
+		if (deleteForm && rfqs_part.part != null) {
 			await supabase
 				.from('forms')
 				.update({ deleted: true })
-				.eq('product', rfqs_product.product)
+				.eq('part', rfqs_part.part)
 				.eq('form', '18055704-d9b9-42d7-958b-f5d1d5b1ba4d')
 				.eq('submitted', false);
 		}

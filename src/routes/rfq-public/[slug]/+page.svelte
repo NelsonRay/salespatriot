@@ -15,16 +15,16 @@
 		customer: {},
 		received_at: formatDate(new Date()),
 		requested_return_date: null,
-		rfqs_products: [
+		rfqs_parts: [
 			{
-				product: {},
-				rfqs_products_quantities: [{ quantity: null }]
+				part: {},
+				rfqs_parts_quantities: [{ quantity: null }]
 			}
 		],
 		notes: ''
 	};
 
-	let createdProductsIndexes = [];
+	let createdPartsIndexes = [];
 	let submitted = false;
 	let isSubmitting = false;
 	let errors;
@@ -67,8 +67,8 @@
 			</div>
 			<h1 class="text-3xl mt-8">Request for Quote</h1>
 			<p class="text-xs mt-4 mb-8">
-				If you have any questions about a product/quote, feel free to call us at 630-851-1616 or
-				email sales@auroradefensegroup.com.<br /> We aim to return all quotes in 5 days or less.
+				If you have any questions about a part/quote, feel free to call us at 630-851-1616 or email
+				sales@auroradefensegroup.com.<br /> We aim to return all quotes in 5 days or less.
 			</p>
 			<div class="grid grid-cols-2 gap-5 mb-5">
 				<div class="flex flex-col">
@@ -111,12 +111,12 @@
 			</div>
 
 			<Products
-				bind:rfqs_products={rfq.rfqs_products}
+				bind:rfqs_parts={rfq.rfqs_parts}
 				showRemove
 				{supabase}
 				{errors}
 				isPublicForm
-				bind:createdProductsIndexes
+				bind:createdPartsIndexes
 			/>
 
 			<p class="text-lg mt-10 font-medium">

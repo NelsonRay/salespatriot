@@ -106,10 +106,10 @@ export function commercialTableFieldMapper(obj, column) {
 		return { header, value };
 	} else if (column.type === 'email') {
 		return { header: 'Email', value: obj?.email_address };
-	} else if (column.type === 'products') {
+	} else if (column.type === 'parts') {
 		return {
-			header: 'Products',
-			value: obj?.rfqs_products?.map((p) => p?.product?.number)?.join(', ')
+			header: 'Parts',
+			value: obj?.rfqs_parts?.map((p) => p?.part?.number)?.join(', ')
 		};
 	} else if (column.type === 'name') {
 		return {
@@ -118,10 +118,10 @@ export function commercialTableFieldMapper(obj, column) {
 		};
 	} else if (column.type === 'value') {
 		let value = 0;
-		let avgProducts = [];
+		let avgParts = [];
 
-		for (let product of obj?.rfqs_products ?? []) {
-			const qtyPrices = product.rfqs_products_quantities.map((q) => q.quantity * q.final_pricing);
+		for (let rfqs_part of obj?.rfqs_parts ?? []) {
+			const qtyPrices = rfqs_part.rfqs_parts_quantities.map((q) => q.quantity * q.final_pricing);
 
 			let sumOfQtyPrices = 0;
 
@@ -129,15 +129,15 @@ export function commercialTableFieldMapper(obj, column) {
 				sumOfQtyPrices += qtyPrice;
 			}
 
-			let avgForProduct = sumOfQtyPrices / product.rfqs_products_quantities?.length;
+			let avgForPart = sumOfQtyPrices / rfqs_part.rfqs_parts_quantities?.length;
 
-			avgProducts = [...avgProducts, avgForProduct];
+			avgParts = [...avgParts, avgForPart];
 		}
 
 		let avgValueForRfq = 0;
 
-		for (let avgProduct of avgProducts) {
-			avgValueForRfq += avgProduct;
+		for (let avgPart of avgParts) {
+			avgValueForRfq += avgPart;
 		}
 
 		value += avgValueForRfq;
@@ -225,11 +225,11 @@ export function tableFieldMapper(obj, column) {
 			return { header: 'Error', value: '' };
 		} else if (column.type === 'bid_partners') {
 			return { header: 'Bid Partner(s)', value: obj?.bid_partners || null };
-		} else if (column.type === 'products') {
+		} else if (column.type === 'parts') {
 			let value = '';
 
 			let skipComma = true;
-			for (let match of obj?.solicitation.nsn?.products ?? []) {
+			for (let match of obj?.solicitation.nsn?.parts ?? []) {
 				value += match.number;
 				if (!skipComma) value += ', ';
 				skipComma = false;

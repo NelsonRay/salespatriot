@@ -2,8 +2,8 @@
 	// @ts-nocheck
 	export let data;
 
-	function getQty(product) {
-		return product?.rfqs_products_quantities?.map((e) => e?.quantity).join(', ');
+	function getQty(part) {
+		return part?.rfqs_parts_quantities?.map((e) => e?.quantity).join(', ');
 	}
 </script>
 
@@ -20,12 +20,12 @@
 				{/each}
 			</thead>
 			<tbody>
-				{#each data.rfqs_products as rfqs_product}
+				{#each data.rfqs_parts as rfqs_part}
 					<tr class="hover:bg-neutral-100">
-						<td>{rfqs_product.product.number ?? ''}</td>
-						<td>{rfqs_product.product.nsn ?? ''}</td>
-						<td>{rfqs_product.cross_reference ?? ''}</td>
-						<td>{getQty(rfqs_product)}</td>
+						<td>{rfqs_part.part.number ?? ''}</td>
+						<td>{rfqs_part.part.nsn ?? ''}</td>
+						<td>{rfqs_part.cross_reference ?? ''}</td>
+						<td>{getQty(rfqs_part)}</td>
 					</tr>
 				{/each}
 			</tbody>

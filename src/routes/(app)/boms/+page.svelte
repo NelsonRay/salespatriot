@@ -20,7 +20,7 @@
 	});
 
 	async function loadData() {
-		let query = supabase.from('boms_quotes').select('*, bom(*, products(*))').eq('removed', false);
+		let query = supabase.from('boms_quotes').select('*, bom(*, parts(*))').eq('removed', false);
 
 		let { data, error } = await query;
 

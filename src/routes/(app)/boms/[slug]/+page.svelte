@@ -38,7 +38,7 @@
 		let query = supabase
 			.from('boms_quotes')
 			.select(
-				'*, bom(*, products(*)), boms_quotes_parts(*, vendor(*), boms_part(*, part(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*), vendors_email(*))), parts_po_history(*, vendor(name)))'
+				'*, bom(*, parts(*)), boms_quotes_parts(*, vendor(*), boms_part(*, part(*)), parts_quotes_quantity(*, parts_quote(*, vendor(*), vendors_email(*))), parts_po_history(*, vendor(name)))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -244,7 +244,7 @@
 <div class="relative top-0">
 	<div class="flex flex-row h-14 items-center justify-between mx-2">
 		<div class="flex flex-row items-center">
-			<p class="font-semibold ml-4 text-sm">{(boms_quote?.bom?.products?.number ?? '') + ' '}BOM</p>
+			<p class="font-semibold ml-4 text-sm">{(boms_quote?.bom?.parts?.number ?? '') + ' '}BOM</p>
 		</div>
 		<div class="flex flex-row items-center space-x-5">
 			<p>{calcMatCost(boms_quote, isSelectingParts, selectedParts)}</p>

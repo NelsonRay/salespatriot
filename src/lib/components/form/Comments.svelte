@@ -44,7 +44,7 @@
 								(comment?.rfq
 									? ' · ' + comment.rfq?.customer?.name + ' / ' + comment.rfq?.received_at
 									: '') +
-								(comment?.product ? ' · ' + comment.product?.number : '')}
+								(comment?.part ? ' · ' + comment.part?.number : '')}
 						</p>
 					</div>
 				</div>

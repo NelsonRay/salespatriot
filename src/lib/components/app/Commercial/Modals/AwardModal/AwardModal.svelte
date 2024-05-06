@@ -63,15 +63,15 @@
 
 					{#if values?.status?.includes('response:placed_order')}
 						<div class="flex flex-col">
-							{#each values.rfqs_products as product, i}
+							{#each values.rfqs_parts as rfqs_part, i}
 								<div
 									class="flex flex-row justify-between items-center space-x-5 bg-neutral-100 p-3 rounded-lg"
 								>
-									<p>{product.product.number}</p>
+									<p>{rfqs_part.part.number}</p>
 									<div>
 										<p class="mb-1 text-sm">Quantity:</p>
-										<Currency bind:value={product.quantity_ordered} width={'w-24'} />
-										{#if hasErrors(errors, ['rfqs_products', i, 'quantity_ordered'])}
+										<Currency bind:value={rfqs_part.quantity_ordered} width={'w-24'} />
+										{#if hasErrors(errors, ['rfqs_parts', i, 'quantity_ordered'])}
 											<label for="trim" class="label">
 												<span class="label-text-alt text-error">Required</span>
 											</label>
@@ -79,8 +79,8 @@
 									</div>
 									<div>
 										<p class="mb-1 text-sm">Unit Price:</p>
-										<Currency bind:value={product.unit_price_ordered} width={'w-24'} />
-										{#if hasErrors(errors, ['rfqs_products', i, 'unit_price_ordered'])}
+										<Currency bind:value={rfqs_part.unit_price_ordered} width={'w-24'} />
+										{#if hasErrors(errors, ['rfqs_parts', i, 'unit_price_ordered'])}
 											<label for="trim" class="label">
 												<span class="label-text-alt text-error">Required</span>
 											</label>

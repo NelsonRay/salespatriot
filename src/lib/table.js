@@ -16,7 +16,7 @@ export function getColumns(pathname) {
 				{ type: 'status', status: 'opportunity' },
 				{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
 				{
-					type: 'products',
+					type: 'parts',
 					header: 'In-House PN'
 				},
 				{ type: 'field', field: 'first_article_waive_requested' },
@@ -66,7 +66,7 @@ export function getColumns(pathname) {
 				{ type: 'field', field: 'solicitation.quantity_units' },
 				{ type: 'field', field: 'solicitation.first_article' },
 				{
-					type: 'products',
+					type: 'parts',
 					header: 'In-House PN'
 				},
 				{ type: 'field', field: 'solicitation.days_to_deliver' },
@@ -96,7 +96,7 @@ export function getReportColumns() {
 		{ type: 'formula', field: 'diff_unit_price' },
 		{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
 		{
-			type: 'products',
+			type: 'parts',
 			header: 'In-House PN'
 		},
 		{ type: 'field', field: 'solicitation.issued_on' },
@@ -113,7 +113,7 @@ export function getReportRfqColumns() {
 		{ type: 'value' },
 		{ type: 'status', status: 'send_quote' },
 		{ type: 'status', status: 'response' },
-		{ type: 'products' },
+		{ type: 'parts' },
 		{ type: 'date', field: 'received_at' },
 		{ type: 'date', field: 'sent_quote_timestamp' },
 		{ type: 'field', field: 'quote_number' },
@@ -168,7 +168,7 @@ export function getNSNColumns(oppForm) {
 		{ type: 'field', field: 'solicitation.description' },
 		{ type: 'field', field: 'solicitation.estimated_value' },
 		{
-			type: 'products',
+			type: 'parts',
 			header: 'In-House PN'
 		},
 		{ type: 'matching_rule', status: 'matching_rule' },
