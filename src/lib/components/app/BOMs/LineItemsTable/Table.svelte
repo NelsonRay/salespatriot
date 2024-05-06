@@ -111,11 +111,8 @@
 				value = formatCurrency(value);
 			}
 		} else if (column.type == 'ext_price') {
-			if (obj?.use_quote != null) {
-				value = formatCurrency(
-					(obj.use_quote ? obj?.parts_quotes_quantity : obj?.parts_po_history)?.unit_price *
-						obj?.boms_part?.quantity
-				);
+			if (obj?.unit_price != null) {
+				value = formatCurrency(obj?.unit_price * obj?.boms_part?.quantity);
 			} else {
 				value = '';
 			}
