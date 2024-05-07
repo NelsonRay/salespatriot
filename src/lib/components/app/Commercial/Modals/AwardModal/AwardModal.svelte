@@ -92,7 +92,7 @@
 						<div class="flex flex-row space-x-5">
 							<div>
 								<p class="mb-1 text-sm">Ordered Date</p>
-								<DateInput bind:value={values.date_ordered} />
+								<DateInput bind:value={values.date_ordered} preventFutureDates={false} />
 								{#if hasErrors(errors, ['date_ordered'])}
 									<label for="trim" class="label">
 										<span class="label-text-alt text-error">Required</span>
@@ -101,7 +101,7 @@
 							</div>
 							<div>
 								<p class="mb-1 text-sm">Due Date</p>
-								<DateInput bind:value={values.due_date} />
+								<DateInput bind:value={values.due_date} preventFutureDates={false} />
 								{#if hasErrors(errors, ['due_date'])}
 									<label for="trim" class="label">
 										<span class="label-text-alt text-error">Required</span>
