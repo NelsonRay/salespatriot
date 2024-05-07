@@ -26,13 +26,13 @@
 			.select('*, customer!inner(*), rfqs_parts(part(number), rfqs_parts_quantities(*))');
 
 		switch (pathname) {
-			case '/sales/commercial/active-rfqs':
+			case '/opportunities/commercial/active-rfqs':
 				query = query.eq('removed', false);
 				break;
-			case '/sales/commercial/sent-rfqs':
+			case '/opportunities/commercial/sent-rfqs':
 				query = query.filter('status', 'cs', `{"send_quote:complete"}`);
 				break;
-			case '/sales/commercial/placed-orders':
+			case '/opportunities/commercial/placed-orders':
 				query = query.filter('status', 'cs', `{"response:placed_order"}`);
 				break;
 			default:
@@ -42,7 +42,7 @@
 		let { data, error } = await query;
 
 		switch (pathname) {
-			case '/sales/commercial/active-rfqs':
+			case '/opportunities/commercial/active-rfqs':
 				for (let status of ['purchasing', 'labor', 'final_pricing'].reverse()) {
 					data = data.sort(function (a, b) {
 						let alevel = 10;
@@ -63,12 +63,12 @@
 					});
 				}
 				break;
-			case '/sales/commercial/sent-rfqs':
+			case '/opportunities/commercial/sent-rfqs':
 				data = data.sort(
 					(a, b) => new Date(b.sent_quote_timestamp) - new Date(a.sent_quote_timestamp)
 				);
 				break;
-			case '/sales/commercial/all-rfqs':
+			case '/opportunities/commercial/all-rfqs':
 				data = data.sort(
 					(a, b) => new Date(a.sent_quote_timestamp) - new Date(b.sent_quote_timestamp)
 				);
@@ -85,10 +85,10 @@
 	});
 
 	const views = {
-		'/sales/commercial/active-rfqs': 'Active RFQS',
-		'/sales/commercial/sent-rfqs': 'Sent RFQS',
-		'/sales/commercial/placed-orders': 'Placed Orders',
-		'/sales/commercial/all-rfqs': 'All RFQS'
+		'/opportunities/commercial/active-rfqs': 'Active RFQS',
+		'/opportunities/commercial/sent-rfqs': 'Sent RFQS',
+		'/opportunities/commercial/placed-orders': 'Placed Orders',
+		'/opportunities/commercial/all-rfqs': 'All RFQS'
 	};
 </script>
 

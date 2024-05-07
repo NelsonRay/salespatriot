@@ -27,7 +27,7 @@ export const handle = sequence(Sentry.sentryHandle(), async ({ event, resolve })
 	event.locals.session = await event.locals.getSession();
 
 	if (['/'].includes(event.url.pathname) && event.locals.session) {
-		throw redirect(303, '/sales/commercial/active-rfqs');
+		throw redirect(303, '/opportunities/commercial/active-rfqs');
 	}
 
 	// if trying to access paths other than accepted api routes, redirect to auth

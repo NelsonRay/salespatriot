@@ -15,6 +15,11 @@
 			</div>
 			<div class="flex flex-col">
 				<p class="font-semibold">Opportunities</p>
+				<SidebarBtn text="Commercial" href={$page.url.origin + '/opportunities/commercial'} />
+				<SidebarBtn text="Government" href={$page.url.origin + '/opportunities/government'} />
+			</div>
+			<div class="flex flex-col">
+				<p class="font-semibold">Sales Orders</p>
 				<SidebarBtn text="Commercial" href={$page.url.origin + '/sales/commercial'} />
 				<SidebarBtn text="Government" href={$page.url.origin + '/sales/government'} />
 			</div>
