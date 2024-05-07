@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 	import Views from '$lib/components/app/Views/Views.svelte';
 	import { page } from '$app/stores';
+	import { commercialTags } from '$lib/tags.js';
 	import Table from '$lib/components/app/Commercial/Table/Table.svelte';
 
 	export let data;
@@ -41,19 +42,21 @@
 		let { data, error } = await query;
 
 		switch (pathname) {
-			case '/sales/commerical/active-rfqs':
+			case '/sales/commercial/active-rfqs':
 				for (let status of ['purchasing', 'labor', 'final_pricing'].reverse()) {
 					data = data.sort(function (a, b) {
 						let alevel = 10;
 						let blevel = 10;
 						if (a.status.some((e) => e.includes(status))) {
 							alevel =
-								govTags[status][a.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
+								commercialTags[status][a.status.filter((e) => e.includes(status))[0].split(':')[1]]
+									.level;
 						}
 
 						if (b.status.some((e) => e.includes(status))) {
 							blevel =
-								govTags[status][b.status.filter((e) => e.includes(status))[0].split(':')[1]].level;
+								commercialTags[status][b.status.filter((e) => e.includes(status))[0].split(':')[1]]
+									.level;
 						}
 
 						return alevel < blevel ? -1 : 1;
