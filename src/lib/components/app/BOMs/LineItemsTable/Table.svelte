@@ -141,26 +141,14 @@
 		let trClass = '';
 
 		if (!isSelectingParts) {
-			if (obj.use_quote != null) {
-				if (obj.use_quote && !obj?.parts_quotes_quantity?.parts_quote?.complete) {
-					trClass = 'bg-yellow-200';
-				} else {
-					trClass = 'bg-green-100';
-				}
-			}
-
-			if (!obj?.vendor) {
-				trClass = 'bg-neutral-200';
-			}
-
-			return (trClass += ' hover:bg-neutral-100');
+			return trClass;
 		} else {
 			if (selectedPartsById.includes(obj?.id)) {
 				trClass = 'bg-blue-50';
 			}
 
 			if (isPartDisabled(obj)) {
-				trClass = 'bg-neutral-200';
+				trClass = 'bg-neutral-100';
 			}
 
 			return trClass;
