@@ -1,4 +1,5 @@
 <script>
+	// @ts-nocheck
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import AppBar from '$lib/components/app/Navigation/AppBar/AppBar.svelte';
 	import AppSidebar from '$lib/components/app/Navigation/AppSidebar/AppSidebar.svelte';

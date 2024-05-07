@@ -105,24 +105,6 @@
 				href={`${$page.url.origin}/commercial-new`}
 				target="_blank">+ RFQ</a
 			>
-			<div class="flex flex-row items-center">
-				<a
-					href="/sales/commercial/active-rfqs"
-					class="rounded-r-none text-xs bg-neutral-200 p-2 rounded-l-md border-l-[1px] border-gray-300 hover:bg-neutral-300 {$page.url.pathname.includes(
-						'commercial'
-					)
-						? 'bg-neutral-300'
-						: ''}">Commercial</a
-				>
-				<a
-					href="/sales/government/bidding-funnel"
-					class="rounded-l-none text-xs bg-neutral-200 p-2 rounded-r-md border-r-[1px] border-gray-300 hover:bg-neutral-300 {$page.url.pathname.includes(
-						'government'
-					)
-						? 'bg-neutral-300'
-						: ''}">Government</a
-				>
-			</div>
 		</div>
 	</div>
 </div>

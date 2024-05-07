@@ -23,7 +23,7 @@
 	}
 </script>
 
-<AppBar>
+<AppBar background={'bg-surface-50-900-token'}>
 	<svelte:fragment slot="lead">
 		<p class="font-bold text-xl">Sales Patriot</p>
 	</svelte:fragment>
