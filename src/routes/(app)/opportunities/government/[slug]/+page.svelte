@@ -29,18 +29,18 @@
 			.select(`*, solicitation!inner(${solColumns}, nsn(id, parts(*))), matching_rule(*)`);
 
 		switch (pathname) {
-			case '/sales/government/bidding-funnel':
+			case '/opportunities/government/bidding-funnel':
 				query = query.eq('removed', false);
 
 				break;
-			case '/sales/government/recently-released':
+			case '/opportunities/government/recently-released':
 				query = query
 					.order('solicitation(issued_on)', {
 						ascending: false
 					})
 					.limit(100);
 				break;
-			case '/sales/government/expiring-soon':
+			case '/opportunities/government/expiring-soon':
 				let yesterday = new Date();
 				yesterday.setDate(new Date().getDate() - 1);
 
@@ -50,10 +50,10 @@
 						ascending: true
 					});
 				break;
-			case '/sales/government/contracts-bid':
+			case '/opportunities/government/contracts-bid':
 				query = query.filter('status', 'cs', `{"${govTags.bid.bid.key}"}`);
 				break;
-			case '/sales/government/flagged':
+			case '/opportunities/government/flagged':
 				query = query.eq('flagged', true);
 				break;
 			default:
@@ -69,7 +69,7 @@
 		isAdmin = admin;
 
 		switch (pathname) {
-			case '/sales/government/bidding-funnel':
+			case '/opportunities/government/bidding-funnel':
 				for (let status of [
 					'opportunity',
 					'engineering',
@@ -96,7 +96,7 @@
 					});
 				}
 				break;
-			case '/sales/government/contracts-bid':
+			case '/opportunities/government/contracts-bid':
 				data = data.sort(function (a, b) {
 					let alevel = 10;
 					let blevel = 10;
@@ -125,12 +125,12 @@
 	});
 
 	const views = {
-		'/sales/government/bidding-funnel': 'Bidding Funnel',
-		'/sales/government/recently-released': 'Recently Released',
-		'/sales/government/expiring-soon': 'Expiring Soon',
-		'/sales/government/contracts-bid': 'Contracts Bid',
-		'/sales/government/flagged': 'Flagged',
-		'/sales/government/all-contracts': 'All Contracts'
+		'/opportunities/government/bidding-funnel': 'Bidding Funnel',
+		'/opportunities/government/recently-released': 'Recently Released',
+		'/opportunities/government/expiring-soon': 'Expiring Soon',
+		'/opportunities/government/contracts-bid': 'Contracts Bid',
+		'/opportunities/government/flagged': 'Flagged',
+		'/opportunities/government/all-contracts': 'All Contracts'
 	};
 </script>
 

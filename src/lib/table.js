@@ -1,17 +1,16 @@
 // @ts-nocheck
 export function getColumns(pathname) {
 	switch (pathname) {
-		case '/sales/government/contracts-bid':
+		case '/opportunities/government/contracts-bid':
 			return [
 				{ type: 'position' },
 				{ type: 'field', field: 'solicitation.id' },
 				{ type: 'field', field: 'solicitation.description' },
-				{ type: 'expires_on' },
+				{ type: 'formula', field: 'market_value' },
+				{ type: 'formula', field: 'unit_price_won_at' },
 				{ type: 'status', status: 'award' },
 				{ type: 'bid_partners' },
-				{ type: 'formula', field: 'market_value' },
 				{ type: 'field', field: 'price_won_at' },
-				{ type: 'formula', field: 'unit_price_won_at' },
 				{ type: 'formula', field: 'diff_unit_price' },
 				{ type: 'status', status: 'opportunity' },
 				{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
@@ -19,6 +18,7 @@ export function getColumns(pathname) {
 					type: 'parts',
 					header: 'In-House PN'
 				},
+				{ type: 'expires_on' },
 				{ type: 'field', field: 'first_article_waive_requested' },
 				{ type: 'field', field: 'first_article_waive_request_honored' },
 				{ type: 'matching_rule', status: 'matching_rule' },
