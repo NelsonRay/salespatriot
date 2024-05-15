@@ -24,15 +24,15 @@
 				<SidebarBtn text="Government" href={$page.url.origin + '/sales/government'} />
 			</div>
 			<div class="flex flex-col">
-				<p class="font-semibold">MRP</p>
-				<SidebarBtn text="Inventory" href={$page.url.origin + '/inventory'} />
+				<p class="font-semibold">Products</p>
+				<SidebarBtn text="Parts" href={$page.url.origin + '/inventory'} />
 				<SidebarBtn text="BOMs" href={$page.url.origin + '/boms'} />
 			</div>
-			<div class="flex flex-col">
+			<!-- <div class="flex flex-col">
 				<p class="font-semibold">Purchasing</p>
 				<SidebarBtn text="Purchase Orders" href={$page.url.origin + '/purchase-orders'} />
 				<SidebarBtn text="Quotes" href={$page.url.origin + '/quotes'} />
-			</div>
+			</div> -->
 			<div class="flex flex-col">
 				<p class="font-semibold">Reports</p>
 				<SidebarBtn text="Opportunities" href={$page.url.origin + '/reports/opportunities'} />

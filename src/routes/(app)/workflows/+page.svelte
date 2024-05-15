@@ -138,21 +138,21 @@
 </div>
 {#if workflows}
 	<article
-		class="bg-neutral-50 w-[100%] h-[93%] p-5 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro flex flex-row overflow-auto space-x-5"
+		class="bg-neutral-50 w-[100%] p-5 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro flex flex-row overflow-auto space-x-5"
 		style="direction: ltr;"
 	>
 		{#each workflows.form.sort((a, b) => (a.step > b.step ? 1 : -1)) as form (form.id)}
-			<div class="flex flex-col">
+			<div class="flex flex-col bg-white p-2 rounded-md shadow-sm">
 				<div class="flex flex-row justify-between w-96 items-center">
 					<p class="font-semibold text-base">
 						{`${form.name} (${workflows.forms.filter((e) => e.form.id === form.id && !e.submitted).length})`}
 					</p>
-					<p class="font-medium text-base">{form.user.name}</p>
+					<p class="font-medium text-base text-gray-500">{form.user.name}</p>
 				</div>
 				{#each getSortedForms(workflows, form) as forms (forms.id)}
 					{#if forms?.commercial}
 						<a href={window.location.origin + '/commercial-form/' + forms.id}>
-							<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
+							<div class="relative flex flex-col shadow-lg mt-3 rounded-md bg-white p-2 text-xs">
 								<div class="flex flex-row justify-between items-center">
 									<p class="font-semibold text-sm">
 										{getCommercialFormTitle(forms, form)}

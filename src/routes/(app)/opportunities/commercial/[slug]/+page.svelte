@@ -85,7 +85,7 @@
 	});
 
 	const views = {
-		'/opportunities/commercial/active-rfqs': 'Active RFQS',
+		'/opportunities/commercial/active-rfqs': 'RFQS - In Progress',
 		'/opportunities/commercial/sent-rfqs': 'Sent RFQS',
 		'/opportunities/commercial/placed-orders': 'Placed Orders',
 		'/opportunities/commercial/all-rfqs': 'All RFQS'
