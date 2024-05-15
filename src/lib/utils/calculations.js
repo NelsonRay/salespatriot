@@ -37,15 +37,18 @@ export function getCommercialValueCalculation(qty, part) {
 	// 	match.solicitation.expires_on
 	// );
 
+	if (calculation.estimated_material_cost && calculation.estimated_labor_cost) {
+		// @ts-ignore
+		calculation.estimated_cost =
+			parseFloat(calculation.estimated_material_cost) +
+			parseFloat(calculation.estimated_labor_cost);
+	}
+
 	if (
 		calculation.estimated_material_cost &&
 		calculation.estimated_labor_cost &&
 		calculation.unit_price
 	) {
-		// @ts-ignore
-		calculation.estimated_cost =
-			parseFloat(calculation.estimated_material_cost) +
-			parseFloat(calculation.estimated_labor_cost);
 		// @ts-ignore
 		calculation.estimated_profit =
 			calculation.unit_price -
