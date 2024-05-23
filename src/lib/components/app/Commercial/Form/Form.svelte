@@ -303,7 +303,7 @@
 							{/if}
 						</div>
 						<div class="mb-2">
-							<p class="mb-1 text-sm">Purchasing Cost</p>
+							<p class="mb-1 text-sm">Packaging Cost</p>
 							<Currency bind:value={values['packaging_cost_' + i]} />
 							{#if hasErrors(errors, ['packaging_cost_' + i])}
 								<label for="trim" class="label">

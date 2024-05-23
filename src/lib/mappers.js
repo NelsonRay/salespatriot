@@ -205,7 +205,7 @@ export function tableFieldMapper(obj, column) {
 				if (obj?.unit_price && obj?.solicitation?.quantity) {
 					value = formatCurrency(obj?.unit_price * obj?.solicitation?.quantity);
 				}
-				return { header: 'Market Value', value: value ?? '' };
+				return { header: 'Bid Value', value: value ?? '' };
 			} else if (column.field === 'unit_price_won_at') {
 				let value;
 
