@@ -12,18 +12,18 @@ export async function POST({ request, locals: { supabase } }) {
 
 	// forcefully push rfq thru to enter quote and send quote stages
 	for (let rfqs_part of values.rfqs_parts) {
-		await supabase
-			.from('rfqs_parts')
-			.update({ labor_minutes: rfqs_part.labor_minutes })
-			.eq('id', rfqs_part.id);
-
 		for (let rfqs_parts_quantity of rfqs_part.rfqs_parts_quantities) {
+			const { material_cost, lead_time, final_pricing, labor_minutes, packaging_cost } =
+				rfqs_parts_quantity;
+
 			await supabase
 				.from('rfqs_parts_quantities')
 				.update({
-					lead_time: rfqs_parts_quantity.lead_time,
-					material_cost: rfqs_parts_quantity.material_cost,
-					final_pricing: rfqs_parts_quantity.final_pricing
+					material_cost,
+					labor_minutes,
+					packaging_cost,
+					final_pricing,
+					lead_time
 				})
 				.eq('id', rfqs_parts_quantity.id);
 		}

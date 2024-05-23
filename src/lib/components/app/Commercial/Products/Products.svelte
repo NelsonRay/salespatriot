@@ -176,23 +176,6 @@
 										{#if showPricing || showAll}
 											<div class="flex flex-col">
 												<label class="text-xs text-gray-500 font-medium" for="qty"
-													>Labor Minutes
-												</label>
-												<Currency
-													bind:value={rfqs_part.labor_minutes}
-													width={'w-20'}
-													focusCallback={() => focusPartQty(rfqs_parts_quantity)}
-													blurCallback={blurPartQty}
-													disabled={!showPricing}
-												/>
-												{#if hasErrors(errors, ['rfqs_parts', index, 'labor_minutes'])}
-													<label for="trim" class="label">
-														<span class="label-text-alt text-error">Required</span>
-													</label>
-												{/if}
-											</div>
-											<div class="flex flex-col">
-												<label class="text-xs text-gray-500 font-medium" for="qty"
 													>Material Cost</label
 												>
 												<Currency
@@ -209,21 +192,39 @@
 												{/if}
 											</div>
 											<div class="flex flex-col">
-												<label class="text-xs text-gray-500 font-medium" for="qty">Lead Time</label>
+												<label class="text-xs text-gray-500 font-medium" for="qty"
+													>Labor Minutes
+												</label>
 												<Currency
-													bind:value={rfqs_parts_quantity.lead_time}
+													bind:value={rfqs_parts_quantity.labor_minutes}
 													width={'w-20'}
 													focusCallback={() => focusPartQty(rfqs_parts_quantity)}
 													blurCallback={blurPartQty}
-													disabled={showAll}
+													disabled={!showPricing}
 												/>
-												{#if hasErrors( errors, ['rfqs_parts', index, 'rfqs_parts_quantities', i, 'lead_time'] )}
+												{#if hasErrors( errors, ['rfqs_parts', index, 'rfqs_parts_quantities', i, 'labor_minutes'] )}
 													<label for="trim" class="label">
 														<span class="label-text-alt text-error">Required</span>
 													</label>
 												{/if}
 											</div>
-
+											<div class="flex flex-col">
+												<label class="text-xs text-gray-500 font-medium" for="qty"
+													>Packaging Cost</label
+												>
+												<Currency
+													bind:value={rfqs_parts_quantity.packaging_cost}
+													width={'w-20'}
+													focusCallback={() => focusPartQty(rfqs_parts_quantity)}
+													blurCallback={blurPartQty}
+													disabled={showAll}
+												/>
+												{#if hasErrors( errors, ['rfqs_parts', index, 'rfqs_parts_quantities', i, 'packaging_cost'] )}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">Required</span>
+													</label>
+												{/if}
+											</div>
 											<div class="flex flex-col">
 												<label class="text-xs text-gray-500 font-medium" for="qty"
 													>Final Pricing</label
@@ -236,6 +237,21 @@
 													disabled={showAll}
 												/>
 												{#if hasErrors( errors, ['rfqs_parts', index, 'rfqs_parts_quantities', i, 'final_pricing'] )}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">Required</span>
+													</label>
+												{/if}
+											</div>
+											<div class="flex flex-col">
+												<label class="text-xs text-gray-500 font-medium" for="qty">Lead Time</label>
+												<Currency
+													bind:value={rfqs_parts_quantity.lead_time}
+													width={'w-20'}
+													focusCallback={() => focusPartQty(rfqs_parts_quantity)}
+													blurCallback={blurPartQty}
+													disabled={showAll}
+												/>
+												{#if hasErrors( errors, ['rfqs_parts', index, 'rfqs_parts_quantities', i, 'lead_time'] )}
 													<label for="trim" class="label">
 														<span class="label-text-alt text-error">Required</span>
 													</label>
@@ -305,6 +321,13 @@
 											<p class="text-gray-400">Mat Cost:</p>
 											{#each rfqs_part?.part?.parts_purchasing as purchasing}
 												<p>{formatCurrency(purchasing.material_cost)}</p>
+											{/each}
+										</div>
+
+										<div class="flex flex-col">
+											<p class="text-gray-400">Pack Cost:</p>
+											{#each rfqs_part?.part?.parts_purchasing as purchasing}
+												<p>{formatCurrency(purchasing.packaging_cost)}</p>
 											{/each}
 										</div>
 

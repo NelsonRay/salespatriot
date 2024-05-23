@@ -15,8 +15,9 @@
 					<div class="flex flex-col space-y-2">
 						<p class="text-gray-400">Unit Price:</p>
 						<p class="text-gray-400">Estimated Cost:</p>
-						<p class="text-gray-400 ml-2">Estimated Mat. Cost:</p>
-						<p class="text-gray-400 ml-2">Estimated Labor Cost:</p>
+						<p class="text-gray-400 ml-2">Est. Material Cost:</p>
+						<p class="text-gray-400 ml-2">Est. Labor Cost:</p>
+						<p class="text-gray-400 ml-2">Est. Packaging Cost:</p>
 						<p class="text-gray-400">Estimated Profit:</p>
 
 						<div class="h-2" />
@@ -35,6 +36,9 @@
 						</p>
 						<p class={values?.estimated_labor_cost ? 'ml-2' : 'ml-2 text-gray-300'}>
 							{values?.estimated_labor_cost ?? 'N/A'}
+						</p>
+						<p class={values?.estimated_packaging_cost ? 'ml-2' : 'ml-2 text-gray-300'}>
+							{values?.estimated_packaging_cost ?? 'N/A'}
 						</p>
 						<p class={values?.estimated_profit ? '' : 'text-gray-300'}>
 							{values?.estimated_profit ?? 'N/A'}
