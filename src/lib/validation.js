@@ -77,12 +77,13 @@ export const masterCommercialValidation = () =>
 	z.object({
 		rfqs_parts: z
 			.object({
-				labor_minutes: z.number().positive(),
 				rfqs_parts_quantities: z
 					.object({
 						quantity: z.number().positive(),
-						final_pricing: z.number().positive(),
 						material_cost: z.number().positive(),
+						labor_minutes: z.number().positive(),
+						packaging_cost: z.number().positive(),
+						final_pricing: z.number().positive(),
 						lead_time: z.number().positive()
 					})
 					.array()
@@ -104,38 +105,14 @@ export const commercialFormsValidation = {
 			lead_time_25: z.number().positive(),
 			lead_time_50: z.number().positive(),
 			lead_time_100: z.number().positive(),
-			lead_time_250: z.number().positive()
+			lead_time_250: z.number().positive(),
+			packaging_cost_5: z.number().positive(),
+			packaging_cost_25: z.number().positive(),
+			packaging_cost_50: z.number().positive(),
+			packaging_cost_100: z.number().positive(),
+			packaging_cost_250: z.number().positive()
 		}),
-	final_pricing: () =>
-		z.object({
-			rfqs_parts: z
-				.object({
-					part: z.object({
-						number: z.string().min(1),
-						nsn: z.number().nullable().optional()
-					}),
-					rfqs_parts_quantities: z
-						.object({
-							quantity: z.number().positive(),
-							final_pricing: z.number().positive(),
-							material_cost: z.number().positive(),
-							lead_time: z.number().positive()
-						})
-						.array()
-				})
-				.array()
-				.superRefine((fields, ctx) => {
-					for (let i = 0; i < fields.length; i++) {
-						if (fields[i].part.nsn != null && fields[i].part.nsn?.toString().length !== 13) {
-							ctx.addIssue({
-								code: 'custom',
-								message: 'Not 13 digits',
-								path: [i, 'part', 'nsn']
-							});
-						}
-					}
-				})
-		}),
+	final_pricing: () => masterCommercialValidation(),
 	enter_quote: () =>
 		z.object({
 			quote_number: z.string().min(1)

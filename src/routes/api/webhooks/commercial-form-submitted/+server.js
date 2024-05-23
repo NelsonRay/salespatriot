@@ -8,7 +8,7 @@ import { createServerClient } from '@supabase/ssr';
 export async function POST({ request, cookies }) {
 	try {
 		const {
-			record: { id, part, rfq, response, form }
+			record: { part, rfq, response, form }
 		} = await request.json();
 
 		/** @type {import('@supabase/supabase-js').SupabaseClient<import('$lib/types/supabase.js').Database>} */
@@ -34,6 +34,7 @@ export async function POST({ request, cookies }) {
 					const { error } = await supabase.from('parts_purchasing').insert({
 						lead_time: response['lead_time_' + value],
 						material_cost: response['material_cost_' + value],
+						packaging_cost: response['packaging_cost_' + value],
 						part,
 						quantity: parseInt(value)
 					});
@@ -42,7 +43,7 @@ export async function POST({ request, cookies }) {
 				}
 
 				// update purchasing_ready fpr rfqs_parts
-				const { error } = await supabase
+				await supabase
 					.from('rfqs_parts')
 					.update({ purchasing_ready: true })
 					.eq('part', part)
@@ -121,11 +122,12 @@ export async function POST({ request, cookies }) {
 				// loop thru each part and its quantities to update final_pricing
 				for (let rfqs_part of response?.rfqs_parts ?? []) {
 					for (let rfqs_parts_quantity of rfqs_part.rfqs_parts_quantities ?? []) {
-						const { material_cost, lead_time, final_pricing } = rfqs_parts_quantity;
+						const { material_cost, lead_time, final_pricing, labor_minutes, packaging_cost } =
+							rfqs_parts_quantity;
 
 						const { error: e } = await supabase
 							.from('rfqs_parts_quantities')
-							.update({ material_cost, lead_time, final_pricing })
+							.update({ material_cost, lead_time, final_pricing, labor_minutes, packaging_cost })
 							.eq('id', rfqs_parts_quantity.id);
 
 						if (e) throw e;

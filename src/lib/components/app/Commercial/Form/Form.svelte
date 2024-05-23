@@ -102,12 +102,7 @@
 		}
 	}
 
-	$: reviewValues = getCommercialValueCalculation(
-		focusedRfqPartQty,
-		(values?.rfqs_parts ?? values.rfq?.rfqs_parts)?.filter(
-			(p) => p?.id === focusedRfqPartQty?.rfqs_part
-		)[0]
-	);
+	$: reviewValues = getCommercialValueCalculation(focusedRfqPartQty);
 </script>
 
 {#if values}
@@ -302,6 +297,15 @@
 							<p class="mb-1 text-sm">Lead Time</p>
 							<Currency bind:value={values['lead_time_' + i]} />
 							{#if hasErrors(errors, ['lead_time_' + i])}
+								<label for="trim" class="label">
+									<span class="label-text-alt text-error">Required</span>
+								</label>
+							{/if}
+						</div>
+						<div class="mb-2">
+							<p class="mb-1 text-sm">Purchasing Cost</p>
+							<Currency bind:value={values['packaging_cost_' + i]} />
+							{#if hasErrors(errors, ['packaging_cost_' + i])}
 								<label for="trim" class="label">
 									<span class="label-text-alt text-error">Required</span>
 								</label>

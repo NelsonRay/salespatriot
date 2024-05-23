@@ -1,18 +1,20 @@
 import { formatCurrency } from '$lib/helpers';
 
 // @ts-ignore
-export function getCommercialValueCalculation(qty, part) {
-	if (!qty || !part) return null;
+export function getCommercialValueCalculation(qty) {
+	if (!qty) return null;
 
-	const estimated_labor_minutes = part?.labor_minutes;
+	const estimated_labor_minutes = qty?.labor_minutes;
 	const unit_price = qty?.final_pricing;
 	const estimated_material_cost = qty.material_cost;
+	const estimated_packaging_cost = qty.packaging_cost;
 	const quantity = qty.quantity;
 
 	// @ts-ignore
 	let calculation = {
 		unit_price,
 		estimated_material_cost,
+		estimated_packaging_cost,
 		estimated_labor_cost: null,
 		estimated_cost: null,
 		estimated_profit: null,
@@ -25,7 +27,8 @@ export function getCommercialValueCalculation(qty, part) {
 
 	// @ts-ignore
 	calculation.estimated_labor_cost = estimated_labor_minutes
-		? parseFloat((estimated_labor_minutes / 60) * 20).toFixed(2)
+		? // @ts-ignore
+			parseFloat((estimated_labor_minutes / 60) * 20).toFixed(2)
 		: null;
 	// @ts-ignore
 	// calculation.estimated_labor_cost_date = formatMonthDayYearDate(
@@ -37,16 +40,22 @@ export function getCommercialValueCalculation(qty, part) {
 	// 	match.solicitation.expires_on
 	// );
 
-	if (calculation.estimated_material_cost && calculation.estimated_labor_cost) {
+	if (
+		calculation.estimated_material_cost &&
+		calculation.estimated_labor_cost &&
+		calculation.estimated_packaging_cost
+	) {
 		// @ts-ignore
 		calculation.estimated_cost =
 			parseFloat(calculation.estimated_material_cost) +
-			parseFloat(calculation.estimated_labor_cost);
+			parseFloat(calculation.estimated_labor_cost) +
+			parseFloat(calculation.estimated_packaging_cost);
 	}
 
 	if (
 		calculation.estimated_material_cost &&
 		calculation.estimated_labor_cost &&
+		calculation.estimated_packaging_cost &&
 		calculation.unit_price
 	) {
 		// @ts-ignore
@@ -80,6 +89,7 @@ export function getCommercialValueCalculation(qty, part) {
 		'unit_price',
 		'estimated_labor_cost',
 		'estimated_material_cost',
+		'estimated_packaging_cost',
 		'estimated_cost',
 		'estimated_profit',
 		'market_value',
