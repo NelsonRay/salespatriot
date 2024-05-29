@@ -253,7 +253,7 @@ export function getCommercialStatusColor(status) {
 	let color = '';
 
 	// @ts-ignore
-	switch (commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]].color) {
+	switch (commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]]?.color) {
 		case 'green':
 			color = 'bg-green-400';
 			break;
@@ -277,7 +277,7 @@ export function getCommercialStatusColor(status) {
 export function getCommercialStatusName(status) {
 	if (!status) return '';
 	// @ts-ignore
-	return commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
+	return commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]]?.name;
 }
 
 export function getBidPartners() {

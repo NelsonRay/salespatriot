@@ -34,7 +34,7 @@
 		let color = '';
 
 		switch (
-			commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]].color
+			commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]]?.color
 		) {
 			case 'green':
 				color = 'bg-green-400';
@@ -57,7 +57,7 @@
 
 	function getStatusName(status) {
 		if (!status) return '';
-		return commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]].name;
+		return commercialTags[status.toString().split(':')[0]][status.toString().split(':')[1]]?.name;
 	}
 
 	function navToCommercialRfq(id) {
