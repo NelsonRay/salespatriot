@@ -174,7 +174,7 @@ export async function POST({ request, cookies }) {
 							due_date,
 							order_notes
 						})
-						.eq('id', rfq.id);
+						.eq('id', rfq);
 
 					for (let rfqs_part of rfqs_parts) {
 						const { id, quantity_ordered, unit_price_ordered } = rfqs_part;
@@ -195,7 +195,7 @@ export async function POST({ request, cookies }) {
 							order_notes,
 							reason_lost
 						})
-						.eq('id', rfq.id);
+						.eq('id', rfq);
 				} else {
 					const { status, order_notes } = response;
 					await supabase
@@ -204,7 +204,7 @@ export async function POST({ request, cookies }) {
 							status,
 							order_notes
 						})
-						.eq('id', rfq.id);
+						.eq('id', rfq);
 				}
 
 				break;
