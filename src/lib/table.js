@@ -167,3 +167,38 @@ export function getNSNColumns(oppForm) {
 
 	return nsnColumns;
 }
+
+export function getTableColumns(pathname) {
+	switch (pathname) {
+		case '/opportunities/commercial/follow-up':
+			return [
+				{ type: 'position' },
+				{ type: 'name' },
+				{ type: 'value' },
+				{ type: 'date', field: 'sent_quote_timestamp' },
+				{ type: 'date', field: 'received_at' },
+				{ type: 'button', person: 'cindy', header: 'Assign Cindy' },
+				{ type: 'button', person: 'tom', header: 'Assign Tom' },
+				{ type: 'parts' }
+			];
+		default:
+			return [
+				{ type: 'position' },
+				{ type: 'name' },
+				{ type: 'value' },
+				{ type: 'status', status: 'purchasing' },
+				{ type: 'status', status: 'labor' },
+				{ type: 'status', status: 'final_pricing' },
+				{ type: 'status', status: 'enter_quote' },
+				{ type: 'status', status: 'send_quote' },
+				{ type: 'status', status: 'response' },
+				{ type: 'parts' },
+				{ type: 'date', field: 'received_at' },
+				{ type: 'date', field: 'requested_return_date' },
+				{ type: 'date', field: 'sent_quote_timestamp' },
+				{ type: 'field', field: 'quote_number' },
+				{ type: 'field', field: 'customer.name' },
+				{ type: 'email' }
+			];
+	}
+}

@@ -63,7 +63,7 @@
 
 		form = data;
 
-		if (['final_pricing', 'enter_quote', 'bid'].includes(form?.form?.type)) {
+		if (['final_pricing', 'enter_quote', 'bid', 'follow_up'].includes(form?.form?.type)) {
 			values = form.rfq;
 		} else if (form?.form?.type === 'confirm') {
 			values = {

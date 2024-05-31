@@ -297,9 +297,15 @@ export const commercialTags = {
 	response: {
 		placed_order: {
 			name: 'Placed Order',
-			level: 1,
+			level: 0,
 			color: 'green',
 			key: 'response:placed_order'
+		},
+		following_up: {
+			name: 'Following Up',
+			level: 1,
+			color: 'orange',
+			key: 'response:following_up'
 		},
 		in_negotiation: {
 			name: 'In Negotiation',
@@ -318,6 +324,12 @@ export const commercialTags = {
 			level: 4,
 			color: 'red',
 			key: 'response:assumed_lost'
+		},
+		lost: {
+			name: 'Lost',
+			level: 4,
+			color: 'red',
+			key: 'response:lost'
 		}
 	}
 };

@@ -4,7 +4,9 @@
 	import Views from '$lib/components/app/Views/Views.svelte';
 	import { page } from '$app/stores';
 	import { commercialTags } from '$lib/tags.js';
+	import { getTableColumns } from '$lib/table.js';
 	import Table from '$lib/components/app/Commercial/Table/Table.svelte';
+	import { calculateDaysDifference } from '$lib/helpers.js';
 
 	export let data;
 
@@ -28,6 +30,9 @@
 		switch (pathname) {
 			case '/opportunities/commercial/active-rfqs':
 				query = query.eq('removed', false);
+				break;
+			case '/opportunities/commercial/follow-up':
+				query = query.filter('status', 'cs', `{"response:waiting"}`);
 				break;
 			case '/opportunities/commercial/sent-rfqs':
 				query = query.filter('status', 'cs', `{"send_quote:complete"}`);
@@ -63,6 +68,11 @@
 					});
 				}
 				break;
+			case '/opportunities/commercial/follow-up':
+				data = data
+					.sort((a, b) => new Date(b.sent_quote_timestamp) - new Date(a.sent_quote_timestamp))
+					.filter((d) => Math.abs(calculateDaysDifference(d.sent_quote_timestamp)) > 11);
+				break;
 			case '/opportunities/commercial/sent-rfqs':
 				data = data.sort(
 					(a, b) => new Date(b.sent_quote_timestamp) - new Date(a.sent_quote_timestamp)
@@ -87,9 +97,27 @@
 	const views = {
 		'/opportunities/commercial/active-rfqs': 'RFQS - In Progress',
 		'/opportunities/commercial/sent-rfqs': 'Sent RFQS',
+		'/opportunities/commercial/follow-up': 'Follow Up',
 		'/opportunities/commercial/placed-orders': 'Placed Orders',
 		'/opportunities/commercial/all-rfqs': 'All RFQS'
 	};
+
+	async function assignFollowUp(person, rfq) {
+		// update response status to following up and then assign form
+		const status = [...rfq.status.filter((s) => s != 'response:waiting'), 'response:following_up'];
+
+		const { error } = await supabase.from('rfqs').update({ status }).eq('id', rfq.id);
+
+		if (person == 'cindy') {
+			await supabase
+				.from('forms')
+				.insert({ form: 'd3dfeff5-ad61-4948-b028-b4d447cae57f', commercial: true, rfq: rfq.id });
+		} else if (person == 'tom') {
+			await supabase
+				.from('forms')
+				.insert({ form: 'd3dfeff5-ad61-4948-b028-b4d447cae57f', commercial: true, rfq: rfq.id });
+		}
+	}
 </script>
 
 <svelte:head>
@@ -113,7 +141,7 @@
 </div>
 
 {#if rfqs}
-	<Table data={rfqs} />
+	<Table data={rfqs} columns={getTableColumns($page.url.pathname)} {assignFollowUp} />
 {:else}
 	<div class="flex flex-col gap-4 p-5">
 		<div class="skeleton h-4 w-full"></div>

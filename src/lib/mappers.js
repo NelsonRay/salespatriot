@@ -151,7 +151,13 @@ export function commercialTableFieldMapper(obj, column) {
 			value = formatMonthDayYearDate(obj?.[column.field]);
 		}
 
+		if (column.field == 'sent_quote_timestamp') {
+			value += ` (${Math.abs(calculateDaysDifference(value))}d)`;
+		}
+
 		return { header, value };
+	} else if (column.type == 'button') {
+		return { value: null, header: column.header };
 	} else {
 		const header = commercialFieldsMapper(column.field);
 

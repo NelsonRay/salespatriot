@@ -163,6 +163,52 @@ export async function POST({ request, cookies }) {
 				await updateStatusInProgress(response.status, ['send_quote:complete'], supabase, rfq);
 				break;
 			}
+			case 'd3dfeff5-ad61-4948-b028-b4d447cae57f': {
+				if (response.status.includes('response:placed_order')) {
+					const { date_ordered, due_date, order_notes, rfqs_parts, status } = response;
+					await supabase
+						.from('rfqs')
+						.update({
+							status,
+							date_ordered,
+							due_date,
+							order_notes
+						})
+						.eq('id', rfq.id);
+
+					for (let rfqs_part of rfqs_parts) {
+						const { id, quantity_ordered, unit_price_ordered } = rfqs_part;
+						await supabase
+							.from('rfqs_parts')
+							.update({ quantity_ordered, unit_price_ordered })
+							.eq('id', id);
+					}
+				} else if (
+					response.status.includes('response:lost') ||
+					response.status.includes('response:assumed_lost')
+				) {
+					const { status, order_notes, reason_lost } = response;
+					await supabase
+						.from('rfqs')
+						.update({
+							status,
+							order_notes,
+							reason_lost
+						})
+						.eq('id', rfq.id);
+				} else {
+					const { status, order_notes } = response;
+					await supabase
+						.from('rfqs')
+						.update({
+							status,
+							order_notes
+						})
+						.eq('id', rfq.id);
+				}
+
+				break;
+			}
 			default:
 				break;
 		}

@@ -15,7 +15,9 @@
 	$: if (value?.filter((e) => e.includes(status))?.length > 0) {
 		if (
 			skipInProgress &&
-			['in_progress', 'waiting'].includes(value?.filter((e) => e.includes(status))[0].split(':')[1])
+			['in_progress', 'waiting', 'following_up'].includes(
+				value?.filter((e) => e.includes(status))[0].split(':')[1]
+			)
 		) {
 			value = value.filter((e) => !e.includes(status));
 		} else {
@@ -26,7 +28,9 @@
 	function filterTags(status) {
 		let filtered_tags = Object.keys(tags[status])
 			.map((key) => ({ ...tags[status][key], key }))
-			.filter((e) => (skipInProgress ? e.key !== 'in_progress' && e.key !== 'waiting' : true));
+			.filter((e) =>
+				skipInProgress ? !['in_progress', 'waiting', 'following_up'].includes(e.key) : true
+			);
 
 		return filtered_tags;
 	}

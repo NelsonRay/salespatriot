@@ -8,6 +8,7 @@
 	export let reviewValues;
 	export let showValueCalc = true;
 	export let awardModalOpen;
+	export let disableAwardEdit = false;
 
 	function getQty(rfq) {
 		let qty = 0;
@@ -42,9 +43,11 @@
 							</div>
 						</div>
 					</div>
-					<button on:click={() => (awardModalOpen = true)}>
-						<img src={Edit} alt="edit" class="h-4 w-4" />
-					</button>
+					{#if !disableAwardEdit}
+						<button on:click={() => (awardModalOpen = true)}>
+							<img src={Edit} alt="edit" class="h-4 w-4" />
+						</button>
+					{/if}
 				</div>
 			{/if}
 			<!-- {#if solicitation_matched.removed_option}

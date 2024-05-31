@@ -16,6 +16,9 @@
 	import RFQsTable from '$lib/components/app/Commercial/RFQsTable/RFQsTable.svelte';
 	import Textarea from '$lib/components/form/Textarea.svelte';
 	import Table from './Table.svelte';
+	import StatusSelect from '$lib/components/form/StatusSelect.svelte';
+	import { commercialTags } from '$lib/tags';
+	import RemoveComOptionSelect from '$lib/components/form/RemoveComOptionSelect.svelte';
 
 	export let data;
 	export let comments;
@@ -117,12 +120,13 @@
 				</button>
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				{#if ['final_pricing', 'enter_quote', 'bid', null, undefined].includes(form?.type)}
+				{#if ['final_pricing', 'enter_quote', 'bid', 'follow_up', null, undefined].includes(form?.type)}
 					<Info
 						data={form?.type == null ? data : data.rfq}
 						{reviewValues}
 						showValueCalc={['final_pricing', null, undefined].includes(form?.type)}
 						bind:awardModalOpen
+						disableAwardEdit
 					/>
 
 					<div class="mr-5">
@@ -145,7 +149,7 @@
 							{showRemove}
 							showPurchasing={['purchasing', 'final_pricing', null, undefined].includes(form?.type)}
 							showPricing={['final_pricing', null, undefined].includes(form?.type)}
-							showAll={['enter_quote', 'bid'].includes(form?.type)}
+							showAll={['enter_quote', 'bid', 'follow_up'].includes(form?.type)}
 							{errors}
 							bind:focusedRfqPartQty
 						/>
@@ -171,7 +175,9 @@
 						<div>
 							<p class="mb-1">Waiting on Vendors?</p>
 							<button
-								class="btn px-6 py-2 rounded-3xl text-xs bg-yellow-400 shadow-md"
+								class="btn px-6 py-2 rounded-3xl text-xs bg-yellow-400 shadow-md {data?.waiting
+									? 'opacity-40'
+									: ''}"
 								disabled={data.waiting}
 								on:click={waitingCallback}>Waiting</button
 							>
@@ -215,7 +221,6 @@
 									</label>
 								{/if}
 							</div>
-
 							<div class="flex flex-col">
 								<label for="customer_number">Customer Number</label>
 								<TextInput
@@ -321,6 +326,94 @@
 								<span class="label-text-alt text-error">Required</span>
 							</label>
 						{/if}
+					</div>
+				{:else if form?.type === 'follow_up'}
+					<div class="mb-2">
+						<div class="mb-6">
+							<p class="mb-1">Followed up and waiting on response?</p>
+							<button
+								class="px-4 py-1 rounded-3xl text-xs bg-yellow-400 shadow-md {data?.waiting
+									? 'opacity-40'
+									: ''}"
+								disabled={data.waiting}
+								on:click={waitingCallback}>Waiting</button
+							>
+						</div>
+						<p class="mb-1 text-sm">Award Status</p>
+						<StatusSelect tags={commercialTags} status="response" bind:value={values.status} />
+						{#if hasErrors(errors, ['quote_number'])}
+							<label for="trim" class="label">
+								<span class="label-text-alt text-error">Required</span>
+							</label>
+						{/if}
+
+						{#if values?.status?.includes('response:placed_order')}
+							<div class="flex flex-col space-y-2">
+								<div class="flex flex-col space-y-2">
+									{#each values.rfqs_parts as rfqs_part, i}
+										<div
+											class="flex flex-row justify-between items-center space-x-5 bg-neutral-100 p-3 rounded-lg"
+										>
+											<p>{rfqs_part.part.number}</p>
+											<div>
+												<p class="mb-1 text-sm">Quantity:</p>
+												<Currency bind:value={rfqs_part.quantity_ordered} width={'w-24'} />
+												{#if hasErrors(errors, ['rfqs_parts', i, 'quantity_ordered'])}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">Required</span>
+													</label>
+												{/if}
+											</div>
+											<div>
+												<p class="mb-1 text-sm">Unit Price:</p>
+												<Currency bind:value={rfqs_part.unit_price_ordered} width={'w-24'} />
+												{#if hasErrors(errors, ['rfqs_parts', i, 'unit_price_ordered'])}
+													<label for="trim" class="label">
+														<span class="label-text-alt text-error">Required</span>
+													</label>
+												{/if}
+											</div>
+										</div>
+									{/each}
+								</div>
+								<div class="flex flex-row space-x-5">
+									<div>
+										<p class="mb-1 text-sm">Ordered Date</p>
+										<DateInput bind:value={values.date_ordered} preventFutureDates={false} />
+										{#if hasErrors(errors, ['date_ordered'])}
+											<label for="trim" class="label">
+												<span class="label-text-alt text-error">Required</span>
+											</label>
+										{/if}
+									</div>
+									<div>
+										<p class="mb-1 text-sm">Due Date</p>
+										<DateInput bind:value={values.due_date} preventFutureDates={false} />
+										{#if hasErrors(errors, ['due_date'])}
+											<label for="trim" class="label">
+												<span class="label-text-alt text-error">Required</span>
+											</label>
+										{/if}
+									</div>
+								</div>
+							</div>
+						{/if}
+						{#if values?.status?.includes('response:lost') || values?.status?.includes('response:assumed_lost')}
+							<div>
+								<p class="mb-1 text-sm">Reason Lost</p>
+								<RemoveComOptionSelect bind:value={values.reason_lost} />
+								{#if hasErrors(errors, ['reason_lost'])}
+									<label for="trim" class="label">
+										<span class="label-text-alt text-error">Required</span>
+									</label>
+								{/if}
+							</div>
+						{/if}
+
+						<div>
+							<p class="mb-1 text-sm">Notes</p>
+							<Textarea autoCollapse={false} bind:value={values.order_notes} />
+						</div>
 					</div>
 				{/if}
 				<div class="flex flex-row mt-5 items-center justify-center">

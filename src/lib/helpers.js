@@ -233,6 +233,9 @@ export function getStatusColor(status) {
 		case 'blue':
 			color = 'bg-blue-400';
 			break;
+		case 'orange':
+			color = 'bg-orange-400';
+			break;
 		case 'gray':
 			color = 'bg-gray-300';
 			break;
@@ -265,6 +268,9 @@ export function getCommercialStatusColor(status) {
 			break;
 		case 'blue':
 			color = 'bg-blue-400';
+			break;
+		case 'orange':
+			color = 'bg-orange-400';
 			break;
 		case 'gray':
 			color = 'bg-gray-300';
