@@ -247,6 +247,10 @@
 								on:click={waitingCallback}>Waiting</button
 							>
 						</div>
+						<div>
+							<p class="text-lg mt-5 mb-2 font-semibold">Award History</p>
+							<AwardHistory data={solicitation_matched.solicitation.award_history} />
+						</div>
 					</div>
 				{/if}
 				{#if form?.form?.type === 'labor'}
