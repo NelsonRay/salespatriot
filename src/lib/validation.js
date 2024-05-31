@@ -33,7 +33,7 @@ export const commercialAwardModal = () =>
 					ctx.addIssue({
 						code: 'custom',
 						message: 'Required',
-						path: ['ordered_date']
+						path: ['date_ordered']
 					});
 				}
 
@@ -54,7 +54,7 @@ export const commercialAwardModal = () =>
 						});
 					}
 
-					if (!fields.rfqs_parts[i].unit_price_ordered == null) {
+					if (fields.rfqs_parts[i].unit_price_ordered == null) {
 						ctx.addIssue({
 							code: 'custom',
 							message: 'Required',
@@ -117,7 +117,71 @@ export const commercialFormsValidation = {
 		z.object({
 			quote_number: z.string().min(1)
 		}),
-	bid: () => z.object({})
+	bid: () => z.object({}),
+	follow_up: () =>
+		z
+			.object({
+				order_notes: z.string().nullable().optional(),
+				rfqs_parts: z
+					.object({
+						unit_price_ordered: z.number().nullable().optional(),
+						quantity_ordered: z.number().nullable().optional()
+					})
+					.array()
+					.nullable()
+					.optional(),
+				status: z.string().array(),
+				date_ordered: z.string().nullable().optional(),
+				due_date: z.string().nullable().optional(),
+				reason_lost: z.string().nullable().optional()
+			})
+			.superRefine((fields, ctx) => {
+				if (fields.status.includes('response:placed_order')) {
+					if (!fields.date_ordered) {
+						ctx.addIssue({
+							code: 'custom',
+							message: 'Required',
+							path: ['date_ordered']
+						});
+					}
+
+					if (!fields.due_date) {
+						ctx.addIssue({
+							code: 'custom',
+							message: 'Required',
+							path: ['due_date']
+						});
+					}
+
+					for (let i = 0; i < fields.rfqs_parts?.length ?? 0; i++) {
+						if (fields.rfqs_parts[i]?.quantity_ordered == null) {
+							ctx.addIssue({
+								code: 'custom',
+								message: 'Required',
+								path: ['rfqs_parts', i, 'quantity_ordered']
+							});
+						}
+
+						if (fields.rfqs_parts[i]?.unit_price_ordered == null) {
+							ctx.addIssue({
+								code: 'custom',
+								message: 'Required',
+								path: ['rfqs_parts', i, 'unit_price_ordered']
+							});
+						}
+					}
+				} else if (
+					(fields.status.includes('response:assumed_lost') ||
+						fields.status.includes('response:lost')) &&
+					fields.reason_lost == null
+				) {
+					ctx.addIssue({
+						code: 'custom',
+						message: 'Required',
+						path: ['reason_lost']
+					});
+				}
+			})
 };
 
 export const publicRFQFormValidation = () =>
