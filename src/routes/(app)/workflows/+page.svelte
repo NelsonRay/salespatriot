@@ -65,10 +65,12 @@
 		return sortedBoards;
 	}
 
-	function getSortedForms(forms, form) {
-		forms = forms.filter((e) => e.form.id === form.id && !e.submitted);
+	function getSortedForms(forms, board) {
+		forms = forms.filter(
+			(f) => f.form.id === board.id && f.user.id === board.user.id && !f.submitted
+		);
 
-		switch (form.type) {
+		switch (board.type) {
 			case 'opportunity':
 				forms = forms.sort(
 					(a, b) =>
@@ -149,11 +151,11 @@
 		{#if getKanbanBoards(forms).length === 0}
 			<p class="font-semibold">No Tasks</p>
 		{:else}
-			{#each getKanbanBoards(forms) as board (board.id)}
+			{#each getKanbanBoards(forms) as board (board.id + board.user.id)}
 				<div class="flex flex-col pr-5 border-r-2 border-neutral-100">
 					<div class="flex flex-row justify-between w-96 items-center">
 						<p class="font-semibold text-base">
-							{`${board.name} (${forms.filter((e) => e.form.id === board.id && !e.submitted).length})`}
+							{`${board.name} (${getSortedForms(forms, board).length})`}
 						</p>
 						<p class="font-medium text-base text-gray-500">{board.user.name}</p>
 					</div>
