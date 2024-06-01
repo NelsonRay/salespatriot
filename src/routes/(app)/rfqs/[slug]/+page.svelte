@@ -130,16 +130,16 @@
 				.select('*, customer!inner(*), rfqs_parts(part(number), rfqs_parts_quantities(*))');
 
 			switch (pathname) {
-				case '/rfqs/commercial/active-rfqs':
+				case '/rfqs/commercial-active-rfqs':
 					query = query.eq('removed', false);
 					break;
-				case '/rfqs/commercial/follow-up':
+				case '/rfqs/commercial-follow-up':
 					query = query.filter('status', 'cs', `{"response:waiting"}`);
 					break;
-				case '/rfqs/commercial/sent-rfqs':
+				case '/rfqs/commercial-sent-rfqs':
 					query = query.filter('status', 'cs', `{"send_quote:complete"}`);
 					break;
-				case '/rfqs/commercial/placed-orders':
+				case '/rfqs/commercial-placed-orders':
 					query = query.filter('status', 'cs', `{"response:placed_order"}`);
 					break;
 				default:
@@ -149,7 +149,7 @@
 			let { data, error } = await query;
 
 			switch (pathname) {
-				case '/rfqs/commercial/active-rfqs':
+				case '/rfqs/commercial-active-rfqs':
 					for (let status of ['purchasing', 'labor', 'final_pricing'].reverse()) {
 						data = data.sort(function (a, b) {
 							let alevel = 10;
@@ -172,17 +172,17 @@
 						});
 					}
 					break;
-				case '/rfqs/commercial/follow-up':
+				case '/rfqs/commercial-follow-up':
 					data = data
 						.sort((a, b) => new Date(b.sent_quote_timestamp) - new Date(a.sent_quote_timestamp))
 						.filter((d) => Math.abs(calculateDaysDifference(d.sent_quote_timestamp)) > 11);
 					break;
-				case '/rfqs/commercial/sent-rfqs':
+				case '/rfqs/commercial-sent-rfqs':
 					data = data.sort(
 						(a, b) => new Date(b.sent_quote_timestamp) - new Date(a.sent_quote_timestamp)
 					);
 					break;
-				case '/rfqs/commercial/all-rfqs':
+				case '/rfqs/commercial-all-rfqs':
 					data = data.sort(
 						(a, b) => new Date(a.sent_quote_timestamp) - new Date(b.sent_quote_timestamp)
 					);
