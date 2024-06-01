@@ -55,8 +55,18 @@ export async function POST({ request, locals: { supabase } }) {
 
 	if (sendQuoteForms) {
 		await supabase.from('forms').insert([
-			{ form: 'a40a1d91-3295-4ca4-b343-ad58e2279fec', commercial: true, rfq: values.id },
-			{ form: '6a0d1585-d572-4d8f-bdb4-498a89506e85', commercial: true, rfq: values.id }
+			{
+				form: 'a40a1d91-3295-4ca4-b343-ad58e2279fec',
+				commercial: true,
+				rfq: values.id,
+				user: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
+			},
+			{
+				form: '6a0d1585-d572-4d8f-bdb4-498a89506e85',
+				commercial: true,
+				rfq: values.id,
+				user: '35009618-f673-432a-9113-664874e195af' // cindy
+			}
 		]);
 		await supabase
 			.from('rfqs')

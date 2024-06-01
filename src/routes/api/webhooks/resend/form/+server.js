@@ -28,7 +28,7 @@ export async function POST({ request, cookies }) {
 
 		const { data, error } = await supabase
 			.from('forms')
-			.select('*, form(user, name, type), solicitation_matched(solicitation!inner(id))')
+			.select('*, form(name, type), solicitation_matched(solicitation!inner(id))')
 			.eq('id', record.id)
 			.limit(1)
 			.single();
@@ -40,7 +40,7 @@ export async function POST({ request, cookies }) {
 			return json({}, { status: 201 });
 		}
 
-		userId = data.form.user;
+		userId = data.user;
 		btnText = `Open ${data.form.name}`;
 		subject = `${data.form.name}: ${data.solicitation_matched.solicitation.id}`;
 		formLink = `https://salespatriot.com/solicitation-form/${record.id}`;
@@ -49,14 +49,14 @@ export async function POST({ request, cookies }) {
 
 		const { data, error } = await supabase
 			.from('forms')
-			.select('form(name, user), part(number), rfq(received_at, customer(name)), rfq_public(*)')
+			.select('*, form(name), part(number), rfq(received_at, customer(name)), rfq_public(*)')
 			.eq('id', record.id)
 			.limit(1)
 			.single();
 
 		if (error) console.error(error);
 
-		userId = data.form.user;
+		userId = data.user;
 		btnText = `Open ${data.form.name}`;
 		subject = `${data.form.name}: ${data.part?.number ?? (!data.rfq_public ? data.rfq.customer.name + ' / ' + data.rfq.received_at : data.rfq_public.values.customer.name + ' / ' + data.rfq_public.values.received_at)}`;
 		formLink = `https://salespatriot.com/commercial-form/${record.id}`;
