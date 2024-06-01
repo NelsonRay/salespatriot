@@ -64,7 +64,7 @@
 {#if solicitations_matched}
 	<Table
 		data={solicitations_matched}
-		columns={getColumns('/opportunities/government/contracts-bid')}
+		columns={getColumns('/rfqs/government-contracts-bid')}
 		blockEditing={!isAdmin}
 	/>
 {:else}

@@ -6,8 +6,8 @@
 </script>
 
 <a
-	class="py-[1px] px-2 rounded-lg {$page.url.toString().includes(href)
-		? 'bg-neutral-200'
-		: 'hover:bg-neutral-100'}"
+	class="px-2 py-2 rounded-lg font-semibold pr-10 {$page.url.toString().includes(href)
+		? 'bg-neutral-100 shadow-md'
+		: 'bg-white shadow-sm'}"
 	{href}>{text}</a
 >
