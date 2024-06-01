@@ -115,7 +115,7 @@
 	<title>Workflows - Sales Patriot</title>
 </svelte:head>
 
-<div class="h-12 bg-neutral-50 flex flex-row items-center justify-between pl-6 pr-10">
+<div class="flex flex-row h-12 bg-white items-center justify-between pl-6 pr-10">
 	<p class="text-lg font-medium">Workflows</p>
 	<div class="flex flex-row items-center space-x-5">
 		{#if isAdmin}
@@ -138,11 +138,11 @@
 </div>
 {#if workflows}
 	<article
-		class="bg-neutral-50 w-[100%] p-5 overflow-y-auto overflow-x-auto border-l-[0.2px] border-l-gainsboro flex flex-row overflow-auto space-x-5"
+		class="flex flex-row overflow-auto space-x-5 bg-white w-[100%] p-5 overflow-y-auto overflow-x-auto"
 		style="direction: ltr;"
 	>
 		{#each workflows.form.sort((a, b) => (a.step > b.step ? 1 : -1)) as form (form.id)}
-			<div class="flex flex-col bg-white p-2 rounded-md shadow-sm">
+			<div class="flex flex-col pr-5 border-r-2 border-neutral-100">
 				<div class="flex flex-row justify-between w-96 items-center">
 					<p class="font-semibold text-base">
 						{`${form.name} (${workflows.forms.filter((e) => e.form.id === form.id && !e.submitted).length})`}

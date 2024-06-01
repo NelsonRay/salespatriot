@@ -1,7 +1,7 @@
 // @ts-nocheck
 export function getColumns(pathname) {
 	switch (pathname) {
-		case '/opportunities/government/contracts-bid':
+		case '/rfqs/government-contracts-bid':
 			return [
 				{ type: 'position' },
 				{ type: 'field', field: 'solicitation.id' },
@@ -170,7 +170,7 @@ export function getNSNColumns(oppForm) {
 
 export function getTableColumns(pathname) {
 	switch (pathname) {
-		case '/opportunities/commercial/follow-up':
+		case '/rfqs/commercial-follow-up':
 			return [
 				{ type: 'position' },
 				{ type: 'name' },

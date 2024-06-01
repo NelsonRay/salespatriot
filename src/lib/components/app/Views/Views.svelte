@@ -1,7 +1,7 @@
 <script>
-	/**
-	 * @type {any}
-	 */
+	// @ts-nocheck
+	import { page } from '$app/stores';
+
 	export let views;
 
 	let openDropdown = false;
@@ -18,26 +18,36 @@
 	};
 </script>
 
-<div class="dropdown" on:focusout={handleDropdownFocusLoss}>
-	<button class="bg-neutral-100 p-2 rounded-sm font-medium text-sm" on:click={handleDropdownClick}
-		>Views
-	</button>
-	<ul
-		class="dropdown-content z-[100] menu p-2 shadow bg-neutral-100 rounded-box w-52"
-		style:visibility={openDropdown ? 'visible' : 'hidden'}
-	>
-		{#each Object.entries(views) as view (view[0])}
-			<li>
-				<a
-					href={view[0]}
-					on:click={() => {
-						handleDropdownClick();
-					}}
-					class="mb-1"
-				>
-					{view[1]}
-				</a>
-			</li>
-		{/each}
-	</ul>
+<div class="flex flex-row items-center">
+	<div class="dropdown" on:focusout={handleDropdownFocusLoss}>
+		<button class="bg-neutral-100 p-2 rounded-sm font-medium text-sm" on:click={handleDropdownClick}
+			>Views
+		</button>
+		<ul
+			class="dropdown-content z-[100] menu p-2 shadow bg-neutral-100 rounded-box w-52"
+			style:visibility={openDropdown ? 'visible' : 'hidden'}
+		>
+			{#each views as view}
+				<p class="font-semibold mb-1 ml-1 mt-1 text-md">{view.title}</p>
+				{#each view.paths as path (path.url)}
+					<li>
+						<a
+							href={path.url}
+							on:click={() => {
+								handleDropdownClick();
+							}}
+						>
+							{path.title}
+						</a>
+					</li>
+				{/each}
+			{/each}
+		</ul>
+	</div>
+
+	<p class="font-semibold ml-4 text-sm">
+		{views
+			.filter((v) => v.paths.some((p) => p.url.includes($page.url.pathname)))[0]
+			?.paths.filter((p) => p.url.includes($page.url.pathname))[0].title}
+	</p>
 </div>
