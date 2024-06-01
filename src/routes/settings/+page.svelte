@@ -1,4 +1,5 @@
 <script>
+	// @ts-nocheck
 	import Arrow from '$lib/icons/Arrow.svg';
 	import { onMount } from 'svelte';
 
@@ -8,7 +9,7 @@
 	let users;
 
 	async function loadData() {
-		const { data } = await supabase.from('users').select('*, form(*)');
+		const { data } = await supabase.from('users').select('*');
 
 		users = data?.sort((a, b) => a.index - b.index);
 	}
@@ -50,13 +51,6 @@
 						</div>
 						<p class="text-sm text-gray-400">{user.email}</p>
 					</div>
-					{#each user.form ?? [] as form}
-						<div class="flex flex-col ml-4">
-							<div class="flex flex-row bg-neutral-50 rounded-md mt-2">
-								<p>{form.name}</p>
-							</div>
-						</div>
-					{/each}
 				</div>
 			{/each}
 		</div>
