@@ -32,7 +32,7 @@ export async function POST({ request, cookies }) {
 
 	await supabase.from('forms').insert({
 		form: '5a91b7a7-513f-4067-8776-1cb01f334c96',
-		user: '35009618-f673-432a-9113-664874e195af', // cindy
+		assignee: '35009618-f673-432a-9113-664874e195af', // cindy
 		commercial: true,
 		rfq_public: data.id
 	});
