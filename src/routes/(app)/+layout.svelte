@@ -18,7 +18,7 @@
 	}
 </script>
 
-<AppShell slotPageContent="overflow-x-scroll">
+<AppShell slotPageContent="overflow-x-scroll overflow-y-scroll">
 	<svelte:fragment slot="header"><AppBar {handleFeedbackSubmit} /></svelte:fragment>
 	<svelte:fragment slot="sidebarLeft"><AppSidebar /></svelte:fragment>
 	<slot />

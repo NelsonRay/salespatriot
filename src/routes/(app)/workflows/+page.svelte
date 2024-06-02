@@ -144,10 +144,7 @@
 	</div>
 </div>
 {#if forms}
-	<article
-		class="flex flex-row overflow-auto space-x-5 bg-white w-[100%] p-5 overflow-y-auto overflow-x-auto"
-		style="direction: ltr;"
-	>
+	<article class="flex flex-row space-x-5 bg-white w-[100%] p-5" style="direction: ltr;">
 		{#if getKanbanBoards(forms).length === 0}
 			<p class="font-semibold">No Tasks</p>
 		{:else}

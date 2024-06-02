@@ -251,7 +251,7 @@
 	<title>RFQs - Sales Patriot</title>
 </svelte:head>
 
-<div class="relative top-0">
+<div>
 	<div class="flex flex-row h-14 items-center justify-between mx-2">
 		<Views {views} />
 		{#if $page.url.pathname.includes('government')}
@@ -267,23 +267,25 @@
 		{/if}
 		<!-- <p class="text-xs">Last Updated: Today 8:30 AM</p> -->
 	</div>
-</div>
 
-{#if rfqs}
-	{#if $page.url.pathname.includes('government')}
-		<GovTable data={rfqs} columns={getColumns($page.url.pathname)} blockEditing={!isAdmin} />
-	{:else}
-		<ComTable data={rfqs} columns={getTableColumns($page.url.pathname)} {assignFollowUp} />
-	{/if}
-{:else}
-	<div class="flex flex-col gap-4 p-5">
-		<div class="skeleton h-4 w-full"></div>
-		<div class="skeleton h-4 w-full"></div>
-		<div class="skeleton h-4 w-full"></div>
-		<div class="skeleton h-4 w-full"></div>
-		<div class="skeleton h-4 w-full"></div>
-		<div class="skeleton h-4 w-full"></div>
-		<div class="skeleton h-4 w-full"></div>
-		<div class="skeleton h-4 w-full"></div>
+	<div class="max-h-[calc(100vh-3.5rem)]">
+		{#if rfqs}
+			{#if $page.url.pathname.includes('government')}
+				<GovTable data={rfqs} columns={getColumns($page.url.pathname)} blockEditing={!isAdmin} />
+			{:else}
+				<ComTable data={rfqs} columns={getTableColumns($page.url.pathname)} {assignFollowUp} />
+			{/if}
+		{:else}
+			<div class="flex flex-col gap-4 p-5">
+				<div class="skeleton h-4 w-full"></div>
+				<div class="skeleton h-4 w-full"></div>
+				<div class="skeleton h-4 w-full"></div>
+				<div class="skeleton h-4 w-full"></div>
+				<div class="skeleton h-4 w-full"></div>
+				<div class="skeleton h-4 w-full"></div>
+				<div class="skeleton h-4 w-full"></div>
+				<div class="skeleton h-4 w-full"></div>
+			</div>
+		{/if}
 	</div>
-{/if}
+</div>
