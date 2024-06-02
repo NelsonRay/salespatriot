@@ -42,11 +42,8 @@
 	}
 </script>
 
-<article
-	class="bg-white w-[100%] h-full overflow-scroll scrollbar-gutter-stable"
-	style="direction: ltr;"
->
-	<table class="text-left w-[100%] border-separate border-spacing-0 overflow-scroll text-xs">
+<article class="bg-white w-[100%] h-full scrollbar-gutter-stable" style="direction: ltr;">
+	<table class="text-left w-[100%] border-separate border-spacing-0 text-xs">
 		<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
 			{#each columns as column}
 				<th class={column.type === 'position' ? 'text-center' : ''}
