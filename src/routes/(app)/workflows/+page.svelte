@@ -31,12 +31,12 @@
 		let formsQuery = supabase
 			.from('forms')
 			.select(
-				'*, user!inner(*), form!inner(*), part(*, rfqs_parts(*, rfq(status, customer(name)), rfqs_parts_quantities(*))), rfq(*, customer(name), rfqs_parts(id, part(number), rfqs_parts_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
+				'*, assignee!inner(*), form!inner(*), part(*, rfqs_parts(*, rfq(status, customer(name)), rfqs_parts_quantities(*))), rfq(*, customer(name), rfqs_parts(id, part(number), rfqs_parts_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
 			)
 			.eq('deleted', false)
 			.eq('submitted', false);
 
-		if (isUser) formsQuery = formsQuery.eq('user', session.user.id);
+		if (isUser) formsQuery = formsQuery.eq('assignee', session.user.id);
 
 		const { data, error } = await formsQuery;
 
@@ -55,8 +55,8 @@
 		let boards = [];
 
 		for (let form of forms) {
-			if (!boards.some((b) => b.id == form.form.id && b.user.id == form.user.id)) {
-				boards = [...boards, { ...form.form, user: form.user }];
+			if (!boards.some((b) => b.id == form.form.id && b.assignee.id == form.assignee.id)) {
+				boards = [...boards, { ...form.form, assignee: form.assignee }];
 			}
 		}
 
@@ -67,7 +67,7 @@
 
 	function getSortedForms(forms, board) {
 		forms = forms.filter(
-			(f) => f.form.id === board.id && f.user.id === board.user.id && !f.submitted
+			(f) => f.form.id === board.id && f.assignee.id === board.assignee.id && !f.submitted
 		);
 
 		switch (board.type) {
@@ -148,13 +148,13 @@
 		{#if getKanbanBoards(forms).length === 0}
 			<p class="font-semibold">No Tasks</p>
 		{:else}
-			{#each getKanbanBoards(forms) as board (board.id + board.user.id)}
+			{#each getKanbanBoards(forms) as board (board.id + board.assignee.id)}
 				<div class="flex flex-col pr-5 border-r-2 border-neutral-100">
 					<div class="flex flex-row justify-between w-96 items-center">
 						<p class="font-semibold text-base">
 							{`${board.name} (${getSortedForms(forms, board).length})`}
 						</p>
-						<p class="font-medium text-base text-gray-500">{board.user.name}</p>
+						<p class="font-medium text-base text-gray-500">{board.assignee.name}</p>
 					</div>
 					{#each getSortedForms(forms, board) as forms (forms.id)}
 						{#if forms?.commercial}

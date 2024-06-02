@@ -40,7 +40,7 @@ export async function POST({ request, cookies }) {
 			return json({}, { status: 201 });
 		}
 
-		userId = data.user;
+		userId = data.assignee;
 		btnText = `Open ${data.form.name}`;
 		subject = `${data.form.name}: ${data.solicitation_matched.solicitation.id}`;
 		formLink = `https://salespatriot.com/solicitation-form/${record.id}`;
@@ -56,7 +56,7 @@ export async function POST({ request, cookies }) {
 
 		if (error) console.error(error);
 
-		userId = data.user;
+		userId = data.assignee;
 		btnText = `Open ${data.form.name}`;
 		subject = `${data.form.name}: ${data.part?.number ?? (!data.rfq_public ? data.rfq.customer.name + ' / ' + data.rfq.received_at : data.rfq_public.values.customer.name + ' / ' + data.rfq_public.values.received_at)}`;
 		formLink = `https://salespatriot.com/commercial-form/${record.id}`;

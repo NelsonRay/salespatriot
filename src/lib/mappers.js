@@ -149,10 +149,10 @@ export function commercialTableFieldMapper(obj, column) {
 
 		if (obj?.[column.field]) {
 			value = formatMonthDayYearDate(obj?.[column.field]);
-		}
 
-		if (column.field == 'sent_quote_timestamp') {
-			value += ` (${Math.abs(calculateDaysDifference(value))}d)`;
+			if (column.field == 'sent_quote_timestamp') {
+				value += ` (${Math.abs(calculateDaysDifference(value))}d)`;
+			}
 		}
 
 		return { header, value };

@@ -234,14 +234,14 @@
 				form: 'd3dfeff5-ad61-4948-b028-b4d447cae57f',
 				commercial: true,
 				rfq: rfq.id,
-				user: '35009618-f673-432a-9113-664874e195af' // cindy
+				assignee: '35009618-f673-432a-9113-664874e195af' // cindy
 			});
 		} else if (person == 'tom') {
 			await supabase.from('forms').insert({
 				form: 'd3dfeff5-ad61-4948-b028-b4d447cae57f',
 				commercial: true,
 				rfq: rfq.id,
-				user: 'c8905ffa-50a4-4d04-bbe3-e7a26371c78d' // tom
+				assignee: 'c8905ffa-50a4-4d04-bbe3-e7a26371c78d' // tom
 			});
 		}
 	}

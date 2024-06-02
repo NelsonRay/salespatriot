@@ -87,7 +87,7 @@ export async function POST({ request, cookies }) {
 						commercial: true,
 						form: '18055704-d9b9-42d7-958b-f5d1d5b1ba4d',
 						part: rfqs_part.part.id,
-						user: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
+						assignee: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
 					});
 			}
 
@@ -104,7 +104,7 @@ export async function POST({ request, cookies }) {
 					await supabase.from('forms').insert({
 						commercial: true,
 						form: '53cc6979-4406-47aa-97a0-1d83d0504c12',
-						user: '74f12757-db07-41af-bf29-422e97561118', // aman
+						assignee: '74f12757-db07-41af-bf29-422e97561118', // aman
 						part: rfqs_part.part.id
 					});
 			}

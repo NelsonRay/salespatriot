@@ -146,13 +146,13 @@ export async function POST({ request, cookies }) {
 					rfq: response.id,
 					form: 'a40a1d91-3295-4ca4-b343-ad58e2279fec',
 					commercial: true,
-					user: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
+					assignee: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
 				});
 				await supabase.from('forms').insert({
 					rfq: response.id,
 					form: '6a0d1585-d572-4d8f-bdb4-498a89506e85',
 					commercial: true,
-					user: '35009618-f673-432a-9113-664874e195af' // cindy
+					assignee: '35009618-f673-432a-9113-664874e195af' // cindy
 				});
 				break;
 			}

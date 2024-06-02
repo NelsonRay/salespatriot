@@ -57,20 +57,20 @@ export async function POST({ request, cookies }) {
 						await supabase.from('forms').insert({
 							form: '18055704-d9b9-42d7-958b-f5d1d5b1ba4d',
 							solicitation_matched,
-							user: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
+							assignee: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
 						});
 
 						await supabase.from('forms').insert({
 							form: '53cc6979-4406-47aa-97a0-1d83d0504c12',
 							solicitation_matched,
-							user: '74f12757-db07-41af-bf29-422e97561118' // aman
+							assignee: '74f12757-db07-41af-bf29-422e97561118' // aman
 						});
 					} else if ((response.status ?? []).includes('bom:in_progress')) {
 						await updateStatusInProgress(data.status, status, supabase, solicitation_matched);
 						await supabase.from('forms').insert({
 							form: 'bee07e8a-3c83-4bce-89a7-f91ca65804e6',
 							solicitation_matched,
-							user: '6a349541-2915-42c6-86f3-e8af347bdf01' // alex
+							assignee: '6a349541-2915-42c6-86f3-e8af347bdf01' // alex
 						});
 					}
 				} else if (data.status.includes('opportunity:pursue')) {
@@ -83,7 +83,7 @@ export async function POST({ request, cookies }) {
 					await supabase.from('forms').insert({
 						form: '0ce91293-4277-446e-9ff2-2d5c62bbb0fe',
 						solicitation_matched,
-						user: '019a28d1-3429-4831-8161-2abbf6072cfa' // wayne
+						assignee: '019a28d1-3429-4831-8161-2abbf6072cfa' // wayne
 					});
 				}
 				break;
@@ -100,7 +100,7 @@ export async function POST({ request, cookies }) {
 					await supabase.from('forms').insert({
 						form: 'bee07e8a-3c83-4bce-89a7-f91ca65804e6',
 						solicitation_matched,
-						user: '6a349541-2915-42c6-86f3-e8af347bdf01' // alex
+						assignee: '6a349541-2915-42c6-86f3-e8af347bdf01' // alex
 					});
 				}
 
@@ -118,13 +118,13 @@ export async function POST({ request, cookies }) {
 					await supabase.from('forms').insert({
 						form: '18055704-d9b9-42d7-958b-f5d1d5b1ba4d',
 						solicitation_matched,
-						user: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
+						assignee: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
 					});
 
 					await supabase.from('forms').insert({
 						form: '53cc6979-4406-47aa-97a0-1d83d0504c12',
 						solicitation_matched,
-						user: '74f12757-db07-41af-bf29-422e97561118' // aman
+						assignee: '74f12757-db07-41af-bf29-422e97561118' // aman
 					});
 				}
 				break;
@@ -145,7 +145,7 @@ export async function POST({ request, cookies }) {
 					await supabase.from('forms').insert({
 						form: '6bbf4342-1b50-4c1a-9dc5-ad40562c5626',
 						solicitation_matched,
-						user: '6a349541-2915-42c6-86f3-e8af347bdf01' // alex
+						assignee: '6a349541-2915-42c6-86f3-e8af347bdf01' // alex
 					});
 				}
 				break;
@@ -162,12 +162,12 @@ export async function POST({ request, cookies }) {
 					await supabase.from('forms').insert({
 						form: 'a40a1d91-3295-4ca4-b343-ad58e2279fec',
 						solicitation_matched,
-						user: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
+						assignee: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
 					});
 					await supabase.from('forms').insert({
 						form: '6a0d1585-d572-4d8f-bdb4-498a89506e85',
 						solicitation_matched,
-						user: '35009618-f673-432a-9113-664874e195af' // cindy
+						assignee: '35009618-f673-432a-9113-664874e195af' // cindy
 					});
 				}
 				break;
