@@ -17,7 +17,7 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				'*, form!inner(*), part(*, parts_labor_minutes(*), comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at))), rfq_public(*), rfq(*, comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)), customer(*), rfqs_parts(*, part(*, parts_purchasing(*), parts_labor_minutes(*)), rfqs_parts_quantities(*)))'
+				'*, form!inner(*), email(*), part(*, parts_labor_minutes(*), comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at))), rfq_public(*), rfq(*, comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)), customer(*), rfqs_parts(*, part(*, parts_purchasing(*), parts_labor_minutes(*)), rfqs_parts_quantities(*)))'
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
@@ -61,27 +61,47 @@
 			rfqsForPurchasingForm = d;
 		}
 
+		if (data?.email) {
+			const { data: files } = await supabase.storage
+				.from('email_attachments')
+				.list(data.email.id.toString() + '/');
+
+			data.email.attachments = files;
+		}
+
 		form = data;
 
 		if (['final_pricing', 'enter_quote', 'bid', 'follow_up'].includes(form?.form?.type)) {
 			values = form.rfq;
 		} else if (form?.form?.type === 'confirm') {
-			values = {
-				person_name: data.rfq_public?.values?.person_name,
-				customer: {
-					email_address: data.rfq_public?.values?.customer?.email_address,
-					phone_number: data.rfq_public?.values?.customer?.phone_number
-				},
-				received_at: data.rfq_public.values.received_at,
-				requested_return_date: data.rfq_public.values.requested_return_date,
-				rfqs_parts: [
-					{
-						part: {},
-						rfqs_parts_quantities: [{ quantity: null }]
-					}
-				],
-				notes: data.rfq_public?.values?.notes
-			};
+			if (form?.email) {
+				values = {
+					rfqs_parts: [
+						{
+							part: {},
+							rfqs_parts_quantities: [{ quantity: null }]
+						}
+					],
+					customer: {}
+				};
+			} else {
+				values = {
+					person_name: data.rfq_public?.values?.person_name,
+					customer: {
+						email_address: data.rfq_public?.values?.customer?.email_address,
+						phone_number: data.rfq_public?.values?.customer?.phone_number
+					},
+					received_at: data.rfq_public.values.received_at,
+					requested_return_date: data.rfq_public.values.requested_return_date,
+					rfqs_parts: [
+						{
+							part: {},
+							rfqs_parts_quantities: [{ quantity: null }]
+						}
+					],
+					notes: data.rfq_public?.values?.notes
+				};
+			}
 		} else {
 			values = {};
 		}

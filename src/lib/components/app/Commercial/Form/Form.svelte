@@ -19,6 +19,7 @@
 	import StatusSelect from '$lib/components/form/StatusSelect.svelte';
 	import { commercialTags } from '$lib/tags';
 	import RemoveComOptionSelect from '$lib/components/form/RemoveComOptionSelect.svelte';
+	import Download from '$lib/icons/Download.svg';
 
 	export let data;
 	export let comments;
@@ -103,6 +104,25 @@
 		if (!errors) {
 			submitCallback();
 		}
+	}
+
+	async function downloadFile(fileName) {
+		const { data: file, error } = await supabase.storage
+			.from('email_attachments')
+			.download(data.email.id + '/' + fileName);
+
+		if (error) {
+			console.error('Error downloading file:', error);
+			return;
+		}
+
+		const url = URL.createObjectURL(file);
+		const link = document.createElement('a');
+		link.href = url;
+		link.setAttribute('download', fileName);
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
 	}
 
 	$: reviewValues = getCommercialValueCalculation(focusedRfqPartQty);
@@ -199,11 +219,43 @@
 				{/if}
 				{#if form?.type === 'confirm'}
 					<div class="flex flex-col space-y-5">
-						<div>
-							<p class="font-medium">
-								{'Company: ' + data.rfq_public.values.customer.name}
-							</p>
-						</div>
+						{#if data.email}
+							<div class="flex flex-col space-y-2">
+								<p class="font-medium">Email:</p>
+								{#if data.email}
+									<p class="text-sm">
+										{@html data.email.html}
+									</p>
+									{#if data.email.attachments?.length > 0}
+										<p class="font-medium">Download files from email:</p>
+										<ul>
+											{#each data.email.attachments as attachment}
+												<li>
+													<button
+														class="bg-neutral-100 p-2 rounded-md"
+														on:click={() => downloadFile(attachment.name)}
+													>
+														<div class="flex flex-row justify-center items-center space-x-2">
+															<p>
+																{attachment.name}
+															</p>
+															<img src={Download} alt="download" class="w-4 h-4" />
+														</div>
+													</button>
+												</li>
+											{/each}
+										</ul>
+									{/if}
+								{/if}
+							</div>
+						{/if}
+						{#if data.rfq_public}
+							<div>
+								<p class="font-medium">
+									{'Company: ' + data.rfq_public.values.customer.name}
+								</p>
+							</div>
+						{/if}
 						<div class="flex flex-row space-x-5">
 							<div class="flex flex-col">
 								<label for="customer_name">Customer Name</label>
@@ -256,7 +308,9 @@
 						</div>
 					</div>
 
-					<PublicPartsTable data={data.rfq_public.values} />
+					{#if data.rfq_public}
+						<PublicPartsTable data={data.rfq_public.values} />
+					{/if}
 
 					<Products
 						bind:rfqs_parts={values.rfqs_parts}
