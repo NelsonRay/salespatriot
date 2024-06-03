@@ -31,7 +31,7 @@
 		let formsQuery = supabase
 			.from('forms')
 			.select(
-				'*, assignee!inner(*), form!inner(*), part(*, rfqs_parts(*, rfq(status, customer(name)), rfqs_parts_quantities(*))), rfq(*, customer(name), rfqs_parts(id, part(number), rfqs_parts_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(name)), created_at'
+				'*, assignee!inner(*), form!inner(*), part(*, rfqs_parts(*, rfq(status, customer(name)), rfqs_parts_quantities(*))), rfq(*, customer(name), rfqs_parts(id, part(number), rfqs_parts_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(id, name)), created_at'
 			)
 			.eq('deleted', false)
 			.eq('submitted', false);
@@ -78,11 +78,29 @@
 						a?.solicitation_matched?.solicitation?.estimated_value
 				);
 
+				const monitoredSols = forms.filter((e) =>
+					['518d98ed-c7d1-4d44-8223-b14214d7b050', '917b423d-a0f6-47bb-82cd-8d73d322b458'].includes(
+						e?.solicitation_matched?.matching_rule?.id
+					)
+				);
+				const nonMonitoredSols = forms.filter(
+					(e) =>
+						![
+							'518d98ed-c7d1-4d44-8223-b14214d7b050',
+							'917b423d-a0f6-47bb-82cd-8d73d322b458'
+						].includes(e?.solicitation_matched?.matching_rule?.id)
+				);
+
 				forms = [
-					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Prev Won'),
-					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Prev Bid'),
-					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'Seen'),
-					...forms.filter((e) => e?.solicitation_matched?.familiarity_status === 'New')
+					...monitoredSols,
+					...nonMonitoredSols.filter(
+						(e) => e?.solicitation_matched?.familiarity_status === 'Prev Won'
+					),
+					...nonMonitoredSols.filter(
+						(e) => e?.solicitation_matched?.familiarity_status === 'Prev Bid'
+					),
+					...nonMonitoredSols.filter((e) => e?.solicitation_matched?.familiarity_status === 'Seen'),
+					...nonMonitoredSols.filter((e) => e?.solicitation_matched?.familiarity_status === 'New')
 				];
 				return forms;
 			case 'purchasing':
