@@ -135,7 +135,7 @@
 				return form.rfq_public.values.customer.name + ' / ' + form.rfq_public.values.received_at;
 			}
 		} else {
-			return form?.part?.number ?? forms.rfq?.customer?.name + ' / ' + form.rfq.received_at;
+			return form?.part?.number ?? form.rfq?.customer?.name + ' / ' + form.rfq.received_at;
 		}
 	}
 </script>
