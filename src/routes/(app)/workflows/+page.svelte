@@ -109,11 +109,15 @@
 		return `# of Parts: ${parts}, # of Quantities: ${qty}`;
 	}
 
-	function getCommercialFormTitle(forms, form) {
-		if (form.id === '5a91b7a7-513f-4067-8776-1cb01f334c96') {
-			return forms.rfq_public.values.customer.name + ' / ' + forms.rfq_public.values.received_at;
+	function getCommercialFormTitle(form) {
+		if (form.form.id === '5a91b7a7-513f-4067-8776-1cb01f334c96') {
+			if (form.email) {
+				return 'New Email';
+			} else {
+				return form.rfq_public.values.customer.name + ' / ' + form.rfq_public.values.received_at;
+			}
 		} else {
-			return forms?.part?.number ?? forms.rfq?.customer?.name + ' / ' + forms.rfq.received_at;
+			return form?.part?.number ?? forms.rfq?.customer?.name + ' / ' + form.rfq.received_at;
 		}
 	}
 </script>
@@ -156,28 +160,28 @@
 						</p>
 						<p class="font-medium text-base text-gray-500">{board.assignee.name}</p>
 					</div>
-					{#each getSortedForms(forms, board) as forms (forms.id)}
-						{#if forms?.commercial}
-							<a href={window.location.origin + '/commercial-form/' + forms.id}>
+					{#each getSortedForms(forms, board) as form (form.id)}
+						{#if form?.commercial}
+							<a href={window.location.origin + '/commercial-form/' + form.id}>
 								<div class="relative flex flex-col shadow-lg mt-3 rounded-md bg-white p-2 text-xs">
 									<div class="flex flex-row justify-between items-center">
 										<p class="font-semibold text-sm">
-											{getCommercialFormTitle(forms, board)}
+											{getCommercialFormTitle(form)}
 										</p>
 										<div class="flex flex-row items-center space-x-1">
-											{#if forms.waiting}
+											{#if form.waiting}
 												<div class="px-2 py-1 rounded-md bg-yellow-400 mb-1">
 													<p>Waiting</p>
 												</div>
 											{/if}
 										</div>
 									</div>
-									{#if forms?.rfq}
-										<p class="mt-1 font-medium">{getRFQDescription(forms?.rfq)}</p>
+									{#if form?.rfq}
+										<p class="mt-1 font-medium">{getRFQDescription(form?.rfq)}</p>
 									{/if}
 									{#if board?.type === 'purchasing'}
 										<div class="mb-2">
-											{#each forms?.part?.rfqs_parts.filter((p) => !p.rfq.status.includes('purchasing:complete')) ?? [] as rfqs_part}
+											{#each form?.part?.rfqs_parts.filter((p) => !p.rfq.status.includes('purchasing:complete')) ?? [] as rfqs_part}
 												<p class="mt-1 font-medium">
 													{'QTY: ' +
 														rfqs_part.rfqs_parts_quantities.map((p) => p.quantity).join(', ') +
@@ -189,7 +193,7 @@
 									{/if}
 									{#if board?.type === 'labor'}
 										<div class="mb-2">
-											{#each forms?.part?.rfqs_parts.filter((p) => !p.rfq.status.includes('labor:complete')) ?? [] as rfqs_part}
+											{#each form?.part?.rfqs_parts.filter((p) => !p.rfq.status.includes('labor:complete')) ?? [] as rfqs_part}
 												<p class="mt-1 font-medium">
 													{'QTY: ' +
 														rfqs_part.rfqs_parts_quantities.map((p) => p.quantity).join(', ') +
@@ -200,51 +204,51 @@
 										</div>
 									{/if}
 									{#if board?.type === 'enter_quote'}
-										{#each forms?.rfq?.rfqs_parts ?? [] as rfqs_part}
+										{#each form?.rfq?.rfqs_parts ?? [] as rfqs_part}
 											<p class="mt-1 font-medium">{rfqs_part.part.number}</p>
 										{/each}
 									{/if}
-									{#if forms?.rfq_public}
-										<p class="mt-1 font-medium">{getRFQDescription(forms?.rfq_public?.values)}</p>
+									{#if form?.rfq_public}
+										<p class="mt-1 font-medium">{getRFQDescription(form?.rfq_public?.values)}</p>
 									{/if}
 									<div class="flex flex-row justify-end">
 										<p
-											class={Math.abs(calculateDaysDifference(forms.created_at)) > 4
+											class={Math.abs(calculateDaysDifference(form.created_at)) > 4
 												? 'text-red-400'
 												: 'text-gray-500'}
 										>
-											{formatDateWithTime(forms.created_at) +
+											{formatDateWithTime(form.created_at) +
 												' (' +
-												Math.abs(calculateDaysDifference(forms.created_at)) +
+												Math.abs(calculateDaysDifference(form.created_at)) +
 												'd old)'}
 										</p>
 									</div>
 								</div>
 							</a>
 						{:else}
-							<a href={window.location.origin + '/solicitation-form/' + forms.id}>
+							<a href={window.location.origin + '/solicitation-form/' + form.id}>
 								<div class="relative flex flex-col shadow-md mt-3 rounded-md bg-white p-2 text-xs">
 									<div class="flex flex-row justify-between items-center">
 										<p class="font-semibold text-sm">
-											{forms.solicitation_matched.solicitation.id}
+											{form.solicitation_matched.solicitation.id}
 										</p>
 										<div class="flex flex-row items-center space-x-1">
-											{#if forms.solicitation_matched?.matching_rule?.name}
+											{#if form.solicitation_matched?.matching_rule?.name}
 												<div
 													class="px-2 py-1 rounded-md {getMatchingClass(
-														forms.solicitation_matched?.matching_rule?.name
+														form.solicitation_matched?.matching_rule?.name
 													)}"
 												>
-													<p>{forms.solicitation_matched?.matching_rule?.name}</p>
+													<p>{form.solicitation_matched?.matching_rule?.name}</p>
 												</div>
 											{/if}
 											<div
 												class="px-2 py-1 rounded-md {getFamiliarityClass(
-													forms.solicitation_matched.familiarity_status
+													form.solicitation_matched.familiarity_status
 												)}"
 											>
 												<p>
-													{forms.solicitation_matched.familiarity_status}
+													{form.solicitation_matched.familiarity_status}
 												</p>
 											</div>
 										</div>
@@ -252,38 +256,36 @@
 									<div class="flex flex-row justify-between">
 										<div class="flex flex-col">
 											<p class="mt-2 font-medium">
-												{forms.solicitation_matched.solicitation.description}
+												{form.solicitation_matched.solicitation.description}
 											</p>
 											{#if board?.id === '50e95568-180b-46d5-a341-f216bb2a3c17'}
 												<p>
-													{formatCurrency(forms.solicitation_matched.solicitation.estimated_value)}
+													{formatCurrency(form.solicitation_matched.solicitation.estimated_value)}
 												</p>
 											{/if}
 											<p>
-												{`${forms.solicitation_matched.solicitation.quantity} ${forms.solicitation_matched.solicitation.quantity_units}`}
+												{`${form.solicitation_matched.solicitation.quantity} ${form.solicitation_matched.solicitation.quantity_units}`}
 											</p>
 											<p
 												class={calculateDaysDifference(
-													forms.solicitation_matched.solicitation.expires_on
+													form.solicitation_matched.solicitation.expires_on
 												) <= 2
 													? 'text-red-400'
 													: ''}
 											>
 												Expires {([1, -1, 0].includes(
-													calculateDaysDifference(
-														forms.solicitation_matched.solicitation.expires_on
-													)
+													calculateDaysDifference(form.solicitation_matched.solicitation.expires_on)
 												)
 													? ''
 													: ' on ') +
 													formatMonthDayYearDate(
-														forms.solicitation_matched.solicitation.expires_on
+														form.solicitation_matched.solicitation.expires_on
 													) +
-													` (${calculateDaysDifference(forms.solicitation_matched.solicitation.expires_on)}d)`}
+													` (${calculateDaysDifference(form.solicitation_matched.solicitation.expires_on)}d)`}
 											</p>
 										</div>
 										<div>
-											{#if forms.waiting}
+											{#if form.waiting}
 												<div class="px-2 py-1 rounded-md bg-yellow-400 mt-1">
 													<p>Waiting</p>
 												</div>
@@ -292,13 +294,13 @@
 									</div>
 									<div class="flex flex-row justify-end">
 										<p
-											class={Math.abs(calculateDaysDifference(forms.created_at)) > 4
+											class={Math.abs(calculateDaysDifference(form.created_at)) > 4
 												? 'text-red-400'
 												: 'text-gray-500'}
 										>
-											{formatDateWithTime(forms.created_at) +
+											{formatDateWithTime(form.created_at) +
 												' (' +
-												Math.abs(calculateDaysDifference(forms.created_at)) +
+												Math.abs(calculateDaysDifference(form.created_at)) +
 												'd old)'}
 										</p>
 									</div>

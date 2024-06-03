@@ -1,0 +1,126 @@
+// @ts-nocheck
+import { json } from '@sveltejs/kit';
+import Imap from 'imap';
+import { simpleParser } from 'mailparser';
+
+export async function GET({ locals: { supabase } }) {
+	const emails = await readEmails();
+
+	const { data: dbEmails } = await supabase.from('emails').select('*');
+
+	for (let email of emails) {
+		if (!dbEmails.some((de) => de.message_id == email.messageId)) {
+			const { data: newEmail } = await supabase
+				.from('emails')
+				.insert({
+					message_id: email.messageId,
+					header_lines: email.headerLines,
+					headers: email.headers,
+					html: email.textAsHtml,
+					subject: email.subject,
+					date: email.date,
+					to: email.to,
+					from: email.from,
+					firm: '6b289746-2b01-47af-a7d4-26a3920f75ca'
+				})
+				.select('id')
+				.limit(1)
+				.single();
+
+			if (email.attachments.length > 0) {
+				email.attachments.forEach(async (attachment) => {
+					const fileBuffer = Buffer.from(attachment.content);
+					const filename = attachment.filename;
+					const { error: err } = await supabase.storage
+						.from('email_attachments')
+						.upload(newEmail.id + '/' + filename, fileBuffer, {
+							contentType: attachment.contentType
+						});
+
+					if (err) console.error(err);
+				});
+			}
+		}
+	}
+
+	return json({}, { status: 200 });
+}
+
+async function readEmails() {
+	return new Promise((resolve, reject) => {
+		const imap = new Imap({
+			user: 'quoting@auroradefensegroup.com',
+			password: 'New0rders!',
+			host: 'mail.auroradefensegroup.com',
+			port: 143, // IMAP SSL port
+			tls: false,
+			tlsOptions: { rejectUnauthorized: false } // for testing purposes
+		});
+
+		function openInbox(cb) {
+			imap.openBox('INBOX', true, cb);
+		}
+
+		imap.once('ready', function () {
+			openInbox(function (err, box) {
+				if (err) throw err;
+				imap.search([['SINCE', '22-May-2024']], function (err, results) {
+					if (err) throw err;
+					if (!results || !results.length) {
+						console.log('No emails found.');
+						imap.end();
+						return;
+					}
+
+					const f = imap.fetch(results, { bodies: '', struct: true });
+					const emails = [];
+					let messagesProcessed = 0;
+
+					f.on('message', function (msg, seqno) {
+						let email = {
+							seqno
+						};
+
+						msg.on('body', function (stream) {
+							simpleParser(stream, {}, (err, parsed) => {
+								if (err) throw err;
+
+								console.log(parsed.subject, parsed.date);
+
+								for (let key of Object.keys(parsed)) {
+									email[key] = parsed[key];
+								}
+
+								emails.push(email);
+								messagesProcessed++;
+
+								if (messagesProcessed === results.length) {
+									imap.end();
+									resolve(emails);
+								}
+							});
+						});
+					});
+
+					f.once('error', function (err) {
+						console.log('Fetch error: ' + err);
+					});
+
+					f.once('end', function () {
+						console.log('Fetch operation ended.');
+					});
+				});
+			});
+		});
+
+		// imap.once('error', function (err) {
+		// 	console.log(err);
+		// });
+
+		imap.once('end', function () {
+			console.log('Connection ended');
+		});
+
+		imap.connect();
+	});
+}
