@@ -24,10 +24,9 @@ export async function POST({ request, cookies }) {
 			// confirm form
 			case '5a91b7a7-513f-4067-8776-1cb01f334c96': {
 				if (email) {
-					const { error: err } = await supabase
+					await supabase
 						.from('rfqs_uploaded')
-						.insert({ values: rfq, from_email: true, email });
-					console.log('err:', err);
+						.insert({ values: response, from_email: true, email });
 				} else {
 					await supabase.from('rfqs_uploaded').insert({ values: response });
 				}
