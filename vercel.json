@@ -1,7 +1,7 @@
 {
 	"crons": [
 		{
-			"path": "/api/process-emailed-rfqs",
+			"path": "/api/emails/process-emailed-rfqs",
 			"schedule": "*/15 * * * *"
 		}
 	]
