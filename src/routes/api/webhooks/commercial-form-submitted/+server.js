@@ -5,7 +5,7 @@ import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import { createServerClient } from '@supabase/ssr';
 
-export async function POST({ request, cookies, fetch }) {
+export async function POST({ request, cookies }) {
 	try {
 		const {
 			record: { part, rfq, response, form, email }
@@ -23,9 +23,11 @@ export async function POST({ request, cookies, fetch }) {
 		switch (form) {
 			// confirm form
 			case '5a91b7a7-513f-4067-8776-1cb01f334c96': {
-				console.log('email', email);
 				if (email) {
-					await supabase.from('rfqs_uploaded').insert({ values: rfq, from_email: true, email });
+					const { error: err } = await supabase
+						.from('rfqs_uploaded')
+						.insert({ values: rfq, from_email: true, email });
+					console.log('err:', err);
 				} else {
 					await supabase.from('rfqs_uploaded').insert({ values: response });
 				}
