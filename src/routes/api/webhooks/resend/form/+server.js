@@ -58,7 +58,11 @@ export async function POST({ request, cookies }) {
 
 		userId = data.assignee;
 		btnText = `Open ${data.form.name}`;
-		subject = `${data.form.name}: ${data.part?.number ?? (!data.rfq_public ? data.rfq.customer.name + ' / ' + data.rfq.received_at : data.rfq_public.values.customer.name + ' / ' + data.rfq_public.values.received_at)}`;
+		if (record.email) {
+			subject = 'Confirm Form: New Email';
+		} else {
+			subject = `${data.form.name}: ${data.part?.number ?? (!data.rfq_public ? data.rfq.customer.name + ' / ' + data.rfq.received_at : data.rfq_public.values.customer.name + ' / ' + data.rfq_public.values.received_at)}`;
+		}
 		formLink = `https://salespatriot.com/commercial-form/${record.id}`;
 	}
 
