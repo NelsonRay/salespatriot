@@ -8,11 +8,11 @@ export const config = {
 };
 
 export async function POST({ request, locals: { supabase, session } }) {
-	const { rfq, from_email, email } = await request.json();
+	const { rfq } = await request.json();
 
 	const { error } = await supabase
 		.from('rfqs_uploaded')
-		.insert({ values: rfq, user: session?.user?.id, from_email, email });
+		.insert({ values: rfq, user: session?.user?.id });
 
 	if (error) {
 		return json({ error }, { status: 500 });
