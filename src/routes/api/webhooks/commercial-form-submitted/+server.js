@@ -23,11 +23,14 @@ export async function POST({ request, cookies, fetch }) {
 		switch (form) {
 			// confirm form
 			case '5a91b7a7-513f-4067-8776-1cb01f334c96': {
+				console.log('email', email);
 				if (email) {
-					await fetch('/api/rfq/new', {
+					const res = await fetch('/api/rfq/new', {
 						method: 'POST',
 						body: JSON.stringify({ from_email: true, email, rfq: response })
 					});
+
+					console.log(res.status);
 				} else {
 					await supabase.from('rfqs_uploaded').insert({ values: response });
 				}
