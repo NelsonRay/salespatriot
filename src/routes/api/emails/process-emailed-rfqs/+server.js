@@ -21,7 +21,8 @@ export async function GET({ locals: { supabase } }) {
 					date: email.date,
 					to: email.to,
 					from: email.from,
-					firm: '6b289746-2b01-47af-a7d4-26a3920f75ca'
+					firm: '6b289746-2b01-47af-a7d4-26a3920f75ca',
+					text: email.text
 				})
 				.select('id')
 				.limit(1)
@@ -40,6 +41,13 @@ export async function GET({ locals: { supabase } }) {
 					if (err) console.error(err);
 				});
 			}
+
+			await supabase.from('forms').insert({
+				form: '5a91b7a7-513f-4067-8776-1cb01f334c96',
+				assignee: '35009618-f673-432a-9113-664874e195af',
+				commercial: true,
+				email: newEmail.id
+			});
 		}
 	}
 
@@ -47,6 +55,7 @@ export async function GET({ locals: { supabase } }) {
 }
 
 async function readEmails() {
+	// eslint-disable-next-line no-unused-vars
 	return new Promise((resolve, reject) => {
 		const imap = new Imap({
 			user: 'quoting@auroradefensegroup.com',
@@ -62,6 +71,7 @@ async function readEmails() {
 		}
 
 		imap.once('ready', function () {
+			// eslint-disable-next-line no-unused-vars
 			openInbox(function (err, box) {
 				if (err) throw err;
 				imap.search([['SINCE', '22-May-2024']], function (err, results) {
@@ -85,8 +95,6 @@ async function readEmails() {
 							simpleParser(stream, {}, (err, parsed) => {
 								if (err) throw err;
 
-								console.log(parsed.subject, parsed.date);
-
 								for (let key of Object.keys(parsed)) {
 									email[key] = parsed[key];
 								}
@@ -102,13 +110,13 @@ async function readEmails() {
 						});
 					});
 
-					f.once('error', function (err) {
-						console.log('Fetch error: ' + err);
-					});
+					// f.once('error', function (err) {
+					// 	console.log('Fetch error: ' + err);
+					// });
 
-					f.once('end', function () {
-						console.log('Fetch operation ended.');
-					});
+					// f.once('end', function () {
+					// 	console.log('Fetch operation ended.');
+					// });
 				});
 			});
 		});
@@ -117,9 +125,9 @@ async function readEmails() {
 		// 	console.log(err);
 		// });
 
-		imap.once('end', function () {
-			console.log('Connection ended');
-		});
+		// imap.once('end', function () {
+		// 	console.log('Connection ended');
+		// });
 
 		imap.connect();
 	});

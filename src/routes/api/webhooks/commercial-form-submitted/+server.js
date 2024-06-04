@@ -5,10 +5,10 @@ import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
 import { json } from '@sveltejs/kit';
 import { createServerClient } from '@supabase/ssr';
 
-export async function POST({ request, cookies }) {
+export async function POST({ request, cookies, fetch }) {
 	try {
 		const {
-			record: { part, rfq, response, form }
+			record: { part, rfq, response, form, email }
 		} = await request.json();
 
 		/** @type {import('@supabase/supabase-js').SupabaseClient<import('$lib/types/supabase.js').Database>} */
@@ -23,7 +23,14 @@ export async function POST({ request, cookies }) {
 		switch (form) {
 			// confirm form
 			case '5a91b7a7-513f-4067-8776-1cb01f334c96': {
-				await supabase.from('rfqs_uploaded').insert({ values: response });
+				if (email) {
+					await fetch('/api/rfq/new', {
+						method: 'POST',
+						body: JSON.stringify({ from_email: true, email, rfq: response })
+					});
+				} else {
+					await supabase.from('rfqs_uploaded').insert({ values: response });
+				}
 				break;
 			}
 			// purchasing form

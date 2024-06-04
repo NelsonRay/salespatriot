@@ -125,6 +125,20 @@
 		document.body.removeChild(link);
 	}
 
+	function formatEmailText(text) {
+		return (
+			'From:' +
+			text
+				.replace(/\n/g, '<br>')
+				.split('From:')
+				.slice(1)
+				.join('')
+				.split('<br>')
+				.filter((e) => e.trim() != '')
+				.join('<br>')
+		);
+	}
+
 	$: reviewValues = getCommercialValueCalculation(focusedRfqPartQty);
 </script>
 
@@ -224,12 +238,12 @@
 								<p class="font-medium">Email:</p>
 								{#if data.email}
 									<p class="text-sm">
-										{@html data.email.html}
+										{@html formatEmailText(data.email.text)}
 									</p>
-									{#if data.email.attachments?.length > 0}
+									{#if data.email.attachments.filter((a) => !a.name.includes('.png'))?.length > 0}
 										<p class="font-medium">Download files from email:</p>
 										<ul>
-											{#each data.email.attachments as attachment}
+											{#each data.email.attachments.filter((a) => !a.name.includes('.png')) as attachment}
 												<li>
 													<button
 														class="bg-neutral-100 p-2 rounded-md"
