@@ -160,7 +160,7 @@
 						{reviewValues}
 						showValueCalc={['final_pricing', null, undefined].includes(form?.type)}
 						bind:awardModalOpen
-						disableAwardEdit
+						disableAwardEdit={!(form?.type == null)}
 					/>
 
 					<div class="mr-5">
