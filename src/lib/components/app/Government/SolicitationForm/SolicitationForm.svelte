@@ -240,6 +240,16 @@
 							/>
 						</div>
 						<div>
+							<p class="mb-1">BOM URL</p>
+							{#if solicitation_matched.bom_url}
+								<a href={solicitation_matched.bom_url} class="text-blue-600" target="_blank"
+									>{solicitation_matched.bom_url}</a
+								>
+							{:else}
+								<p>N/A</p>
+							{/if}
+						</div>
+						<div>
 							<p class="mb-1">Waiting on Vendors?</p>
 							<button
 								class="btn px-6 py-2 rounded-3xl text-xs bg-yellow-400 shadow-md"

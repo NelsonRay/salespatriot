@@ -110,12 +110,13 @@ async function readEmails() {
 			// eslint-disable-next-line no-unused-vars
 			openInbox(function (err, box) {
 				if (err) throw err;
-
-				imap.search([['SINCE', '22-May-2024']], function (err, results) {
+				const date30MinutesAgo = new Date(Date.now() - 30 * 60000);
+				imap.search([['SINCE', formatDate(date30MinutesAgo)]], function (err, results) {
 					if (err) throw err;
 					if (!results || !results.length) {
 						console.log('No emails found.');
 						imap.end();
+						resolve([]);
 						return;
 					}
 
@@ -166,4 +167,25 @@ async function readEmails() {
 
 		imap.connect();
 	});
+}
+
+function formatDate(date) {
+	const months = [
+		'Jan',
+		'Feb',
+		'Mar',
+		'Apr',
+		'May',
+		'Jun',
+		'Jul',
+		'Aug',
+		'Sep',
+		'Oct',
+		'Nov',
+		'Dec'
+	];
+	const day = String(date.getDate()).padStart(2, '0');
+	const month = months[date.getMonth()];
+	const year = date.getFullYear();
+	return `${day}-${month}-${year}`;
 }
