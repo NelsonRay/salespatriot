@@ -185,7 +185,7 @@
 		removeModalOpen = false;
 
 		if (removeValues.removed) {
-			window.location.href = `${window.location.origin}/rfqs/government/bidding-funnel`;
+			window.location.href = `${window.location.origin}/rfqs/government-bidding-funnel`;
 		} else {
 			window.location.reload();
 		}
