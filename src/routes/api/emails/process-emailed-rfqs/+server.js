@@ -9,7 +9,10 @@ export async function GET({ locals: { supabase } }) {
 	let { data: dbEmails } = await supabase.from('emails').select('*');
 
 	for (let email of emails) {
-		if (email.inReplyTo == null || !dbEmails.some((de) => de.in_reply_to == email.inReplyTo)) {
+		if (
+			(email.inReplyTo == null || !dbEmails.some((de) => de.in_reply_to == email.inReplyTo)) &&
+			!dbEmails.some((de) => de.message_id == email.messageId)
+		) {
 			const emailContent = (email.text || email.textAsHtml || email.html).toString().toLowerCase();
 
 			const keywords = [
@@ -107,6 +110,7 @@ async function readEmails() {
 			// eslint-disable-next-line no-unused-vars
 			openInbox(function (err, box) {
 				if (err) throw err;
+
 				imap.search([['SINCE', '22-May-2024']], function (err, results) {
 					if (err) throw err;
 					if (!results || !results.length) {
@@ -119,14 +123,13 @@ async function readEmails() {
 					const emails = [];
 					let messagesProcessed = 0;
 
-					f.on('message', function (msg, seqno) {
-						let email = {
-							seqno
-						};
-
+					f.on('message', function (msg) {
 						msg.on('body', function (stream) {
 							simpleParser(stream, {}, (err, parsed) => {
 								if (err) throw err;
+
+								let email = {};
+
 								for (let key of Object.keys(parsed)) {
 									email[key] = parsed[key];
 								}
