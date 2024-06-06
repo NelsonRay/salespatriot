@@ -10,23 +10,31 @@ export async function GET({ locals: { supabase } }) {
 
 	for (let email of emails) {
 		if (!dbEmails.some((de) => de.message_id == email.messageId)) {
-			const { data: newEmail } = await supabase
+			const { data: newEmail, error } = await supabase
 				.from('emails')
 				.insert({
 					message_id: email.messageId,
 					header_lines: email.headerLines,
-					headers: email.headers,
-					html: email.textAsHtml,
+					headers: Object.fromEntries(email.headers || {}) || null,
+					html: email.html,
+					text: email.text,
+					text_as_html: email.textAsHtml,
+					references: typeof email.references === 'string' ? [email.references] : email.references,
 					subject: email.subject,
 					date: email.date,
 					to: email.to,
 					from: email.from,
+					cc: email.cc,
+					bcc: email.bcc,
 					firm: '6b289746-2b01-47af-a7d4-26a3920f75ca',
-					text: email.text
+					in_reply_to: email.inReplyTo,
+					reply_to: email.replyTo
 				})
 				.select('id')
 				.limit(1)
 				.single();
+
+			if (error) console.error(error);
 
 			if (email.attachments.length > 0) {
 				email.attachments.forEach(async (attachment) => {
@@ -94,7 +102,6 @@ async function readEmails() {
 						msg.on('body', function (stream) {
 							simpleParser(stream, {}, (err, parsed) => {
 								if (err) throw err;
-
 								for (let key of Object.keys(parsed)) {
 									email[key] = parsed[key];
 								}
