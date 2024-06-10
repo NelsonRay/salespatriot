@@ -125,18 +125,39 @@
 		document.body.removeChild(link);
 	}
 
-	function formatEmailText(text) {
-		return (
-			'From:' +
-			text
-				.replace(/\n/g, '<br>')
-				.split('From:')
-				.slice(1)
-				.join('')
-				.split('<br>')
-				.filter((e) => e.trim() != '')
-				.join('<br>')
-		);
+	function formatEmailText(email) {
+		let content = '';
+
+		if (email.text) {
+			content = email.text;
+		} else if (email.text_as_html) {
+			content = email.text_as_html;
+		} else {
+			content = email.html;
+		}
+
+		let formattedContent;
+
+		if (email.in_reply_to) {
+			formattedContent =
+				'From:' +
+				content
+					.replace(/\n/g, '<br>')
+					.split('From:')
+					.slice(1)
+					.join('')
+					.split('<br>')
+					.filter((e) => e.trim() != '')
+					.join('<br>');
+		} else {
+			formattedContent = content;
+		}
+
+		return formattedContent;
+	}
+
+	function filterAttachments(attachments) {
+		return attachments.filter((a) => !['.png', '.jpg'].some((e) => a.name.includes(e)));
 	}
 
 	$: reviewValues = getCommercialValueCalculation(focusedRfqPartQty);
@@ -238,12 +259,12 @@
 								<p class="font-medium">Email:</p>
 								{#if data.email}
 									<p class="text-sm">
-										{@html formatEmailText(data.email.text)}
+										{@html formatEmailText(data.email)}
 									</p>
-									{#if data.email.attachments.filter((a) => !a.name.includes('.png'))?.length > 0}
+									{#if filterAttachments(data.email.attachments)?.length > 0}
 										<p class="font-medium">Download files from email:</p>
 										<ul>
-											{#each data.email.attachments.filter((a) => !a.name.includes('.png')) as attachment}
+											{#each filterAttachments(data.email.attachments) as attachment}
 												<li>
 													<button
 														class="bg-neutral-100 p-2 rounded-md"
