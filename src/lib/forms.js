@@ -39,5 +39,6 @@ export const fieldsForForms = {
 		{ type: 'checkbox', field: 'bid_exception' },
 		{ type: 'textarea', field: 'exception_notes' },
 		{ type: 'checkbox', field: 'first_article_waive_requested' }
-	]
+	],
+	enter_sales_order: [{ type: 'status', status: 'enter_sales_order' }]
 };

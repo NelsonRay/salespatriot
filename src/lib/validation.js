@@ -186,7 +186,7 @@ export const commercialFormsValidation = {
 		z.object({ status: z.string().array() }).superRefine((fields, ctx) => {
 			if (
 				!(
-					fields.status.includes('enter_sales_order:entered') ||
+					fields.status.includes('enter_sales_order:complete') ||
 					fields.status.includes('enter_sales_order:skipped')
 				)
 			) {
@@ -757,5 +757,20 @@ export const formsValidation = {
 						});
 					}
 				}
-			})
+			}),
+	enter_sales_order: () =>
+		z.object({ status: z.string().array() }).superRefine((fields, ctx) => {
+			if (
+				!(
+					fields.status.includes('enter_sales_order:complete') ||
+					fields.status.includes('enter_sales_order:skipped')
+				)
+			) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Required',
+					path: ['status']
+				});
+			}
+		})
 };
