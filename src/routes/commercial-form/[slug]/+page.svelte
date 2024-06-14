@@ -71,7 +71,11 @@
 
 		form = data;
 
-		if (['final_pricing', 'enter_quote', 'bid', 'follow_up'].includes(form?.form?.type)) {
+		if (
+			['final_pricing', 'enter_quote', 'bid', 'follow_up', 'enter_sales_order'].includes(
+				form?.form?.type
+			)
+		) {
 			values = form.rfq;
 		} else if (form?.form?.type === 'confirm') {
 			if (form?.email) {

@@ -20,6 +20,7 @@
 	import { commercialTags } from '$lib/tags';
 	import RemoveComOptionSelect from '$lib/components/form/RemoveComOptionSelect.svelte';
 	import Download from '$lib/icons/Download.svg';
+	import OrderPlacedTable from '../OrderPlacedTable/OrderPlacedTable.svelte';
 
 	export let data;
 	export let comments;
@@ -175,7 +176,7 @@
 				</button>
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
-				{#if ['final_pricing', 'enter_quote', 'bid', 'follow_up', null, undefined].includes(form?.type)}
+				{#if ['final_pricing', 'enter_quote', 'bid', 'follow_up', 'enter_sales_order', null, undefined].includes(form?.type)}
 					<Info
 						data={form?.type == null ? data : data.rfq}
 						{reviewValues}
@@ -184,8 +185,15 @@
 						disableAwardEdit={!(form?.type == null)}
 					/>
 
+					{#if form?.type === 'enter_sales_order'}
+						<div class="mr-5">
+							<p class="text-lg mt-5 mb-2 font-semibold">Placed Order</p>
+							<OrderPlacedTable data={data.rfq.rfqs_parts} />
+						</div>
+					{/if}
+
 					<div class="mr-5">
-						<p class="text-lg mt-5 font-semibold">Notes</p>
+						<p class="text-lg mt-5 mb-2 font-semibold">Notes</p>
 						{#if (form?.type == null ? data : data.rfq)?.notes}
 							<Textarea value={(form?.type == null ? data : data.rfq)?.notes} disabled />
 						{:else}
@@ -204,7 +212,9 @@
 							{showRemove}
 							showPurchasing={['purchasing', 'final_pricing', null, undefined].includes(form?.type)}
 							showPricing={['final_pricing', null, undefined].includes(form?.type)}
-							showAll={['enter_quote', 'bid', 'follow_up'].includes(form?.type)}
+							showAll={['enter_quote', 'bid', 'follow_up', 'enter_sales_order'].includes(
+								form?.type
+							)}
 							{errors}
 							bind:focusedRfqPartQty
 						/>
@@ -411,6 +421,20 @@
 						<p class="mb-1 text-sm">Quote Number</p>
 						<TextInput bind:value={values.quote_number} fullWidth={false} />
 						{#if hasErrors(errors, ['quote_number'])}
+							<label for="trim" class="label">
+								<span class="label-text-alt text-error">Required</span>
+							</label>
+						{/if}
+					</div>
+				{:else if form?.type === 'enter_sales_order'}
+					<div>
+						<p class="mb-1 text-sm">Award Status</p>
+						<StatusSelect
+							tags={commercialTags}
+							status="enter_sales_order"
+							bind:value={values.status}
+						/>
+						{#if hasErrors(errors, ['status'])}
 							<label for="trim" class="label">
 								<span class="label-text-alt text-error">Required</span>
 							</label>

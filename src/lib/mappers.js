@@ -169,6 +169,10 @@ export function commercialTableFieldMapper(obj, column) {
 			}
 		}
 
+		if (['unit_price_ordered'].includes(column.field)) {
+			value = formatCurrency(value);
+		}
+
 		return { header, value };
 	}
 }
