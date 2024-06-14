@@ -214,6 +214,11 @@ export async function POST({ request, cookies }) {
 
 				break;
 			}
+			case '796fbea3-aae3-49ac-b8dd-2a1cee5c3715': {
+				const { status } = response;
+				await supabase.from('rfqs').update({ status }).eq('id', rfq);
+				break;
+			}
 			default:
 				break;
 		}

@@ -331,5 +331,25 @@ export const commercialTags = {
 			color: 'red',
 			key: 'response:lost'
 		}
+	},
+	enter_sales_order: {
+		entered: {
+			name: 'Entered',
+			level: 0,
+			color: 'green',
+			key: 'enter_sales_ordered:entered'
+		},
+		in_progress: {
+			name: 'In Progress',
+			level: 3,
+			color: 'yellow',
+			key: 'enter_sales_ordered:in_progress'
+		},
+		skipped: {
+			name: 'Skipped',
+			level: 4,
+			color: 'red',
+			key: 'enter_sales_ordered:skipped'
+		}
 	}
 };

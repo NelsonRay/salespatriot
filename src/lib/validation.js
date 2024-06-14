@@ -181,7 +181,22 @@ export const commercialFormsValidation = {
 						path: ['reason_lost']
 					});
 				}
-			})
+			}),
+	enter_sales_order: () =>
+		z.object({ status: z.string().array() }).superRefine((fields, ctx) => {
+			if (
+				!(
+					fields.status.includes('enter_sales_order:entered') ||
+					fields.status.includes('enter_sales_order:skipped')
+				)
+			) {
+				ctx.addIssue({
+					code: 'custom',
+					message: 'Required',
+					path: ['status']
+				});
+			}
+		})
 };
 
 export const publicRFQFormValidation = () =>
