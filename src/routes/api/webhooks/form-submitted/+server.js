@@ -171,6 +171,16 @@ export async function POST({ request, cookies }) {
 					});
 				}
 				break;
+			// enter_sales_order form
+			case '796fbea3-aae3-49ac-b8dd-2a1cee5c3715': {
+				const { status } = response;
+				await supabase
+					.from('solicitations_matched')
+					.update({ status })
+					.eq('id', solicitation_matched);
+
+				break;
+			}
 
 			default:
 				break;

@@ -208,6 +208,26 @@ export const govTags = {
 			color: 'gray',
 			key: 'award:cancelled'
 		}
+	},
+	enter_sales_order: {
+		complete: {
+			name: 'Complete',
+			level: 0,
+			color: 'green',
+			key: 'enter_sales_ordered:complete'
+		},
+		in_progress: {
+			name: 'In Progress',
+			level: 3,
+			color: 'yellow',
+			key: 'enter_sales_ordered:in_progress'
+		},
+		skipped: {
+			name: 'Skipped',
+			level: 4,
+			color: 'red',
+			key: 'enter_sales_ordered:skipped'
+		}
 	}
 };
 
@@ -333,11 +353,11 @@ export const commercialTags = {
 		}
 	},
 	enter_sales_order: {
-		entered: {
-			name: 'Entered',
+		complete: {
+			name: 'Complete',
 			level: 0,
 			color: 'green',
-			key: 'enter_sales_ordered:entered'
+			key: 'enter_sales_ordered:complete'
 		},
 		in_progress: {
 			name: 'In Progress',

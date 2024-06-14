@@ -58,7 +58,8 @@
 		'first_article',
 		'final_pricing',
 		'enter_quote',
-		'bid'
+		'bid',
+		'enter_sales_order'
 	];
 
 	const statuses = [
@@ -318,7 +319,7 @@
 						</div>
 					</div>
 				{/if}
-				{#if form?.form?.type === 'bid'}
+				{#if form?.form?.type === 'bid' || form?.form?.type === 'enter_sales_order'}
 					<div class="space-y-3">
 						<div>
 							<a

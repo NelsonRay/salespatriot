@@ -192,6 +192,7 @@ export function getTableColumns(pathname) {
 				{ type: 'status', status: 'enter_quote' },
 				{ type: 'status', status: 'send_quote' },
 				{ type: 'status', status: 'response' },
+				{ type: 'status', status: 'enter_sales_order' },
 				{ type: 'parts' },
 				{ type: 'date', field: 'received_at' },
 				{ type: 'date', field: 'requested_return_date' },
