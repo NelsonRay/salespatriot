@@ -8,6 +8,7 @@ export function getColumns(pathname) {
 				{ type: 'field', field: 'solicitation.description' },
 				{ type: 'formula', field: 'market_value', header: 'Bid Value' },
 				{ type: 'status', status: 'award' },
+				{ type: 'status', status: 'enter_sales_order' },
 				{ type: 'field', field: 'unit_price' },
 				{ type: 'formula', field: 'unit_price_won_at' },
 				{ type: 'formula', field: 'diff_unit_price' },

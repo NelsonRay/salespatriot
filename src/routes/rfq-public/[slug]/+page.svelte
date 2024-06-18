@@ -34,15 +34,21 @@
 		errors = results?.error?.issues;
 
 		if (!errors) {
-			const res = await fetch('/api/rfq/public', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ values: rfq, firm: $page.params.slug })
+			const { data } = await supabase
+				.from('rfqs_public')
+				.insert({ values: rfq, firm: $page.params.slug })
+				.select('id')
+				.limit(1)
+				.single();
+
+			await supabase.from('forms').insert({
+				form: '5a91b7a7-513f-4067-8776-1cb01f334c96',
+				assignee: '35009618-f673-432a-9113-664874e195af', // cindy
+				commercial: true,
+				rfq_public: data.id
 			});
 
-			if (res.status === 200) {
-				submitted = true;
-			}
+			submitted = true;
 		}
 	}
 
