@@ -2,6 +2,8 @@
 import { json } from '@sveltejs/kit';
 import Imap from 'imap';
 import { simpleParser } from 'mailparser';
+import { IMAP_HOST, IMAP_USER, IMAP_PASS, SMTP_HOST } from '$env/static/private';
+import nodemailer from 'nodemailer';
 
 export async function GET({ locals: { supabase } }) {
 	const emails = await readEmails();
@@ -13,7 +15,9 @@ export async function GET({ locals: { supabase } }) {
 			(email.inReplyTo == null || !dbEmails.some((de) => de.in_reply_to == email.inReplyTo)) &&
 			!dbEmails.some((de) => de.message_id == email.messageId)
 		) {
-			const emailContent = (email.text || email.textAsHtml || email.html).toString().toLowerCase();
+			const emailContent = (email.subject + email.text || email.textAsHtml || email.html)
+				.toString()
+				.toLowerCase();
 
 			const keywords = [
 				'quote',
@@ -30,59 +34,89 @@ export async function GET({ locals: { supabase } }) {
 
 			const includesKeyword = keywords.some((k) => emailContent.includes(k));
 
+			const { data: newEmail, error } = await supabase
+				.from('emails')
+				.insert({
+					message_id: email.messageId,
+					header_lines: email.headerLines,
+					headers: Object.fromEntries(email.headers || {}) || null,
+					html: email.html,
+					text: email.text,
+					text_as_html: email.textAsHtml,
+					references: typeof email.references === 'string' ? [email.references] : email.references,
+					subject: email.subject,
+					date: email.date,
+					to: email.to,
+					from: email.from,
+					cc: email.cc,
+					bcc: email.bcc,
+					firm: '6b289746-2b01-47af-a7d4-26a3920f75ca',
+					in_reply_to: email.inReplyTo,
+					reply_to: email.replyTo
+				})
+				.select('*')
+				.limit(1)
+				.single();
+
+			if (error) {
+				console.error(error);
+			}
+
+			// avoids potential dups based on inReplyTo
+			dbEmails = [...dbEmails, newEmail];
+
+			if (email.attachments.length > 0) {
+				email.attachments.forEach(async (attachment) => {
+					const fileBuffer = Buffer.from(attachment.content);
+					const filename = attachment.filename;
+					const { error: err } = await supabase.storage
+						.from('email_attachments')
+						.upload(newEmail.id + '/' + filename, fileBuffer, {
+							contentType: attachment.contentType
+						});
+
+					if (err) console.error(err);
+				});
+			}
+
 			if (includesKeyword) {
-				const { data: newEmail, error } = await supabase
-					.from('emails')
-					.insert({
-						message_id: email.messageId,
-						header_lines: email.headerLines,
-						headers: Object.fromEntries(email.headers || {}) || null,
-						html: email.html,
-						text: email.text,
-						text_as_html: email.textAsHtml,
-						references:
-							typeof email.references === 'string' ? [email.references] : email.references,
-						subject: email.subject,
-						date: email.date,
-						to: email.to,
-						from: email.from,
-						cc: email.cc,
-						bcc: email.bcc,
-						firm: '6b289746-2b01-47af-a7d4-26a3920f75ca',
-						in_reply_to: email.inReplyTo,
-						reply_to: email.replyTo
-					})
-					.select('*')
-					.limit(1)
-					.single();
-
-				if (error) {
-					console.error(error);
-				}
-
-				// avoids potential dups based inReplyTo
-				dbEmails = [...dbEmails, newEmail];
-
-				if (email.attachments.length > 0) {
-					email.attachments.forEach(async (attachment) => {
-						const fileBuffer = Buffer.from(attachment.content);
-						const filename = attachment.filename;
-						const { error: err } = await supabase.storage
-							.from('email_attachments')
-							.upload(newEmail.id + '/' + filename, fileBuffer, {
-								contentType: attachment.contentType
-							});
-
-						if (err) console.error(err);
-					});
-				}
-
 				await supabase.from('forms').insert({
 					form: '5a91b7a7-513f-4067-8776-1cb01f334c96',
 					assignee: '35009618-f673-432a-9113-664874e195af',
 					commercial: true,
 					email: newEmail.id
 				});
+			} else {
+				const smtpConfig = {
+					host: SMTP_HOST,
+					port: 50,
+					secure: false,
+					tls: {
+						rejectUnauthorized: false
+					},
+					auth: {
+						user: IMAP_USER,
+						pass: IMAP_PASS
+					}
+				};
+
+				// Forward the email using SMTP
+				let transporter = nodemailer.createTransport(smtpConfig);
+				let mailOptions = {
+					from: IMAP_USER,
+					to: 'cjohnson@auroradefensegroup.com',
+					subject: 'Fwd: ' + email.subject,
+					text: email.text,
+					html: email.html,
+					attachments: email.attachments.map((attachment) => ({
+						filename: attachment.filename,
+						content: attachment.content,
+						contentType: attachment.contentType
+					}))
+				};
+
+				let info = await transporter.sendMail(mailOptions);
+				console.log('Message sent: %s', info.messageId);
 			}
 		}
 	}
@@ -94,9 +128,9 @@ async function readEmails() {
 	// eslint-disable-next-line no-unused-vars
 	return new Promise((resolve, reject) => {
 		const imap = new Imap({
-			user: 'quoting@auroradefensegroup.com',
-			password: 'New0rders!',
-			host: 'mail.auroradefensegroup.com',
+			user: IMAP_USER,
+			password: IMAP_PASS,
+			host: IMAP_HOST,
 			port: 143, // IMAP SSL port
 			tls: false,
 			tlsOptions: { rejectUnauthorized: false } // for testing purposes
@@ -145,25 +179,9 @@ async function readEmails() {
 							});
 						});
 					});
-
-					// f.once('error', function (err) {
-					// 	console.log('Fetch error: ' + err);
-					// });
-
-					// f.once('end', function () {
-					// 	console.log('Fetch operation ended.');
-					// });
 				});
 			});
 		});
-
-		// imap.once('error', function (err) {
-		// 	console.log(err);
-		// });
-
-		// imap.once('end', function () {
-		// 	console.log('Connection ended');
-		// });
 
 		imap.connect();
 	});

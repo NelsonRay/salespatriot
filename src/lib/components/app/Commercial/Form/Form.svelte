@@ -129,12 +129,12 @@
 	function formatEmailText(email) {
 		let content = '';
 
-		if (email.text) {
-			content = email.text;
+		if (email.html) {
+			content = email.html;
 		} else if (email.text_as_html) {
 			content = email.text_as_html;
 		} else {
-			content = email.html;
+			content = email.text;
 		}
 
 		let formattedContent;
