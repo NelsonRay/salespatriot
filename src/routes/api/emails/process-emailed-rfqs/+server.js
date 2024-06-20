@@ -32,7 +32,7 @@ export async function GET({ locals: { supabase } }) {
 				'solicitation'
 			];
 
-			const includesKeyword = keywords.some((k) => emailContent.includes(k));
+			const includes_keyword = keywords.some((k) => emailContent.includes(k));
 
 			const { data: newEmail, error } = await supabase
 				.from('emails')
@@ -52,7 +52,8 @@ export async function GET({ locals: { supabase } }) {
 					bcc: email.bcc,
 					firm: '6b289746-2b01-47af-a7d4-26a3920f75ca',
 					in_reply_to: email.inReplyTo,
-					reply_to: email.replyTo
+					reply_to: email.replyTo,
+					includes_keyword
 				})
 				.select('*')
 				.limit(1)
@@ -79,14 +80,14 @@ export async function GET({ locals: { supabase } }) {
 				});
 			}
 
-			if (includesKeyword) {
+			if (includes_keyword) {
 				await supabase.from('forms').insert({
 					form: '5a91b7a7-513f-4067-8776-1cb01f334c96',
 					assignee: '35009618-f673-432a-9113-664874e195af',
 					commercial: true,
 					email: newEmail.id
 				});
-			} else {
+
 				const smtpConfig = {
 					host: SMTP_HOST,
 					port: 50,
