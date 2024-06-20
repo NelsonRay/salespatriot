@@ -31,7 +31,7 @@
 		let formsQuery = supabase
 			.from('forms')
 			.select(
-				'*, assignee!inner(*), form!inner(*), part(*, rfqs_parts(*, rfq(status, customer(name)), rfqs_parts_quantities(*))), rfq(*, customer(name), rfqs_parts(id, part(number), rfqs_parts_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(id, name)), created_at'
+				'*, assignee!inner(*), form!inner(*), email(subject, from), part(*, rfqs_parts(*, rfq(status, customer(name)), rfqs_parts_quantities(*))), rfq(*, customer(name), rfqs_parts(id, part(number), rfqs_parts_quantities(id))), rfq_public(*), solicitation_matched(solicitation(id, description, quantity, quantity_units, expires_on, estimated_value), familiarity_status, matching_rule(id, name))'
 			)
 			.eq('deleted', false)
 			.eq('submitted', false);
@@ -130,7 +130,10 @@
 	function getCommercialFormTitle(form) {
 		if (form.form.id === '5a91b7a7-513f-4067-8776-1cb01f334c96') {
 			if (form.email) {
-				return 'New Email';
+				return (
+					form.email.subject.toString().substring(0, 30) +
+					(form.email.subject.length > 30 ? '...' : '')
+				);
 			} else {
 				return form.rfq_public.values.customer.name + ' / ' + form.rfq_public.values.received_at;
 			}
@@ -196,6 +199,9 @@
 									</div>
 									{#if form?.rfq}
 										<p class="mt-1 font-medium">{getRFQDescription(form?.rfq)}</p>
+									{/if}
+									{#if form?.email}
+										<p class="mt-1 font-medium">{form.email.from.value[0].address}</p>
 									{/if}
 									{#if board?.type === 'purchasing'}
 										<div class="mb-2">
