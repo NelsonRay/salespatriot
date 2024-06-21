@@ -158,6 +158,11 @@
 		}
 	}
 
+	async function deleteForm() {
+		await supabase.from('forms').update({ deleted: true }).eq('id', form.id);
+		window.location.reload();
+	}
+
 	$: if (form?.submitted || form?.deleted) {
 		setTimeout(() => {
 			history.back();
@@ -193,6 +198,7 @@
 			{supabase}
 			{rfqsForPurchasingForm}
 			partLaborMinutes={form?.part?.parts_labor_minutes}
+			{deleteForm}
 		/>
 	{/if}
 {/if}

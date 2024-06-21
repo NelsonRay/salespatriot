@@ -21,6 +21,7 @@
 	import RemoveComOptionSelect from '$lib/components/form/RemoveComOptionSelect.svelte';
 	import Download from '$lib/icons/Download.svg';
 	import OrderPlacedTable from '../OrderPlacedTable/OrderPlacedTable.svelte';
+	import Remove from '$lib/icons/Remove.svg';
 
 	export let data;
 	export let comments;
@@ -35,6 +36,7 @@
 	export let rfqsForPurchasingForm = undefined;
 	export let awardModalOpen;
 	export let partLaborMinutes;
+	export let deleteForm;
 
 	let focusedRfqPartQty;
 	let reviewValues;
@@ -166,14 +168,23 @@
 
 {#if values}
 	<div class="parent">
-		<div class="one pl-4 pt-4 overflow-auto">
-			<div>
+		<div class="one px-4 pt-4 overflow-auto">
+			<div class="flex flex-row justify-between">
 				<button on:click={goBack}>
 					<div class="flex flex-row items-center p-2 rounded-md bg-neutral-50">
 						<img src={Arrow} alt="1" class="h-5 w-5" />
 						<p class="mb-[0.5px]">Go Back</p>
 					</div>
 				</button>
+				{#if form?.type == 'confirm'}
+					<button
+						class="flex flex-row items-center p-2 rounded-md bg-red-400 space-x-2"
+						on:click={deleteForm}
+					>
+						<p class="text-white text-sm">Delete</p>
+						<img src={Remove} alt="edit" class="h-5 w-5" />
+					</button>
+				{/if}
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
 				{#if ['final_pricing', 'enter_quote', 'bid', 'follow_up', 'enter_sales_order', null, undefined].includes(form?.type)}
