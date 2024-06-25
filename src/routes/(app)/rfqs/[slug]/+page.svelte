@@ -31,7 +31,9 @@
 		if ($page.url.pathname.includes('government')) {
 			let query = supabase
 				.from('solicitations_matched')
-				.select(`*, solicitation!inner(${solColumns}, nsn(id, parts(*))), matching_rule(*)`);
+				.select(
+					`*, solicitation!inner(${solColumns}, nsn(id, map_nsns_to_parts(*, part(id, number)))), matching_rule(*)`
+				);
 
 			switch (pathname) {
 				case '/rfqs/government-bidding-funnel':

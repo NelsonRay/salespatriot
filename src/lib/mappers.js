@@ -236,14 +236,7 @@ export function tableFieldMapper(obj, column) {
 		} else if (column.type === 'bid_partners') {
 			return { header: 'Bid Partner(s)', value: obj?.bid_partners || null };
 		} else if (column.type === 'parts') {
-			let value = '';
-
-			let skipComma = true;
-			for (let match of obj?.solicitation.nsn?.parts ?? []) {
-				value += match.number;
-				if (!skipComma) value += ', ';
-				skipComma = false;
-			}
+			let value = obj?.solicitation.nsn?.map_nsns_to_parts[0]?.part?.number ?? '';
 
 			return { header: 'In-House PN', value };
 		} else {

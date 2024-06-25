@@ -39,7 +39,7 @@
 		let { data, error } = await supabase
 			.from('solicitations_matched')
 			.select(
-				`*, solicitation!inner(*, nsn(id, parts(*))), matching_rule(*), forms(*, form(*), submitted_by(*)), comments(*, user(name), form(form(name)))`
+				`*, solicitation!inner(*, nsn(id, map_nsns_to_parts(*, part(id, number)))), matching_rule(*), forms(*, form(*), submitted_by(*)), comments(*, user(name), form(form(name)))`
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -47,7 +47,9 @@
 
 		let { data: n_data, error: n_error } = await supabase
 			.from('solicitations_matched')
-			.select('*, solicitation!inner(*, nsn(id, parts(*))), matching_rule(*)')
+			.select(
+				'*, solicitation!inner(*, nsn(id, map_nsns_to_parts(*, part(id, number)))), matching_rule(*)'
+			)
 			.eq('solicitation.nsn', data.solicitation.nsn.id)
 			.lt('solicitation.issued_on', data.solicitation.issued_on);
 
