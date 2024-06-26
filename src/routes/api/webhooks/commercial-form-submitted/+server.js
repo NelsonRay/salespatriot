@@ -25,7 +25,7 @@ export async function POST({ request, cookies }) {
 			case '5a91b7a7-513f-4067-8776-1cb01f334c96': {
 				await supabase
 					.from('rfqs_uploaded')
-					.insert({ values: response, from_email: !!email, email });
+					.insert({ values: { ...response, email }, from_email: !!email, email });
 
 				break;
 			}
