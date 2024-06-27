@@ -17,12 +17,9 @@ async function generatePDF(html) {
 		headless: chromium.headless
 	});
 	const page = await browser.newPage();
-
-	// Set the content of the page
+	page.setCacheEnabled(false);
 	await page.setContent(html);
-
-	// Generate the PDF
-	const pdfBuffer = await page.pdf({ format: 'A4' });
+	const pdfBuffer = await page.pdf({ format: 'a4' });
 
 	await browser.close();
 
