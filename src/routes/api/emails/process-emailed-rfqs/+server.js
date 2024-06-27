@@ -2,8 +2,7 @@
 import { json } from '@sveltejs/kit';
 import Imap from 'imap';
 import { simpleParser } from 'mailparser';
-import { IMAP_HOST, IMAP_USER, IMAP_PASS, SMTP_HOST } from '$env/static/private';
-import nodemailer from 'nodemailer';
+import { IMAP_HOST, IMAP_USER, IMAP_PASS } from '$env/static/private';
 
 export async function GET({ locals: { supabase } }) {
 	const emails = await readEmails();
@@ -87,37 +86,6 @@ export async function GET({ locals: { supabase } }) {
 					commercial: true,
 					email: newEmail.id
 				});
-
-				const smtpConfig = {
-					host: SMTP_HOST,
-					port: 50,
-					secure: false,
-					tls: {
-						rejectUnauthorized: false
-					},
-					auth: {
-						user: IMAP_USER,
-						pass: IMAP_PASS
-					}
-				};
-
-				// Forward the email using SMTP
-				let transporter = nodemailer.createTransport(smtpConfig);
-				let mailOptions = {
-					from: IMAP_USER,
-					to: 'cjohnson@auroradefensegroup.com',
-					subject: 'Fwd: ' + email.subject,
-					text: email.text,
-					html: email.html,
-					attachments: email.attachments.map((attachment) => ({
-						filename: attachment.filename,
-						content: attachment.content,
-						contentType: attachment.contentType
-					}))
-				};
-
-				let info = await transporter.sendMail(mailOptions);
-				console.log('Message sent: %s', info.messageId);
 			}
 		}
 	}

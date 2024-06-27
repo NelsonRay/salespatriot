@@ -84,7 +84,8 @@ export async function POST({ request, locals: { supabase } }) {
 					'final_pricing:complete',
 					'enter_quote:in_progress',
 					!values.email ? 'send_quote:in_progress' : 'send_quote:complete'
-				]
+				],
+				quote_email_text: values?.quote_email_text || null
 			})
 			.eq('id', values.id);
 

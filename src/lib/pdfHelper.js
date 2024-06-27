@@ -20,17 +20,12 @@ export function generatePDFHtml(values) {
 
 	let replaceValues = {
 		'{{firm_name}}': '<p class="mb-1">Aurora Defense Group</p>',
-		'{{firm_address}}': '<p class="mb-1">401 Hankes Ave. Aurora, Il USA 60505-1717</p>',
-		'{{firm_contact_info}}': '<p class="mb-1">sales@auroradefensegroup.com</p>',
+		'{{firm_address}}': '<p class="mb-1">401 Hankes Ave. Aurora, IL USA 60505-1717</p>',
+		'{{firm_contact_info}}': '<p class="mb-1">sales@auroradefensegroup.com · (630) 851-1616</p>',
 		'{{date}}': `<p class="mb-1">Date: ${formatMonthDayYearDate(new Date())}</p>`,
-		'{{date_valid}}': `<p class="mb-1">Quote Valid Until: ${formatMonthDayYearDate(new Date(Date.now() + 60 * 24 * 60 * 60 * 1000))}</p>`,
+		'{{date_valid}}': `<p class="mb-1">Quote Valid Until: ${formatMonthDayYearDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000))}</p>`,
 		'{{person_name}}': values.person_name ?? '',
 		'{{company_name}}': `<p class="">${values.customer.name}</p>`,
-		'{{company_address}}': '',
-		'{{company_contact_info}}':
-			!!values.email_address || !!values.phone_number
-				? `<p class="mb-1">${[values.email_address, values.phone_number].join(' · ')}</p>`
-				: '',
 		'{{parts}}': partsTable
 	};
 
@@ -65,8 +60,6 @@ export const pdfTemplate = `<!DOCTYPE html>
                 <h2 class="text-lg font-semibold mb-2">Quote for:</h2>
                 {{person_name}}
                 {{company_name}}
-                {{company_address}}
-                {{company_contact_info}}
             </div>
         </div>
         <div class="text-right">
@@ -89,10 +82,14 @@ export const pdfTemplate = `<!DOCTYPE html>
            {{parts}}
         </tbody>
     </table>
-    <div class="mb-4">
-        <h2 class="text-lg font-semibold mb-2">Comments or Special Instructions:</h2>
-        <textarea class="w-full border border-gray-300 rounded p-2" rows="3"></textarea>
-    </div>
+    <p class="font-semibold text-lg">Terms and Conditions</p>
+    <p class="text-sm">Terms:  CIA / Net 30 if credit approved – 3% Credit Card Fee</p>
+    <p class="text-sm">Standard C of C supplied</p>
+    <p class="text-sm">No Special Testing Included</p>
+    <p class="text-sm">Minimum Order:  $300.00</p>
+    <p class="text-sm"> FOB:  Aurora IL</p>
+    <p class="text-sm">Quote Valid: 30 Days</p>
+    <p class="text-sm">Expedite options may be available</p>
 </body>
 
 </html>`;
