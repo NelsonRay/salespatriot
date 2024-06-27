@@ -8,6 +8,12 @@ import { generatePDFHtml } from '$lib/pdfHelper.js';
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 
+/** @type {import('@sveltejs/adapter-vercel').Config} */
+export const config = {
+	runtime: 'nodejs18.x',
+	split: true
+};
+
 async function generatePDF(html) {
 	// Launch a new browser instance
 	const browser = await puppeteer.launch({
