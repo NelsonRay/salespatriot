@@ -106,7 +106,7 @@
 		}
 
 		if (!errors) {
-			if (data.email) {
+			if (form == null && data.email) {
 				pdfModalOpen = true;
 			} else {
 				submitCallback();
