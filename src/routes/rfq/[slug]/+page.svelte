@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import Form from '$lib/components/app/Commercial/Form/Form.svelte';
 	import AwardModal from '$lib/components/app/Commercial/Modals/AwardModal/AwardModal.svelte';
+	import PdfModal from '$lib/components/app/Commercial/Modals/PDFModal/PDFModal.svelte';
 
 	export let data;
 	$: ({ supabase, session } = data);
@@ -13,6 +14,7 @@
 
 	let values;
 	let awardModalOpen = false;
+	let pdfModalOpen = false;
 
 	let isSubmitting = false;
 
@@ -35,7 +37,7 @@
 		let { data, error } = await supabase
 			.from('rfqs')
 			.select(
-				'*, comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)), customer(*), rfqs_parts(*, part(*, parts_purchasing(*), parts_labor_minutes(*)), rfqs_parts_quantities(*))'
+				'*, email(*), comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)), customer(*), rfqs_parts(*, part(*, parts_purchasing(*), parts_labor_minutes(*)), rfqs_parts_quantities(*))'
 			)
 			.eq('id', $page.params.slug)
 			.limit(1)
@@ -135,7 +137,9 @@
 		{comments}
 		{commentSubmitCallback}
 		bind:awardModalOpen
+		bind:pdfModalOpen
 	/>
 {/if}
 
 <AwardModal bind:open={awardModalOpen} values={rfq} submitCallback={awardCallback} />
+<PdfModal bind:open={pdfModalOpen} values={rfq} {submitCallback} />

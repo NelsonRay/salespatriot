@@ -54,20 +54,27 @@ export async function POST({ request, locals: { supabase } }) {
 	const sendQuoteForms = !(values.status.filter((s) => s.includes('send_quote'))?.length > 0);
 
 	if (sendQuoteForms) {
-		await supabase.from('forms').insert([
+		let forms = [
 			{
 				form: 'a40a1d91-3295-4ca4-b343-ad58e2279fec',
 				commercial: true,
 				rfq: values.id,
 				assignee: '1e549c12-269f-43f2-b832-3a5558840cb9' // diana
-			},
-			{
-				form: '6a0d1585-d572-4d8f-bdb4-498a89506e85',
-				commercial: true,
-				rfq: values.id,
-				assignee: '35009618-f673-432a-9113-664874e195af' // cindy
 			}
-		]);
+		];
+
+		if (!values.email)
+			forms = [
+				...forms,
+				{
+					form: '6a0d1585-d572-4d8f-bdb4-498a89506e85',
+					commercial: true,
+					rfq: values.id,
+					assignee: '35009618-f673-432a-9113-664874e195af' // cindy
+				}
+			];
+
+		await supabase.from('forms').insert(forms);
 		await supabase
 			.from('rfqs')
 			.update({
@@ -76,7 +83,7 @@ export async function POST({ request, locals: { supabase } }) {
 					'labor:complete',
 					'final_pricing:complete',
 					'enter_quote:in_progress',
-					'send_quote:in_progress'
+					!values.email ? 'send_quote:in_progress' : 'send_quote:complete'
 				]
 			})
 			.eq('id', values.id);
@@ -84,7 +91,7 @@ export async function POST({ request, locals: { supabase } }) {
 		// delete final_pricing form if needed
 		await supabase
 			.from('forms')
-			.update({ deleted: true, submitted: true })
+			.update({ deleted: true })
 			.eq('rfq', values.id)
 			.eq('form', '6bbf4342-1b50-4c1a-9dc5-ad40562c5626');
 	}
