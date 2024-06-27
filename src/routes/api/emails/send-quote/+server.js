@@ -13,7 +13,7 @@ async function generatePDF(html) {
 	const browser = await puppeteer.launch({
 		args: process.env.IS_LOCAL ? puppeteer.defaultArgs() : chromium.args,
 		defaultViewport: chromium.defaultViewport,
-		executablePath: process.env.CHROME_EXECUTABLE_PATH || (await chromium.executablePath()),
+		executablePath: process.env.CHROME_EXECUTABLE_PATH || (await chromium.executablePath),
 		headless: chromium.headless
 	});
 	const page = await browser.newPage();
