@@ -43,9 +43,7 @@ async function sendEmail(pdfBuffer, messageId, references, to, subject) {
 		auth: {
 			user: IMAP_USER,
 			pass: IMAP_PASS
-		},
-		debug: true,
-		logger: true
+		}
 	};
 
 	let transporter = nodemailer.createTransport(smtpConfig);
