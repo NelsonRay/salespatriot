@@ -11,10 +11,10 @@ import chromium from '@sparticuz/chromium';
 async function generatePDF(html) {
 	// Launch a new browser instance
 	const browser = await puppeteer.launch({
-		args: chromium.args,
+		args: process.env.IS_LOCAL ? puppeteer.defaultArgs() : chromium.args,
 		defaultViewport: chromium.defaultViewport,
-		executablePath: await chromium.executablePath,
-		headless: true
+		executablePath: process.env.CHROME_EXECUTABLE_PATH || (await chromium.executablePath()),
+		headless: chromium.headless
 	});
 	const page = await browser.newPage();
 
