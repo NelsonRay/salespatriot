@@ -63,7 +63,9 @@ async function sendEmail(pdfBuffer, messageId, references, to, subject) {
 
 export async function POST({ locals: { supabase }, request }) {
 	try {
-		const { id } = await request.json();
+		const {
+			record: { id }
+		} = await request.json();
 
 		let { data, error } = await supabase
 			.from('rfqs')
