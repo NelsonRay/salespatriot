@@ -19,12 +19,12 @@ async function generatePDF(html) {
 	const browser = await puppeteer.launch({
 		args: chromium.args,
 		defaultViewport: chromium.defaultViewport,
-		executablePath: await chromium.executablePath,
-		headless: true
+		executablePath: await chromium.executablePath(),
+		headless: chromium.headless
 	});
 	const page = await browser.newPage();
 	page.setCacheEnabled(false);
-	await page.setContent(html);
+	await page.setContent(html, { waitUntil: 'networkidle0' });
 	const pdfBuffer = await page.pdf({ format: 'a4' });
 
 	await browser.close();
