@@ -4,12 +4,18 @@ import { json } from '@sveltejs/kit';
 import { simpleParser } from 'mailparser';
 import { IMAP_HOST, IMAP_USER, IMAP_PASS } from '$env/static/private';
 import nodemailer from 'nodemailer';
-import puppeteer from 'puppeteer';
 import { generatePDFHtml } from '$lib/pdfHelper.js';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 
 async function generatePDF(html) {
 	// Launch a new browser instance
-	const browser = await puppeteer.launch();
+	const browser = await puppeteer.launch({
+		args: chromium.args,
+		defaultViewport: chromium.defaultViewport,
+		executablePath: await chromium.executablePath,
+		headless: true
+	});
 	const page = await browser.newPage();
 
 	// Set the content of the page
