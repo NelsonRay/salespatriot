@@ -19,7 +19,7 @@ async function generatePDF(html) {
 	const page = await browser.newPage();
 
 	// Set the content of the page
-	await page.setContent(html, { waitUntil: 'networkidle0' });
+	await page.setContent(html);
 
 	// Generate the PDF
 	const pdfBuffer = await page.pdf({ format: 'A4' });
