@@ -35,6 +35,7 @@
 	export let supabase = undefined;
 	export let rfqsForPurchasingForm = undefined;
 	export let awardModalOpen;
+	export let pdfModalOpen;
 	export let partLaborMinutes;
 	export let deleteForm;
 
@@ -105,7 +106,11 @@
 		}
 
 		if (!errors) {
-			submitCallback();
+			if (data.email) {
+				pdfModalOpen = true;
+			} else {
+				submitCallback();
+			}
 		}
 	}
 
@@ -139,24 +144,7 @@
 			content = email.text;
 		}
 
-		let formattedContent;
-
-		if (email.in_reply_to) {
-			formattedContent =
-				'From:' +
-				content
-					.replace(/\n/g, '<br>')
-					.split('From:')
-					.slice(1)
-					.join('')
-					.split('<br>')
-					.filter((e) => e.trim() != '')
-					.join('<br>');
-		} else {
-			formattedContent = content;
-		}
-
-		return formattedContent;
+		return content;
 	}
 
 	function filterAttachments(attachments) {
