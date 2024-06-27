@@ -32,7 +32,7 @@ async function generatePDF(html) {
 	return pdfBuffer;
 }
 
-async function sendEmail(pdfBuffer, messageId, references, to, subject) {
+async function sendEmail(pdfBuffer, messageId, references, to, subject, text) {
 	const smtpConfig = {
 		host: IMAP_HOST,
 		port: 50,
@@ -53,7 +53,7 @@ async function sendEmail(pdfBuffer, messageId, references, to, subject) {
 		from: IMAP_USER,
 		to,
 		subject,
-		text: 'Please find attached the quote.',
+		text,
 		inReplyTo: messageId,
 		references,
 		attachments: [
@@ -89,10 +89,11 @@ export async function POST({ locals: { supabase }, request }) {
 			? data.references.join(' ') + ' ' + messageId
 			: messageId;
 		const subject = data.email.subject;
+		const text = data.quote_email_text;
 
 		const html = generatePDFHtml(data);
 		const pdfBuffer = await generatePDF(html);
-		await sendEmail(pdfBuffer, messageId, references, to, subject);
+		await sendEmail(pdfBuffer, messageId, references, to, subject, text);
 		console.log('PDF generated and email sent successfully');
 	} catch (error) {
 		console.error('Error:', error);

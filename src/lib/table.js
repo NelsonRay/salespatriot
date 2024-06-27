@@ -28,7 +28,7 @@ export function getColumns(pathname) {
 				{ type: 'set_aside', field: 'solicitation.set_aside' },
 				{ type: 'field', field: 'solicitation.days_to_deliver' }
 			];
-		default:
+		case '/rfqs/government-bidding-funnel':
 			return [
 				{ type: 'position' },
 				{ type: 'field', field: 'solicitation.id' },
@@ -42,6 +42,35 @@ export function getColumns(pathname) {
 				{ type: 'status', status: 'purchasing' },
 				{ type: 'status', status: 'labor' },
 				{ type: 'status', status: 'final_pricing' },
+				{ type: 'status', status: 'enter_quote' },
+				{ type: 'status', status: 'bid' },
+				{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
+				{ type: 'matching_rule', status: 'matching_rule' },
+				{ type: 'set_aside', field: 'solicitation.set_aside' },
+				{ type: 'field', field: 'solicitation.quantity' },
+				{ type: 'field', field: 'solicitation.quantity_units' },
+				{ type: 'field', field: 'solicitation.first_article' },
+				{
+					type: 'parts',
+					header: 'In-House PN'
+				},
+				{ type: 'field', field: 'solicitation.days_to_deliver' },
+				{ type: 'field', field: 'unit_price' }
+			];
+		default:
+			return [
+				{ type: 'position' },
+				{ type: 'field', field: 'solicitation.id' },
+				{ type: 'field', field: 'solicitation.description' },
+				{ type: 'expires_on' },
+				{ type: 'formula', field: 'market_value' },
+				{ type: 'field', field: 'solicitation.estimated_value' },
+				{ type: 'status', status: 'opportunity' },
+				{ type: 'status', status: 'engineering' },
+				{ type: 'status', status: 'bom' },
+				{ type: 'status', status: 'purchasing' },
+				{ type: 'status', status: 'labor' },
+				{ type: 'status', status: 'final_pricing', header: 'Pricing Status' },
 				{ type: 'status', status: 'enter_quote' },
 				{ type: 'status', status: 'bid' },
 				{ type: 'status', status: 'award' },

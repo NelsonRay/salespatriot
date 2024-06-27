@@ -8,6 +8,7 @@
 	export let submitCallback;
 
 	export let values;
+	export let quote_email_text;
 
 	let errors;
 	let isLoading = false;
@@ -16,6 +17,16 @@
 		isLoading = true;
 		await submitCallback(values);
 	}
+
+	$: if (open)
+		quote_email_text = `Good morning,
+
+Thank you for patience as we prepared your quote. We have attached it above.
+		
+If you have any questions regarding this quote or any other items you'd like to quote, please feel free to reach out to sales@auroradefensegroup.com.
+
+Best,
+Sales Team @ Aurora Defense Group`;
 </script>
 
 {#if open}
@@ -41,13 +52,16 @@
 						</span>
 					</button>
 				</div>
-				<div class="ml-5">
-					<p class="font-semibold">
-						To: {values.email.from.value.map((v) => v.address).join(',')}, Subject: {values.email
-							.subject}
-					</p>
-				</div>
-				<div class="bg-white m-6 p-3 border rounded-3xl shadow-sm">
+
+				<p class="font-semibold text-center">
+					To: {values.email.from.value.map((v) => v.address).join(',')}, Subject: {values.email
+						.subject}
+				</p>
+
+				<p class="ml-6 my-2 font-semibold">Email:</p>
+				<textarea class="mx-6 border p-1 rounded-lg min-h-52" bind:value={quote_email_text} />
+				<p class="ml-6 mt-4 mb-2 font-semibold">Attached PDF:</p>
+				<div class="bg-white mx-6 p-3 border rounded-3xl shadow-sm">
 					{@html generatePDFHtml(values)}
 				</div>
 

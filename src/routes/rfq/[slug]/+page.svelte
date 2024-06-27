@@ -139,7 +139,11 @@
 		bind:awardModalOpen
 		bind:pdfModalOpen
 	/>
+	<PdfModal
+		bind:open={pdfModalOpen}
+		{values}
+		{submitCallback}
+		bind:quote_email_text={values.quote_email_text}
+	/>
 {/if}
-
 <AwardModal bind:open={awardModalOpen} values={rfq} submitCallback={awardCallback} />
-<PdfModal bind:open={pdfModalOpen} values={rfq} {submitCallback} />
