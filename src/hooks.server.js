@@ -45,7 +45,8 @@ export const handle = sequence(Sentry.sentryHandle(), async ({ event, resolve })
 			'/api/bom/prepare-vendors-emails',
 			'/api/bom/email-vendor',
 			'/api/emails/process-emailed-rfqs',
-			'/api/emails/send-quote'
+			'/api/emails/send-quote',
+			'/api/getPartID'
 		].includes(event.url.pathname) &&
 		!event.locals.session
 	) {
