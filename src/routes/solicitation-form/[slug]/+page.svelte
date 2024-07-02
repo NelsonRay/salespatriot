@@ -22,7 +22,7 @@
 		const { data, error: err } = await supabase
 			.from('forms')
 			.select(
-				`*, form!inner(*), solicitation_matched!inner(*, comments(*, user(name), form(form(name))), solicitation!inner(*, nsn(id, parts(*))), forms(*, form(*), submitted_by(*)), matching_rule(*))`
+				`*, form!inner(*), solicitation_matched!inner(*, comments(*, user(name), form(form(name))), solicitation!inner(*, nsn(id, map_nsns_to_parts(*, part(*)))), forms(*, form(*), submitted_by(*)), matching_rule(*))`
 			)
 			.eq('id', parseInt($page.params.slug))
 			.limit(1)
