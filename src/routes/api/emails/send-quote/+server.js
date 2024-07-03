@@ -65,7 +65,8 @@ async function sendEmail(pdfBuffer, messageId, references, to, subject, text) {
 		]
 	};
 
-	return await transporter.sendMail(mailOptions);
+	const info = await transporter.sendMail(mailOptions);
+	return info;
 }
 
 export async function POST({ locals: { supabase }, request }) {
@@ -75,26 +76,27 @@ export async function POST({ locals: { supabase }, request }) {
 		} = await request.json();
 
 		let { data, error } = await supabase
-			.from('rfqs')
+			.from('quote_emails_sent')
 			.select(
-				'*, email(id, message_id, from, references, subject), comments(*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)), customer(*), rfqs_parts(*, part(*, parts_purchasing(*), parts_labor_minutes(*)), rfqs_parts_quantities(*))'
+				'id, rfq(email(id, message_id, from, references, subject), customer(*), rfqs_parts(*, part(*, parts_purchasing(*), parts_labor_minutes(*)), rfqs_parts_quantities(*)))'
 			)
 			.eq('id', id)
 			.limit(1)
 			.single();
 
-		const messageId = data.email.message_id;
-		const to = data.email.from.value.map((v) => v.address).join(',');
-		const references = data.email.references
+		const messageId = data.rfq.email.message_id;
+		const to = data.rfq.email.from.value.map((v) => v.address).join(',');
+		const references = data.rfq.email.references
 			? data.references.join(' ') + ' ' + messageId
 			: messageId;
-		const subject = data.email.subject;
-		const text = data.quote_email_text;
+		const subject = data.rfq.email.subject;
+		const text = data.rfq.quote_email_text;
 
-		const html = generatePDFHtml(data);
+		const html = generatePDFHtml(data.rfq);
 		const pdfBuffer = await generatePDF(html);
-		await sendEmail(pdfBuffer, messageId, references, to, subject, text);
-		console.log('PDF generated and email sent successfully');
+		const info = await sendEmail(pdfBuffer, messageId, references, to, subject, text);
+
+		await supabase.from('quote_emails_sent').update({ info, successful: true }).eq('id', id);
 	} catch (error) {
 		console.error('Error:', error);
 	}
