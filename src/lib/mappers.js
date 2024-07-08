@@ -179,6 +179,20 @@ export function commercialTableFieldMapper(obj, column) {
 export function tableFieldMapper(obj, column) {
 	try {
 		if (column.type === 'position') return { header: '#' };
+		if (column.type === 'value') {
+			let value;
+			let estimated = true;
+			if (obj?.unit_price && obj?.solicitation?.quantity) {
+				value = obj?.unit_price * obj?.solicitation?.quantity;
+				estimated = false;
+			} else {
+				value = obj?.solicitation?.estimated_value;
+			}
+
+			value = formatCurrency(value);
+
+			return { header: 'Value', value: { value, estimated } };
+		}
 		if (column.type === 'status') {
 			const containsStatus = (obj?.status ?? []).filter((e) => e.includes(column.status));
 
@@ -212,13 +226,7 @@ export function tableFieldMapper(obj, column) {
 
 			return { header: 'Expires On', value };
 		} else if (column.type === 'formula') {
-			if (column.field === 'market_value') {
-				let value;
-				if (obj?.unit_price && obj?.solicitation?.quantity) {
-					value = formatCurrency(obj?.unit_price * obj?.solicitation?.quantity);
-				}
-				return { header: 'Bid Value', value: value ?? '' };
-			} else if (column.field === 'unit_price_won_at') {
+			if (column.field === 'unit_price_won_at') {
 				let value;
 
 				if (obj?.price_won_at && obj?.solicitation?.quantity) {
@@ -266,7 +274,7 @@ export function tableFieldMapper(obj, column) {
 				}
 			}
 
-			if (['solicitation.estimated_value', 'price_won_at', 'unit_price'].includes(column.field)) {
+			if (['price_won_at', 'unit_price'].includes(column.field)) {
 				value = formatCurrency(value);
 			}
 
@@ -278,7 +286,8 @@ export function tableFieldMapper(obj, column) {
 				value = formatMonthDayYearDate(value);
 			}
 
-			if (column?.field === 'solicitation.quantity' && obj) value = addCommasToNumber(value);
+			if (column?.field === 'solicitation.quantity' && obj)
+				value = addCommasToNumber(value) + ' ' + obj?.solicitation?.quantity_units;
 
 			if (
 				[
