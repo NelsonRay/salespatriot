@@ -57,6 +57,12 @@
 					{#each columns as column}
 						{#if column.type === 'position'}
 							<td class="text-center"> {index + 1}</td>
+						{:else if column.type === 'value'}
+							<td>
+								<p class={tableFieldMapper(obj, column).value?.estimated ? 'text-gray-300' : ''}>
+									{tableFieldMapper(obj, column).value?.value ?? ''}
+								</p>
+							</td>
 						{:else if column.type === 'status'}
 							<td>
 								<div

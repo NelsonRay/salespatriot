@@ -6,15 +6,15 @@ export function getColumns(pathname) {
 				{ type: 'position' },
 				{ type: 'field', field: 'solicitation.id' },
 				{ type: 'field', field: 'solicitation.description' },
-				{ type: 'formula', field: 'market_value', header: 'Bid Value' },
+				{ type: 'value' },
+				{ type: 'field', field: 'solicitation.quantity' },
+				{ type: 'field', field: 'unit_price' },
 				{ type: 'status', status: 'award' },
 				{ type: 'status', status: 'enter_sales_order' },
-				{ type: 'field', field: 'unit_price' },
 				{ type: 'formula', field: 'unit_price_won_at' },
 				{ type: 'formula', field: 'diff_unit_price' },
 				{ type: 'field', field: 'company_awarded' },
 				{ type: 'field', field: 'price_won_at' },
-				{ type: 'field', field: 'solicitation.quantity' },
 				{ type: 'field', field: 'solicitation.issued_on' },
 				{ type: 'expires_on' },
 				{ type: 'bid_partners' },
@@ -34,8 +34,9 @@ export function getColumns(pathname) {
 				{ type: 'field', field: 'solicitation.id' },
 				{ type: 'field', field: 'solicitation.description' },
 				{ type: 'expires_on' },
-				{ type: 'formula', field: 'market_value' },
-				{ type: 'field', field: 'solicitation.estimated_value' },
+				{ type: 'value' },
+				{ type: 'field', field: 'solicitation.quantity' },
+				{ type: 'field', field: 'unit_price' },
 				{ type: 'status', status: 'opportunity' },
 				{ type: 'status', status: 'engineering' },
 				{ type: 'status', status: 'bom' },
@@ -47,15 +48,12 @@ export function getColumns(pathname) {
 				{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
 				{ type: 'matching_rule', status: 'matching_rule' },
 				{ type: 'set_aside', field: 'solicitation.set_aside' },
-				{ type: 'field', field: 'solicitation.quantity' },
-				{ type: 'field', field: 'solicitation.quantity_units' },
 				{ type: 'field', field: 'solicitation.first_article' },
 				{
 					type: 'parts',
 					header: 'In-House PN'
 				},
-				{ type: 'field', field: 'solicitation.days_to_deliver' },
-				{ type: 'field', field: 'unit_price' }
+				{ type: 'field', field: 'solicitation.days_to_deliver' }
 			];
 		default:
 			return [
@@ -63,8 +61,9 @@ export function getColumns(pathname) {
 				{ type: 'field', field: 'solicitation.id' },
 				{ type: 'field', field: 'solicitation.description' },
 				{ type: 'expires_on' },
-				{ type: 'formula', field: 'market_value' },
-				{ type: 'field', field: 'solicitation.estimated_value' },
+				{ type: 'value' },
+				{ type: 'field', field: 'solicitation.quantity' },
+				{ type: 'field', field: 'unit_price' },
 				{ type: 'status', status: 'opportunity' },
 				{ type: 'status', status: 'engineering' },
 				{ type: 'status', status: 'bom' },
@@ -78,8 +77,6 @@ export function getColumns(pathname) {
 				{ type: 'matching_rule', status: 'matching_rule' },
 				{ type: 'set_aside', field: 'solicitation.set_aside' },
 				{ type: 'field', field: 'solicitation.issued_on' },
-				{ type: 'field', field: 'solicitation.quantity' },
-				{ type: 'field', field: 'solicitation.quantity_units' },
 				{ type: 'field', field: 'solicitation.first_article' },
 				{
 					type: 'parts',
@@ -87,7 +84,6 @@ export function getColumns(pathname) {
 				},
 				{ type: 'field', field: 'solicitation.days_to_deliver' },
 				{ type: 'link', field: 'bom_url' },
-				{ type: 'field', field: 'unit_price' },
 				{ type: 'link', field: 'solicitation.solicitation_url' },
 				{ type: 'tech_docs' },
 				{ type: 'field', field: 'solicitation.price_won_at' },
@@ -117,7 +113,6 @@ export function getReportColumns() {
 		},
 		{ type: 'field', field: 'solicitation.issued_on' },
 		{ type: 'field', field: 'solicitation.quantity' },
-		{ type: 'field', field: 'solicitation.quantity_units' },
 		{ type: 'link', field: 'solicitation.solicitation_url' }
 	];
 }
@@ -189,7 +184,6 @@ export function getNSNColumns(oppForm) {
 		},
 		{ type: 'matching_rule', status: 'matching_rule' },
 		{ type: 'field', field: 'solicitation.issued_on' },
-		{ type: 'field', field: 'solicitation.quantity_units' },
 		{ type: 'field', field: 'solicitation.days_to_deliver' },
 		{ type: 'link', field: 'solicitation.solicitation_url' },
 		{ type: 'tech_docs' }
