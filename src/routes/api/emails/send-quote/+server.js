@@ -3,6 +3,9 @@
 import { json } from '@sveltejs/kit';
 import { simpleParser } from 'mailparser';
 import { IMAP_HOST, IMAP_USER, IMAP_PASS } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
+import { createServerClient } from '@supabase/ssr';
 import nodemailer from 'nodemailer';
 import { generatePDFHtml } from '$lib/pdfHelper.js';
 import puppeteer from 'puppeteer-core';
@@ -32,7 +35,7 @@ async function generatePDF(html) {
 	return pdfBuffer;
 }
 
-async function sendEmail(pdfBuffer, messageId, references, to, subject, text) {
+async function sendEmail(attachments, messageId, references, to, subject, text) {
 	const smtpConfig = {
 		host: IMAP_HOST,
 		port: 50,
@@ -56,29 +59,31 @@ async function sendEmail(pdfBuffer, messageId, references, to, subject, text) {
 		text,
 		inReplyTo: messageId,
 		references,
-		attachments: [
-			{
-				filename: 'rfq.pdf',
-				content: pdfBuffer,
-				contentType: 'application/pdf'
-			}
-		]
+		attachments
 	};
 
 	const info = await transporter.sendMail(mailOptions);
 	return info;
 }
 
-export async function POST({ locals: { supabase }, request }) {
-	try {
-		const {
-			record: { id }
-		} = await request.json();
+export async function POST({ request, cookies }) {
+	const {
+		record: { id }
+	} = await request.json();
 
+	/** @type {import('@supabase/supabase-js').SupabaseClient<import('$lib/types/supabase.js').Database>} */
+	const supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
+		cookies,
+		global: {
+			headers: { Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}` }
+		}
+	});
+
+	try {
 		let { data, error } = await supabase
 			.from('quote_emails_sent')
 			.select(
-				'id, rfq(email(id, message_id, from, references, subject), customer(*), rfqs_parts(*, part(*, parts_purchasing(*), parts_labor_minutes(*)), rfqs_parts_quantities(*)))'
+				'id, rfq(id, email(*), customer(*), rfqs_parts(*, part(*), rfqs_parts_quantities(*)))'
 			)
 			.eq('id', id)
 			.limit(1)
@@ -94,8 +99,15 @@ export async function POST({ locals: { supabase }, request }) {
 
 		const html = generatePDFHtml(data.rfq);
 		const pdfBuffer = await generatePDF(html);
-		const info = await sendEmail(pdfBuffer, messageId, references, to, subject, text);
+		const attachments = [
+			{
+				filename: 'rfq.pdf',
+				content: pdfBuffer,
+				contentType: 'application/pdf'
+			}
+		];
 
+		const info = await sendEmail(attachments, messageId, references, to, subject, text);
 		await supabase.from('quote_emails_sent').update({ info, successful: true }).eq('id', id);
 	} catch (error) {
 		console.error('Error:', error);

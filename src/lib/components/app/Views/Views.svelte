@@ -19,30 +19,27 @@
 </script>
 
 <div class="flex flex-row items-center">
-	<div class="dropdown" on:focusout={handleDropdownFocusLoss}>
-		<button class="bg-neutral-100 p-2 rounded-sm font-medium text-sm" on:click={handleDropdownClick}
-			>Views
-		</button>
-		<ul
-			class="dropdown-content z-[100] menu p-2 shadow bg-neutral-100 rounded-box w-52"
-			style:visibility={openDropdown ? 'visible' : 'hidden'}
-		>
-			{#each views as view}
-				<p class="font-semibold mb-1 ml-1 mt-1 text-md">{view.title}</p>
-				{#each view.paths as path (path.url)}
-					<li>
-						<a
-							href={path.url}
-							on:click={() => {
-								handleDropdownClick();
-							}}
-						>
-							{path.title}
-						</a>
-					</li>
+	<div class="dropdown dropdown-bottom dropdown-hover">
+		<button class="bg-neutral-100 p-2 rounded-sm font-medium text-sm">Views </button>
+		<div class="dropdown-content relative z-10 menu p-4 shadow bg-neutral-100 rounded-box w-52">
+			<ul>
+				{#each views as view}
+					<p class="font-semibold mb-1 ml-1 mt-1 text-md">{view.title}</p>
+					{#each view.paths as path (path.url)}
+						<li>
+							<a
+								href={path.url}
+								on:click={() => {
+									handleDropdownClick();
+								}}
+							>
+								{path.title}
+							</a>
+						</li>
+					{/each}
 				{/each}
-			{/each}
-		</ul>
+			</ul>
+		</div>
 	</div>
 
 	<p class="font-semibold ml-4 text-sm">
