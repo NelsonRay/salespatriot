@@ -43,6 +43,14 @@
 			.limit(1)
 			.single();
 
+		if (data?.email) {
+			const { data: files } = await supabase.storage
+				.from('email_attachments')
+				.list(data.email.id.toString() + '/');
+
+			data.email.attachments = files;
+		}
+
 		console.log(data, error);
 
 		let { data: partsComments } = await supabase
@@ -136,6 +144,7 @@
 		{isSubmitting}
 		{comments}
 		{commentSubmitCallback}
+		{supabase}
 		bind:awardModalOpen
 		bind:pdfModalOpen
 	/>

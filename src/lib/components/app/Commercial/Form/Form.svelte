@@ -22,6 +22,7 @@
 	import Download from '$lib/icons/Download.svg';
 	import OrderPlacedTable from '../OrderPlacedTable/OrderPlacedTable.svelte';
 	import Remove from '$lib/icons/Remove.svg';
+	import ShowEmailModal from '../Modals/ShowEmailModal/ShowEmailModal.svelte';
 
 	export let data;
 	export let comments;
@@ -41,6 +42,7 @@
 
 	let focusedRfqPartQty;
 	let reviewValues;
+	let showEmailModalOpen = false;
 	let errors;
 
 	function goBack() {
@@ -148,7 +150,9 @@
 	}
 
 	function filterAttachments(attachments) {
-		return attachments.filter((a) => !['.png', '.jpg'].some((e) => a.name.includes(e)));
+		return attachments.filter(
+			(a) => !['image/png', 'image/jpg', 'image/jpeg'].some((e) => a.metadata.mimetype == e)
+		);
 	}
 
 	$: reviewValues = getCommercialValueCalculation(focusedRfqPartQty);
@@ -182,6 +186,7 @@
 						showValueCalc={['final_pricing', null, undefined].includes(form?.type)}
 						bind:awardModalOpen
 						disableAwardEdit={!(form?.type == null)}
+						bind:showEmailModalOpen
 					/>
 
 					{#if form?.type === 'enter_sales_order'}
@@ -542,6 +547,8 @@
 		</div>
 	</div>
 {/if}
+
+<ShowEmailModal bind:open={showEmailModalOpen} {data} {supabase} />
 
 <style>
 	.parent {

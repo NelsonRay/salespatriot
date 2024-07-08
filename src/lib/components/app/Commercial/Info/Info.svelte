@@ -3,12 +3,14 @@
 	import { getCommercialStatusColor, getCommercialStatusName } from '$lib/helpers';
 	import ValueCalculator from '$lib/components/form/ValueCalculator.svelte';
 	import Edit from '$lib/icons/Edit.svg';
+	import Open from '$lib/icons/Open.svg';
 
 	export let data;
 	export let reviewValues;
 	export let showValueCalc = true;
 	export let awardModalOpen;
 	export let disableAwardEdit = false;
+	export let showEmailModalOpen;
 
 	function getQty(rfq) {
 		let qty = 0;
@@ -149,7 +151,13 @@
 					</div>
 				</div>
 
-				<div class="h-8"></div>
+				<div class="flex flex-row space-x-1 items-center">
+					<p class="text-gray-400">Source:</p>
+					<p>{data.email ? 'Email' : 'Uploaded'}</p>
+					<button class="h-3 w-3 ml-2" on:click={() => (showEmailModalOpen = true)}>
+						<img src={Open} alt="open" class="h-3 w-3" />
+					</button>
+				</div>
 			</div>
 		</div>
 		{#if showValueCalc}
