@@ -55,6 +55,7 @@ async function sendEmail(attachments, messageId, references, to, subject, text) 
 	const mailOptions = {
 		from: IMAP_USER,
 		to,
+		bcc: 'augie.fabela@auroradefensegroup.com',
 		subject,
 		text,
 		inReplyTo: messageId,
