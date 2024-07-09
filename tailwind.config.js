@@ -7,18 +7,44 @@ import { skeleton } from '@skeletonlabs/tw-plugin';
 // /** @type {import('tailwindcss').Config} */
 export default {
 	// 2. Opt for dark mode to be handled via the class method
-	darkMode: 'class',
+	darkMode: false,
 	content: [
 		'./src/**/*.{html,js,svelte,ts}',
 		// 3. Append the path to the Skeleton package
 		join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')
 	],
+	variants: {
+		extend: {
+			textColor: ['selection'],
+			backgroundColor: ['selection']
+		}
+	},
 	theme: {
-		extend: {}
+		extend: {
+			colors: {
+				'selection-bg': '#b3d4fc', // Define selection background color
+				'selection-text': '#000' // Define selection text color
+			}
+		}
 	},
 	plugins: [
 		// 4. Append the Skeleton plugin (after other plugins)
 		require('daisyui'),
-		skeleton({})
+		skeleton({}),
+		function ({ addUtilities }) {
+			addUtilities(
+				{
+					'::selection': {
+						backgroundColor: '#b3d4fc',
+						color: '#000'
+					},
+					'::-moz-selection': {
+						backgroundColor: '#b3d4fc',
+						color: '#000'
+					}
+				},
+				['responsive', 'hover']
+			);
+		}
 	]
 };
