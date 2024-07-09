@@ -40,10 +40,12 @@
 	export let pdfModalOpen;
 	export let partLaborMinutes;
 	export let deleteForm;
+	export let forwardEmail;
 
 	let focusedRfqPartQty;
 	let reviewValues;
 	let showEmailModalOpen = false;
+	let isEmailForwarded = false;
 	let errors;
 
 	function goBack() {
@@ -173,9 +175,12 @@
 					<div class="flex flex-row items-center space-x-5">
 						<button
 							class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-2"
-							on:click={() => {}}
+							on:click={() => {
+								forwardEmail();
+								isEmailForwarded = true;
+							}}
 						>
-							<p class="text-sm">Forward</p>
+							<p class="text-sm">{!isEmailForwarded ? 'Forward' : 'Forwarded'}</p>
 							<img src={Forward} alt="edit" class="h-5 w-5" />
 						</button>
 						<button

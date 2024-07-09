@@ -158,6 +158,14 @@
 		}
 	}
 
+	async function forwardEmail() {
+		await fetch('/api/emails/forward', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ id: form.email.id, user_id: session.user.id })
+		});
+	}
+
 	async function deleteForm() {
 		await supabase.from('forms').update({ deleted: true }).eq('id', form.id);
 		window.location.reload();
@@ -199,6 +207,7 @@
 			{rfqsForPurchasingForm}
 			partLaborMinutes={form?.part?.parts_labor_minutes}
 			{deleteForm}
+			{forwardEmail}
 		/>
 	{/if}
 {/if}
