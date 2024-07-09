@@ -58,7 +58,6 @@ async function sendEmail(attachments, messageId, references, to, subject, text) 
 		bcc: 'augie.fabela@auroradefensegroup.com',
 		subject,
 		text,
-		html: text,
 		inReplyTo: messageId,
 		references,
 		attachments
