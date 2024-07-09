@@ -135,7 +135,7 @@
 					(form.email.subject.length > 30 ? '...' : '')
 				);
 			} else {
-				return form.rfq_public.values.customer.name + ' / ' + form.rfq_public.values.received_at;
+				return form.rfq_public.values.customer.name;
 			}
 		} else {
 			return form?.part?.number ?? form.rfq?.customer?.name + ' / ' + form.rfq.received_at;
@@ -194,6 +194,17 @@
 												<div class="px-2 py-1 rounded-md bg-yellow-400 mb-1">
 													<p>Waiting</p>
 												</div>
+											{/if}
+											{#if form.form.type == 'confirm'}
+												{#if form.email}
+													<div class="px-2 py-1 rounded-md bg-blue-300 mb-1">
+														<p>Email</p>
+													</div>
+												{:else}
+													<div class="px-2 py-1 rounded-md bg-yellow-300 mb-1">
+														<p>Website</p>
+													</div>
+												{/if}
 											{/if}
 										</div>
 									</div>

@@ -22,6 +22,7 @@
 	import Download from '$lib/icons/Download.svg';
 	import OrderPlacedTable from '../OrderPlacedTable/OrderPlacedTable.svelte';
 	import Remove from '$lib/icons/Remove.svg';
+	import Forward from '$lib/icons/Forward.svg';
 	import ShowEmailModal from '../Modals/ShowEmailModal/ShowEmailModal.svelte';
 
 	export let data;
@@ -169,13 +170,22 @@
 					</div>
 				</button>
 				{#if form?.type == 'confirm'}
-					<button
-						class="flex flex-row items-center p-2 rounded-md bg-red-400 space-x-2"
-						on:click={deleteForm}
-					>
-						<p class="text-white text-sm">Delete</p>
-						<img src={Remove} alt="edit" class="h-5 w-5" />
-					</button>
+					<div class="flex flex-row items-center space-x-5">
+						<button
+							class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-2"
+							on:click={() => {}}
+						>
+							<p class="text-sm">Forward</p>
+							<img src={Forward} alt="edit" class="h-5 w-5" />
+						</button>
+						<button
+							class="flex flex-row items-center p-2 rounded-md bg-red-400 space-x-2"
+							on:click={deleteForm}
+						>
+							<p class="text-white text-sm">Delete</p>
+							<img src={Remove} alt="edit" class="h-5 w-5" />
+						</button>
+					</div>
 				{/if}
 			</div>
 			<div class="pl-2 pt-3 space-y-5">
@@ -270,7 +280,13 @@
 					<div class="flex flex-col space-y-5">
 						{#if data.email}
 							<div class="flex flex-col space-y-2">
-								<p class="font-medium">Email:</p>
+								<p class="font-bold">Email:</p>
+								<div>
+									<p class="font-semibold">Subject: {data.email.subject}</p>
+									<p class="font-semibold">
+										From: {data.email.from.value.map((e) => e.address).join(', ')}
+									</p>
+								</div>
 								{#if data.email}
 									<p class="text-sm">
 										{@html formatEmailText(data.email)}
