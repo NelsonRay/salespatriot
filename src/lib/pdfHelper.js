@@ -6,7 +6,7 @@ export function generatePDFHtml(values) {
 	let partsTable = '';
 
 	for (let part of values.rfqs_parts) {
-		for (let qty of part.rfqs_parts_quantities) {
+		for (let qty of part.rfqs_parts_quantities.sort((a, b) => a.quantity - b.quantity)) {
 			partsTable += `<tr>
                 <td class="border border-gray-300 p-2">${part.part.number}</td>
                 <td class="border border-gray-300 p-2">${part.part.description}</td>
