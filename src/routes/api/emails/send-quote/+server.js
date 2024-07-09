@@ -85,7 +85,7 @@ export async function POST({ request, cookies }) {
 		let { data, error } = await supabase
 			.from('quote_emails_sent')
 			.select(
-				'id, rfq(id, email(*), customer(*), rfqs_parts(*, part(*), rfqs_parts_quantities(*)))'
+				'id, rfq(id, quote_email_text, email(*), customer(*), rfqs_parts(*, part(*), rfqs_parts_quantities(*)))'
 			)
 			.eq('id', id)
 			.limit(1)
