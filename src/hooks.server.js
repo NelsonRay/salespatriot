@@ -33,22 +33,8 @@ export const handle = sequence(Sentry.sentryHandle(), async ({ event, resolve })
 	// if trying to access paths other than accepted api routes, redirect to auth
 	if (
 		event.url.pathname !== '/' &&
-		![
-			'/api/webhooks/form-submitted',
-			'/api/webhooks/commercial-form-submitted',
-			'/api/webhooks/rfq-automation',
-			'/api/webhooks/rfq-upload',
-			'/api/webhooks/resend/form',
-			'/api/pb-upload',
-			'/rfq-public/6b289746-2b01-47af-a7d4-26a3920f75ca',
-			'/api/smtp/send-vendor-email',
-			'/api/bom/prepare-vendors-emails',
-			'/api/bom/email-vendor',
-			'/api/emails/process-emailed-rfqs',
-			'/api/emails/send-quote',
-			'/api/emails/forward',
-			'/api/getPartID'
-		].includes(event.url.pathname) &&
+		!['/rfq-public/6b289746-2b01-47af-a7d4-26a3920f75ca'].includes(event.url.pathname) &&
+		!event.url.pathname.toString().includes('/api/') &&
 		!event.locals.session
 	) {
 		throw redirect(303, '/');

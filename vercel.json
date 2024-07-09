@@ -3,6 +3,10 @@
 		{
 			"path": "/api/emails/process-emailed-rfqs",
 			"schedule": "*/5 * * * *"
+		},
+		{
+			"path": "/api/notifications/forms-past-due",
+			"schedule": "0 14 * * *"
 		}
 	]
 }
