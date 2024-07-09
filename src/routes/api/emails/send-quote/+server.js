@@ -58,6 +58,7 @@ async function sendEmail(attachments, messageId, references, to, subject, text) 
 		bcc: 'augie.fabela@auroradefensegroup.com',
 		subject,
 		text,
+		html: text,
 		inReplyTo: messageId,
 		references,
 		attachments
@@ -98,11 +99,11 @@ export async function POST({ request, cookies }) {
 		const subject = data.rfq.email.subject;
 		const text = data.rfq.quote_email_text;
 
-		const html = generatePDFHtml(data.rfq);
-		const pdfBuffer = await generatePDF(html);
+		const pdf = generatePDFHtml(data.rfq);
+		const pdfBuffer = await generatePDF(pdf);
 		const attachments = [
 			{
-				filename: 'rfq.pdf',
+				filename: 'quote.pdf',
 				content: pdfBuffer,
 				contentType: 'application/pdf'
 			}
