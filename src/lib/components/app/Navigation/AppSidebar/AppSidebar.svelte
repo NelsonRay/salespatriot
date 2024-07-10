@@ -12,7 +12,6 @@
 			<SidebarBtn text="Workflows" href={$page.url.origin + '/workflows'} />
 			<SidebarBtn text="RFQs" href={$page.url.origin + '/rfqs'} />
 			<!-- <SidebarBtn text="Sales Orders" href={$page.url.origin + '/sales/government'} /> -->
-			<SidebarBtn text="BOMs" href={$page.url.origin + '/boms'} />
 			<SidebarBtn text="Reports" href={$page.url.origin + '/reports/rfqs'} />
 		</div>
 		<div>
