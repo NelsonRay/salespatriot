@@ -15,7 +15,6 @@
 
 	export let data;
 	export let columns;
-	export let blockEditing = false;
 	export let openNewTab = false;
 
 	function getPartnerName(id) {
@@ -53,7 +52,7 @@
 		</thead>
 		<tbody>
 			{#each data as obj, index (obj.id)}
-				<tr class={!blockEditing ? 'hover:bg-neutral-100' : ''}>
+				<tr class="hover:bg-neutral-100">
 					{#each columns as column}
 						{#if column.type === 'position'}
 							<td class="text-center"> {index + 1}</td>
@@ -121,16 +120,12 @@
 							</td>
 						{:else if column.field === 'solicitation.id'}
 							<td>
-								{#if !blockEditing}
-									<a href={`/solicitation/${obj?.id}`} target={openNewTab ? '_blank' : '_self'}>
-										<div class="flex flex-row justify-between pr-1 items-center">
-											{tableFieldMapper(obj, column).value ?? ''}
-											<img src={Open} alt="open" class="h-3 w-3" />
-										</div>
-									</a>
-								{:else}
-									{tableFieldMapper(obj, column).value ?? ''}
-								{/if}
+								<a href={`/solicitation/${obj?.id}`} target={openNewTab ? '_blank' : '_self'}>
+									<div class="flex flex-row justify-between pr-1 items-center">
+										{tableFieldMapper(obj, column).value ?? ''}
+										<img src={Open} alt="open" class="h-3 w-3" />
+									</div>
+								</a>
 							</td>
 						{:else}
 							<td>

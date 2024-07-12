@@ -13,7 +13,6 @@
 	import { calculateDaysDifference } from '$lib/helpers.js';
 
 	export let data;
-	export let isAdmin = false;
 
 	$: ({ supabase, session } = data);
 
@@ -68,12 +67,6 @@
 			}
 
 			let { data, error } = await query;
-
-			const {
-				data: { admin }
-			} = await supabase.from('users').select('admin').eq('id', session.user.id).limit(1).single();
-
-			isAdmin = admin;
 
 			switch (pathname) {
 				case '/rfqs/government-bidding-funnel':
@@ -273,7 +266,7 @@
 	<div class="max-h-[calc(100vh-3.5rem)]">
 		{#if rfqs}
 			{#if $page.url.pathname.includes('government')}
-				<GovTable data={rfqs} columns={getColumns($page.url.pathname)} blockEditing={!isAdmin} />
+				<GovTable data={rfqs} columns={getColumns($page.url.pathname)} />
 			{:else}
 				<ComTable data={rfqs} columns={getTableColumns($page.url.pathname)} {assignFollowUp} />
 			{/if}
