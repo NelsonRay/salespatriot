@@ -96,18 +96,27 @@
 		}
 	}
 
-	async function awardModalSubmitCallback(award) {
-		if (award.status.includes('award:lost')) {
+	async function awardModalSubmitCallback(values) {
+		const {
+			status,
+			company_awarded,
+			date_awarded,
+			price_won_at,
+			first_article_waive_request_honored,
+			skip_enter_sales_order
+		} = values;
+
+		if (status.includes('award:lost')) {
 			await supabase
 				.from('solicitations_matched')
 				.update({
-					status: award.status,
-					company_awarded: award.company_awarded,
-					date_awarded: award.date_awarded,
-					price_won_at: award.price_won_at
+					status,
+					company_awarded,
+					date_awarded,
+					price_won_at
 				})
 				.eq('id', solicitation_matched.id);
-		} else if (award.status.includes('award:won')) {
+		} else if (status.includes('award:won')) {
 			const { data } = await supabase
 				.from('users')
 				.select('firm(name)')
@@ -122,18 +131,21 @@
 			await supabase
 				.from('solicitations_matched')
 				.update({
-					status: award.status,
+					status:
+						!skip_enter_sales_order || status.some((s) => s.includes('enter_sales_order'))
+							? status
+							: [...status, 'enter_sales_order:complete'],
 					company_awarded,
 					price_won_at,
-					date_awarded: award.date_awarded,
-					first_article_waive_request_honored: award.first_article_waive_request_honored
+					date_awarded,
+					first_article_waive_request_honored
 				})
 				.eq('id', solicitation_matched.id);
-		} else if (award.status.includes('award:cancelled')) {
+		} else if (status.includes('award:cancelled')) {
 			const { data, error } = await supabase
 				.from('solicitations_matched')
 				.update({
-					status: award.status
+					status
 				})
 				.eq('id', solicitation_matched.id);
 		}
