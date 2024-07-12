@@ -119,6 +119,7 @@
 									disabled={rfqs_part.part.id}
 									extractItemName={extractPN}
 									forceCaps
+									searchParts
 									on:selection={(event) => handleSelection(event, index)}
 									on:create={(event) => handleCreateNew(event, index)}
 								/>

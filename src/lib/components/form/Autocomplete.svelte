@@ -3,13 +3,13 @@
 	import { onMount } from 'svelte';
 	import { capitalizeFirstLetter } from '$lib/helpers';
 	import { createEventDispatcher } from 'svelte';
-	import TextInput from './TextInput.svelte';
 
 	export let value;
 	export let query;
 	export let extractItemName;
 	export let disabled;
 	export let forceCaps = false;
+	export let searchParts = false;
 	export let preventCreate = false;
 
 	let dispatch = createEventDispatcher();
@@ -43,6 +43,18 @@
 		dispatch('create');
 	}
 
+	function handleInput(event) {
+		if (!forceCaps) return;
+
+		let updatedValue = event.target.value.replace(/^0+|^\s+/g, '');
+
+		if (searchParts) {
+			updatedValue = updatedValue.replace(/\s+/g, '').replace(/,/g, '');
+		}
+
+		value = updatedValue.toUpperCase();
+	}
+
 	onMount(() => {
 		isMounted = true;
 	});
@@ -54,7 +66,14 @@
 </script>
 
 <div class="dropdown">
-	<TextInput {disabled} bind:value {forceCaps} />
+	<input
+		class="w-full rounded-md border p-1 focus:border-blue-400"
+		autocomplete="off"
+		bind:value
+		on:input={handleInput}
+		{disabled}
+	/>
+
 	{#if !creating}
 		<ul
 			tabIndex={0}
