@@ -453,7 +453,7 @@
 					</div>
 				{:else if form?.type === 'enter_sales_order'}
 					<div>
-						<p class="mb-1 text-sm">Award Status</p>
+						<p class="mb-1 text-sm">Enter Sales Order Status</p>
 						<StatusSelect
 							tags={commercialTags}
 							status="enter_sales_order"

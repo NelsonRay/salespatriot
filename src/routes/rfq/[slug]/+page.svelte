@@ -51,8 +51,6 @@
 			data.email.attachments = files;
 		}
 
-		console.log(data, error);
-
 		let { data: partsComments } = await supabase
 			.from('comments')
 			.select('*, form(form(name)), user(name), part(number), rfq(customer(name), received_at)')
@@ -90,11 +88,15 @@
 
 	async function awardCallback(values) {
 		if (values.status.includes('response:placed_order')) {
-			const { date_ordered, due_date, order_notes, rfqs_parts, status } = values;
+			const { date_ordered, due_date, order_notes, rfqs_parts, status, skip_enter_sales_order } =
+				values;
 			await supabase
 				.from('rfqs')
 				.update({
-					status,
+					status:
+						!skip_enter_sales_order || status.some((s) => s.includes('enter_sales_order'))
+							? status
+							: [...status, 'enter_sales_order:complete'],
 					date_ordered,
 					due_date,
 					order_notes

@@ -9,12 +9,12 @@
 
 	export let open;
 	export let submitCallback;
-
 	export let values;
 	export let solicitation_matched;
 
 	let errors;
 	let isLoading = false;
+	let skip_enter_sales_order = true;
 
 	async function handleSubmit() {
 		const results = awardModalValidation(
@@ -24,7 +24,7 @@
 
 		if (!errors) {
 			isLoading = true;
-			await submitCallback(values);
+			await submitCallback({ ...values, skip_enter_sales_order });
 		}
 	}
 </script>
@@ -33,7 +33,7 @@
 	<div
 		class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
 	>
-		<div class="relative w-1/4 my-6 mx-auto max-w-3xl">
+		<div class="relative w-1/2 my-6 mx-auto max-w-3xl">
 			<!--content-->
 			<div
 				class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
@@ -88,6 +88,12 @@
 										>
 									</label>
 								{/if}
+							</div>
+						{/if}
+						{#if !values.status.some((s) => s.includes('enter_sales_order'))}
+							<div class="mx-5">
+								<p class="mb-1 text-sm">Skip Enter Sales Order Form</p>
+								<Boolean bind:value={skip_enter_sales_order} />
 							</div>
 						{/if}
 					{:else if values?.status?.includes('award:lost')}
