@@ -39,7 +39,7 @@
 				{#if solicitation_matched?.matching_rule?.name}
 					<div
 						class="px-2 py-1 rounded-md {getMatchingClass(
-							solicitation_matched?.matching_rule?.name
+							solicitation_matched?.matching_rule?.color
 						)}"
 					>
 						<p class="text-xs">{solicitation_matched?.matching_rule?.name}</p>

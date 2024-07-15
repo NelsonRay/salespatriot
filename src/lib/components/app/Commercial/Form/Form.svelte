@@ -173,16 +173,22 @@
 				</button>
 				{#if form?.type == 'confirm'}
 					<div class="flex flex-row items-center space-x-5">
-						<button
-							class="flex flex-row items-center p-2 rounded-md bg-neutral-50 space-x-2"
-							on:click={() => {
-								forwardEmail();
-								isEmailForwarded = true;
-							}}
-						>
-							<p class="text-sm">{!isEmailForwarded ? 'Forward' : 'Forwarded'}</p>
-							<img src={Forward} alt="edit" class="h-5 w-5" />
-						</button>
+						{#if data.email}
+							<button
+								class="flex flex-row items-center p-2 rounded-md {!isEmailForwarded
+									? 'bg-neutral-50'
+									: 'bg-neutral-200'} space-x-2"
+								on:click={() => {
+									forwardEmail();
+									isEmailForwarded = true;
+								}}
+							>
+								<p class="text-sm">{!isEmailForwarded ? 'Forward' : 'Forwarded'}</p>
+								{#if !isEmailForwarded}
+									<img src={Forward} alt="edit" class="h-5 w-5" />
+								{/if}
+							</button>
+						{/if}
 						<button
 							class="flex flex-row items-center p-2 rounded-md bg-red-400 space-x-2"
 							on:click={deleteForm}

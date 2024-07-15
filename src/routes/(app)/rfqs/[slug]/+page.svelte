@@ -13,12 +13,13 @@
 	import { calculateDaysDifference } from '$lib/helpers.js';
 
 	export let data;
-	export let isAdmin = false;
 
 	$: ({ supabase, session } = data);
 
 	let rfqs = null;
 	let isMounted = false;
+	let sorted = false;
+	let rows = null;
 
 	page.subscribe((p) => {
 		if (isMounted) {
@@ -39,6 +40,9 @@
 				case '/rfqs/government-bidding-funnel':
 					query = query.eq('removed', false);
 
+					break;
+				case '/rfqs/government-view-opportunities':
+					query = query.filter('status', 'cs', `{"opportunity:in_progress"}`).eq('removed', false);
 					break;
 				case '/rfqs/government-recently-released':
 					query = query
@@ -68,12 +72,6 @@
 			}
 
 			let { data, error } = await query;
-
-			const {
-				data: { admin }
-			} = await supabase.from('users').select('admin').eq('id', session.user.id).limit(1).single();
-
-			isAdmin = admin;
 
 			switch (pathname) {
 				case '/rfqs/government-bidding-funnel':
@@ -126,6 +124,7 @@
 					break;
 			}
 			rfqs = data;
+			rows = rfqs;
 		} else {
 			let query = supabase
 				.from('rfqs')
@@ -216,6 +215,7 @@
 			title: 'Government',
 			paths: [
 				{ url: '/rfqs/government-bidding-funnel', title: 'Bidding Funnel' },
+				{ url: '/rfqs/government-view-opportunities', title: 'View Opportunities' },
 				{ url: '/rfqs/government-recently-released', title: 'Recently Released' },
 				{ url: '/rfqs/government-expiring-soon', title: 'Expiring Soon' },
 				{ url: '/rfqs/government-contracts-bid', title: 'Contracts Bid' },
@@ -247,6 +247,23 @@
 			});
 		}
 	}
+
+	$: if (rfqs && sorted) {
+		let temp = [...rfqs];
+		temp?.sort((a, b) => {
+			if (a.matching_rule.name < b.matching_rule.name) {
+				return -1;
+			}
+			if (a.matching_rule.name > b.matching_rule.name) {
+				return 1;
+			}
+			return 0;
+		});
+
+		rows = temp;
+	} else {
+		rows = rfqs;
+	}
 </script>
 
 <svelte:head>
@@ -273,7 +290,7 @@
 	<div class="max-h-[calc(100vh-3.5rem)]">
 		{#if rfqs}
 			{#if $page.url.pathname.includes('government')}
-				<GovTable data={rfqs} columns={getColumns($page.url.pathname)} blockEditing={!isAdmin} />
+				<GovTable data={rows} columns={getColumns($page.url.pathname)} enableSort bind:sorted />
 			{:else}
 				<ComTable data={rfqs} columns={getTableColumns($page.url.pathname)} {assignFollowUp} />
 			{/if}

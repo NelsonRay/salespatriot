@@ -11,12 +11,15 @@
 		calculateDaysDifference
 	} from '$lib/helpers.js';
 	import Open from '$lib/icons/Open.svg';
+	import Sort from '$lib/icons/Sort.svg';
+	import Sort_Active from '$lib/icons/Sort_Active.svg';
 	import { page } from '$app/stores';
 
 	export let data;
 	export let columns;
-	export let blockEditing = false;
 	export let openNewTab = false;
+	export let enableSort = false;
+	export let sorted;
 
 	function getPartnerName(id) {
 		const partners = getBidPartners();
@@ -46,14 +49,23 @@
 	<table class="text-left w-[100%] border-separate border-spacing-0 text-xs">
 		<thead class="h-[32px] sticky bg-white" style="inset-block-start: 0;">
 			{#each columns as column}
-				<th class={column.type === 'position' ? 'text-center' : ''}
-					>{tableFieldMapper(undefined, column).header}</th
-				>
+				<th class={column.type === 'position' ? 'text-center' : ''}>
+					<div class="flex flex-row items-center justify-between">
+						<p>
+							{tableFieldMapper(undefined, column).header}
+						</p>
+						{#if enableSort && tableFieldMapper(undefined, column).header == 'Matching Rule'}
+							<button on:click={() => (sorted = !sorted)}>
+								<img src={sorted ? Sort_Active : Sort} alt="open" class="h-4 w-4" />
+							</button>
+						{/if}
+					</div>
+				</th>
 			{/each}
 		</thead>
 		<tbody>
 			{#each data as obj, index (obj.id)}
-				<tr class={!blockEditing ? 'hover:bg-neutral-100' : ''}>
+				<tr class="hover:bg-neutral-100">
 					{#each columns as column}
 						{#if column.type === 'position'}
 							<td class="text-center"> {index + 1}</td>
@@ -78,10 +90,10 @@
 								{#if tableFieldMapper(obj, column).value}
 									<div
 										class="p-2 rounded-md inline-block {getMatchingClass(
-											tableFieldMapper(obj, column).value
+											tableFieldMapper(obj, column).value?.color
 										)}"
 									>
-										{tableFieldMapper(obj, column).value ?? ''}
+										{tableFieldMapper(obj, column).value?.name ?? ''}
 									</div>
 								{/if}
 							</td>
@@ -121,16 +133,12 @@
 							</td>
 						{:else if column.field === 'solicitation.id'}
 							<td>
-								{#if !blockEditing}
-									<a href={`/solicitation/${obj?.id}`} target={openNewTab ? '_blank' : '_self'}>
-										<div class="flex flex-row justify-between pr-1 items-center">
-											{tableFieldMapper(obj, column).value ?? ''}
-											<img src={Open} alt="open" class="h-3 w-3" />
-										</div>
-									</a>
-								{:else}
-									{tableFieldMapper(obj, column).value ?? ''}
-								{/if}
+								<a href={`/solicitation/${obj?.id}`} target={openNewTab ? '_blank' : '_self'}>
+									<div class="flex flex-row justify-between pr-1 items-center">
+										{tableFieldMapper(obj, column).value ?? ''}
+										<img src={Open} alt="open" class="h-3 w-3" />
+									</div>
+								</a>
 							</td>
 						{:else}
 							<td>
