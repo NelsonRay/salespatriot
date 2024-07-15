@@ -139,30 +139,23 @@ export function getRemoveOptionClass(id) {
 }
 
 // @ts-ignore
-export function getMatchingClass(name) {
-	let mClass = '';
-
-	switch (name) {
-		case 'ELC - 5A910':
-			mClass = 'bg-green-500';
-			break;
-		case 'Various Cage Codes':
-			mClass = 'bg-yellow-200';
-			break;
-		case '6250':
-		case '6220':
-		case '5995':
-			mClass = 'bg-green-300';
-			break;
-		case 'Monitored NSN':
-			mClass = 'bg-green-400';
-			break;
+export function getMatchingClass(color) {
+	switch (color) {
+		case 'yellow':
+			return 'bg-yellow-300';
+		case 'purple':
+			return 'bg-purple-300';
+		case 'blue':
+			return 'bg-blue-300';
+		case 'red':
+			return 'bg-red-300';
+		case 'teal':
+			return 'bg-teal-300';
+		case 'green':
+			return 'bg-green-300';
 		default:
-			mClass = 'bg-gray-200';
-			break;
+			return 'bg-gray-200';
 	}
-
-	return mClass;
 }
 
 // @ts-ignore

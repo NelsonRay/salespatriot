@@ -28,6 +28,24 @@ export function getColumns(pathname) {
 				{ type: 'set_aside', field: 'solicitation.set_aside' },
 				{ type: 'field', field: 'solicitation.days_to_deliver' }
 			];
+		case '/rfqs/government-view-opportunities':
+			return [
+				{ type: 'position' },
+				{ type: 'field', field: 'solicitation.id' },
+				{ type: 'field', field: 'solicitation.description' },
+				{ type: 'expires_on' },
+				{ type: 'value' },
+				{ type: 'field', field: 'solicitation.quantity' },
+				{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
+				{ type: 'matching_rule', status: 'matching_rule' },
+				{ type: 'set_aside', field: 'solicitation.set_aside' },
+				{ type: 'field', field: 'solicitation.first_article' },
+				{
+					type: 'parts',
+					header: 'In-House PN'
+				},
+				{ type: 'field', field: 'solicitation.days_to_deliver' }
+			];
 		case '/rfqs/government-bidding-funnel':
 			return [
 				{ type: 'position' },

@@ -208,7 +208,7 @@ export function tableFieldMapper(obj, column) {
 
 			return { header, value };
 		} else if (column.type === 'matching_rule') {
-			return { header: 'Matching Rule', value: obj?.matching_rule?.name };
+			return { header: 'Matching Rule', value: obj?.matching_rule };
 		} else if (column.type == 'set_aside') {
 			return { header: 'Set Aside', value: obj?.solicitation?.set_aside };
 		} else if (column.type === 'tech_docs') {
