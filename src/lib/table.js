@@ -115,23 +115,22 @@ export function getColumns(pathname) {
 export function getReportColumns() {
 	return [
 		{ type: 'position' },
-		{ type: 'field', field: 'bid_timestamp' },
 		{ type: 'field', field: 'solicitation.id' },
-		{ type: 'field', field: 'solicitation.description' },
+		{ type: 'value' },
+		{ type: 'field', field: 'bid_timestamp' },
 		{ type: 'status', status: 'award' },
-		{ type: 'formula', field: 'market_value' },
-		{ type: 'field', field: 'unit_price' },
-		{ type: 'field', field: 'solicitation.price_won_at' },
-		{ type: 'formula', field: 'unit_price_won_at' },
-		{ type: 'formula', field: 'diff_unit_price' },
-		{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
 		{
 			type: 'parts',
 			header: 'In-House PN'
 		},
+		{ type: 'field', field: 'solicitation.nsn.id', header: 'NSN' },
+		{ type: 'field', field: 'solicitation.description' },
+		{ type: 'field', field: 'unit_price' },
+		{ type: 'field', field: 'solicitation.price_won_at' },
+		{ type: 'formula', field: 'unit_price_won_at' },
+		{ type: 'formula', field: 'diff_unit_price' },
 		{ type: 'field', field: 'solicitation.issued_on' },
-		{ type: 'field', field: 'solicitation.quantity' },
-		{ type: 'link', field: 'solicitation.solicitation_url' }
+		{ type: 'field', field: 'solicitation.quantity' }
 	];
 }
 
@@ -140,14 +139,12 @@ export function getReportRfqColumns() {
 		{ type: 'position' },
 		{ type: 'name' },
 		{ type: 'value' },
-		{ type: 'status', status: 'send_quote' },
+		{ type: 'date', field: 'sent_quote_timestamp' },
 		{ type: 'status', status: 'response' },
 		{ type: 'parts' },
 		{ type: 'date', field: 'received_at' },
-		{ type: 'date', field: 'sent_quote_timestamp' },
 		{ type: 'field', field: 'quote_number' },
-		{ type: 'field', field: 'customer.name' },
-		{ type: 'email' }
+		{ type: 'field', field: 'customer.name' }
 	];
 }
 
@@ -175,7 +172,7 @@ export function getNSNColumns(oppForm) {
 	nsnColumns = [
 		...nsnColumns,
 		{ type: 'bid_partners' },
-		{ type: 'formula', field: 'market_value' },
+		{ type: 'value' },
 		{ type: 'field', field: 'solicitation.price_won_at' },
 		{ type: 'formula', field: 'unit_price_won_at' },
 		{ type: 'formula', field: 'diff_unit_price' },

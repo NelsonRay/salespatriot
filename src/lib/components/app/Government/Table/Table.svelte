@@ -136,7 +136,7 @@
 								<a href={`/solicitation/${obj?.id}`} target={openNewTab ? '_blank' : '_self'}>
 									<div class="flex flex-row justify-between pr-1 items-center">
 										{tableFieldMapper(obj, column).value ?? ''}
-										<img src={Open} alt="open" class="h-3 w-3" />
+										<img src={Open} alt="open" class="h-3 w-3 ml-2 mr-2" />
 									</div>
 								</a>
 							</td>

@@ -9,7 +9,7 @@ import {
 export function govMapper(field) {
 	const map = {
 		// solicitations table
-		id: 'Solicitation Number',
+		id: 'Solicitation',
 		issued_on: 'Issued',
 		expires_on: 'Expires',
 		award_history: 'Award History',
