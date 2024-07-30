@@ -98,7 +98,7 @@
 	</div>
 </div>
 
-<div class="flex flex-row">
+<div class="flex flex-col">
 	<div class="flex flex-col w-1/2">
 		<div class="flex flex-row items-center">
 			<p class="m-4 font-medium">Government:</p>
