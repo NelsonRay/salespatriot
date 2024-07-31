@@ -7,6 +7,7 @@
 	import RfqsTable from '$lib/components/app/Commercial/Table/Table.svelte';
 	import { getReportColumns, getReportRfqColumns } from '$lib/table.js';
 	import { solColumns } from '$lib/helpers.js';
+	import * as XLSX from 'xlsx';
 
 	export let data;
 	$: ({ supabase } = data);
@@ -24,7 +25,9 @@
 	async function loadData() {
 		const { data: sols, error } = await supabase
 			.from('solicitations_matched')
-			.select(`*, solicitation!inner(${solColumns}, nsn(id, parts(*))), matching_rule(*)`)
+			.select(
+				`*, solicitation!inner(${solColumns}, nsn(id, map_nsns_to_parts(*, part(id, number)))), matching_rule(*)`
+			)
 			.gte('bid_timestamp', new Date(startDate).toUTCString())
 			.lte('bid_timestamp', new Date(endDate).toUTCString());
 
@@ -82,20 +85,73 @@
 	}
 
 	$: if (isMounted && startDate && endDate) loadData();
+
+	// function to export sols and rfqs as .xlsx file to local machine
+	function handleExport() {
+		let rows = [];
+
+		const sols = solicitations.map((sol) => {
+			return {
+				DATE: formatDate(sol.solicitation.issued_on),
+				CUSTOMER: 'Government',
+				D: '',
+				'PART NUMBER': sol.nsn?.map_nsns_to_parts[0]?.part?.number,
+				QTY: sol.solicitation.quantity,
+				'UNIT PRICE': formatCurrency(sol.unit_price),
+				TOTAL: formatCurrency(sol.unit_price * sol.solicitation.quantity),
+				DESCRIPTION: sol.solicitation.description
+			};
+		});
+
+		rows = [...rows, ...sols];
+
+		rfqs.forEach((rfq) => {
+			rfq.rfqs_parts.forEach((part) => {
+				part.rfqs_parts_quantities.forEach((qty) => {
+					rows.push({
+						DATE: formatDate(rfq.received_at),
+						CUSTOMER: rfq.customer.name,
+						D: '',
+						'PART NUMBER': part.part.number,
+						QTY: qty.quantity,
+						'UNIT PRICE': formatCurrency(qty.final_pricing),
+						TOTAL: formatCurrency(qty.quantity * qty.final_pricing),
+						DESCRIPTION: part.part.name
+					});
+				});
+			});
+		});
+
+		const wb = XLSX.utils.book_new();
+		const solsWS = XLSX.utils.json_to_sheet(rows);
+
+		XLSX.utils.book_append_sheet(wb, solsWS, `${new Date().toISOString()}`);
+
+		XLSX.writeFile(wb, `SalesPatriot_Reports_${new Date().toISOString()}.xlsx`);
+	}
+
+	// function to convert date to MM/DD/YYYY format
+	function formatDate(date) {
+		const d = new Date(date);
+		return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+	}
 </script>
 
 <svelte:head>
 	<title>Reports - Sales Patriot</title>
 </svelte:head>
 
-<div class="flex flex-row items-center m-4">
-	<div class="w-40">
-		<DateInput bind:value={startDate} />
+<div class="flex flex-row items-center m-4 justify-between">
+	<div class="flex flex-row items-center">
+		<div class="w-40">
+			<DateInput bind:value={startDate} />
+		</div>
+		<p class="mx-3">-</p>
+		<div class="w-40">
+			<DateInput bind:value={endDate} />
+		</div>
 	</div>
-	<p class="mx-3">-</p>
-	<div class="w-40">
-		<DateInput bind:value={endDate} />
-	</div>
+	<button class="p-2 bg-neutral-200 rounded-md" on:click={handleExport}>Export</button>
 </div>
 
 <div class="flex flex-col">
