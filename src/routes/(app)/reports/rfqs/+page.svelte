@@ -35,7 +35,9 @@
 
 		const { data, error: err } = await supabase
 			.from('rfqs')
-			.select('*, customer!inner(*), rfqs_parts(part(number), rfqs_parts_quantities(*))')
+			.select(
+				'*, customer!inner(*), rfqs_parts(part(number, description), rfqs_parts_quantities(*))'
+			)
 			.gte('sent_quote_timestamp', new Date(startDate).toUTCString())
 			.lte('sent_quote_timestamp', new Date(endDate).toUTCString());
 
@@ -92,14 +94,16 @@
 
 		const sols = solicitations.map((sol) => {
 			return {
-				DATE: formatDate(sol.solicitation.issued_on),
+				DATE: formatDate(sol.bid_timestamp),
 				CUSTOMER: 'Government',
 				D: '',
-				'PART NUMBER': sol.nsn?.map_nsns_to_parts[0]?.part?.number,
+				'PART NUMBER': sol.solicitation.nsn?.map_nsns_to_parts[0]?.part?.number,
 				QTY: sol.solicitation.quantity,
 				'UNIT PRICE': formatCurrency(sol.unit_price),
 				TOTAL: formatCurrency(sol.unit_price * sol.solicitation.quantity),
-				DESCRIPTION: sol.solicitation.description
+				DESCRIPTION: sol.solicitation.description,
+				GOVERNMENT: formatCurrency(sol.unit_price * sol.solicitation.quantity),
+				COMMERCIAL: ''
 			};
 		});
 
@@ -109,14 +113,16 @@
 			rfq.rfqs_parts.forEach((part) => {
 				part.rfqs_parts_quantities.forEach((qty) => {
 					rows.push({
-						DATE: formatDate(rfq.received_at),
+						DATE: formatDate(rfq.sent_quote_timestamp),
 						CUSTOMER: rfq.customer.name,
 						D: '',
 						'PART NUMBER': part.part.number,
 						QTY: qty.quantity,
 						'UNIT PRICE': formatCurrency(qty.final_pricing),
 						TOTAL: formatCurrency(qty.quantity * qty.final_pricing),
-						DESCRIPTION: part.part.name
+						DESCRIPTION: part.part.description,
+						GOVERNMENT: '',
+						COMMERCIAL: formatCurrency(qty.quantity * qty.final_pricing)
 					});
 				});
 			});
